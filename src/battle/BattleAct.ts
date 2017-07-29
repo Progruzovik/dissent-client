@@ -4,14 +4,10 @@ import * as game from "../Game";
 
 export default class BattleAct extends game.Actor {
 
-    private isMouseDown = false;
-    private mouseX = 0;
-    private mouseY = 0;
-
     private canBeFinished = false;
     private currentUnit: Unit;
 
-    private readonly field = new Field(20, 25);
+    private readonly field;
     private readonly btnFire = new game.Button("Огонь!");
     private readonly btnUp = new game.Button("Вверх");
     private readonly btnDown = new game.Button("Вниз");
@@ -20,14 +16,12 @@ export default class BattleAct extends game.Actor {
     constructor(stageWidth: number, stageHeight: number) {
         super();
 
-        const content = new PIXI.Container();
-        content.interactive = true;
-        content.addChild(new game.Rectangle(stageWidth, stageHeight, 0x111111));
-
+        const controls = new game.Rectangle(stageWidth, 100, 0x111111);
+        this.field = new Field(20, 20, stageWidth, stageHeight - controls.height);
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;
-                const unit = new Unit(isLeft, isLeft ? 0 : this.field.lastCol, (j + 1) * 2);
+                const unit = new Unit(isLeft, isLeft ? 0 : this.field.lastCol, (j + 1) * 3);
                 this.field.addUnit(unit);
 
                 unit.on(game.Event.CLICK, () => {
@@ -58,57 +52,25 @@ export default class BattleAct extends game.Actor {
                 });
             }
         }
-        this.field.x = game.INDENT;
-        this.field.y = game.INDENT;
-        content.addChild(this.field);
-        this.addChild(content);
+        this.addChild(this.field);
 
-        const controls = new PIXI.Container();
+        this.btnFire.x = game.INDENT;
+        this.btnFire.y = game.INDENT;
         controls.addChild(this.btnFire);
-        this.btnUp.x = this.btnFire.width + game.INDENT;
+        this.btnUp.x = this.btnFire.x + this.btnFire.width + game.INDENT;
+        this.btnUp.y = this.btnFire.y;
         controls.addChild(this.btnUp);
         this.btnDown.x = this.btnUp.x + this.btnUp.width + game.INDENT;
+        this.btnDown.y = this.btnUp.y;
         controls.addChild(this.btnDown);
         this.btnIdle.x = this.btnDown.x + this.btnDown.width + game.INDENT;
+        this.btnIdle.y = this.btnDown.y;
         controls.addChild(this.btnIdle);
-        controls.x = game.INDENT;
-        controls.y = stageHeight - controls.height - game.INDENT;
+        controls.y = stageHeight - controls.height;
         this.addChild(controls);
 
         this.nextTurn();
 
-        content.on(game.Event.MOUSE_DOWN, (e: PIXI.interaction.InteractionEvent) => {
-            this.isMouseDown = true
-            this.mouseX = e.data.global.x;
-            this.mouseY = e.data.global.y;
-        });
-        content.on(game.Event.MOUSE_MOVE, (e: PIXI.interaction.InteractionEvent) => {
-            if (this.isMouseDown) {
-                this.field.x += e.data.global.x - this.mouseX;
-                if (this.field.x > game.INDENT) {
-                    this.field.x = game.INDENT;
-                } else {
-                    const leftBorder: number = stageWidth - this.field.width - game.INDENT;
-                    if (this.field.x < leftBorder) {
-                        this.field.x = leftBorder;
-                    }
-                }
-                this.field.y += e.data.global.y - this.mouseY;
-                if (this.field.y > game.INDENT) {
-                    this.field.y = game.INDENT;
-                } else {
-                    const topBorder: number = stageHeight - this.field.height - game.INDENT;
-                    if (this.field.y < topBorder) {
-                        this.field.y = topBorder;
-                    }
-                }
-                
-                this.mouseX = e.data.global.x;
-                this.mouseY = e.data.global.y;
-            }
-        });
-        content.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
-        content.on(game.Event.MOUSE_OUT, () => this.isMouseDown = false);
         this.btnFire.on(game.Event.BUTTON_CLICK, () => {
             this.currentUnit.setPreparedToFire(!this.currentUnit.checkPreparedToFire());
             if (this.currentUnit.checkPreparedToFire()) {

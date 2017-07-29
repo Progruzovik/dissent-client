@@ -49,8 +49,8 @@ export default class Unit extends PIXI.Sprite {
         this.charge = new game.Rectangle(Math.sqrt(dx * dx + dy * dy), 2, 0xFF0000);
         this.charge.rotation = Math.atan2(dy, dx);
         this.charge.pivot.y = this.charge.height / 2;
-        this.charge.x = this.x;
-        this.charge.y = this.y;
+        this.charge.x = this.x + this.width / 2;
+        this.charge.y = this.y + this.height / 2;
         this.parent.addChild(this.charge);
 
         this.charge.on(game.Event.UPDATE, () => {
