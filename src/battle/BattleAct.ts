@@ -7,7 +7,7 @@ export default class BattleAct extends game.Actor {
     private canBeFinished = false;
     private currentUnit: Unit;
 
-    private readonly field;
+    private readonly field: Field;
     private readonly btnFire = new game.Button("Огонь!");
     private readonly btnUp = new game.Button("Вверх");
     private readonly btnDown = new game.Button("Вниз");
@@ -21,7 +21,7 @@ export default class BattleAct extends game.Actor {
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;
-                const unit = new Unit(isLeft, isLeft ? 0 : this.field.lastCol, (j + 1) * 3);
+                const unit = new Unit(isLeft, isLeft ? 0 : this.field.getLastCol(), (j + 1) * 3);
                 this.field.addUnit(unit);
 
                 unit.on(game.Event.CLICK, () => {
@@ -35,7 +35,7 @@ export default class BattleAct extends game.Actor {
                 });
                 unit.on(game.Event.TASK_DONE, () => {
                     if (this.currentUnit = unit) {
-                        if (unit.getNextCol() >= 0 && unit.getNextCol() <= this.field.lastCol) {
+                        if (unit.getNextCol() >= 0 && unit.getNextCol() <= this.field.getLastCol()) {
                             unit.move();
                         } else {
                             this.canBeFinished = true;
@@ -92,7 +92,7 @@ export default class BattleAct extends game.Actor {
     }
 
     private canCurrentUnitDown(): boolean {
-        return this.currentUnit.getRow() != this.field.lastRow
+        return this.currentUnit.getRow() != this.field.getLastRow()
             && !this.field.hasUnitOnCell(this.currentUnit.getNextCol(), this.currentUnit.getRow() + 1);
     }
 

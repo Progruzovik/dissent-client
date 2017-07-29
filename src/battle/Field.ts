@@ -11,8 +11,8 @@ export default class Field extends game.Actor {
     private mouseX = 0;
     private mouseY = 0;
 
-    readonly lastCol: number;
-    readonly lastRow: number;
+    private readonly lastCol: number;
+    private readonly lastRow: number;
 
     private readonly units: Unit[] = [];
 
@@ -79,6 +79,14 @@ export default class Field extends game.Actor {
         });
         this.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
         this.on(game.Event.MOUSE_OUT, () => this.isMouseDown = false);
+    }
+
+    getLastCol() {
+        return this.lastCol;
+    }
+
+    getLastRow() {
+        return this.lastRow;
     }
 
     addUnit(unit: Unit) {
