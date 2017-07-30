@@ -1,139 +1,59 @@
 import Field from "./Field";
 import Unit from "./Unit";
-import * as game from "../Game";
+import UnitManager from "./UnitManager";
+import * as game from "../game";
 
 export default class BattleAct extends game.Actor {
 
-    private canBeFinished = false;
-    private currentUnit: Unit;
+    private readonly unitManager: UnitManager;
 
     private readonly field: Field;
     private readonly btnFire = new game.Button("Огонь!");
-    private readonly btnUp = new game.Button("Вверх");
-    private readonly btnDown = new game.Button("Вниз");
-    private readonly btnIdle = new game.Button("Вперёд");
+    private readonly btnFinish = new game.Button("Конец хода");
 
     constructor(stageWidth: number, stageHeight: number) {
         super();
-
-        const controls = new game.Rectangle(stageWidth, 100, 0x111111);
-        this.field = new Field(20, 20, stageWidth, stageHeight - controls.height);
+        const COLS_COUNT = 15;
+        const units: Unit[] = [];
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;
-                const unit = new Unit(isLeft, isLeft ? 0 : this.field.getLastCol(), (j + 1) * 3);
-                this.field.addUnit(unit);
-
-                unit.on(game.Event.CLICK, () => {
-                    if (this.currentUnit.checkPreparedToFire()) {
-                        if (this.currentUnit.checkLeft() != unit.checkLeft()) {
-                            this.currentUnit.fire(unit);
-                            this.field.unmarkTargets();
-                            this.lockInterface(true);
-                        }
-                    }
-                });
-                unit.on(game.Event.TASK_DONE, () => {
-                    if (this.currentUnit = unit) {
-                        if (unit.getNextCol() >= 0 && unit.getNextCol() <= this.field.getLastCol()) {
-                            unit.move();
-                        } else {
-                            this.canBeFinished = true;
-                            this.field.removeChild(this.currentUnit);
-                            this.currentUnit = null;
-                            this.nextTurn();
-                        }
-                    }
-                });
-                unit.on(game.Event.FINISH, () => this.nextTurn());
-                unit.on(game.Event.DESTROY, () => {
-                    this.canBeFinished = true;
-                    this.field.removeUnit(unit);
-                });
+                const unit = new Unit(isLeft, isLeft ? 0 : COLS_COUNT - 1, (j + 1) * 3);
+                units.push(unit);
+                
+                unit.on(Unit.SHOT, () => this.btnFire.setSelectable(false));
             }
         }
-        this.addChild(this.field);
+        this.unitManager = new UnitManager(units);
 
+        const controls = new game.Rectangle(stageWidth, 100, 0x111111);
+        this.field = new Field(this.unitManager, COLS_COUNT, 15, stageWidth, stageHeight - controls.height);
+        this.addChild(this.field);
         this.btnFire.x = game.INDENT;
         this.btnFire.y = game.INDENT;
         controls.addChild(this.btnFire);
-        this.btnUp.x = this.btnFire.x + this.btnFire.width + game.INDENT;
-        this.btnUp.y = this.btnFire.y;
-        controls.addChild(this.btnUp);
-        this.btnDown.x = this.btnUp.x + this.btnUp.width + game.INDENT;
-        this.btnDown.y = this.btnUp.y;
-        controls.addChild(this.btnDown);
-        this.btnIdle.x = this.btnDown.x + this.btnDown.width + game.INDENT;
-        this.btnIdle.y = this.btnDown.y;
-        controls.addChild(this.btnIdle);
+        this.btnFinish.x = this.btnFire.x + this.btnFire.width + game.INDENT;
+        this.btnFinish.y = this.btnFire.y;
+        controls.addChild(this.btnFinish);
         controls.y = stageHeight - controls.height;
         this.addChild(controls);
 
         this.nextTurn();
 
-        this.btnFire.on(game.Event.BUTTON_CLICK, () => {
-            this.currentUnit.setPreparedToFire(!this.currentUnit.checkPreparedToFire());
-            if (this.currentUnit.checkPreparedToFire()) {
-                this.field.markTargets(!this.currentUnit.checkLeft());
-                this.lockInterface(false);
-            } else {
-                this.field.unmarkTargets();
-                this.updateInterface();
-            }
-        });
-        this.btnUp.on(game.Event.BUTTON_CLICK, () => this.currentUnit.changeRow(true));
-        this.btnDown.on(game.Event.BUTTON_CLICK, () => this.currentUnit.changeRow(false));
-        this.btnIdle.on(game.Event.BUTTON_CLICK, () => this.currentUnit.idle());
-    }
-
-    private canCurrentUnitUp(): boolean {
-        return this.currentUnit.getRow() != 0
-            && !this.field.hasUnitOnCell(this.currentUnit.getNextCol(), this.currentUnit.getRow() - 1);
-    }
-
-    private canCurrentUnitDown(): boolean {
-        return this.currentUnit.getRow() != this.field.getLastRow()
-            && !this.field.hasUnitOnCell(this.currentUnit.getNextCol(), this.currentUnit.getRow() + 1);
-    }
-
-    private canCurrentUnitForward(): boolean {
-        return !this.field.hasUnitOnCell(this.currentUnit.getNextCol(), this.currentUnit.getRow());
+        this.unitManager.on(game.Event.FINISH, () => this.emit(game.Event.FINISH));
+        this.btnFire.on(game.Event.BUTTON_CLICK, () => this.unitManager.getCurrentUnit().setPreparedToShot(
+            !this.unitManager.getCurrentUnit().checkPreparedToShot()));
+        this.btnFinish.on(game.Event.BUTTON_CLICK, () => this.nextTurn());
     }
 
     private nextTurn() {
-        if (this.canBeFinished) {
-            if (!this.field.hasUnitsOnBothSides()) {
-                this.emit(game.Event.FINISH);
-                return;
-            }
-            this.canBeFinished = false;
+        const currentUnit: Unit = this.unitManager.nextTurn();
+        const isCurrentPlayerTurn: boolean = currentUnit.checkLeft();
+        this.btnFire.setSelectable(isCurrentPlayerTurn);
+        this.btnFinish.setSelectable(isCurrentPlayerTurn);
+        if (!isCurrentPlayerTurn) {
+            currentUnit.moveTo(currentUnit.getCol() - 1, currentUnit.getRow());
+            this.nextTurn();
         }
-        this.currentUnit = this.field.nextTurn(this.currentUnit);
-        if (this.currentUnit.checkLeft()) {
-            this.updateInterface();
-        } else {
-            if (this.canCurrentUnitForward()) {
-                this.currentUnit.idle();
-            } else {
-                this.currentUnit.changeRow(this.canCurrentUnitUp());
-            }
-        }
-    }
-
-    private updateInterface() {
-        const canCurrentUnitForward: boolean = this.canCurrentUnitForward();
-        this.btnFire.setSelectable(canCurrentUnitForward);
-        this.btnUp.setSelectable(this.canCurrentUnitUp());
-        this.btnDown.setSelectable(this.canCurrentUnitDown());
-        this.btnIdle.setSelectable(canCurrentUnitForward);
-    }
-
-    private lockInterface(withBtnFire: boolean) {
-        if (withBtnFire) {
-            this.btnFire.setSelectable(false);
-        }
-        this.btnUp.setSelectable(false);
-        this.btnDown.setSelectable(false);
-        this.btnIdle.setSelectable(false);
     }
 }

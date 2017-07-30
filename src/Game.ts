@@ -17,9 +17,8 @@ export namespace Event {
     export const TOUCH_START = "touchstart";
     export const TOUCH_END = "touchend";
 
-    export const TASK_DONE = "taskDone";
+    export const READY = "ready";
     export const FINISH = "finish";
-    export const DESTROY = "destroy";
 }
 
 export class Actor extends PIXI.Container {

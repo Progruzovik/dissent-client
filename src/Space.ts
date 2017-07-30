@@ -1,5 +1,5 @@
 import BattleAct from "./battle/BattleAct";
-import * as game from "./Game";
+import * as game from "./game";
 import * as PIXI from "pixi.js";
 
 export default class Space extends PIXI.Application {

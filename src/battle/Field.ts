@@ -1,5 +1,6 @@
 import Unit from "./Unit";
-import * as game from "../Game";
+import UnitManager from "./UnitManager";
+import * as game from "../game";
 
 export default class Field extends game.Actor {
 
@@ -8,22 +9,16 @@ export default class Field extends game.Actor {
     static readonly LINE_WIDTH = 2;
 
     private isMouseDown = false;
-    private mouseX = 0;
-    private mouseY = 0;
-
-    private readonly lastCol: number;
-    private readonly lastRow: number;
-
-    private readonly units: Unit[] = [];
+    private mouseX: number;
+    private mouseY: number;
 
     private readonly content = new game.Actor();
     private readonly markLayer: MarkLayer;
 
-    constructor(colsCount: number, rowsCount: number, freeWidth: number, freeHeight: number) {
+    constructor(private readonly unitManager: UnitManager,
+        colsCount: number, rowsCount: number, freeWidth: number, freeHeight: number) {
         super();
         this.interactive = true;
-        this.lastCol = colsCount - 1;
-        this.lastRow = rowsCount - 1;
         this.markLayer = new MarkLayer(colsCount, rowsCount);
 
         this.addChild(new game.Rectangle(freeWidth, freeHeight, 0x111111));
@@ -40,6 +35,24 @@ export default class Field extends game.Actor {
             this.content.addChild(line);
         }
         this.content.addChild(this.markLayer);
+        for (const unit of unitManager.getUnits()) {
+            this.content.addChild(unit);
+
+            unit.on(Unit.PREPARED_TO_SHOT, () => {
+                this.markLayer.removeAllMarksExceptCurrent();
+                for (const target of this.unitManager.getUnits()) {
+                    if (unit.checkLeft() != target.checkLeft()) {
+                        const mark = new Mark(0xFF0000);
+                        mark.setCell(target.getCol(), target.getRow());
+                        this.markLayer.addChild(mark);
+                    }
+                }
+            });
+            unit.on(Unit.NOT_PREPARED_TO_SHOT, () => {
+                this.markLayer.removeAllMarksExceptCurrent();
+                this.markLayer.addPathMarks();
+            });
+        }
         this.content.x = game.INDENT;
         this.content.y = game.INDENT;
         this.addChild(this.content);
@@ -56,7 +69,9 @@ export default class Field extends game.Actor {
                     this.content.x = game.INDENT;
                 } else {
                     const leftBorder: number = freeWidth - this.content.width - game.INDENT;
-                    if (this.content.x < leftBorder) {
+                    if (leftBorder > game.INDENT) {
+                        this.content.x = game.INDENT;
+                    } else if (this.content.x < leftBorder) {
                         this.content.x = leftBorder;
                     }
                 }
@@ -65,80 +80,23 @@ export default class Field extends game.Actor {
                     this.content.y = game.INDENT;
                 } else {
                     const topBorder: number = freeHeight - this.content.height - game.INDENT;
-                    if (this.content.y < topBorder) {
+                    if (topBorder > game.INDENT) {
+                        this.content.y = game.INDENT;
+                    } else if (this.content.y < topBorder) {
                         this.content.y = topBorder;
                     }
                 }
-                
                 this.mouseX = e.data.global.x;
                 this.mouseY = e.data.global.y;
             }
         });
         this.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
         this.on(game.Event.MOUSE_OUT, () => this.isMouseDown = false);
-    }
-
-    getLastCol() {
-        return this.lastCol;
-    }
-
-    getLastRow() {
-        return this.lastRow;
-    }
-
-    addUnit(unit: Unit) {
-        this.units.push(unit);
-        this.content.addChild(unit);
-    }
-
-    removeUnit(unit: Unit) {
-        this.units.splice(this.units.indexOf(unit), 1);
-    }
-
-    hasUnitsOnBothSides(): boolean {
-        let hasUnitOnLeft = false, hasUnitOnRight = false;
-        for (const unit of this.units) {
-            if (unit.checkLeft()) {
-                hasUnitOnLeft = true;
-            } else {
-                hasUnitOnRight = true;
-            }
-        }
-        return hasUnitOnLeft && hasUnitOnRight;
-    }
-
-    hasUnitOnCell(col: number, row: number): boolean {
-        for (const unit of this.units) {
-            if (unit.getCol() == col && unit.getRow() == row) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    nextTurn(currentUnit: Unit): Unit {
-        if (currentUnit) {
-            this.units.push(currentUnit);
-        }
-        const nextUnit: Unit = this.units.shift();
-        this.markLayer.setCurrentUnit(nextUnit);
-        return nextUnit;
-    }
-
-    markTargets(isLeft: boolean) {
-        this.markLayer.removeAllMarksExceptCurrent();
-        for (const unit of this.units) {
-            if (unit.checkLeft() == isLeft) {
-                const mark = new Mark(0xFF0000);
-                mark.setPosition(unit.getCol(), unit.getRow());
-                this.markLayer.addChild(mark);
-            }
-        }
-    }
-
-    unmarkTargets() {
-        this.markLayer.removeAllMarksExceptCurrent();
-        this.markLayer.addPathMarks();
+        this.unitManager.on(UnitManager.NEXT_TURN, () => {
+            this.markLayer.removeAllMarksExceptCurrent();
+            this.markLayer.createPathMarks(this.unitManager.getCurrentUnit());
+            this.markLayer.addPathMarks();
+        });
     }
 }
 
@@ -147,14 +105,13 @@ class MarkLayer extends PIXI.Container {
     private readonly current = new Mark(0x00FF00);
     private readonly pathMarks: Mark[] = [];
 
-    constructor(private readonly colsCount, private readonly rowsCount) {
+    constructor(private readonly colsCount: number, private readonly rowsCount: number) {
         super();
         this.addChild(this.current);
     }
 
-    setCurrentUnit(unit: Unit) {
-        this.removeAllMarksExceptCurrent();
-        this.current.setPosition(unit.getCol(), unit.getRow());
+    createPathMarks(unit: Unit) {
+        this.current.setCell(unit.getCol(), unit.getRow());
         this.pathMarks.length = 0;
         for (let i = 0; i < unit.getSpeed(); i++) {
             for (let j = 1; j <= unit.getSpeed() - i; j++) {
@@ -176,7 +133,7 @@ class MarkLayer extends PIXI.Container {
 
                     if (markCol > -1 && markCol < this.colsCount && markRow > -1 && markRow < this.rowsCount) {
                         const pathMark = new Mark(0xFFFF00);
-                        pathMark.setPosition(markCol, markRow);
+                        pathMark.setCell(markCol, markRow);
                         this.pathMarks.push(pathMark);
 
                         pathMark.on(game.Event.MOUSE_OVER, () => pathMark.drawRectangle(0x00FF00));
@@ -185,7 +142,6 @@ class MarkLayer extends PIXI.Container {
                 }
             }
         }
-        this.addPathMarks();
     }
 
     addPathMarks() {
@@ -208,7 +164,7 @@ class Mark extends game.Rectangle {
         this.alpha = 0.4;
     }
 
-    setPosition(col: number, row: number) {
+    setCell(col: number, row: number) {
         this.x = col * Field.CELL_WIDTH + Field.LINE_WIDTH;
         this.y = row * Field.CELL_HEIGHT + Field.LINE_WIDTH;
     }

@@ -1,11 +1,16 @@
 import Field from "./Field";
-import * as game from "../Game";
+import * as game from "../game";
 
 export default class Unit extends PIXI.Sprite {
 
+    static readonly PREPARED_TO_SHOT = "preparedToFire";
+    static readonly SHOT = "shot";
+    static readonly NOT_PREPARED_TO_SHOT = "notPreparedToFire";
+    static readonly DESTROY = "destroy";
+
     private static readonly TEXTURE = PIXI.Texture.fromImage("/img/Ship-3-2.png", false, PIXI.SCALE_MODES.NEAREST);
 
-    private isPreparedToFire = false;
+    private isPreparedToShot = false;
 
     private remainingChargeFrames = 0;
     private charge: game.Rectangle = null;
@@ -13,8 +18,7 @@ export default class Unit extends PIXI.Sprite {
     constructor(private readonly isLeft, private col: number, private row: number) {
         super(Unit.TEXTURE);
         this.interactive = true;
-        this.setCol(col);
-        this.setRow(row);
+        this.setCell(col, row);
         if (!this.isLeft) {
             this.scale.x = -1;
             this.anchor.x = 1;
@@ -29,28 +33,34 @@ export default class Unit extends PIXI.Sprite {
         return this.isLeft;
     }
 
-    checkPreparedToFire(): boolean {
-        return this.isPreparedToFire;
+    checkPreparedToShot(): boolean {
+        return this.isPreparedToShot;
     }
 
-    setPreparedToFire(value: boolean) {
-        this.isPreparedToFire = value;
+    setPreparedToShot(value: boolean) {
+        this.isPreparedToShot = value;
+        if (this.isPreparedToShot) {
+            this.emit(Unit.PREPARED_TO_SHOT);
+        } else {
+            this.emit(Unit.NOT_PREPARED_TO_SHOT);
+        }
     }
 
     getCol(): number {
         return this.col;
     }
 
-    getNextCol(): number {
-        return this.isLeft ? this.col + 1 : this.col - 1;
-    }
-
     getRow(): number {
         return this.row;
     }
 
-    fire(target: Unit) {
-        this.isPreparedToFire = false;
+    checkReachable(col: number, row: number): boolean {
+        const dCol: number = col - this.col, dRow: number = row - this.row;
+        return dCol * dCol + dRow * dRow <= this.getSpeed();
+    }
+
+    shoot(target: Unit) {
+        this.setPreparedToShot(false);
         this.remainingChargeFrames = 8;
         const dx: number = target.x - this.x;
         const dy: number = target.y - this.y;
@@ -67,37 +77,26 @@ export default class Unit extends PIXI.Sprite {
             } else {
                 this.charge.parent.removeChild(this.charge);
                 target.destroy();
-                this.emit(game.Event.TASK_DONE);
+                this.emit(game.Event.READY);
             }
         });
+        this.emit(Unit.SHOT);
     }
 
-    changeRow(isUpper: boolean) {
-        this.setRow(isUpper ? this.row - 1 : this.row + 1);
-        this.emit(game.Event.TASK_DONE);
-    }
-
-    idle() {
-        this.emit(game.Event.TASK_DONE);
-    }
-
-    move() {
-        this.setCol(this.getNextCol());
-        this.emit(game.Event.FINISH);
+    moveTo(col: number, row: number) {
+        this.setCell(col, row);
+        this.emit(game.Event.READY);
     }
 
     destroy() {
         this.alpha = 0.5;
-        this.emit(game.Event.DESTROY);
+        this.emit(Unit.DESTROY);
     }
 
-    private setCol(value: number) {
-        this.col = value;
+    private setCell(col: number, row: number) {
+        this.col = col;
+        this.row = row;
         this.x = this.col * Field.CELL_WIDTH + Field.LINE_WIDTH;
-    }
-
-    private setRow(value: number) {
-        this.row = value;
         this.y = this.row * Field.CELL_HEIGHT + Field.LINE_WIDTH;
     }
 }
