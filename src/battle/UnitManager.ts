@@ -5,15 +5,14 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
 
     static readonly NEXT_TURN = "nextTurn";
 
-    private currentUnit: Unit;
-    private destroyedUnits: Unit[] = [];
+    private readonly destroyedUnits: Unit[] = [];
 
     constructor(private readonly units: Unit[]) {
         super();
         for (const unit of this.units) {
             unit.on(game.Event.CLICK, () => {
-                if (this.currentUnit.checkPreparedToShot()) {
-                    this.currentUnit.shoot(unit);
+                if (this.getCurrentUnit().checkPreparedToShot()) {
+                    this.getCurrentUnit().shoot(unit);
                 }
             });
             unit.on(Unit.DESTROY, () => {
@@ -27,7 +26,7 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
     }
 
     getCurrentUnit(): Unit {
-        return this.currentUnit;
+        return this.units[0];
     }
 
     getUnits(): Unit[] {
@@ -36,19 +35,16 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
 
     findReachableUnitsForCurrent(): Unit[] {
         const result: Unit[] = this.units.filter(
-            (unit: Unit) => this.currentUnit.checkReachable(unit.getCol(), unit.getRow()));
+            (unit: Unit) => this.getCurrentUnit().checkReachable(unit.getCol(), unit.getRow()));
         return result.concat(this.destroyedUnits.filter(
-            (unit: Unit) => this.currentUnit.checkReachable(unit.getCol(), unit.getRow())));
+            (unit: Unit) => this.getCurrentUnit().checkReachable(unit.getCol(), unit.getRow())));
     }
 
     nextTurn() {
-        if (this.currentUnit) {
-            if (this.currentUnit.checkPreparedToShot()) {
-                this.currentUnit.setPreparedToShot(false);
-            }
-            this.units.push(this.currentUnit);
+        if (this.getCurrentUnit().checkPreparedToShot()) {
+            this.getCurrentUnit().setPreparedToShot(false);
         }
-        this.currentUnit = this.units.shift();
-        this.emit(UnitManager.NEXT_TURN, this.currentUnit);
+        this.units.push(this.units.shift());
+        this.emit(UnitManager.NEXT_TURN, this.getCurrentUnit());
     }
 }

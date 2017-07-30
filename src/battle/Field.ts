@@ -53,10 +53,9 @@ export default class Field extends game.Actor {
                 this.markLayer.addPathMarks();
             });
         }
-        this.content.x = game.INDENT;
-        this.content.y = game.INDENT;
         this.addChild(this.content);
 
+        this.markLayer.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
         this.on(game.Event.MOUSE_DOWN, (e: PIXI.interaction.InteractionEvent) => {
             this.isMouseDown = true
             this.mouseX = e.data.global.x;
@@ -65,23 +64,23 @@ export default class Field extends game.Actor {
         this.on(game.Event.MOUSE_MOVE, (e: PIXI.interaction.InteractionEvent) => {
             if (this.isMouseDown) {
                 this.content.x += e.data.global.x - this.mouseX;
-                if (this.content.x > game.INDENT) {
-                    this.content.x = game.INDENT;
+                if (this.content.x > 0) {
+                    this.content.x = 0;
                 } else {
-                    const leftBorder: number = freeWidth - this.content.width - game.INDENT;
-                    if (leftBorder > game.INDENT) {
-                        this.content.x = game.INDENT;
+                    const leftBorder: number = freeWidth - this.content.width;
+                    if (leftBorder > 0) {
+                        this.content.x = 0;
                     } else if (this.content.x < leftBorder) {
                         this.content.x = leftBorder;
                     }
                 }
                 this.content.y += e.data.global.y - this.mouseY;
-                if (this.content.y > game.INDENT) {
-                    this.content.y = game.INDENT;
+                if (this.content.y > 0) {
+                    this.content.y = 0;
                 } else {
-                    const topBorder: number = freeHeight - this.content.height - game.INDENT;
-                    if (topBorder > game.INDENT) {
-                        this.content.y = game.INDENT;
+                    const topBorder: number = freeHeight - this.content.height;
+                    if (topBorder > 0) {
+                        this.content.y = 0;
                     } else if (this.content.y < topBorder) {
                         this.content.y = topBorder;
                     }
@@ -92,7 +91,6 @@ export default class Field extends game.Actor {
         });
         this.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
         this.on(game.Event.MOUSE_OUT, () => this.isMouseDown = false);
-        this.markLayer.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
     }
 }
 
@@ -101,55 +99,12 @@ class MarkLayer extends PIXI.Container {
     private readonly currentMark = new Mark(0x00FF00);
     private readonly pathMarks: Mark[] = [];
 
-    constructor(private readonly colsCount: number, private readonly rowsCount: number, unitManager: UnitManager) {
+    constructor(private readonly colsCount: number, private readonly rowsCount: number,
+        private readonly unitManager: UnitManager) {
         super();
         this.addChild(this.currentMark);
-
-        unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
-            this.removeAllMarksExceptCurrent();
-            this.currentMark.setCell(currentUnit.getCol(), currentUnit.getRow());
-            const reachableUnits: Unit[] = unitManager.findReachableUnitsForCurrent();
-            this.pathMarks.length = 0;
-            for (let i = 0; i < currentUnit.getSpeed(); i++) {
-                for (let j = 1; j <= currentUnit.getSpeed() - i; j++) {
-                    for (let k = 0; k < 4; k++) {
-                        let markCol: number = currentUnit.getCol(), markRow: number = currentUnit.getRow();
-                        if (k == 0) {
-                            markCol += j;
-                            markRow += i;
-                        } else if (k == 1) {
-                            markCol -= i;
-                            markRow += j;
-                        } else if (k == 2) {
-                            markCol -= j;
-                            markRow -= i;
-                        } else if (k == 3) {
-                            markCol += i;
-                            markRow -= j;
-                        }
-
-                        if (markCol > -1 && markCol < this.colsCount && markRow > -1 && markRow < this.rowsCount
-                            && !reachableUnits.some(
-                                (unit: Unit) => unit.getCol() == markCol && unit.getRow() == markRow)) {
-                            const pathMark = new Mark(0xFFFF00);
-                            pathMark.setCell(markCol, markRow);
-                            this.pathMarks.push(pathMark);
-
-                            pathMark.on(game.Event.MOUSE_OVER, () => pathMark.drawRectangle(0x00FF00));
-                            pathMark.on(game.Event.CLICK, () => {
-                                currentUnit.moveTo(markCol, markRow);
-                                this.currentMark.setCell(markCol, markRow);
-                                this.pathMarks.length = 0;
-                                this.removeAllMarksExceptCurrent();
-                                this.emit(game.Event.MOUSE_UP);
-                            });
-                            pathMark.on(game.Event.MOUSE_OUT, () => pathMark.drawRectangle(0xFFFF00));
-                        }
-                    }
-                }
-            }
-            this.addPathMarks();
-        });
+        this.createPathMarks(unitManager.getCurrentUnit());
+        unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.createPathMarks(currentUnit));
     }
 
     addPathMarks() {
@@ -161,6 +116,52 @@ class MarkLayer extends PIXI.Container {
     removeAllMarksExceptCurrent() {
         this.removeChildren();
         this.addChild(this.currentMark);
+    }
+
+    private createPathMarks(unit: Unit) {
+        this.removeAllMarksExceptCurrent();
+        this.currentMark.setCell(unit.getCol(), unit.getRow());
+        const reachableUnits: Unit[] = this.unitManager.findReachableUnitsForCurrent();
+        this.pathMarks.length = 0;
+        for (let i = 0; i < unit.getSpeed(); i++) {
+            for (let j = 1; j <= unit.getSpeed() - i; j++) {
+                for (let k = 0; k < 4; k++) {
+                    let markCol: number = unit.getCol(), markRow: number = unit.getRow();
+                    if (k == 0) {
+                        markCol += j;
+                        markRow += i;
+                    } else if (k == 1) {
+                        markCol -= i;
+                        markRow += j;
+                    } else if (k == 2) {
+                        markCol -= j;
+                        markRow -= i;
+                    } else if (k == 3) {
+                        markCol += i;
+                        markRow -= j;
+                    }
+
+                    if (markCol > -1 && markCol < this.colsCount && markRow > -1 && markRow < this.rowsCount
+                        && !reachableUnits.some((unit: Unit) => unit.getCol() == markCol
+                            && unit.getRow() == markRow)) {
+                        const pathMark = new Mark(0xFFFF00);
+                        pathMark.setCell(markCol, markRow);
+                        this.pathMarks.push(pathMark);
+
+                        pathMark.on(game.Event.MOUSE_OVER, () => pathMark.drawRectangle(0x00FF00));
+                        pathMark.on(game.Event.CLICK, () => {
+                            unit.moveTo(markCol, markRow);
+                            this.currentMark.setCell(markCol, markRow);
+                            this.pathMarks.length = 0;
+                            this.removeAllMarksExceptCurrent();
+                            this.emit(game.Event.MOUSE_UP);
+                        });
+                        pathMark.on(game.Event.MOUSE_OUT, () => pathMark.drawRectangle(0xFFFF00));
+                    }
+                }
+            }
+        }
+        this.addPathMarks();
     }
 }
 

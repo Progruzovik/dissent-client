@@ -8,7 +8,7 @@ export default class Unit extends PIXI.Sprite {
     static readonly NOT_PREPARED_TO_SHOT = "notPreparedToFire";
     static readonly DESTROY = "destroy";
 
-    private static readonly TEXTURE = PIXI.Texture.fromImage("/img/Ship-3-2.png", false, PIXI.SCALE_MODES.NEAREST);
+    static readonly TEXTURE = PIXI.Texture.fromImage("/img/Ship-3-2.png", false, PIXI.SCALE_MODES.NEAREST);
 
     private isPreparedToShot = false;
 
