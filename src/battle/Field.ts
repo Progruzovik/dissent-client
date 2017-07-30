@@ -92,22 +92,23 @@ export default class Field extends game.Actor {
         });
         this.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
         this.on(game.Event.MOUSE_OUT, () => this.isMouseDown = false);
-
+        this.markLayer.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
     }
 }
 
 class MarkLayer extends PIXI.Container {
 
-    private readonly current = new Mark(0x00FF00);
+    private readonly currentMark = new Mark(0x00FF00);
     private readonly pathMarks: Mark[] = [];
 
     constructor(private readonly colsCount: number, private readonly rowsCount: number, unitManager: UnitManager) {
         super();
-        this.addChild(this.current);
+        this.addChild(this.currentMark);
 
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
             this.removeAllMarksExceptCurrent();
-            this.current.setCell(currentUnit.getCol(), currentUnit.getRow());
+            this.currentMark.setCell(currentUnit.getCol(), currentUnit.getRow());
+            const reachableUnits: Unit[] = unitManager.findReachableUnitsForCurrent();
             this.pathMarks.length = 0;
             for (let i = 0; i < currentUnit.getSpeed(); i++) {
                 for (let j = 1; j <= currentUnit.getSpeed() - i; j++) {
@@ -127,12 +128,21 @@ class MarkLayer extends PIXI.Container {
                             markRow -= j;
                         }
 
-                        if (markCol > -1 && markCol < this.colsCount && markRow > -1 && markRow < this.rowsCount) {
+                        if (markCol > -1 && markCol < this.colsCount && markRow > -1 && markRow < this.rowsCount
+                            && !reachableUnits.some(
+                                (unit: Unit) => unit.getCol() == markCol && unit.getRow() == markRow)) {
                             const pathMark = new Mark(0xFFFF00);
                             pathMark.setCell(markCol, markRow);
                             this.pathMarks.push(pathMark);
 
                             pathMark.on(game.Event.MOUSE_OVER, () => pathMark.drawRectangle(0x00FF00));
+                            pathMark.on(game.Event.CLICK, () => {
+                                currentUnit.moveTo(markCol, markRow);
+                                this.currentMark.setCell(markCol, markRow);
+                                this.pathMarks.length = 0;
+                                this.removeAllMarksExceptCurrent();
+                                this.emit(game.Event.MOUSE_UP);
+                            });
                             pathMark.on(game.Event.MOUSE_OUT, () => pathMark.drawRectangle(0xFFFF00));
                         }
                     }
@@ -150,7 +160,7 @@ class MarkLayer extends PIXI.Container {
 
     removeAllMarksExceptCurrent() {
         this.removeChildren();
-        this.addChild(this.current);
+        this.addChild(this.currentMark);
     }
 }
 

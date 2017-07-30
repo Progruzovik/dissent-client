@@ -56,7 +56,7 @@ export default class Unit extends PIXI.Sprite {
 
     checkReachable(col: number, row: number): boolean {
         const dCol: number = col - this.col, dRow: number = row - this.row;
-        return dCol * dCol + dRow * dRow <= this.getSpeed();
+        return Math.sqrt(dCol * dCol + dRow * dRow) <= this.getSpeed();
     }
 
     shoot(target: Unit) {
