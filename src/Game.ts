@@ -38,10 +38,11 @@ export class Rectangle extends PIXI.Graphics {
 
     constructor(width: number, height: number, color: number = 0xFFFFFF) {
         super();
-        this.drawRectangle(width, height, color);
+        this.drawRectangle(color, width, height);
     }
 
-    protected drawRectangle(width: number, height: number, color: number) {
+    drawRectangle(color: number, width: number = this.width, height: number = this.height) {
+        this.clear();
         this.beginFill(color);
         this.drawRect(0, 0, width, height);
         this.endFill();
@@ -111,7 +112,7 @@ export class Button extends Rectangle {
         } else {
             color = 0x666666;
         }
-        this.drawRectangle(Button.WIDTH, Button.HEIGHT, color);
+        this.drawRectangle(color);
     }
 }
 

@@ -10,15 +10,23 @@ export default class Unit extends PIXI.Sprite {
     private remainingChargeFrames = 0;
     private charge: game.Rectangle = null;
 
-    constructor(readonly isLeft: boolean, private col: number, private row: number) {
+    constructor(private readonly isLeft, private col: number, private row: number) {
         super(Unit.TEXTURE);
         this.interactive = true;
-        
+        this.setCol(col);
+        this.setRow(row);
         if (!this.isLeft) {
             this.scale.x = -1;
             this.anchor.x = 1;
         }
-        this.updatePosition();
+    }
+
+    getSpeed(): number {
+        return 2;
+    }
+
+    checkLeft(): boolean {
+        return this.isLeft;
     }
 
     checkPreparedToFire(): boolean {
@@ -65,8 +73,7 @@ export default class Unit extends PIXI.Sprite {
     }
 
     changeRow(isUpper: boolean) {
-        this.row = isUpper ? this.row - 1 : this.row + 1;
-        this.updatePosition();
+        this.setRow(isUpper ? this.row - 1 : this.row + 1);
         this.emit(game.Event.TASK_DONE);
     }
 
@@ -75,8 +82,7 @@ export default class Unit extends PIXI.Sprite {
     }
 
     move() {
-        this.col = this.getNextCol();
-        this.updatePosition();
+        this.setCol(this.getNextCol());
         this.emit(game.Event.FINISH);
     }
 
@@ -85,8 +91,13 @@ export default class Unit extends PIXI.Sprite {
         this.emit(game.Event.DESTROY);
     }
 
-    private updatePosition() {
+    private setCol(value: number) {
+        this.col = value;
         this.x = this.col * Field.CELL_WIDTH + Field.LINE_WIDTH;
+    }
+
+    private setRow(value: number) {
+        this.row = value;
         this.y = this.row * Field.CELL_HEIGHT + Field.LINE_WIDTH;
     }
 }

@@ -26,7 +26,7 @@ export default class BattleAct extends game.Actor {
 
                 unit.on(game.Event.CLICK, () => {
                     if (this.currentUnit.checkPreparedToFire()) {
-                        if (this.currentUnit.isLeft != unit.isLeft) {
+                        if (this.currentUnit.checkLeft() != unit.checkLeft()) {
                             this.currentUnit.fire(unit);
                             this.field.unmarkTargets();
                             this.lockInterface(true);
@@ -74,7 +74,7 @@ export default class BattleAct extends game.Actor {
         this.btnFire.on(game.Event.BUTTON_CLICK, () => {
             this.currentUnit.setPreparedToFire(!this.currentUnit.checkPreparedToFire());
             if (this.currentUnit.checkPreparedToFire()) {
-                this.field.markTargets(!this.currentUnit.isLeft);
+                this.field.markTargets(!this.currentUnit.checkLeft());
                 this.lockInterface(false);
             } else {
                 this.field.unmarkTargets();
@@ -109,7 +109,7 @@ export default class BattleAct extends game.Actor {
             this.canBeFinished = false;
         }
         this.currentUnit = this.field.nextTurn(this.currentUnit);
-        if (this.currentUnit.isLeft) {
+        if (this.currentUnit.checkLeft()) {
             this.updateInterface();
         } else {
             if (this.canCurrentUnitForward()) {
