@@ -15,11 +15,11 @@ export default class Field extends game.Actor {
     private readonly content = new game.Actor();
     private readonly markLayer: MarkLayer;
 
-    constructor(private readonly unitManager: UnitManager,
-        colsCount: number, rowsCount: number, freeWidth: number, freeHeight: number) {
+    constructor(colsCount: number, rowsCount: number, freeWidth: number, freeHeight: number,
+        unitManager: UnitManager) {
         super();
         this.interactive = true;
-        this.markLayer = new MarkLayer(colsCount, rowsCount);
+        this.markLayer = new MarkLayer(colsCount, rowsCount, unitManager);
 
         this.addChild(new game.Rectangle(freeWidth, freeHeight, 0x111111));
         for (let i = 0; i <= rowsCount; i++) {
@@ -40,7 +40,7 @@ export default class Field extends game.Actor {
 
             unit.on(Unit.PREPARED_TO_SHOT, () => {
                 this.markLayer.removeAllMarksExceptCurrent();
-                for (const target of this.unitManager.getUnits()) {
+                for (const target of unitManager.getUnits()) {
                     if (unit.checkLeft() != target.checkLeft()) {
                         const mark = new Mark(0xFF0000);
                         mark.setCell(target.getCol(), target.getRow());
@@ -92,11 +92,7 @@ export default class Field extends game.Actor {
         });
         this.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
         this.on(game.Event.MOUSE_OUT, () => this.isMouseDown = false);
-        this.unitManager.on(UnitManager.NEXT_TURN, () => {
-            this.markLayer.removeAllMarksExceptCurrent();
-            this.markLayer.createPathMarks(this.unitManager.getCurrentUnit());
-            this.markLayer.addPathMarks();
-        });
+
     }
 }
 
@@ -105,43 +101,45 @@ class MarkLayer extends PIXI.Container {
     private readonly current = new Mark(0x00FF00);
     private readonly pathMarks: Mark[] = [];
 
-    constructor(private readonly colsCount: number, private readonly rowsCount: number) {
+    constructor(private readonly colsCount: number, private readonly rowsCount: number, unitManager: UnitManager) {
         super();
         this.addChild(this.current);
-    }
 
-    createPathMarks(unit: Unit) {
-        this.current.setCell(unit.getCol(), unit.getRow());
-        this.pathMarks.length = 0;
-        for (let i = 0; i < unit.getSpeed(); i++) {
-            for (let j = 1; j <= unit.getSpeed() - i; j++) {
-                for (let k = 0; k < 4; k++) {
-                    let markCol: number = unit.getCol(), markRow: number = unit.getRow();
-                    if (k == 0) {
-                        markCol += j;
-                        markRow += i;
-                    } else if (k == 1) {
-                        markCol -= i;
-                        markRow += j;
-                    } else if (k == 2) {
-                        markCol -= j;
-                        markRow -= i;
-                    } else if (k == 3) {
-                        markCol += i;
-                        markRow -= j;
-                    }
+        unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
+            this.removeAllMarksExceptCurrent();
+            this.current.setCell(currentUnit.getCol(), currentUnit.getRow());
+            this.pathMarks.length = 0;
+            for (let i = 0; i < currentUnit.getSpeed(); i++) {
+                for (let j = 1; j <= currentUnit.getSpeed() - i; j++) {
+                    for (let k = 0; k < 4; k++) {
+                        let markCol: number = currentUnit.getCol(), markRow: number = currentUnit.getRow();
+                        if (k == 0) {
+                            markCol += j;
+                            markRow += i;
+                        } else if (k == 1) {
+                            markCol -= i;
+                            markRow += j;
+                        } else if (k == 2) {
+                            markCol -= j;
+                            markRow -= i;
+                        } else if (k == 3) {
+                            markCol += i;
+                            markRow -= j;
+                        }
 
-                    if (markCol > -1 && markCol < this.colsCount && markRow > -1 && markRow < this.rowsCount) {
-                        const pathMark = new Mark(0xFFFF00);
-                        pathMark.setCell(markCol, markRow);
-                        this.pathMarks.push(pathMark);
+                        if (markCol > -1 && markCol < this.colsCount && markRow > -1 && markRow < this.rowsCount) {
+                            const pathMark = new Mark(0xFFFF00);
+                            pathMark.setCell(markCol, markRow);
+                            this.pathMarks.push(pathMark);
 
-                        pathMark.on(game.Event.MOUSE_OVER, () => pathMark.drawRectangle(0x00FF00));
-                        pathMark.on(game.Event.MOUSE_OUT, () => pathMark.drawRectangle(0xFFFF00));
+                            pathMark.on(game.Event.MOUSE_OVER, () => pathMark.drawRectangle(0x00FF00));
+                            pathMark.on(game.Event.MOUSE_OUT, () => pathMark.drawRectangle(0xFFFF00));
+                        }
                     }
                 }
             }
-        }
+            this.addPathMarks();
+        });
     }
 
     addPathMarks() {

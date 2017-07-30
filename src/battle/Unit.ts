@@ -26,7 +26,7 @@ export default class Unit extends PIXI.Sprite {
     }
 
     getSpeed(): number {
-        return 2;
+        return 3;
     }
 
     checkLeft(): boolean {

@@ -41,7 +41,7 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
             (unit: Unit) => this.currentUnit.checkReachable(unit.getCol(), unit.getRow())));
     }
 
-    nextTurn(): Unit {
+    nextTurn() {
         if (this.currentUnit) {
             if (this.currentUnit.checkPreparedToShot()) {
                 this.currentUnit.setPreparedToShot(false);
@@ -49,7 +49,6 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
             this.units.push(this.currentUnit);
         }
         this.currentUnit = this.units.shift();
-        this.emit(UnitManager.NEXT_TURN);
-        return this.currentUnit;
+        this.emit(UnitManager.NEXT_TURN, this.currentUnit);
     }
 }

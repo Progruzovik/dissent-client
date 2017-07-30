@@ -5,9 +5,6 @@ import * as game from "../game";
 
 export default class BattleAct extends game.Actor {
 
-    private readonly unitManager: UnitManager;
-
-    private readonly field: Field;
     private readonly btnFire = new game.Button("Огонь!");
     private readonly btnFinish = new game.Button("Конец хода");
 
@@ -20,15 +17,15 @@ export default class BattleAct extends game.Actor {
                 const isLeft: boolean = i == 0;
                 const unit = new Unit(isLeft, isLeft ? 0 : COLS_COUNT - 1, (j + 1) * 3);
                 units.push(unit);
-                
+
                 unit.on(Unit.SHOT, () => this.btnFire.setSelectable(false));
             }
         }
-        this.unitManager = new UnitManager(units);
+        const unitManager = new UnitManager(units);
 
         const controls = new game.Rectangle(stageWidth, 100, 0x111111);
-        this.field = new Field(this.unitManager, COLS_COUNT, 15, stageWidth, stageHeight - controls.height);
-        this.addChild(this.field);
+        const field = new Field(COLS_COUNT, 15, stageWidth, stageHeight - controls.height, unitManager);
+        this.addChild(field);
         this.btnFire.x = game.INDENT;
         this.btnFire.y = game.INDENT;
         controls.addChild(this.btnFire);
@@ -38,22 +35,20 @@ export default class BattleAct extends game.Actor {
         controls.y = stageHeight - controls.height;
         this.addChild(controls);
 
-        this.nextTurn();
+        unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
+            const isCurrentPlayerTurn: boolean = currentUnit.checkLeft();
+            this.btnFire.setSelectable(isCurrentPlayerTurn);
+            this.btnFinish.setSelectable(isCurrentPlayerTurn);
+            if (!isCurrentPlayerTurn) {
+                currentUnit.moveTo(currentUnit.getCol() - 1, currentUnit.getRow());
+                unitManager.nextTurn();
+            }
+        });
+        unitManager.on(game.Event.FINISH, () => this.emit(game.Event.FINISH));
+        this.btnFire.on(game.Event.BUTTON_CLICK,
+            () => unitManager.getCurrentUnit().setPreparedToShot(!unitManager.getCurrentUnit().checkPreparedToShot()));
+        this.btnFinish.on(game.Event.BUTTON_CLICK, () => unitManager.nextTurn());
 
-        this.unitManager.on(game.Event.FINISH, () => this.emit(game.Event.FINISH));
-        this.btnFire.on(game.Event.BUTTON_CLICK, () => this.unitManager.getCurrentUnit().setPreparedToShot(
-            !this.unitManager.getCurrentUnit().checkPreparedToShot()));
-        this.btnFinish.on(game.Event.BUTTON_CLICK, () => this.nextTurn());
-    }
-
-    private nextTurn() {
-        const currentUnit: Unit = this.unitManager.nextTurn();
-        const isCurrentPlayerTurn: boolean = currentUnit.checkLeft();
-        this.btnFire.setSelectable(isCurrentPlayerTurn);
-        this.btnFinish.setSelectable(isCurrentPlayerTurn);
-        if (!isCurrentPlayerTurn) {
-            currentUnit.moveTo(currentUnit.getCol() - 1, currentUnit.getRow());
-            this.nextTurn();
-        }
+        unitManager.nextTurn();
     }
 }
