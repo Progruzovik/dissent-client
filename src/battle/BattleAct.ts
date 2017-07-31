@@ -5,7 +5,7 @@ import * as game from "../game";
 
 export default class BattleAct extends game.Actor {
 
-    private static readonly COLS_COUNT = 15;
+    private static readonly FIELD_LENGTH = 15;
     private static readonly IS_PLAYER_ON_LEFT = true;
 
     constructor(stageWidth: number, stageHeight: number) {
@@ -14,7 +14,7 @@ export default class BattleAct extends game.Actor {
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;
-                const unit = new Unit(isLeft, isLeft ? 0 : BattleAct.COLS_COUNT - 1, (j + 1) * 3);
+                const unit = new Unit(isLeft, isLeft ? 0 : BattleAct.FIELD_LENGTH - 1, (j + 1) * 3);
                 units.push(unit);
 
                 unit.on(Unit.SHOT, () => btnFire.setSelectable(false));
@@ -24,7 +24,8 @@ export default class BattleAct extends game.Actor {
 
         const controls = new game.Rectangle(stageWidth, 100, 0x111111);
         const queue = new Queue(stageHeight - controls.height, BattleAct.IS_PLAYER_ON_LEFT, unitManager);
-        const field = new Field(BattleAct.COLS_COUNT, 15, stageWidth - queue.width, queue.height, unitManager);
+        const field = new Field(BattleAct.FIELD_LENGTH, BattleAct.FIELD_LENGTH,
+            stageWidth - queue.width, queue.height, unitManager);
         field.x = queue.width;
         this.addChild(field);
         this.addChild(queue);
@@ -66,12 +67,19 @@ class Queue extends game.Rectangle {
             icon.y = Unit.HEIGHT * i;
             this.addChild(icon);
 
-            unit.on(Unit.DESTROY, () => this.removeChild(icon));
+            unit.on(Unit.DESTROY, () => {
+                this.removeChild(icon);
+                this.updateChildrenPositions();
+            });
         });
         
         unitManager.on(UnitManager.NEXT_TURN, () => {
             this.setChildIndex(this.getChildAt(0), this.children.length - 1);
-            this.children.forEach((child: PIXI.DisplayObject, i: number) => child.y = Unit.HEIGHT * i);
+            this.updateChildrenPositions();
         });
+    }
+
+    private updateChildrenPositions() {
+        this.children.forEach((child: PIXI.DisplayObject, i: number) => child.y = Unit.HEIGHT * i);
     }
 }
