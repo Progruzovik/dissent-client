@@ -35,7 +35,7 @@ export class Actor extends PIXI.Container {
 
 export class Rectangle extends PIXI.Graphics {
 
-    constructor(width: number, height: number, color: number = 0xFFFFFF) {
+    constructor(width: number, height: number, color: number = 0x000000) {
         super();
         this.drawRectangle(color, width, height);
     }

@@ -10,9 +10,19 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
     constructor(private readonly units: Unit[]) {
         super();
         for (const unit of this.units) {
+            unit.on(game.Event.MOUSE_OVER, () => {
+                if (this.getCurrentUnit().checkPreparedToShot()) {
+                    unit.alpha = 0.75;
+                }
+            });
             unit.on(game.Event.CLICK, () => {
                 if (this.getCurrentUnit().checkPreparedToShot()) {
                     this.getCurrentUnit().shoot(unit);
+                }
+            });
+            unit.on(game.Event.MOUSE_OUT, () => {
+                if (this.getCurrentUnit().checkPreparedToShot()) {
+                    unit.alpha = 1;
                 }
             });
             unit.on(Unit.DESTROY, () => {

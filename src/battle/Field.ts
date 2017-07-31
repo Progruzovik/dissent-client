@@ -4,8 +4,6 @@ import * as game from "../game";
 
 export default class Field extends game.Actor {
 
-    static readonly CELL_WIDTH = 68;
-    static readonly CELL_HEIGHT = 36;
     static readonly LINE_WIDTH = 2;
 
     private isMouseDown = false;
@@ -23,15 +21,13 @@ export default class Field extends game.Actor {
 
         this.addChild(new game.Rectangle(freeWidth, freeHeight, 0x111111));
         for (let i = 0; i <= rowsCount; i++) {
-            const line = new game.Rectangle(colsCount * Field.CELL_WIDTH + Field.LINE_WIDTH,
-                Field.LINE_WIDTH, 0x777777);
-            line.y = i * Field.CELL_HEIGHT;
+            const line = new game.Rectangle(colsCount * Unit.WIDTH + Field.LINE_WIDTH, Field.LINE_WIDTH, 0x777777);
+            line.y = i * Unit.HEIGHT;
             this.content.addChild(line);
         }
         for (let i = 0; i <= colsCount; i++) {
-            const line = new game.Rectangle(Field.LINE_WIDTH,
-                rowsCount * Field.CELL_HEIGHT + Field.LINE_WIDTH, 0x777777);
-            line.x = i * Field.CELL_WIDTH;
+            const line = new game.Rectangle(Field.LINE_WIDTH, rowsCount * Unit.HEIGHT + Field.LINE_WIDTH, 0x777777);
+            line.x = i * Unit.WIDTH;
             this.content.addChild(line);
         }
         this.content.addChild(this.markLayer);
@@ -122,6 +118,11 @@ class MarkLayer extends PIXI.Container {
         this.removeAllMarksExceptCurrent();
         this.currentMark.setCell(unit.getCol(), unit.getRow());
         const reachableUnits: Unit[] = this.unitManager.findReachableUnitsForCurrent();
+        
+        const pathPoint = new game.Rectangle(15, 15, 0xFF0000);
+        pathPoint.x = (Unit.WIDTH - pathPoint.width) / 2;
+        pathPoint.y = (Unit.HEIGHT - pathPoint.height) / 2;
+        
         this.pathMarks.length = 0;
         for (let i = 0; i < unit.getSpeed(); i++) {
             for (let j = 1; j <= unit.getSpeed() - i; j++) {
@@ -148,7 +149,7 @@ class MarkLayer extends PIXI.Container {
                         pathMark.setCell(markCol, markRow);
                         this.pathMarks.push(pathMark);
 
-                        pathMark.on(game.Event.MOUSE_OVER, () => pathMark.drawRectangle(0x00FF00));
+                        pathMark.on(game.Event.MOUSE_OVER, () => pathMark.addChild(pathPoint));
                         pathMark.on(game.Event.CLICK, () => {
                             unit.moveTo(markCol, markRow);
                             this.currentMark.setCell(markCol, markRow);
@@ -156,7 +157,7 @@ class MarkLayer extends PIXI.Container {
                             this.removeAllMarksExceptCurrent();
                             this.emit(game.Event.MOUSE_UP);
                         });
-                        pathMark.on(game.Event.MOUSE_OUT, () => pathMark.drawRectangle(0xFFFF00));
+                        pathMark.on(game.Event.MOUSE_OUT, () => pathMark.removeChild(pathPoint));
                     }
                 }
             }
@@ -168,13 +169,13 @@ class MarkLayer extends PIXI.Container {
 class Mark extends game.Rectangle {
 
     constructor(color: number) {
-        super(Field.CELL_WIDTH - Field.LINE_WIDTH, Field.CELL_HEIGHT - Field.LINE_WIDTH, color);
+        super(Unit.WIDTH - Field.LINE_WIDTH, Unit.HEIGHT - Field.LINE_WIDTH, color);
         this.interactive = true;
         this.alpha = 0.4;
     }
 
     setCell(col: number, row: number) {
-        this.x = col * Field.CELL_WIDTH + Field.LINE_WIDTH;
-        this.y = row * Field.CELL_HEIGHT + Field.LINE_WIDTH;
+        this.x = col * Unit.WIDTH + Field.LINE_WIDTH;
+        this.y = row * Unit.HEIGHT + Field.LINE_WIDTH;
     }
 }

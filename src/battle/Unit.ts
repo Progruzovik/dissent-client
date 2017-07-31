@@ -3,12 +3,13 @@ import * as game from "../game";
 
 export default class Unit extends PIXI.Sprite {
 
+    static readonly WIDTH = 64;
+    static readonly HEIGHT = 32;
+
     static readonly PREPARED_TO_SHOT = "preparedToFire";
     static readonly SHOT = "shot";
     static readonly NOT_PREPARED_TO_SHOT = "notPreparedToFire";
     static readonly DESTROY = "destroy";
-
-    static readonly TEXTURE = PIXI.Texture.fromImage("/img/Ship-3-2.png", false, PIXI.SCALE_MODES.NEAREST);
 
     private isPreparedToShot = false;
 
@@ -16,7 +17,7 @@ export default class Unit extends PIXI.Sprite {
     private charge: game.Rectangle = null;
 
     constructor(private readonly isLeft, private col: number, private row: number) {
-        super(Unit.TEXTURE);
+        super(PIXI.loader.resources["Ship-3-2"].texture);
         this.interactive = true;
         this.setCell(col, row);
         if (!this.isLeft) {
@@ -96,7 +97,7 @@ export default class Unit extends PIXI.Sprite {
     private setCell(col: number, row: number) {
         this.col = col;
         this.row = row;
-        this.x = this.col * Field.CELL_WIDTH + Field.LINE_WIDTH;
-        this.y = this.row * Field.CELL_HEIGHT + Field.LINE_WIDTH;
+        this.x = this.col * Unit.WIDTH + Field.LINE_WIDTH;
+        this.y = this.row * Unit.HEIGHT + Field.LINE_WIDTH;
     }
 }
