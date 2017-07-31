@@ -6,7 +6,7 @@ import * as game from "../game";
 export default class BattleAct extends game.Actor {
 
     private static readonly COLS_COUNT = 15;
-    private static readonly IS_PLAYER_LEFT = true;
+    private static readonly IS_PLAYER_ON_LEFT = true;
 
     constructor(stageWidth: number, stageHeight: number) {
         super();
@@ -23,7 +23,7 @@ export default class BattleAct extends game.Actor {
         const unitManager = new UnitManager(units);
 
         const controls = new game.Rectangle(stageWidth, 100, 0x111111);
-        const queue = new Queue(stageHeight - controls.height, BattleAct.IS_PLAYER_LEFT, unitManager);
+        const queue = new Queue(stageHeight - controls.height, BattleAct.IS_PLAYER_ON_LEFT, unitManager);
         const field = new Field(BattleAct.COLS_COUNT, 15, stageWidth - queue.width, queue.height, unitManager);
         field.x = queue.width;
         this.addChild(field);
@@ -41,7 +41,7 @@ export default class BattleAct extends game.Actor {
         this.addChild(controls);
 
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
-            const isCurrentPlayerTurn: boolean = currentUnit.checkLeft() == BattleAct.IS_PLAYER_LEFT;
+            const isCurrentPlayerTurn: boolean = currentUnit.checkLeft() == BattleAct.IS_PLAYER_ON_LEFT;
             btnFire.setSelectable(isCurrentPlayerTurn);
             btnFinish.setSelectable(isCurrentPlayerTurn);
             if (!isCurrentPlayerTurn) {
@@ -57,14 +57,16 @@ export default class BattleAct extends game.Actor {
 
 class Queue extends game.Rectangle {
 
-    constructor(height: number, isPlayerLeft: boolean, unitManager: UnitManager) {
+    constructor(height: number, isPlayerOnLeft: boolean, unitManager: UnitManager) {
         super(Unit.WIDTH, height, 0x111111);
         unitManager.getUnits().forEach((unit: Unit, i: number) => {
             const icon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT,
-                unit.checkLeft() == isPlayerLeft ? 0x00FF00 : 0xFF0000);
+                unit.checkLeft() == isPlayerOnLeft ? 0x00FF00 : 0xFF0000);
             icon.addChild(new PIXI.Sprite(PIXI.loader.resources["Ship-3-2"].texture));
             icon.y = Unit.HEIGHT * i;
             this.addChild(icon);
+
+            unit.on(Unit.DESTROY, () => this.removeChild(icon));
         });
         
         unitManager.on(UnitManager.NEXT_TURN, () => {

@@ -119,7 +119,7 @@ class MarkLayer extends PIXI.Container {
         this.currentMark.setCell(unit.getCol(), unit.getRow());
         const reachableUnits: Unit[] = this.unitManager.findReachableUnitsForCurrent();
         
-        const pathPoint = new game.Rectangle(15, 15, 0xFF0000);
+        const pathPoint = new game.Rectangle(15, 15, 0x00FF00);
         pathPoint.x = (Unit.WIDTH - pathPoint.width) / 2;
         pathPoint.y = (Unit.HEIGHT - pathPoint.height) / 2;
         
