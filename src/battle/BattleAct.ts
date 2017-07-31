@@ -55,10 +55,21 @@ export default class BattleAct extends game.Actor {
     }
 }
 
-class Queue extends PIXI.Container {
+class Queue extends game.Rectangle {
 
-    constructor(private readonly unitManager: UnitManager) {
-        super();
-        unitManager.on(UnitManager.NEXT_TURN, () => { });
+    constructor(height: number, isPlayerLeft: boolean, unitManager: UnitManager) {
+        super(Unit.WIDTH, height, 0x111111);
+        unitManager.getUnits().forEach((unit: Unit, i: number) => {
+            const icon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT,
+                unit.checkLeft() == isPlayerLeft ? 0x00FF00 : 0xFF0000);
+            icon.addChild(new PIXI.Sprite(PIXI.loader.resources["Ship-3-2"].texture));
+            icon.y = Unit.HEIGHT * i;
+            this.addChild(icon);
+        });
+        
+        unitManager.on(UnitManager.NEXT_TURN, () => {
+            this.setChildIndex(this.getChildAt(0), this.children.length - 1);
+            this.children.forEach((child: PIXI.DisplayObject, i: number) => child.y = Unit.HEIGHT * i);
+        });
     }
 }
