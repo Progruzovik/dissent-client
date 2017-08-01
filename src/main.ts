@@ -1,5 +1,5 @@
-import Space from "./Space";
+import BattleApp from "./Battle/BattleApp";
 
 PIXI.utils.skipHello();
-const space = new Space();
-document.body.appendChild(space.view);
+const battle = new BattleApp();
+document.body.appendChild(battle.view);

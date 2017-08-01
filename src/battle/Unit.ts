@@ -6,9 +6,9 @@ export default class Unit extends PIXI.Sprite {
     static readonly WIDTH = 64;
     static readonly HEIGHT = 32;
 
-    static readonly PREPARED_TO_SHOT = "preparedToFire";
+    static readonly PREPARED_TO_SHOT = "preparedToShot";
     static readonly SHOT = "shot";
-    static readonly NOT_PREPARED_TO_SHOT = "notPreparedToFire";
+    static readonly NOT_PREPARED_TO_SHOT = "notPreparedToShot";
     static readonly DESTROY = "destroy";
 
     private _isPreparedToShot = false;
