@@ -42,7 +42,7 @@ export default class BattleAct extends game.Actor {
         this.addChild(controls);
 
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
-            const isCurrentPlayerTurn: boolean = currentUnit.checkLeft() == BattleAct.IS_PLAYER_ON_LEFT;
+            const isCurrentPlayerTurn: boolean = currentUnit.isLeft == BattleAct.IS_PLAYER_ON_LEFT;
             btnFire.setSelectable(isCurrentPlayerTurn);
             btnFinish.setSelectable(isCurrentPlayerTurn);
             if (!isCurrentPlayerTurn) {
@@ -51,7 +51,7 @@ export default class BattleAct extends game.Actor {
         });
         unitManager.on(game.Event.FINISH, () => this.emit(game.Event.FINISH));
         btnFire.on(game.Event.BUTTON_CLICK,
-            () => unitManager.getCurrentUnit().setPreparedToShot(!unitManager.getCurrentUnit().checkPreparedToShot()));
+            () => unitManager.currentUnit.isPreparedToShot = !unitManager.currentUnit.isPreparedToShot);
         btnFinish.on(game.Event.BUTTON_CLICK, () => unitManager.nextTurn());
     }
 }
@@ -60,9 +60,9 @@ class Queue extends game.Rectangle {
 
     constructor(height: number, isPlayerOnLeft: boolean, unitManager: UnitManager) {
         super(Unit.WIDTH, height, 0x111111);
-        unitManager.getUnits().forEach((unit: Unit, i: number) => {
+        unitManager.units.forEach((unit: Unit, i: number) => {
             const icon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT,
-                unit.checkLeft() == isPlayerOnLeft ? 0x00FF00 : 0xFF0000);
+                unit.isLeft == isPlayerOnLeft ? 0x00FF00 : 0xFF0000);
             icon.addChild(new PIXI.Sprite(PIXI.loader.resources["Ship-3-2"].texture));
             icon.y = Unit.HEIGHT * i;
             this.addChild(icon);

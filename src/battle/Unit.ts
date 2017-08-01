@@ -11,57 +11,47 @@ export default class Unit extends PIXI.Sprite {
     static readonly NOT_PREPARED_TO_SHOT = "notPreparedToFire";
     static readonly DESTROY = "destroy";
 
-    private isPreparedToShot = false;
+    private _isPreparedToShot = false;
+    get isPreparedToShot(): boolean {
+        return this._isPreparedToShot;
+    }
+    set isPreparedToShot(value: boolean) {
+        this._isPreparedToShot = value;
+        this.emit(this.isPreparedToShot ? Unit.PREPARED_TO_SHOT : Unit.NOT_PREPARED_TO_SHOT);
+    }
 
     private remainingChargeFrames = 0;
     private charge: game.Rectangle = null;
 
-    constructor(private readonly isLeft, private col: number, private row: number) {
+    constructor(readonly isLeft, private _col: number, private _row: number) {
         super(PIXI.loader.resources["Ship-3-2"].texture);
         this.interactive = true;
-        this.setCell(col, row);
+        this.setCell(this.col, this.row);
         if (!this.isLeft) {
             this.scale.x = -1;
             this.anchor.x = 1;
         }
     }
 
-    getSpeed(): number {
+    get speed(): number {
         return 3;
     }
 
-    checkLeft(): boolean {
-        return this.isLeft;
+    get col(): number {
+        return this._col;
     }
 
-    checkPreparedToShot(): boolean {
-        return this.isPreparedToShot;
-    }
-
-    setPreparedToShot(value: boolean) {
-        this.isPreparedToShot = value;
-        if (this.isPreparedToShot) {
-            this.emit(Unit.PREPARED_TO_SHOT);
-        } else {
-            this.emit(Unit.NOT_PREPARED_TO_SHOT);
-        }
-    }
-
-    getCol(): number {
-        return this.col;
-    }
-
-    getRow(): number {
-        return this.row;
+    get row(): number {
+        return this._row;
     }
 
     checkReachable(col: number, row: number): boolean {
         const dCol: number = col - this.col, dRow: number = row - this.row;
-        return Math.sqrt(dCol * dCol + dRow * dRow) <= this.getSpeed();
+        return Math.sqrt(dCol * dCol + dRow * dRow) <= this.speed;
     }
 
     shoot(target: Unit) {
-        this.setPreparedToShot(false);
+        this.isPreparedToShot = false;
         this.remainingChargeFrames = 8;
         const dx: number = target.x - this.x;
         const dy: number = target.y - this.y;
@@ -95,8 +85,8 @@ export default class Unit extends PIXI.Sprite {
     }
 
     private setCell(col: number, row: number) {
-        this.col = col;
-        this.row = row;
+        this._col = col;
+        this._row = row;
         this.x = this.col * Unit.WIDTH + Field.LINE_WIDTH;
         this.y = this.row * Unit.HEIGHT + Field.LINE_WIDTH;
     }

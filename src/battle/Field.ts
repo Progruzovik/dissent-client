@@ -31,15 +31,15 @@ export default class Field extends game.Actor {
             this.content.addChild(line);
         }
         this.content.addChild(this.markLayer);
-        for (const unit of unitManager.getUnits()) {
+        for (const unit of unitManager.units) {
             this.content.addChild(unit);
 
             unit.on(Unit.PREPARED_TO_SHOT, () => {
                 this.markLayer.removeAllMarksExceptCurrent();
-                for (const target of unitManager.getUnits()) {
-                    if (unit.checkLeft() != target.checkLeft()) {
+                for (const target of unitManager.units) {
+                    if (unit.isLeft != target.isLeft) {
                         const mark = new Mark(0xFF0000);
-                        mark.setCell(target.getCol(), target.getRow());
+                        mark.setCell(target.col, target.row);
                         this.markLayer.addChild(mark);
                     }
                 }
@@ -99,7 +99,7 @@ class MarkLayer extends PIXI.Container {
         private readonly unitManager: UnitManager) {
         super();
         this.addChild(this.currentMark);
-        this.createPathMarks(unitManager.getCurrentUnit());
+        this.createPathMarks(unitManager.currentUnit);
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.createPathMarks(currentUnit));
     }
 
@@ -116,7 +116,7 @@ class MarkLayer extends PIXI.Container {
 
     private createPathMarks(unit: Unit) {
         this.removeAllMarksExceptCurrent();
-        this.currentMark.setCell(unit.getCol(), unit.getRow());
+        this.currentMark.setCell(unit.col, unit.row);
         const reachableUnits: Unit[] = this.unitManager.findReachableUnitsForCurrent();
         
         const pathPoint = new game.Rectangle(15, 15, 0x00FF00);
@@ -124,10 +124,10 @@ class MarkLayer extends PIXI.Container {
         pathPoint.y = (Unit.HEIGHT - pathPoint.height) / 2;
         
         this.pathMarks.length = 0;
-        for (let i = 0; i < unit.getSpeed(); i++) {
-            for (let j = 1; j <= unit.getSpeed() - i; j++) {
+        for (let i = 0; i < unit.speed; i++) {
+            for (let j = 1; j <= unit.speed - i; j++) {
                 for (let k = 0; k < 4; k++) {
-                    let markCol: number = unit.getCol(), markRow: number = unit.getRow();
+                    let markCol: number = unit.col, markRow: number = unit.row;
                     if (k == 0) {
                         markCol += j;
                         markRow += i;
@@ -143,8 +143,7 @@ class MarkLayer extends PIXI.Container {
                     }
 
                     if (markCol > -1 && markCol < this.colsCount && markRow > -1 && markRow < this.rowsCount
-                        && !reachableUnits.some((unit: Unit) => unit.getCol() == markCol
-                            && unit.getRow() == markRow)) {
+                        && !reachableUnits.some((unit: Unit) => unit.col == markCol && unit.row == markRow)) {
                         const pathMark = new Mark(0xFFFF00);
                         pathMark.setCell(markCol, markRow);
                         this.pathMarks.push(pathMark);
