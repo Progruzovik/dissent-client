@@ -1,20 +1,22 @@
 import Field from "./Field";
+import Ship from "./Ship";
 import Unit from "./Unit";
 import UnitManager from "./UnitManager";
 import * as game from "../game";
 
-export default class BattleAct extends game.Actor {
+export default class Act extends game.Actor {
 
     private static readonly FIELD_LENGTH = 15;
     private static readonly IS_PLAYER_ON_LEFT = true;
 
     constructor(stageWidth: number, stageHeight: number) {
         super();
+        const ship = new Ship(3);
         const units: Unit[] = [];
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;
-                const unit = new Unit(isLeft, isLeft ? 0 : BattleAct.FIELD_LENGTH - 1, (j + 1) * 3);
+                const unit = new Unit(isLeft, isLeft ? 0 : Act.FIELD_LENGTH - 1, (j + 1) * 3, ship);
                 units.push(unit);
 
                 unit.on(Unit.SHOT, () => btnFire.setSelectable(false));
@@ -23,8 +25,8 @@ export default class BattleAct extends game.Actor {
         const unitManager = new UnitManager(units);
 
         const controls = new game.Rectangle(stageWidth, 100, 0x111111);
-        const queue = new Queue(stageHeight - controls.height, BattleAct.IS_PLAYER_ON_LEFT, unitManager);
-        const field = new Field(BattleAct.FIELD_LENGTH, BattleAct.FIELD_LENGTH,
+        const queue = new Queue(stageHeight - controls.height, Act.IS_PLAYER_ON_LEFT, unitManager);
+        const field = new Field(Act.FIELD_LENGTH, Act.FIELD_LENGTH,
             stageWidth - queue.width, queue.height, unitManager);
         field.x = queue.width;
         this.addChild(field);
@@ -42,7 +44,7 @@ export default class BattleAct extends game.Actor {
         this.addChild(controls);
 
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
-            const isCurrentPlayerTurn: boolean = currentUnit.isLeft == BattleAct.IS_PLAYER_ON_LEFT;
+            const isCurrentPlayerTurn: boolean = currentUnit.isLeft == Act.IS_PLAYER_ON_LEFT;
             btnFire.setSelectable(isCurrentPlayerTurn);
             btnFinish.setSelectable(isCurrentPlayerTurn);
             if (!isCurrentPlayerTurn) {

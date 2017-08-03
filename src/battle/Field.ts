@@ -99,8 +99,8 @@ class MarkLayer extends PIXI.Container {
         private readonly unitManager: UnitManager) {
         super();
         this.addChild(this.currentMark);
-        this.createPathMarks(unitManager.currentUnit);
-        unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.createPathMarks(currentUnit));
+        this.changeCurrentUnit(unitManager.currentUnit);
+        unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.changeCurrentUnit(currentUnit));
     }
 
     addPathMarks() {
@@ -114,18 +114,21 @@ class MarkLayer extends PIXI.Container {
         this.addChild(this.currentMark);
     }
 
-    private createPathMarks(unit: Unit) {
+    private changeCurrentUnit(unit: Unit) {
         this.removeAllMarksExceptCurrent();
         this.currentMark.setCell(unit.col, unit.row);
+        this.createPathMarks(unit);
+    }
+
+    private createPathMarks(unit: Unit) {
         const reachableUnits: Unit[] = this.unitManager.findReachableUnitsForCurrent();
-        
         const pathPoint = new game.Rectangle(15, 15, 0x00FF00);
         pathPoint.x = (Unit.WIDTH - pathPoint.width) / 2;
         pathPoint.y = (Unit.HEIGHT - pathPoint.height) / 2;
         
         this.pathMarks.length = 0;
-        for (let i = 0; i < unit.speed; i++) {
-            for (let j = 1; j <= unit.speed - i; j++) {
+        for (let i = 0; i < unit.movementPoints; i++) {
+            for (let j = 1; j <= unit.movementPoints - i; j++) {
                 for (let k = 0; k < 4; k++) {
                     let markCol: number = unit.col, markRow: number = unit.row;
                     if (k == 0) {
@@ -143,7 +146,7 @@ class MarkLayer extends PIXI.Container {
                     }
 
                     if (markCol > -1 && markCol < this.colsCount && markRow > -1 && markRow < this.rowsCount
-                        && !reachableUnits.some((unit: Unit) => unit.col == markCol && unit.row == markRow)) {
+                            && !reachableUnits.some((unit: Unit) => unit.col == markCol && unit.row == markRow)) {
                         const pathMark = new Mark(0xFFFF00);
                         pathMark.setCell(markCol, markRow);
                         this.pathMarks.push(pathMark);
@@ -152,8 +155,8 @@ class MarkLayer extends PIXI.Container {
                         pathMark.on(game.Event.CLICK, () => {
                             unit.moveTo(markCol, markRow);
                             this.currentMark.setCell(markCol, markRow);
-                            this.pathMarks.length = 0;
                             this.removeAllMarksExceptCurrent();
+                            this.createPathMarks(unit);
                             this.emit(game.Event.MOUSE_UP);
                         });
                         pathMark.on(game.Event.MOUSE_OUT, () => pathMark.removeChild(pathPoint));

@@ -9,6 +9,8 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
 
     constructor(readonly units: Unit[]) {
         super();
+        this.currentUnit.makeCurrent();
+
         for (const unit of this.units) {
             unit.on(game.Event.MOUSE_OVER, () => {
                 if (this.currentUnit.isPreparedToShot) {
@@ -50,6 +52,7 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
             this.currentUnit.isPreparedToShot = false;
         }
         this.units.push(this.units.shift());
+        this.currentUnit.makeCurrent();
         this.emit(UnitManager.NEXT_TURN, this.currentUnit);
     }
 }

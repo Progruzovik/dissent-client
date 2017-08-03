@@ -1,4 +1,5 @@
 import Field from "./Field";
+import Ship from "./Ship";
 import * as game from "../game";
 
 export default class Unit extends PIXI.Sprite {
@@ -20,10 +21,15 @@ export default class Unit extends PIXI.Sprite {
         this.emit(this.isPreparedToShot ? Unit.PREPARED_TO_SHOT : Unit.NOT_PREPARED_TO_SHOT);
     }
 
+    private _movementPoints: number;
+    get movementPoints(): number {
+        return this._movementPoints;
+    }
+
     private remainingChargeFrames = 0;
     private charge: game.Rectangle = null;
 
-    constructor(readonly isLeft, private _col: number, private _row: number) {
+    constructor(readonly isLeft, private _col: number, private _row: number, readonly ship: Ship) {
         super(PIXI.loader.resources["Ship-3-2"].texture);
         this.interactive = true;
         this.setCell(this.col, this.row);
@@ -31,10 +37,6 @@ export default class Unit extends PIXI.Sprite {
             this.scale.x = -1;
             this.anchor.x = 1;
         }
-    }
-
-    get speed(): number {
-        return 3;
     }
 
     get col(): number {
@@ -46,8 +48,11 @@ export default class Unit extends PIXI.Sprite {
     }
 
     checkReachable(col: number, row: number): boolean {
-        const dCol: number = col - this.col, dRow: number = row - this.row;
-        return Math.sqrt(dCol * dCol + dRow * dRow) <= this.speed;
+        return this.calculateDistance(col, row) <= this.movementPoints;
+    }
+
+    makeCurrent() {
+        this._movementPoints = this.ship.speed;
     }
 
     shoot(target: Unit) {
@@ -75,6 +80,7 @@ export default class Unit extends PIXI.Sprite {
     }
 
     moveTo(col: number, row: number) {
+        this._movementPoints -= this.calculateDistance(col, row);
         this.setCell(col, row);
         this.emit(game.Event.READY);
     }
@@ -84,10 +90,15 @@ export default class Unit extends PIXI.Sprite {
         this.emit(Unit.DESTROY);
     }
 
+    private calculateDistance(col: number, row: number): number {
+        const dCol: number = col - this.col, dRow: number = row - this.row;
+        return Math.sqrt(dCol * dCol + dRow * dRow);
+    }
+
     private setCell(col: number, row: number) {
         this._col = col;
         this._row = row;
-        this.x = this.col * Unit.WIDTH + Field.LINE_WIDTH;
-        this.y = this.row * Unit.HEIGHT + Field.LINE_WIDTH;
+        this.x = this.col * Unit.WIDTH + Field.LINE_WIDTH / 2;
+        this.y = this.row * Unit.HEIGHT + Field.LINE_WIDTH / 2;
     }
 }

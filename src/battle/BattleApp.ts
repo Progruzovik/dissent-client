@@ -1,4 +1,4 @@
-import BattleAct from "./BattleAct";
+import Act from "./Act";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
@@ -12,7 +12,7 @@ export default class BattleApp extends PIXI.Application {
         PIXI.loader.add("Ship-3-2", "/img/Ship-3-2.png",
             (resource: PIXI.loaders.Resource) => resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST);
         PIXI.loader.load(() => {
-            const act = new BattleAct(BattleApp.WIDTH, BattleApp.HEIGHT);
+            const act = new Act(BattleApp.WIDTH, BattleApp.HEIGHT);
             this.stage.addChild(act);
             this.ticker.add(() => act.emit(game.Event.UPDATE));
 
