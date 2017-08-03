@@ -1,6 +1,6 @@
 import SignLayer from "./SignLayer";
-import Unit from "../Unit";
-import UnitManager from "../UnitManager";
+import Unit from "./Unit";
+import UnitManager from "./UnitManager";
 import * as game from "../../game";
 
 export default class Field extends game.Actor {

@@ -1,6 +1,6 @@
 import Field from "./Field";
-import Unit from "../Unit";
-import UnitManager from "../UnitManager";
+import Unit from "./Unit";
+import UnitManager from "./UnitManager";
 import * as game from "../../game";
 
 export default class SignLayer extends PIXI.Container {

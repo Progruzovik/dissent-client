@@ -1,7 +1,7 @@
-import Field from "./Battlefield/Field";
 import Ship from "./Ship";
-import Unit from "./Unit";
-import UnitManager from "./UnitManager";
+import Field from "./battlefield/Field";
+import Unit from "./battlefield/Unit";
+import UnitManager from "./battlefield/UnitManager";
 import * as game from "../game";
 
 export default class Act extends game.Actor {

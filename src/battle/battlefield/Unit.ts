@@ -1,6 +1,6 @@
-import Field from "./Battlefield/Field";
-import Ship from "./Ship";
-import * as game from "../game";
+import Field from "./Field";
+import Ship from "../Ship";
+import * as game from "../../game";
 
 export default class Unit extends PIXI.Sprite {
 

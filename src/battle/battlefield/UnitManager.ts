@@ -1,5 +1,5 @@
 import Unit from "./Unit";
-import * as game from "../game";
+import * as game from "../../game";
 
 export default class UnitManager extends PIXI.utils.EventEmitter {
 
