@@ -1,9 +1,9 @@
-import Mark from "./Mark";
+import Field from "./Field";
 import Unit from "../Unit";
 import UnitManager from "../UnitManager";
 import * as game from "../../game";
 
-export default class MarkLayer extends PIXI.Container {
+export default class SignLayer extends PIXI.Container {
 
     private readonly currentMark = new Mark(0x00FF00);
     private readonly pathMarks: Mark[] = [];
@@ -17,12 +17,22 @@ export default class MarkLayer extends PIXI.Container {
     }
 
     addPathMarks() {
+        this.removeAllMarksExceptCurrent();
         for (const mark of this.pathMarks) {
             this.addChild(mark);
         }
     }
 
-    removeAllMarksExceptCurrent() {
+    markTargets(targets: Unit[]) {
+        this.removeAllMarksExceptCurrent();
+        for (const target of targets) {
+            const mark = new Mark(0xFF0000);
+            mark.setCell(target.col, target.row);
+            this.addChild(mark);
+        }
+    }
+
+    private removeAllMarksExceptCurrent() {
         this.removeChildren();
         this.addChild(this.currentMark);
     }
@@ -74,5 +84,19 @@ export default class MarkLayer extends PIXI.Container {
             }
         }
         this.addPathMarks();
+    }
+}
+
+class Mark extends game.Rectangle {
+
+    constructor(color: number) {
+        super(Unit.WIDTH - Field.LINE_WIDTH, Unit.HEIGHT - Field.LINE_WIDTH, color);
+        this.interactive = true;
+        this.alpha = 0.4;
+    }
+
+    setCell(col: number, row: number) {
+        this.x = col * Unit.WIDTH + Field.LINE_WIDTH;
+        this.y = row * Unit.HEIGHT + Field.LINE_WIDTH;
     }
 }

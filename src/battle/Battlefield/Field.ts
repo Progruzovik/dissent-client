@@ -1,5 +1,4 @@
-import Mark from "./Mark";
-import MarkLayer from "./MarkLayer";
+import SignLayer from "./SignLayer";
 import Unit from "../Unit";
 import UnitManager from "../UnitManager";
 import * as game from "../../game";
@@ -13,13 +12,13 @@ export default class Field extends game.Actor {
     private mouseY: number;
 
     private readonly content = new game.Actor();
-    private readonly markLayer: MarkLayer;
+    private readonly markLayer: SignLayer;
 
     constructor(colsCount: number, rowsCount: number, freeWidth: number, freeHeight: number,
                 unitManager: UnitManager) {
         super();
         this.interactive = true;
-        this.markLayer = new MarkLayer(colsCount, rowsCount, unitManager);
+        this.markLayer = new SignLayer(colsCount, rowsCount, unitManager);
 
         this.addChild(new game.Rectangle(freeWidth, freeHeight, 0x111111));
         for (let i = 0; i <= rowsCount; i++) {
@@ -36,20 +35,9 @@ export default class Field extends game.Actor {
         for (const unit of unitManager.units) {
             this.content.addChild(unit);
 
-            unit.on(Unit.PREPARED_TO_SHOT, () => {
-                this.markLayer.removeAllMarksExceptCurrent();
-                for (const target of unitManager.units) {
-                    if (unit.isLeft != target.isLeft) {
-                        const mark = new Mark(0xFF0000);
-                        mark.setCell(target.col, target.row);
-                        this.markLayer.addChild(mark);
-                    }
-                }
-            });
-            unit.on(Unit.NOT_PREPARED_TO_SHOT, () => {
-                this.markLayer.removeAllMarksExceptCurrent();
-                this.markLayer.addPathMarks();
-            });
+            unit.on(Unit.PREPARED_TO_SHOT, () =>
+                this.markLayer.markTargets(unitManager.units.filter((target: Unit) => unit.isLeft != target.isLeft)));
+            unit.on(Unit.NOT_PREPARED_TO_SHOT, () => this.markLayer.addPathMarks());
         }
         this.addChild(this.content);
 
