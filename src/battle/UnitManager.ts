@@ -36,7 +36,7 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
             });
         }
     }
-    
+
     get currentUnit(): Unit {
         return this.units[0];
     }

@@ -1,4 +1,4 @@
-import Field from "./Field";
+import Field from "./Battlefield/Field";
 import Ship from "./Ship";
 import Unit from "./Unit";
 import UnitManager from "./UnitManager";
@@ -31,7 +31,7 @@ export default class Act extends game.Actor {
         field.x = queue.width;
         this.addChild(field);
         this.addChild(queue);
-        
+
         const btnFire = new game.Button("Огонь!");
         btnFire.x = game.INDENT;
         btnFire.y = game.INDENT;
@@ -74,7 +74,7 @@ class Queue extends game.Rectangle {
                 this.updateChildrenPositions();
             });
         });
-        
+
         unitManager.on(UnitManager.NEXT_TURN, () => {
             this.setChildIndex(this.getChildAt(0), this.children.length - 1);
             this.updateChildrenPositions();

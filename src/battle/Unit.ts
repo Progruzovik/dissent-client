@@ -1,4 +1,4 @@
-import Field from "./Field";
+import Field from "./Battlefield/Field";
 import Ship from "./Ship";
 import * as game from "../game";
 
@@ -13,18 +13,7 @@ export default class Unit extends PIXI.Sprite {
     static readonly DESTROY = "destroy";
 
     private _isPreparedToShot = false;
-    get isPreparedToShot(): boolean {
-        return this._isPreparedToShot;
-    }
-    set isPreparedToShot(value: boolean) {
-        this._isPreparedToShot = value;
-        this.emit(this.isPreparedToShot ? Unit.PREPARED_TO_SHOT : Unit.NOT_PREPARED_TO_SHOT);
-    }
-
     private _movementPoints: number;
-    get movementPoints(): number {
-        return this._movementPoints;
-    }
 
     private remainingChargeFrames = 0;
     private charge: game.Rectangle = null;
@@ -37,6 +26,19 @@ export default class Unit extends PIXI.Sprite {
             this.scale.x = -1;
             this.anchor.x = 1;
         }
+    }
+
+    get isPreparedToShot(): boolean {
+        return this._isPreparedToShot;
+    }
+
+    set isPreparedToShot(value: boolean) {
+        this._isPreparedToShot = value;
+        this.emit(this.isPreparedToShot ? Unit.PREPARED_TO_SHOT : Unit.NOT_PREPARED_TO_SHOT);
+    }
+
+    get movementPoints(): number {
+        return this._movementPoints;
     }
 
     get col(): number {

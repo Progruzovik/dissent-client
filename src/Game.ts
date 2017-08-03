@@ -60,7 +60,7 @@ export class Button extends Rectangle {
         this.interactive = true;
         this.buttonMode = true;
 
-        const txtMain = new PIXI.Text(text, { fill: 0xFFFFFF, fontSize: 26 });
+        const txtMain = new PIXI.Text(text, {fill: 0xFFFFFF, fontSize: 26});
         txtMain.anchor.set(CENTER, CENTER);
         txtMain.x = this.width / 2;
         txtMain.y = this.height / 2;
@@ -116,4 +116,5 @@ export class Button extends Rectangle {
 }
 
 const enum State { MouseOut, MouseOver, MouseDown }
+
 const CENTER = 0.5;
