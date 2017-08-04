@@ -1,3 +1,6 @@
+const webpack = require("webpack");
+const isProduction = process.env.NODE_ENV === "production";
+
 module.exports = {
     entry: "./src/main.ts",
     module: {
@@ -9,8 +12,13 @@ module.exports = {
         ]
     },
     output: {
-        filename: "./static/js/app.js"
+        filename: "./static/js/" + (isProduction ? "app.min.js" : "app.js")
     },
+    plugins: isProduction ? [
+        new webpack.optimize.UglifyJsPlugin({
+            comments: false
+        })
+    ] : [],
     resolve: {
         extensions: [".ts", ".js"],
         modules: ["./src/", "./node_modules/"]
