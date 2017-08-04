@@ -5,7 +5,7 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
 
     static readonly NEXT_TURN = "nextTurn";
 
-    private readonly destroyedUnits: Unit[] = [];
+    private readonly destroyedUnits = new Array<Unit>(0);
 
     constructor(readonly units: Unit[]) {
         super();
@@ -39,12 +39,6 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
 
     get currentUnit(): Unit {
         return this.units[0];
-    }
-
-    findReachableUnitsForCurrent(): Unit[] {
-        const result: Unit[] = this.units.filter((unit: Unit) => this.currentUnit.checkReachable(unit.col, unit.row));
-        return result.concat(
-            this.destroyedUnits.filter((unit: Unit) => this.currentUnit.checkReachable(unit.col, unit.row)));
     }
 
     nextTurn() {

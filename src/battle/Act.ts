@@ -12,7 +12,7 @@ export default class Act extends game.Actor {
     constructor(stageWidth: number, stageHeight: number) {
         super();
         const ship = new Ship(3);
-        const units: Unit[] = [];
+        const units = new Array<Unit>(0);
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;

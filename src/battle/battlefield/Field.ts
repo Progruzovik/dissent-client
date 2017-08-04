@@ -12,13 +12,13 @@ export default class Field extends game.Actor {
     private mouseY: number;
 
     private readonly content = new game.Actor();
-    private readonly markLayer: SignLayer;
+    private readonly signLayer: SignLayer;
 
     constructor(colsCount: number, rowsCount: number, freeWidth: number, freeHeight: number,
                 unitManager: UnitManager) {
         super();
         this.interactive = true;
-        this.markLayer = new SignLayer(colsCount, rowsCount, unitManager);
+        this.signLayer = new SignLayer(colsCount, rowsCount, unitManager);
 
         this.addChild(new game.Rectangle(freeWidth, freeHeight, 0x111111));
         for (let i = 0; i <= rowsCount; i++) {
@@ -31,17 +31,16 @@ export default class Field extends game.Actor {
             line.x = i * Unit.WIDTH;
             this.content.addChild(line);
         }
-        this.content.addChild(this.markLayer);
+        this.content.addChild(this.signLayer);
         for (const unit of unitManager.units) {
             this.content.addChild(unit);
 
-            unit.on(Unit.PREPARED_TO_SHOT, () =>
-                this.markLayer.markTargets(unitManager.units.filter((target: Unit) => unit.isLeft != target.isLeft)));
-            unit.on(Unit.NOT_PREPARED_TO_SHOT, () => this.markLayer.addPathMarks());
+            unit.on(Unit.PREPARED_TO_SHOT, () => this.signLayer.markTargets(!unit.isLeft));
+            unit.on(Unit.NOT_PREPARED_TO_SHOT, () => this.signLayer.addPathMarks());
         }
         this.addChild(this.content);
 
-        this.markLayer.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
+        this.signLayer.on(game.Event.MOUSE_UP, () => this.isMouseDown = false);
         this.on(game.Event.MOUSE_DOWN, (e: PIXI.interaction.InteractionEvent) => {
             this.isMouseDown = true;
             this.mouseX = e.data.global.x;
