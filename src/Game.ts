@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
 
 export const INDENT = 20;
+export const CENTER = 0.5;
 
 export namespace Event {
 
@@ -116,5 +117,3 @@ export class Button extends Rectangle {
 }
 
 const enum State { MouseOut, MouseOver, MouseDown }
-
-const CENTER = 0.5;
