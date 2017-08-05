@@ -77,10 +77,8 @@ export default class SignLayer extends PIXI.Container {
                 }
             }
         }
-        this.createMarksForUnit(unit);
-    }
 
-    private createMarksForUnit(unit: Unit) {
+
         this.currentMark.setCell(unit.col, unit.row);
         this.pathMarks.length = 0;
         for (let i = 0; i < unit.movementPoints; i++) {
@@ -99,7 +97,7 @@ export default class SignLayer extends PIXI.Container {
                         pathMark.on(game.Event.CLICK, () => {
                             unit.moveTo(pathMark.col, pathMark.row);
                             this.pathLayer.removeChildren();
-                            this.createMarksForUnit(unit);
+                            this.createPathsAndMarksForUnit(unit);
                             this.emit(game.Event.MOUSE_UP);
                         });
                         pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
