@@ -1,57 +1,5 @@
-import * as PIXI from "pixi.js"
-
-export const INDENT = 20;
-export const CENTER = 0.5;
-
-export namespace Event {
-
-    export const BUTTON_CLICK = "buttonClick";
-    export const CLICK = "click";
-    export const UPDATE = "update";
-
-    export const MOUSE_OVER = "mouseover";
-    export const MOUSE_DOWN = "mousedown";
-    export const MOUSE_MOVE = "mousemove";
-    export const MOUSE_UP = "mouseup";
-    export const MOUSE_OUT = "mouseout";
-
-    export const TOUCH_START = "touchstart";
-    export const TOUCH_END = "touchend";
-
-    export const READY = "ready";
-    export const FINISH = "finish";
-}
-
-export const enum Direction {
-    Up, Down, Left, Right
-}
-
-export class Actor extends PIXI.Container {
-
-    constructor() {
-        super();
-        this.on(Event.UPDATE, () => {
-            for (const child of this.children) {
-                child.emit(Event.UPDATE);
-            }
-        });
-    }
-}
-
-export class Rectangle extends PIXI.Graphics {
-
-    constructor(width: number, height: number, color: number = 0x000000) {
-        super();
-        this.drawRectangle(color, width, height);
-    }
-
-    drawRectangle(color: number, width: number = this.width, height: number = this.height) {
-        this.clear();
-        this.beginFill(color);
-        this.drawRect(0, 0, width, height);
-        this.endFill();
-    }
-}
+import { Rectangle } from "./Rectangle";
+import { Event, CENTER } from "./constant";
 
 export class Button extends Rectangle {
 
@@ -65,7 +13,7 @@ export class Button extends Rectangle {
         this.interactive = true;
         this.buttonMode = true;
 
-        const txtMain = new PIXI.Text(text, {fill: 0xFFFFFF, fontSize: 26});
+        const txtMain = new PIXI.Text(text, { fill: 0xFFFFFF, fontSize: 26 });
         txtMain.anchor.set(CENTER, CENTER);
         txtMain.x = this.width / 2;
         txtMain.y = this.height / 2;
@@ -120,4 +68,6 @@ export class Button extends Rectangle {
     }
 }
 
-const enum State { MouseOut, MouseOver, MouseDown }
+const enum State {
+    MouseOut, MouseOver, MouseDown
+}

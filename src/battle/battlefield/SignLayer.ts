@@ -5,7 +5,7 @@ import * as game from "../../game";
 
 export default class SignLayer extends PIXI.Container {
 
-    private readonly paths = new Array<Array<PIXI.Point> >(0);
+    private readonly paths = new Array<Array<PIXI.Point>>(0);
     private readonly currentPath = new Array<game.Direction>(0);
 
     private readonly currentMark = new Mark(0x00FF00);
@@ -51,7 +51,7 @@ export default class SignLayer extends PIXI.Container {
 
     private createPathsAndMarksForUnit(unit: Unit) {
         const unitCell = new PIXI.Point(unit.col, unit.row);
-        const distances = new Array<Array<number> >(0);
+        const distances = new Array<Array<number>>(0);
         this.paths.length = 0;
         for (let i = 0; i < this.rowsCount; i++) {
             distances.push(new Array<number>(0));
@@ -167,7 +167,7 @@ class Mark extends game.Rectangle {
         this.alpha = 0.4;
     }
 
-    get col(): number{
+    get col(): number {
         return this._col;
     }
 
