@@ -6,6 +6,7 @@ import * as game from "../../game";
 export default class SignLayer extends PIXI.Container {
 
     private readonly paths = new Array<Array<PIXI.Point> >(0);
+    private readonly currentPath = new Array<game.Direction>(0);
 
     private readonly currentMark = new Mark(0x00FF00);
     private readonly pathMarks = new Array<Mark>(0);
@@ -66,8 +67,8 @@ export default class SignLayer extends PIXI.Container {
 
         while (cellQueue.length != 0) {
             const cell: PIXI.Point = cellQueue.pop();
-            const neighborCells = [new PIXI.Point(cell.x, cell.y - 1), new PIXI.Point(cell.x - 1, cell.y),
-                new PIXI.Point(cell.x + 1, cell.y), new PIXI.Point(cell.x, cell.y + 1)];
+            const neighborCells = [new PIXI.Point(cell.x - 1, cell.y), new PIXI.Point(cell.x + 1, cell.y),
+                new PIXI.Point(cell.x, cell.y - 1), new PIXI.Point(cell.x, cell.y + 1)];
             for (const neighborCell of neighborCells) {
                 if (this.checkCellValid(neighborCell) && unit.checkReachable(neighborCell.x, neighborCell.y)
                     && distances[neighborCell.x][neighborCell.y] > distances[cell.x][cell.y] + 1) {
@@ -77,7 +78,6 @@ export default class SignLayer extends PIXI.Container {
                 }
             }
         }
-
 
         this.currentMark.setCell(unit.col, unit.row);
         this.pathMarks.length = 0;
@@ -95,10 +95,10 @@ export default class SignLayer extends PIXI.Container {
                         pathMark.on(game.Event.MOUSE_OVER, () =>
                             this.preparePath(mark, new PIXI.Point(unit.col, unit.row)));
                         pathMark.on(game.Event.CLICK, () => {
-                            unit.moveTo(pathMark.col, pathMark.row);
+                            unit.path = this.currentPath;
                             this.pathLayer.removeChildren();
-                            this.createPathsAndMarksForUnit(unit);
                             this.emit(game.Event.MOUSE_UP);
+                            unit.once(game.Event.READY, () => this.createPathsAndMarksForUnit(unit));
                         });
                         pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
                     }
@@ -109,28 +109,43 @@ export default class SignLayer extends PIXI.Container {
     }
 
     private preparePath(markCell: PIXI.Point, unitCell: PIXI.Point) {
+        this.currentPath.length = 0;
         if (this.paths[markCell.x][markCell.y]) {
             let cell: PIXI.Point = markCell;
             while (!(cell.x == unitCell.x && cell.y == unitCell.y)) {
-                const nextCell: PIXI.Point = this.paths[cell.x][cell.y];
+                const previousCell: PIXI.Point = this.paths[cell.x][cell.y];
                 const pathLine = new game.Rectangle(5, 5, 0x00FF00);
                 pathLine.x = cell.x * Unit.WIDTH;
                 pathLine.y = cell.y * Unit.HEIGHT;
-                if (cell.x == nextCell.x - 1 || cell.x == nextCell.x + 1) {
+                if (cell.x == previousCell.x - 1 || cell.x == previousCell.x + 1) {
                     pathLine.width = Unit.WIDTH;
                     pathLine.pivot.y = pathLine.height / 2;
-                    const k = cell.x < nextCell.x ? 1 : -1;
+                    let k;
+                    if (cell.x < previousCell.x) {
+                        k = 1;
+                        this.currentPath.push(game.Direction.Left);
+                    } else {
+                        k = -1;
+                        this.currentPath.push(game.Direction.Right);
+                    }
                     pathLine.x += pathLine.width / 2 * k;
                     pathLine.y += Unit.HEIGHT / 2;
-                } else if (cell.y == nextCell.y - 1 || cell.y == nextCell.y + 1) {
+                } else if (cell.y == previousCell.y - 1 || cell.y == previousCell.y + 1) {
                     pathLine.height = Unit.HEIGHT;
                     pathLine.pivot.x = pathLine.width / 2;
                     pathLine.x += Unit.WIDTH / 2;
-                    const k = cell.y < nextCell.y ? 1 : -1;
+                    let k;
+                    if (cell.y < previousCell.y) {
+                        k = 1;
+                        this.currentPath.push(game.Direction.Down);
+                    } else {
+                        k = -1;
+                        this.currentPath.push(game.Direction.Up);
+                    }
                     pathLine.y += pathLine.height / 2 * k;
                 }
                 this.pathLayer.addChild(pathLine);
-                cell = nextCell;
+                cell = previousCell;
             }
             const pathPoint = new game.Rectangle(15, 15, 0x00FF00);
             pathPoint.pivot.set(pathPoint.width / 2, pathPoint.height / 2);

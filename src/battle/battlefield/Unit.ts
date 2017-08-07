@@ -13,10 +13,11 @@ export default class Unit extends PIXI.Sprite {
     static readonly DESTROY = "destroy";
 
     private _isPreparedToShot = false;
-    private _movementPoints: number;
+    private _movementPoints = 0;
 
     private remainingChargeFrames = 0;
     private charge: game.Rectangle = null;
+    private _path: game.Direction[] = null;
 
     constructor(readonly isLeft, private _col: number, private _row: number, readonly ship: Ship) {
         super(PIXI.loader.resources["Ship-3-2"].texture);
@@ -26,6 +27,27 @@ export default class Unit extends PIXI.Sprite {
             this.scale.x = -1;
             this.anchor.x = 1;
         }
+
+        this.on(game.Event.UPDATE, () => {
+            if (this.path) {
+                if (this.path.length > 0 && this.movementPoints > 0) {
+                    this._movementPoints--;
+                    const direction: game.Direction = this.path.pop();
+                    if (direction == game.Direction.Left) {
+                        this.setCell(this.col - 1, this.row);
+                    } else if (direction == game.Direction.Right) {
+                        this.setCell(this.col + 1, this.row);
+                    } else if (direction == game.Direction.Down) {
+                        this.setCell(this.col, this.row - 1);
+                    } else if (direction == game.Direction.Up) {
+                        this.setCell(this.col, this.row + 1);
+                    }
+                } else {
+                    this.path = null;
+                    this.emit(game.Event.READY);
+                }
+            }
+        });
     }
 
     get isPreparedToShot(): boolean {
@@ -39,6 +61,14 @@ export default class Unit extends PIXI.Sprite {
 
     get movementPoints(): number {
         return this._movementPoints;
+    }
+
+    get path(): game.Direction[] {
+        return this._path;
+    }
+
+    set path(value: game.Direction[]) {
+        this._path = value;
     }
 
     get col(): number {
@@ -79,12 +109,6 @@ export default class Unit extends PIXI.Sprite {
             }
         });
         this.emit(Unit.SHOT);
-    }
-
-    moveTo(col: number, row: number) {
-        this._movementPoints -= this.calculateDistance(col, row);
-        this.setCell(col, row);
-        this.emit(game.Event.READY);
     }
 
     destroy() {

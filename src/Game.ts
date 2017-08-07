@@ -22,6 +22,10 @@ export namespace Event {
     export const FINISH = "finish";
 }
 
+export const enum Direction {
+    Up, Down, Left, Right
+}
+
 export class Actor extends PIXI.Container {
 
     constructor() {
