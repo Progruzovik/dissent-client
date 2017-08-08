@@ -1,5 +1,5 @@
-import Field from "./Field";
-import Ship from "../Ship";
+import Field from "../field/Field";
+import Ship from "./Ship";
 import * as game from "../../game";
 
 export default class Unit extends PIXI.Sprite {
@@ -79,8 +79,9 @@ export default class Unit extends PIXI.Sprite {
         return this._row;
     }
 
-    checkReachable(col: number, row: number): boolean {
-        return this.calculateDistance(col, row) <= this.movementPoints;
+    calculateDistanceToCell(cell: PIXI.Point): number {
+        const dCol: number = cell.x - this.col, dRow: number = cell.y - this.row;
+        return Math.sqrt(dCol * dCol + dRow * dRow);
     }
 
     makeCurrent() {
@@ -114,11 +115,6 @@ export default class Unit extends PIXI.Sprite {
     destroy() {
         this.alpha = 0.5;
         this.emit(Unit.DESTROY);
-    }
-
-    private calculateDistance(col: number, row: number): number {
-        const dCol: number = col - this.col, dRow: number = row - this.row;
-        return Math.sqrt(dCol * dCol + dRow * dRow);
     }
 
     private setCell(col: number, row: number) {

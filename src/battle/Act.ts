@@ -1,8 +1,9 @@
-import Ship from "./Ship";
-import Field from "./battlefield/Field";
-import Unit from "./battlefield/Unit";
-import UnitManager from "./battlefield/UnitManager";
+import Ship from "./unit/Ship";
+import Field from "./field/Field";
+import Unit from "./unit/Unit";
+import UnitManager from "./unit/UnitManager";
 import * as game from "../game";
+import FieldManager from "./field/FieldManager";
 
 export default class Act extends game.Actor {
 
@@ -23,11 +24,11 @@ export default class Act extends game.Actor {
             }
         }
         const unitManager = new UnitManager(units);
+        const fieldManager = new FieldManager(Act.FIELD_LENGTH, Act.FIELD_LENGTH, unitManager);
 
         const controls = new game.Rectangle(stageWidth, 100, 0x111111);
         const queue = new Queue(stageHeight - controls.height, Act.IS_PLAYER_ON_LEFT, unitManager);
-        const field = new Field(Act.FIELD_LENGTH, Act.FIELD_LENGTH,
-            stageWidth - queue.width, queue.height, unitManager);
+        const field = new Field(stageWidth - queue.width, queue.height, fieldManager);
         field.x = queue.width;
         this.addChild(field);
         this.addChild(queue);

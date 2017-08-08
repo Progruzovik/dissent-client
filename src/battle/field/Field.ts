@@ -1,32 +1,33 @@
+import FieldManager from "./FieldManager";
 import SignLayer from "./SignLayer";
-import Unit from "./Unit";
-import UnitManager from "./UnitManager";
+import Unit from "../unit/Unit";
 import * as game from "../../game";
 
 export default class Field extends game.MovableByMouse {
 
     static readonly LINE_WIDTH = 2;
 
-    constructor(colsCount: number, rowsCount: number,
-                freeWidth: number, freeHeight: number, unitManager: UnitManager) {
+    constructor(freeWidth: number, freeHeight: number, fieldManager: FieldManager) {
         super(new game.Actor(), freeWidth, freeHeight);
         this.interactive = true;
 
         this.addChild(new game.Rectangle(freeWidth, freeHeight, 0x111111));
-        for (let i = 0; i <= rowsCount; i++) {
-            const line = new game.Rectangle(colsCount * Unit.WIDTH + Field.LINE_WIDTH, Field.LINE_WIDTH, 0x777777);
+        for (let i = 0; i <= fieldManager.rowsCount; i++) {
+            const line = new game.Rectangle(fieldManager.colsCount * Unit.WIDTH + Field.LINE_WIDTH,
+                Field.LINE_WIDTH, 0x777777);
             line.y = i * Unit.HEIGHT;
             this.content.addChild(line);
         }
-        for (let i = 0; i <= colsCount; i++) {
-            const line = new game.Rectangle(Field.LINE_WIDTH, rowsCount * Unit.HEIGHT + Field.LINE_WIDTH, 0x777777);
+        for (let i = 0; i <= fieldManager.colsCount; i++) {
+            const line = new game.Rectangle(Field.LINE_WIDTH,
+                fieldManager.rowsCount * Unit.HEIGHT + Field.LINE_WIDTH, 0x777777);
             line.x = i * Unit.WIDTH;
             this.content.addChild(line);
         }
 
-        const signLayer = new SignLayer(colsCount, rowsCount, unitManager);
+        const signLayer = new SignLayer(fieldManager);
         this.content.addChild(signLayer);
-        for (const unit of unitManager.units) {
+        for (const unit of fieldManager.unitManager.units) {
             this.content.addChild(unit);
 
             unit.on(Unit.PREPARED_TO_SHOT, () => signLayer.markTargets(!unit.isLeft));
