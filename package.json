@@ -14,6 +14,6 @@
     "scripts": {
         "start": "./node_modules/.bin/light-server -s static -w './static/js/app.js' -o",
         "webpack": "./node_modules/.bin/webpack --config webpack.config.js",
-        "webpack-p": "NODE_ENV='production' npm run webpack"
+        "webpack-p": "NODE_ENV='production' ./node_modules/.bin/webpack --config webpack.config.js"
     }
 }

@@ -27,6 +27,8 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
                     unit.alpha = 1;
                 }
             });
+            unit.on(Unit.PREPARED_TO_SHOT, () => this.emit(Unit.PREPARED_TO_SHOT, unit));
+            unit.on(Unit.NOT_PREPARED_TO_SHOT, () => this.emit(Unit.NOT_PREPARED_TO_SHOT));
             unit.on(Unit.DESTROY, () => {
                 this.units.splice(this.units.indexOf(unit), 1);
                 this.destroyedUnits.push(unit);

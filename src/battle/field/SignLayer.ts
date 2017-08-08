@@ -19,23 +19,17 @@ export default class SignLayer extends PIXI.Container {
         this.addChild(this.markLayer);
         this.addChild(this.pathLayer);
         this.createMarksForUnit(fieldManager.unitManager.currentUnit);
+
         fieldManager.on(FieldManager.PATHS_READY, (unit: Unit) => this.createMarksForUnit(unit));
-    }
-
-    addPathMarks() {
-        this.removeAllMarksExceptCurrent();
-        for (const mark of this.pathMarks) {
-            this.markLayer.addChild(mark);
-        }
-    }
-
-    markTargets(isLeft: boolean) {
-        this.removeAllMarksExceptCurrent();
-        for (const target of this.fieldManager.unitManager.units.filter(target => isLeft == target.isLeft)) {
-            const mark = new Mark(0xFF0000);
-            mark.setCell(target.col, target.row);
-            this.markLayer.addChild(mark);
-        }
+        fieldManager.unitManager.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => {
+            this.removeAllMarksExceptCurrent();
+            for (const target of this.fieldManager.unitManager.units.filter(target => unit.isLeft != target.isLeft)) {
+                const mark = new Mark(0xFF0000);
+                mark.setCell(target.col, target.row);
+                this.markLayer.addChild(mark);
+            }
+        });
+        fieldManager.unitManager.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addPathMarks());
     }
 
     private removeAllMarksExceptCurrent() {
@@ -109,6 +103,13 @@ export default class SignLayer extends PIXI.Container {
             pathPoint.x = (markCell.x + game.CENTER) * Unit.WIDTH;
             pathPoint.y = (markCell.y + game.CENTER) * Unit.HEIGHT;
             this.pathLayer.addChild(pathPoint);
+        }
+    }
+
+    private addPathMarks() {
+        this.removeAllMarksExceptCurrent();
+        for (const mark of this.pathMarks) {
+            this.markLayer.addChild(mark);
         }
     }
 }

@@ -29,9 +29,6 @@ export default class Field extends game.MovableByMouse {
         this.content.addChild(signLayer);
         for (const unit of fieldManager.unitManager.units) {
             this.content.addChild(unit);
-
-            unit.on(Unit.PREPARED_TO_SHOT, () => signLayer.markTargets(!unit.isLeft));
-            unit.on(Unit.NOT_PREPARED_TO_SHOT, () => signLayer.addPathMarks());
         }
         this.addChild(this.content);
 
