@@ -1,5 +1,6 @@
 import Unit from "../unit/Unit";
 import UnitManager from "../unit/UnitManager";
+import { CellStatus } from "./utils"
 import * as PIXI from "pixi.js";
 
 export default class FieldManager extends PIXI.utils.EventEmitter {
@@ -7,25 +8,25 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
     static readonly PATHS_READY = "pathsReady";
 
     readonly paths = new Array<Array<PIXI.Point>>(this.colsCount);
-    readonly map = new Array<Array<boolean>>(this.colsCount);
+    readonly map = new Array<Array<CellStatus>>(this.colsCount);
 
     constructor(readonly colsCount: number, readonly rowsCount: number, readonly unitManager: UnitManager) {
         super();
         for (let i = 0; i < this.colsCount; i++) {
             this.paths[i] = new Array<PIXI.Point>(this.rowsCount);
-            this.map[i] = new Array<boolean>(this.rowsCount);
+            this.map[i] = new Array<CellStatus>(this.rowsCount);
             for (let j = 0; j < this.rowsCount; j++) {
-                this.map[i][j] = false;
+                this.map[i][j] = CellStatus.Empty;
             }
         }
         for (const unit of unitManager.units) {
-            this.map[unit.col][unit.row] = true;
+            this.map[unit.col][unit.row] = CellStatus.Ship;
         }
         this.createPathsForUnit(unitManager.currentUnit);
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.createPathsForUnit(currentUnit));
         unitManager.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) => {
-            this.map[oldPosition.x][oldPosition.y] = false;
-            this.map[newPosition.x][newPosition.y] = true;
+            this.map[oldPosition.x][oldPosition.y] = CellStatus.Empty;
+            this.map[newPosition.x][newPosition.y] = CellStatus.Ship;
         });
     }
 
@@ -41,7 +42,7 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
     }
 
     createPathsForUnit(unit: Unit) {
-        const unitCell = new PIXI.Point(unit.col, unit.row);
+        const unitCell = unit.cell;
         const distances = new Array<Array<number>>(this.colsCount);
         for (let i = 0; i < this.colsCount; i++) {
             distances[i] = new Array<number>(this.rowsCount);

@@ -15,11 +15,12 @@ export default class Unit extends PIXI.Sprite {
 
     private _isPreparedToShot = false;
     private _movementPoints = 0;
+    private _isDestroyed = false;
 
     private remainingChargeFrames = 0;
     private charge: game.Rectangle = null;
     private _path: game.Direction[] = null;
-    private oldPosition: PIXI.Point = null;
+    private oldCell: PIXI.Point = null;
 
     constructor(readonly isLeft, private _col: number, private _row: number, readonly ship: Ship) {
         super(PIXI.loader.resources["Ship-3-2"].texture);
@@ -46,7 +47,7 @@ export default class Unit extends PIXI.Sprite {
                     }
                 } else {
                     this.path = null;
-                    this.emit(Unit.MOVE, this.oldPosition, new PIXI.Point(this.col, this.row));
+                    this.emit(Unit.MOVE, this.oldCell, this.cell);
                     this.emit(game.Event.READY);
                 }
             }
@@ -66,6 +67,10 @@ export default class Unit extends PIXI.Sprite {
         return this._movementPoints;
     }
 
+    get isDestroyed(): boolean {
+        return this._isDestroyed;
+    }
+
     get path(): game.Direction[] {
         return this._path;
     }
@@ -73,7 +78,7 @@ export default class Unit extends PIXI.Sprite {
     set path(value: game.Direction[]) {
         this._path = value;
         if (value) {
-            this.oldPosition = new PIXI.Point(this.col, this.row);
+            this.oldCell = this.cell;
         }
     }
 
@@ -85,9 +90,17 @@ export default class Unit extends PIXI.Sprite {
         return this._row;
     }
 
+    get cell(): PIXI.Point {
+        return new PIXI.Point(this.col, this.row);
+    }
+
+    canHit(target: Unit) {
+        return this.isPreparedToShot && this.isLeft != target.isLeft && !target.isDestroyed
+            && this.calculateDistanceToCell(target.cell) <= this.ship.shootRadius;
+    }
+
     calculateDistanceToCell(cell: PIXI.Point): number {
-        const dCol: number = cell.x - this.col, dRow: number = cell.y - this.row;
-        return Math.sqrt(dCol * dCol + dRow * dRow);
+        return Math.abs(cell.x - this.col) + Math.abs(cell.y - this.row);
     }
 
     makeCurrent() {
@@ -111,14 +124,15 @@ export default class Unit extends PIXI.Sprite {
                 this.remainingChargeFrames--;
             } else {
                 this.charge.parent.removeChild(this.charge);
-                target.destroy();
+                target.destroyShip();
                 this.emit(game.Event.READY);
             }
         });
         this.emit(Unit.SHOT);
     }
 
-    destroy() {
+    destroyShip() {
+        this._isDestroyed = true;
         this.alpha = 0.5;
         this.emit(Unit.DESTROY);
     }

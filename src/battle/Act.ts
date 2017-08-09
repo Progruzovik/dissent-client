@@ -7,12 +7,12 @@ import FieldManager from "./field/FieldManager";
 
 export default class Act extends game.Actor {
 
-    private static readonly FIELD_LENGTH = 15;
+    private static readonly FIELD_LENGTH = 12;
     private static readonly IS_PLAYER_ON_LEFT = true;
 
     constructor(stageWidth: number, stageHeight: number) {
         super();
-        const ship = new Ship(3);
+        const ship = new Ship(3, Act.FIELD_LENGTH);
         const units = new Array<Unit>(0);
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
