@@ -42,19 +42,21 @@ export default class SignLayer extends PIXI.Container {
         this.pathMarks.length = 0;
         for (const cell of this.fieldManager.findNeighborsForCell(
             new PIXI.Point(unit.col, unit.row), unit.movementPoints)) {
-            const pathMark = new Mark(0xFFFF00);
-            pathMark.setCell(cell.x, cell.y);
-            this.pathMarks.push(pathMark);
+            if (!this.fieldManager.map[cell.x][cell.y]) {
+                const pathMark = new Mark(0xFFFF00);
+                pathMark.setCell(cell.x, cell.y);
+                this.pathMarks.push(pathMark);
 
-            pathMark.on(game.Event.MOUSE_OVER, () =>
-                this.preparePath(cell, new PIXI.Point(unit.col, unit.row)));
-            pathMark.on(game.Event.CLICK, () => {
-                unit.path = this.selectedPath;
-                this.pathLayer.removeChildren();
-                this.emit(game.Event.MOUSE_UP);
-                unit.once(game.Event.READY, () => this.fieldManager.createPathsForUnit(unit));
-            });
-            pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
+                pathMark.on(game.Event.MOUSE_OVER, () =>
+                    this.preparePath(cell, new PIXI.Point(unit.col, unit.row)));
+                pathMark.on(game.Event.CLICK, () => {
+                    unit.path = this.selectedPath;
+                    this.pathLayer.removeChildren();
+                    this.emit(game.Event.MOUSE_UP);
+                    unit.once(game.Event.READY, () => this.fieldManager.createPathsForUnit(unit));
+                });
+                pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
+            }
         }
         this.addPathMarks();
     }

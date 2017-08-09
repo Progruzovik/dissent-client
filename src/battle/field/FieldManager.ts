@@ -6,12 +6,27 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
 
     static readonly PATHS_READY = "pathsReady";
 
-    readonly paths = new Array<Array<PIXI.Point>>(0);
+    readonly paths = new Array<Array<PIXI.Point>>(this.colsCount);
+    readonly map = new Array<Array<boolean>>(this.colsCount);
 
     constructor(readonly colsCount: number, readonly rowsCount: number, readonly unitManager: UnitManager) {
         super();
+        for (let i = 0; i < this.colsCount; i++) {
+            this.paths[i] = new Array<PIXI.Point>(this.rowsCount);
+            this.map[i] = new Array<boolean>(this.rowsCount);
+            for (let j = 0; j < this.rowsCount; j++) {
+                this.map[i][j] = false;
+            }
+        }
+        for (const unit of unitManager.units) {
+            this.map[unit.col][unit.row] = true;
+        }
         this.createPathsForUnit(unitManager.currentUnit);
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.createPathsForUnit(currentUnit));
+        unitManager.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) => {
+            this.map[oldPosition.x][oldPosition.y] = false;
+            this.map[newPosition.x][newPosition.y] = true;
+        });
     }
 
     findNeighborsForCell(cell: PIXI.Point, radius: number): PIXI.Point[] {
@@ -27,20 +42,19 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
 
     createPathsForUnit(unit: Unit) {
         const unitCell = new PIXI.Point(unit.col, unit.row);
-        const distances = new Array<Array<number>>(0);
-        this.paths.length = 0;
-        for (let i = 0; i < this.rowsCount; i++) {
-            distances.push(new Array<number>(0));
-            for (let j = 0; j < this.colsCount; j++) {
-                distances[i].push(Number.MAX_VALUE);
+        const distances = new Array<Array<number>>(this.colsCount);
+        for (let i = 0; i < this.colsCount; i++) {
+            distances[i] = new Array<number>(this.rowsCount);
+            for (let j = 0; j < this.rowsCount; j++) {
+                distances[i][j] = Number.MAX_VALUE;
+                this.paths[i][j] = null;
             }
-            this.paths.push(new Array<PIXI.Point>(this.colsCount));
         }
-        const cellQueue = new Array<PIXI.Point>(0);
         distances[unitCell.x][unitCell.y] = 0;
         this.paths[unitCell.x][unitCell.y] = unitCell;
-        cellQueue.push(unitCell);
 
+        const cellQueue = new Array<PIXI.Point>(0);
+        cellQueue.push(unitCell);
         while (cellQueue.length != 0) {
             const cell: PIXI.Point = cellQueue.pop();
             for (const neighborCell of this.findNeighborsForCell(cell, 1)) {

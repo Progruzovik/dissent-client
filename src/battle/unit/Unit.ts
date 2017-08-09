@@ -7,6 +7,7 @@ export default class Unit extends PIXI.Sprite {
     static readonly WIDTH = 64;
     static readonly HEIGHT = 32;
 
+    static readonly MOVE = "move";
     static readonly PREPARED_TO_SHOT = "preparedToShot";
     static readonly SHOT = "shot";
     static readonly NOT_PREPARED_TO_SHOT = "notPreparedToShot";
@@ -18,6 +19,7 @@ export default class Unit extends PIXI.Sprite {
     private remainingChargeFrames = 0;
     private charge: game.Rectangle = null;
     private _path: game.Direction[] = null;
+    private oldPosition: PIXI.Point = null;
 
     constructor(readonly isLeft, private _col: number, private _row: number, readonly ship: Ship) {
         super(PIXI.loader.resources["Ship-3-2"].texture);
@@ -44,6 +46,7 @@ export default class Unit extends PIXI.Sprite {
                     }
                 } else {
                     this.path = null;
+                    this.emit(Unit.MOVE, this.oldPosition, new PIXI.Point(this.col, this.row));
                     this.emit(game.Event.READY);
                 }
             }
@@ -69,6 +72,9 @@ export default class Unit extends PIXI.Sprite {
 
     set path(value: game.Direction[]) {
         this._path = value;
+        if (value) {
+            this.oldPosition = new PIXI.Point(this.col, this.row);
+        }
     }
 
     get col(): number {
