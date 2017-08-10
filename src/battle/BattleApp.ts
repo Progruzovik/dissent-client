@@ -8,7 +8,7 @@ export default class BattleApp extends PIXI.Application {
     private static readonly HEIGHT = 768;
 
     constructor() {
-        super(BattleApp.WIDTH, BattleApp.HEIGHT, {resolution: window.devicePixelRatio || 1, autoResize: true});
+        super(BattleApp.WIDTH, BattleApp.HEIGHT, { resolution: window.devicePixelRatio || 1, autoResize: true });
         PIXI.loader.add("Ship-3-2", "img/Ship-3-2.png",
             (resource: PIXI.loaders.Resource) => resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST);
         PIXI.loader.load(() => {
@@ -16,7 +16,7 @@ export default class BattleApp extends PIXI.Application {
             this.stage.addChild(act);
             this.ticker.add(() => act.emit(game.Event.UPDATE));
 
-            act.on(game.Event.FINISH, () => this.stage.removeChild(act));
+            act.on(game.Event.DONE, () => this.stage.removeChild(act));
         });
     }
 }

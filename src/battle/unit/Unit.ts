@@ -49,7 +49,7 @@ export default class Unit extends PIXI.Sprite {
                 } else {
                     this.path = null;
                     this.emit(Unit.MOVE, this.oldCell, this.cell);
-                    this.emit(game.Event.READY);
+                    this.emit(game.Event.DONE);
                 }
             }
         });
@@ -117,7 +117,7 @@ export default class Unit extends PIXI.Sprite {
             target.x + target.width / 2, target.y + target.height / 2, this.parent);
         this.emit(Unit.SHOT);
 
-        this.preparedGun.on(game.Event.READY, () => {
+        this.preparedGun.on(game.Event.DONE, () => {
             target.destroyShip();
             this.preparedGun = null;
         });

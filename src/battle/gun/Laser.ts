@@ -22,7 +22,7 @@ export default class Laser extends AbstractGun {
                 remainingChargeFrames--;
             } else {
                 container.removeChild(charge);
-                this.emit(game.Event.READY);
+                this.emit(game.Event.DONE);
             }
         });
     }

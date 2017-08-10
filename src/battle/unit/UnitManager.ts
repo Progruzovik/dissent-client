@@ -35,7 +35,7 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
                 this.units.splice(this.units.indexOf(unit), 1);
                 this.destroyedUnits.push(unit);
                 if (!this.units.some(activeUnit => unit.isLeft == activeUnit.isLeft)) {
-                    this.emit(game.Event.FINISH);
+                    this.emit(game.Event.DONE);
                 }
             });
         }

@@ -54,7 +54,7 @@ export default class Act extends game.Actor {
                 unitManager.nextTurn();
             }
         });
-        unitManager.on(game.Event.FINISH, () => this.emit(game.Event.FINISH));
+        unitManager.on(game.Event.DONE, () => this.emit(game.Event.DONE));
         btnFire.on(game.Event.BUTTON_CLICK, () => {
             if (unitManager.currentUnit.preparedGun) {
                 unitManager.currentUnit.preparedGun = null;

@@ -44,7 +44,7 @@ export default class SignLayer extends PIXI.Container {
                     unit.path = this.selectedPath;
                     this.pathLayer.removeChildren();
                     this.emit(game.Event.MOUSE_UP);
-                    unit.once(game.Event.READY, () => this.fieldManager.createPathsForUnit(unit));
+                    unit.once(game.Event.DONE, () => this.fieldManager.createPathsForUnit(unit));
                 });
                 pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
             }

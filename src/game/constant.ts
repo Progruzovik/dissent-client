@@ -16,8 +16,7 @@ export namespace Event {
     export const TOUCH_START = "touchstart";
     export const TOUCH_END = "touchend";
 
-    export const READY = "ready";
-    export const FINISH = "finish";
+    export const DONE = "done";
 }
 
 export const enum Direction {
