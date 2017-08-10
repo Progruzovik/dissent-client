@@ -62,7 +62,7 @@ export default class SignLayer extends PIXI.Container {
     private addTargetMarksForUnit(unit: Unit) {
         this.removeAllMarksExceptCurrent();
         const targets: Unit[] = this.fieldManager.unitManager.units.filter(target => unit.canHit(target));
-        for (const cell of this.fieldManager.findNeighborsForCell(unit.cell, unit.ship.shootRadius)) {
+        for (const cell of this.fieldManager.findNeighborsForCell(unit.cell, unit.preparedGun.radius)) {
             if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Empty) {
                 this.markLayer.addChild(new Mark(0xFFFFFF, cell));
             } else if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Ship) {

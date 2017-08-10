@@ -1,3 +1,4 @@
+import Laser from "./gun/Laser";
 import Ship from "./unit/Ship";
 import Field from "./field/Field";
 import Unit from "./unit/Unit";
@@ -7,17 +8,18 @@ import FieldManager from "./field/FieldManager";
 
 export default class Act extends game.Actor {
 
-    private static readonly FIELD_LENGTH = 12;
+    private static readonly FIELD_LENGTH = 15;
     private static readonly IS_PLAYER_ON_LEFT = true;
 
     constructor(stageWidth: number, stageHeight: number) {
         super();
-        const ship = new Ship(3, Act.FIELD_LENGTH);
+        const ship = new Ship(3);
+        const laser = new Laser();
         const units = new Array<Unit>(0);
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;
-                const unit = new Unit(isLeft, isLeft ? 0 : Act.FIELD_LENGTH - 1, (j + 1) * 3, ship);
+                const unit = new Unit(isLeft, isLeft ? 0 : Act.FIELD_LENGTH - 1, (j + 1) * 3, ship, laser);
                 units.push(unit);
 
                 unit.on(Unit.SHOT, () => btnFire.setSelectable(false));
@@ -53,8 +55,13 @@ export default class Act extends game.Actor {
             }
         });
         unitManager.on(game.Event.FINISH, () => this.emit(game.Event.FINISH));
-        btnFire.on(game.Event.BUTTON_CLICK,
-            () => unitManager.currentUnit.isPreparedToShot = !unitManager.currentUnit.isPreparedToShot);
+        btnFire.on(game.Event.BUTTON_CLICK, () => {
+            if (unitManager.currentUnit.preparedGun) {
+                unitManager.currentUnit.preparedGun = null;
+            } else {
+                unitManager.currentUnit.preparedGun = unitManager.currentUnit.firstGun;
+            }
+        });
         btnFinish.on(game.Event.BUTTON_CLICK, () => unitManager.nextTurn());
     }
 }
