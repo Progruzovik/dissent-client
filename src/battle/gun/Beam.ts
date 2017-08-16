@@ -1,7 +1,7 @@
 import { AbstractGun } from "./AbstractGun";
 import * as game from "../../game";
 
-export default class Laser extends AbstractGun {
+export default class Beam extends AbstractGun {
 
     constructor() {
         super(15);
@@ -15,8 +15,8 @@ export default class Laser extends AbstractGun {
         charge.x = fromX;
         charge.y = fromY;
         container.addChild(charge);
-        let remainingChargeFrames = 8;
 
+        let remainingChargeFrames = 8;
         charge.on(game.Event.UPDATE, () => {
             if (remainingChargeFrames > 0) {
                 remainingChargeFrames--;

@@ -21,9 +21,10 @@ export default class Unit extends PIXI.Sprite {
     private oldCell: PIXI.Point = null;
 
     private _preparedGun: AbstractGun = null;
+    private activeGun: AbstractGun = null;
 
     constructor(readonly isLeft: boolean, private _col: number, private _row: number,
-                readonly ship: Ship, readonly firstGun: AbstractGun) {
+                readonly ship: Ship, readonly firstGun: AbstractGun, readonly secondGun: AbstractGun) {
         super(PIXI.loader.resources["Ship-3-2"].texture);
         this.interactive = true;
         this.setCell(this.col, this.row);
@@ -51,6 +52,9 @@ export default class Unit extends PIXI.Sprite {
                     this.emit(Unit.MOVE, this.oldCell, this.cell);
                     this.emit(game.Event.DONE);
                 }
+            }
+            if (this.activeGun) {
+                this.activeGun.emit(game.Event.UPDATE);
             }
         });
     }
@@ -116,10 +120,11 @@ export default class Unit extends PIXI.Sprite {
         this.preparedGun.shoot(this.x + this.width / 2, this.y + this.height / 2,
             target.x + target.width / 2, target.y + target.height / 2, this.parent);
         this.emit(Unit.SHOT);
+        this.activeGun = this.preparedGun;
+        this.preparedGun = null;
 
-        this.preparedGun.on(game.Event.DONE, () => {
+        this.activeGun.on(game.Event.DONE, () => {
             target.destroyShip();
-            this.preparedGun = null;
         });
     }
 

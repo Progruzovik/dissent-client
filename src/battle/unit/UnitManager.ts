@@ -5,6 +5,7 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
 
     static readonly NEXT_TURN = "nextTurn";
 
+    private selectedUnit: Unit = null;
     private readonly destroyedUnits = new Array<Unit>(0);
 
     constructor(readonly units: Unit[]) {
@@ -16,21 +17,32 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
                 if (this.currentUnit.canHit(unit)) {
                     unit.alpha = 0.75;
                 }
+                this.selectedUnit = unit;
             });
             unit.on(game.Event.CLICK, () => {
-                if (this.currentUnit.canHit(unit)) {
-                    this.currentUnit.shoot(unit);
+                if (unit == this.selectedUnit) {
+                    if (this.currentUnit.canHit(unit)) {
+                        this.currentUnit.shoot(unit);
+                    }
                 }
             });
             unit.on(game.Event.MOUSE_OUT, () => {
-                if (!unit.isDestroyed) {
-                    unit.alpha = 1;
+                if (unit == this.selectedUnit) {
+                    if (!unit.isDestroyed) {
+                        unit.alpha = 1;
+                    }
+                    this.selectedUnit = null;
                 }
             });
             unit.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) =>
                 this.emit(Unit.MOVE, oldPosition, newPosition));
             unit.on(Unit.PREPARED_TO_SHOT, () => this.emit(Unit.PREPARED_TO_SHOT, unit));
-            unit.on(Unit.NOT_PREPARED_TO_SHOT, () => this.emit(Unit.NOT_PREPARED_TO_SHOT));
+            unit.on(Unit.NOT_PREPARED_TO_SHOT, () => {
+                if (this.selectedUnit) {
+                    this.selectedUnit.emit(game.Event.MOUSE_OUT);
+                }
+                this.emit(Unit.NOT_PREPARED_TO_SHOT);
+            });
             unit.on(Unit.DESTROY, () => {
                 this.units.splice(this.units.indexOf(unit), 1);
                 this.destroyedUnits.push(unit);
