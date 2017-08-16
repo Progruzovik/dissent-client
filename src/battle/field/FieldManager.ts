@@ -34,8 +34,8 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
         const result = new Array<PIXI.Point>(0);
         for (let i = 0; i < radius; i++) {
             for (let j = 1; j <= radius - i; j++) {
-                result.push(new PIXI.Point(cell.x + j, cell.y + i), new PIXI.Point(cell.x - i, cell.y + j),
-                    new PIXI.Point(cell.x - j, cell.y - i), new PIXI.Point(cell.x + i, cell.y - j));
+                result.push(new PIXI.Point(cell.x + i, cell.y - j), new PIXI.Point(cell.x - i, cell.y + j),
+                    new PIXI.Point(cell.x + j, cell.y + i), new PIXI.Point(cell.x - j, cell.y - i));
             }
         }
         return result.filter(cell => cell.x > -1 && cell.x < this.colsCount && cell.y > -1 && cell.y < this.rowsCount);
