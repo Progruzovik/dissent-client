@@ -3,12 +3,14 @@ import { Event } from "./constant"
 
 export class MovableByMouse extends Actor {
 
-    protected isLeftMouseButtonDown = false;
-    protected mouseX: number;
-    protected mouseY: number;
+    private isLeftMouseButtonDown = false;
+    private mouseX = 0;
+    private mouseY = 0;
 
     constructor(protected readonly content: Actor, freeWidth: number, freeHeight: number) {
         super();
+        this.interactive = true;
+
         this.on(Event.MOUSE_DOWN, (e: PIXI.interaction.InteractionEvent) => {
             this.isLeftMouseButtonDown = true;
             this.mouseX = e.data.global.x;

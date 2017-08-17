@@ -1,14 +1,17 @@
 import Unit from "../unit/Unit";
 import UnitManager from "../unit/UnitManager";
 import { CellStatus } from "./utils"
-import * as PIXI from "pixi.js";
+import * as game from "../../game";
 
 export default class FieldManager extends PIXI.utils.EventEmitter {
 
     static readonly PATHS_READY = "pathsReady";
+    static readonly PATH_LINE = "pathLine";
 
-    readonly paths = new Array<Array<PIXI.Point>>(this.colsCount);
     readonly map = new Array<Array<CellStatus>>(this.colsCount);
+
+    readonly currentPath = new Array<game.Direction>(0);
+    private readonly paths = new Array<Array<PIXI.Point>>(this.colsCount);
 
     constructor(readonly colsCount: number, readonly rowsCount: number, readonly unitManager: UnitManager) {
         super();
@@ -38,7 +41,8 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
                     new PIXI.Point(cell.x + j, cell.y + i), new PIXI.Point(cell.x - j, cell.y - i));
             }
         }
-        return result.filter(cell => cell.x > -1 && cell.x < this.colsCount && cell.y > -1 && cell.y < this.rowsCount);
+        return result.filter(cell => cell.x > -1 && cell.x < this.colsCount
+            && cell.y > -1 && cell.y < this.rowsCount);
     }
 
     createPathsForUnit(unit: Unit) {
@@ -68,5 +72,28 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
             }
         }
         this.emit(FieldManager.PATHS_READY, unit);
+    }
+
+    preparePath(markCell: PIXI.Point, unitCell: PIXI.Point) {
+        this.currentPath.length = 0;
+        if (this.paths[markCell.x][markCell.y]) {
+            let cell: PIXI.Point = markCell;
+            while (!(cell.x == unitCell.x && cell.y == unitCell.y)) {
+                const previousCell: PIXI.Point = this.paths[cell.x][cell.y];
+                let direction: game.Direction;
+                if (cell.x == previousCell.x - 1) {
+                    direction = game.Direction.Left;
+                } else if (cell.x == previousCell.x + 1) {
+                    direction = game.Direction.Right;
+                } else if (cell.y == previousCell.y - 1) {
+                    direction = game.Direction.Down;
+                } else if (cell.y == previousCell.y + 1) {
+                    direction = game.Direction.Up;
+                }
+                this.currentPath.push(direction);
+                this.emit(FieldManager.PATH_LINE, cell, direction);
+                cell = previousCell;
+            }
+        }
     }
 }

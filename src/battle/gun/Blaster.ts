@@ -3,7 +3,7 @@ import * as game from "../../game";
 
 export default class Blaster extends AbstractGun {
 
-    private static readonly SHOTS_COUNT = 3;
+    private static readonly SHOTS_COUNT = 2;
 
     private fromX = 0;
     private fromY = 0;

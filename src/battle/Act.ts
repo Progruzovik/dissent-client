@@ -37,8 +37,8 @@ export default class Act extends game.Actor {
         const fieldManager = new FieldManager(Act.FIELD_LENGTH, Act.FIELD_LENGTH, unitManager);
 
         const controls = new game.Rectangle(stageWidth, 100, 0x111111);
-        const queue = new Queue(stageHeight - controls.height, Act.IS_PLAYER_ON_LEFT, unitManager);
-        const field = new Field(stageWidth - queue.width, queue.height, fieldManager);
+        const queue = new Queue(Act.IS_PLAYER_ON_LEFT, stageHeight - controls.height, unitManager);
+        const field = new Field(fieldManager, stageWidth - queue.width, queue.height);
         field.x = queue.width;
         this.addChild(field);
         this.addChild(queue);
@@ -88,7 +88,7 @@ export default class Act extends game.Actor {
 
 class Queue extends game.Rectangle {
 
-    constructor(height: number, isPlayerOnLeft: boolean, unitManager: UnitManager) {
+    constructor(isPlayerOnLeft: boolean, height: number, unitManager: UnitManager) {
         super(Unit.WIDTH, height, 0x111111);
         unitManager.units.forEach((unit: Unit, i: number) => {
             const icon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT,

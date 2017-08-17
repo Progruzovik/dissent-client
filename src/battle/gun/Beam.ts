@@ -16,7 +16,7 @@ export default class Beam extends AbstractGun {
         charge.y = fromY;
         container.addChild(charge);
 
-        let remainingChargeFrames = 8;
+        let remainingChargeFrames = 12;
         charge.on(game.Event.UPDATE, () => {
             if (remainingChargeFrames > 0) {
                 remainingChargeFrames--;
