@@ -15,7 +15,7 @@ export default class Field extends game.MovableByMouse {
     private readonly pathLayer = new PIXI.Container();
 
     constructor(private fieldManager: FieldManager, freeWidth: number, freeHeight: number) {
-        super(new game.Actor(), freeWidth, freeHeight);
+        super(freeWidth, freeHeight);
         this.createCommonMarksForUnit(fieldManager.unitManager.currentUnit);
 
         this.addChild(new game.Rectangle(freeWidth, freeHeight, 0x111111));

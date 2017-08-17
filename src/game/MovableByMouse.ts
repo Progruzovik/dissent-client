@@ -7,7 +7,9 @@ export class MovableByMouse extends Actor {
     private mouseX = 0;
     private mouseY = 0;
 
-    constructor(protected readonly content: Actor, freeWidth: number, freeHeight: number) {
+    protected readonly content = new Actor();
+
+    constructor(freeWidth: number, freeHeight: number) {
         super();
         this.interactive = true;
 
