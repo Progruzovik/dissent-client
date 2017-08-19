@@ -26,9 +26,9 @@ export default class Act extends game.Actor {
 
                 unit.on(Unit.SHOT, () => {
                     if (unit.preparedGun == unit.firstGun) {
-                        btnFirstGun.setSelectable(false);
+                        btnFirstGun.isEnabled = false;
                     } else if (unit.preparedGun == unit.secondGun) {
-                        btnSecondGun.setSelectable(false);
+                        btnFirstGun.isEnabled = false;
                     }
                 });
             }
@@ -60,9 +60,9 @@ export default class Act extends game.Actor {
 
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
             const isCurrentPlayerTurn: boolean = currentUnit.isLeft == Act.IS_PLAYER_ON_LEFT;
-            btnFirstGun.setSelectable(isCurrentPlayerTurn);
-            btnSecondGun.setSelectable(isCurrentPlayerTurn);
-            btnFinish.setSelectable(isCurrentPlayerTurn);
+            btnFirstGun.isEnabled = isCurrentPlayerTurn;
+            btnSecondGun.isEnabled = isCurrentPlayerTurn;
+            btnFinish.isEnabled = isCurrentPlayerTurn;
             if (!isCurrentPlayerTurn) {
                 unitManager.nextTurn();
             }

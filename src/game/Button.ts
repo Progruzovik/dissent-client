@@ -1,17 +1,21 @@
 import { Rectangle } from "./Rectangle";
 import { Event, CENTER } from "./constant";
 
-export class Button extends Rectangle {
+export class Button extends PIXI.Container {
 
-    private static readonly WIDTH = 165;
-    private static readonly HEIGHT = 40;
+    private _state: State;
+    private readonly bg = new PIXI.Container();
 
-    private state = State.MouseOut;
-
-    constructor(text: string) {
-        super(Button.WIDTH, Button.HEIGHT, 0x333333);
+    constructor(text: string,
+                private readonly bgMouseOut: PIXI.Container = new Rectangle(165, 40, 0x333333),
+                private readonly bgMouseOver: PIXI.Container = new Rectangle(165, 40, 0x666666),
+                private readonly bgMouseDown: PIXI.Container = new Rectangle(165, 40, 0x222222),
+                private readonly bgDisabled: PIXI.Container = new Rectangle(165, 40, 0x666666)) {
+        super();
         this.interactive = true;
         this.buttonMode = true;
+        this.addChild(this.bg);
+        this.state = State.MouseOut;
 
         const txtMain = new PIXI.Text(text, { fill: 0xFFFFFF, fontSize: 26 });
         txtMain.anchor.set(CENTER, CENTER);
@@ -19,52 +23,53 @@ export class Button extends Rectangle {
         txtMain.y = this.height / 2;
         this.addChild(txtMain);
 
-        this.on(Event.MOUSE_OVER, () => this.setState(State.MouseOver));
-        this.on(Event.MOUSE_DOWN, () => this.setState(State.MouseDown));
+        this.on(Event.MOUSE_OVER, () => this.state = State.MouseOver);
+        this.on(Event.MOUSE_DOWN, () => this.state = State.MouseDown);
         this.on(Event.MOUSE_UP, () => {
-            this.setState(State.MouseOver);
+            this.state = State.MouseOver;
             if (this.buttonMode) {
                 this.emit(Event.BUTTON_CLICK);
             }
         });
-        this.on(Event.MOUSE_OUT, () => this.setState(State.MouseOut));
-        this.on(Event.TOUCH_START, () => this.setState(State.MouseDown));
+        this.on(Event.MOUSE_OUT, () => this.state = State.MouseOut);
+        this.on(Event.TOUCH_START, () => this.state = State.MouseDown);
         this.on(Event.TOUCH_END, () => {
-            this.setState(State.MouseOut);
+            this.state = State.MouseOut;
             if (this.buttonMode) {
                 this.emit(Event.BUTTON_CLICK);
             }
         });
     }
 
-    setSelectable(value: boolean) {
-        if (this.buttonMode != value) {
-            this.buttonMode = value;
-            this.updateColor();
+    set isEnabled(value: boolean) {
+        this.buttonMode = value;
+        this.updateBg();
+    }
+
+    private get state(): State {
+        return this._state;
+    }
+
+    private set state(value: State) {
+        if (this._state != value) {
+            this._state = value;
+            this.updateBg();
         }
     }
 
-    private setState(value: State) {
-        if (this.state != value) {
-            this.state = value;
-            this.updateColor();
-        }
-    }
-
-    private updateColor() {
-        let color: number;
+    private updateBg() {
+        this.bg.removeChildren();
         if (this.buttonMode) {
             if (this.state == State.MouseOut) {
-                color = 0x333333;
+                this.bg.addChild(this.bgMouseOut);
             } else if (this.state == State.MouseOver) {
-                color = 0x666666;
+                this.bg.addChild(this.bgMouseOver);
             } else if (this.state == State.MouseDown) {
-                color = 0x222222;
+                this.bg.addChild(this.bgMouseDown);
             }
         } else {
-            color = 0x666666;
+            this.bg.addChild(this.bgDisabled);
         }
-        this.drawRectangle(color);
     }
 }
 

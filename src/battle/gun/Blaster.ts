@@ -11,7 +11,7 @@ export default class Blaster extends AbstractGun {
     private toY = 0;
     private container: PIXI.Container;
 
-    private remainingShots = 0;
+    private firedShots = 0;
     private reachedShots = 0;
     private frameNumber = 0;
 
@@ -19,7 +19,8 @@ export default class Blaster extends AbstractGun {
         super(15);
 
         this.on(game.Event.UPDATE, () => {
-            if (this.remainingShots > 0) {
+            if (this.firedShots < Blaster.SHOTS_COUNT) {
+                console.log(this.frameNumber);
                 if (this.frameNumber % 15 == 0) {
                     const shot = new game.Rectangle(20, 3, 0x0000FF);
                     shot.rotation = Math.atan2(this.toY - this.fromY, this.toX - this.fromX);
@@ -28,7 +29,7 @@ export default class Blaster extends AbstractGun {
                     shot.x = this.fromX;
                     shot.y = this.fromY;
                     this.container.addChild(shot);
-                    this.remainingShots--;
+                    this.firedShots++;
 
                     const multiplierX: number = this.toX > this.fromX ? 1 : -1;
                     const multiplierY: number = this.toY > this.fromY ? 1 : -1;
@@ -55,7 +56,7 @@ export default class Blaster extends AbstractGun {
         this.toX = toX;
         this.toY = toY;
         this.container = container;
-        this.remainingShots = Blaster.SHOTS_COUNT;
+        this.firedShots = 0;
         this.reachedShots = 0;
         this.frameNumber = 0;
     }
