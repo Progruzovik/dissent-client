@@ -123,7 +123,7 @@ export default class Unit extends PIXI.Sprite {
         this.activeGun = this.preparedGun;
         this.preparedGun = null;
 
-        this.activeGun.on(game.Event.DONE, () => {
+        this.activeGun.once(game.Event.DONE, () => {
             target.destroyShip();
         });
     }
