@@ -5,7 +5,6 @@ export namespace Event {
 
     export const BUTTON_CLICK = "buttonClick";
     export const CLICK = "click";
-    export const UPDATE = "update";
 
     export const MOUSE_OVER = "mouseover";
     export const MOUSE_DOWN = "mousedown";

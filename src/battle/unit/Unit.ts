@@ -3,7 +3,7 @@ import Ship from "./Ship";
 import { AbstractGun } from "../gun/AbstractGun";
 import * as game from "../../game";
 
-export default class Unit extends PIXI.Sprite {
+export default class Unit extends game.Actor {
 
     static readonly WIDTH = 64;
     static readonly HEIGHT = 32;
@@ -25,38 +25,15 @@ export default class Unit extends PIXI.Sprite {
 
     constructor(readonly isLeft: boolean, private _col: number, private _row: number,
                 readonly ship: Ship, readonly firstGun: AbstractGun, readonly secondGun: AbstractGun) {
-        super(PIXI.loader.resources["Ship-3-2"].texture);
+        super();
         this.interactive = true;
-        this.setCell(this.col, this.row);
+        const sprite = new PIXI.Sprite(PIXI.loader.resources["Ship-3-2"].texture);
         if (!this.isLeft) {
-            this.scale.x = -1;
-            this.anchor.x = 1;
+            sprite.scale.x = -1;
+            sprite.anchor.x = 1;
         }
-
-        this.on(game.Event.UPDATE, () => {
-            if (this.path) {
-                if (this.path.length > 0 && this.movementPoints > 0) {
-                    this._movementPoints--;
-                    const direction: game.Direction = this.path.pop();
-                    if (direction == game.Direction.Left) {
-                        this.setCell(this.col - 1, this.row);
-                    } else if (direction == game.Direction.Right) {
-                        this.setCell(this.col + 1, this.row);
-                    } else if (direction == game.Direction.Down) {
-                        this.setCell(this.col, this.row - 1);
-                    } else if (direction == game.Direction.Up) {
-                        this.setCell(this.col, this.row + 1);
-                    }
-                } else {
-                    this.path = null;
-                    this.emit(Unit.MOVE, this.oldCell, this.cell);
-                    this.emit(game.Event.DONE);
-                }
-            }
-            if (this.activeGun) {
-                this.activeGun.emit(game.Event.UPDATE);
-            }
-        });
+        this.addChild(sprite);
+        this.setCell(this.col, this.row);
     }
 
     get movementPoints(): number {
@@ -123,15 +100,35 @@ export default class Unit extends PIXI.Sprite {
         this.activeGun = this.preparedGun;
         this.preparedGun = null;
 
-        this.activeGun.once(game.Event.DONE, () => {
-            target.destroyShip();
-        });
+        this.activeGun.once(game.Event.DONE, () => target.destroyShip());
     }
 
     destroyShip() {
         this._isDestroyed = true;
         this.alpha = 0.5;
         this.emit(Unit.DESTROY);
+    }
+
+    protected update() {
+        if (this.path) {
+            if (this.path.length > 0 && this.movementPoints > 0) {
+                this._movementPoints--;
+                const direction: game.Direction = this.path.pop();
+                if (direction == game.Direction.Left) {
+                    this.setCell(this.col - 1, this.row);
+                } else if (direction == game.Direction.Right) {
+                    this.setCell(this.col + 1, this.row);
+                } else if (direction == game.Direction.Down) {
+                    this.setCell(this.col, this.row - 1);
+                } else if (direction == game.Direction.Up) {
+                    this.setCell(this.col, this.row + 1);
+                }
+            } else {
+                this.path = null;
+                this.emit(Unit.MOVE, this.oldCell, this.cell);
+                this.emit(game.Event.DONE);
+            }
+        }
     }
 
     private setCell(col: number, row: number) {

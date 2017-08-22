@@ -3,51 +3,17 @@ import * as game from "../../game";
 
 export default class Blaster extends AbstractGun {
 
-    private static readonly SHOTS_COUNT = 2;
-
     private fromX = 0;
     private fromY = 0;
     private toX = 0;
     private toY = 0;
-    private container: PIXI.Container;
+    private multiplierX = 0;
+    private multiplierY = 0;
 
-    private firedShots = 0;
-    private reachedShots = 0;
-    private frameNumber = 0;
+    private shot: game.Rectangle;
 
     constructor() {
         super(15);
-
-        this.on(game.Event.UPDATE, () => {
-            if (this.firedShots < Blaster.SHOTS_COUNT) {
-                console.log(this.frameNumber);
-                if (this.frameNumber % 15 == 0) {
-                    const shot = new game.Rectangle(20, 3, 0x0000FF);
-                    shot.rotation = Math.atan2(this.toY - this.fromY, this.toX - this.fromX);
-                    shot.pivot.x = shot.width / 2;
-                    shot.pivot.y = shot.height / 2;
-                    shot.x = this.fromX;
-                    shot.y = this.fromY;
-                    this.container.addChild(shot);
-                    this.firedShots++;
-
-                    const multiplierX: number = this.toX > this.fromX ? 1 : -1;
-                    const multiplierY: number = this.toY > this.fromY ? 1 : -1;
-                    shot.on(game.Event.UPDATE, () => {
-                        shot.x += Math.sin(shot.rotation + Math.PI / 2) * 35;
-                        shot.y -= Math.cos(shot.rotation + Math.PI / 2) * 35;
-                        if (shot.x > this.toX * multiplierX && shot.y > this.toY * multiplierY) {
-                            this.reachedShots++;
-                            if (this.reachedShots == Blaster.SHOTS_COUNT) {
-                                this.emit(game.Event.DONE);
-                            }
-                            this.container.removeChild(shot);
-                        }
-                    });
-                }
-                this.frameNumber++;
-            }
-        });
     }
 
     shoot(fromX: number, fromY: number, toX: number, toY: number, container: PIXI.Container) {
@@ -55,9 +21,26 @@ export default class Blaster extends AbstractGun {
         this.fromY = fromY;
         this.toX = toX;
         this.toY = toY;
-        this.container = container;
-        this.firedShots = 0;
-        this.reachedShots = 0;
-        this.frameNumber = 0;
+        this.multiplierX = this.toX > this.fromX ? 1 : -1;
+        this.multiplierY = this.toY > this.fromY ? 1 : -1;
+
+        this.shot = new game.Rectangle(25, 5, 0x0000FF);
+        this.shot.rotation = Math.atan2(this.toY - this.fromY, this.toX - this.fromX);
+        this.shot.pivot.x = this.shot.width / 2;
+        this.shot.pivot.y = this.shot.height / 2;
+        this.shot.x = this.fromX;
+        this.shot.y = this.fromY;
+        container.addChild(this.shot);
+        PIXI.ticker.shared.add(this.update, this);
+    }
+
+    protected update() {
+        this.shot.x += Math.sin(this.shot.rotation + Math.PI / 2) * 30;
+        this.shot.y -= Math.cos(this.shot.rotation + Math.PI / 2) * 30;
+        if (this.shot.x > this.toX * this.multiplierX && this.shot.y > this.toY * this.multiplierY) {
+            PIXI.ticker.shared.remove(this.update, this);
+            this.shot.destroy();
+            this.emit(game.Event.DONE);
+        }
     }
 }

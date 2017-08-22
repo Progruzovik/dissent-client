@@ -1,14 +1,16 @@
-import { Event } from "./constant";
 import * as PIXI from "pixi.js";
 
-export class Actor extends PIXI.Container {
+export abstract class Actor extends PIXI.Container {
 
     constructor() {
         super();
-        this.on(Event.UPDATE, () => {
-            for (const child of this.children) {
-                child.emit(Event.UPDATE);
-            }
-        });
+        PIXI.ticker.shared.add(this.update, this);
     }
+    
+    destroy() {
+        PIXI.ticker.shared.remove(this.update, this);
+        super.destroy({ children: true });
+    }
+
+    protected abstract update();
 }

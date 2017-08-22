@@ -7,4 +7,6 @@ export abstract class AbstractGun extends PIXI.utils.EventEmitter {
     }
 
     abstract shoot(fromX: number, fromY: number, toX: number, toY: number, container: PIXI.Container);
+
+    protected abstract update();
 }

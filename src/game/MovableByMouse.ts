@@ -1,13 +1,12 @@
-import { Actor } from "./Actor";
 import { Event } from "./constant"
 
-export class MovableByMouse extends Actor {
+export class MovableByMouse extends PIXI.Container {
 
     private isLeftMouseButtonDown = false;
     private mouseX = 0;
     private mouseY = 0;
 
-    protected readonly content = new Actor();
+    protected readonly content = new PIXI.Container();
 
     constructor(freeWidth: number, freeHeight: number) {
         super();

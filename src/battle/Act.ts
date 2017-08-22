@@ -7,7 +7,7 @@ import UnitManager from "./unit/UnitManager";
 import FieldManager from "./field/FieldManager";
 import * as game from "../game";
 
-export default class Act extends game.Actor {
+export default class Act extends PIXI.Container {
 
     private static readonly FIELD_LENGTH = 15;
     private static readonly IS_PLAYER_ON_LEFT = true;
@@ -28,7 +28,7 @@ export default class Act extends game.Actor {
                     if (unit.preparedGun == unit.firstGun) {
                         btnFirstGun.isEnabled = false;
                     } else if (unit.preparedGun == unit.secondGun) {
-                        btnFirstGun.isEnabled = false;
+                        btnSecondGun.isEnabled = false;
                     }
                 });
             }
