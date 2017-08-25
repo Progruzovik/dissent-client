@@ -42,6 +42,7 @@ export default class Field extends game.MovableByMouse {
         }
         this.addChild(this.content);
 
+        this.gunManager.on(Unit.SHOT, (projectile: game.Actor) => this.content.addChild(projectile));
         this.fieldManager.on(FieldManager.PATHS_READY, (unit: Unit) => this.createCommonMarksForUnit(unit));
         this.fieldManager.on(FieldManager.PATH_LINE, (cell: PIXI.Point, direction: game.Direction) => {
             const pathLine = new game.Rectangle(5, 5, 0x00FF00);
@@ -92,7 +93,7 @@ export default class Field extends game.MovableByMouse {
                     unit.path = this.fieldManager.currentPath;
                     this.pathLayer.removeChildren();
                     this.emit(game.Event.MOUSE_UP);
-                    unit.once(game.Event.DONE, () => this.fieldManager.createPathsForUnit(unit));
+                    unit.once(Unit.MOVE, () => this.fieldManager.createPathsForUnit(unit));
                 });
                 pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
             }

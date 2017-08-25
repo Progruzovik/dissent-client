@@ -19,7 +19,7 @@ export default class Act extends PIXI.Container {
         super();
         const guns = new Array<GunSpecification>(1);
         guns.push(new GunSpecification(15, GunManager.BEAM));
-        guns.push(new GunSpecification(15, GunManager.SHELL));
+        guns.push(new GunSpecification(15, GunManager.SHELL, 3, 15));
         const gunManager = new GunManager(guns);
         const ship = new Ship(3);
         const units = new Array<Unit>(0);

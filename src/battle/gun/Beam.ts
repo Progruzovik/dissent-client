@@ -4,7 +4,7 @@ export default class Beam extends game.Actor {
 
     private remainingFrames = 12;
 
-    constructor(from: PIXI.Point, to: PIXI.Point) {
+    constructor(to: PIXI.Point, from: PIXI.Point) {
         super();
         const dx: number = to.x - from.x, dy: number = to.y - from.y;
         this.addChild(new game.Rectangle(Math.sqrt(dx * dx + dy * dy), 2, 0xFF0000));

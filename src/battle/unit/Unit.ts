@@ -97,7 +97,7 @@ export default class Unit extends game.Actor {
     }
 
     shoot(target: Unit) {
-        this.gunManager.shoot(this.preparedGun, this.center, target.center, this.parent);
+        this.gunManager.shoot(this.preparedGun, target.center, this.center);
         this.emit(Unit.SHOT);
         this.preparedGun = null;
 
@@ -127,7 +127,6 @@ export default class Unit extends game.Actor {
             } else {
                 this.path = null;
                 this.emit(Unit.MOVE, this.oldCell, this.cell);
-                this.emit(game.Event.DONE);
             }
         }
     }
