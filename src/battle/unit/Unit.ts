@@ -1,6 +1,6 @@
 import Field from "../field/Field";
 import Ship from "./Ship";
-import { AbstractGun } from "../gun/AbstractGun";
+import GunManager from "../gun/GunManager";
 import * as game from "../../game";
 
 export default class Unit extends game.Actor {
@@ -20,11 +20,10 @@ export default class Unit extends game.Actor {
     private _path: game.Direction[] = null;
     private oldCell: PIXI.Point = null;
 
-    private _preparedGun: AbstractGun = null;
-    private activeGun: AbstractGun = null;
+    private _preparedGun: number = null;
 
-    constructor(readonly isLeft: boolean, private _col: number, private _row: number,
-                readonly ship: Ship, readonly firstGun: AbstractGun, readonly secondGun: AbstractGun) {
+    constructor(readonly isLeft: boolean, private _col: number, private _row: number, readonly ship: Ship,
+                readonly firstGun: number, readonly secondGun: number, private readonly gunManager: GunManager) {
         super();
         this.interactive = true;
         const sprite = new PIXI.Sprite(PIXI.loader.resources["Ship-3-2"].texture);
@@ -55,6 +54,19 @@ export default class Unit extends game.Actor {
         }
     }
 
+    get preparedGun(): number {
+        return this._preparedGun;
+    }
+
+    set preparedGun(value: number) {
+        this._preparedGun = value;
+        if (value) {
+            this.emit(Unit.PREPARED_TO_SHOT);
+        } else {
+            this.emit(Unit.NOT_PREPARED_TO_SHOT);
+        }
+    }
+
     get col(): number {
         return this._col;
     }
@@ -67,22 +79,13 @@ export default class Unit extends game.Actor {
         return new PIXI.Point(this.col, this.row);
     }
 
-    get preparedGun(): AbstractGun {
-        return this._preparedGun;
-    }
-
-    set preparedGun(value: AbstractGun) {
-        this._preparedGun = value;
-        if (value) {
-            this.emit(Unit.PREPARED_TO_SHOT);
-        } else {
-            this.emit(Unit.NOT_PREPARED_TO_SHOT);
-        }
+    get center(): PIXI.Point {
+        return new PIXI.Point(this.x + this.width / 2, this.y + this.height / 2);
     }
 
     canHit(target: Unit) {
         return this.preparedGun && this.isLeft != target.isLeft && !target.isDestroyed
-            && this.calculateDistanceToCell(target.cell) <= this.preparedGun.radius;
+            && this.calculateDistanceToCell(target.cell) <= this.gunManager.getRadius(this.preparedGun);
     }
 
     calculateDistanceToCell(cell: PIXI.Point): number {
@@ -94,13 +97,11 @@ export default class Unit extends game.Actor {
     }
 
     shoot(target: Unit) {
-        this.preparedGun.shoot(this.x + this.width / 2, this.y + this.height / 2,
-            target.x + target.width / 2, target.y + target.height / 2, this.parent);
+        this.gunManager.shoot(this.preparedGun, this.center, target.center, this.parent);
         this.emit(Unit.SHOT);
-        this.activeGun = this.preparedGun;
         this.preparedGun = null;
 
-        this.activeGun.once(game.Event.DONE, () => target.destroyShip());
+        this.gunManager.once(game.Event.DONE, () => target.destroyShip());
     }
 
     destroyShip() {

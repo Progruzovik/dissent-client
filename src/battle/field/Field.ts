@@ -3,6 +3,7 @@ import Mark from "./Mark";
 import Unit from "../unit/Unit";
 import { CellStatus } from "./utils";
 import * as game from "../../game";
+import GunManager from "../gun/GunManager";
 
 export default class Field extends game.MovableByMouse {
 
@@ -14,7 +15,8 @@ export default class Field extends game.MovableByMouse {
 
     private readonly pathLayer = new PIXI.Container();
 
-    constructor(private fieldManager: FieldManager, freeWidth: number, freeHeight: number) {
+    constructor(private readonly gunManager: GunManager, private readonly fieldManager: FieldManager,
+                freeWidth: number, freeHeight: number) {
         super(freeWidth, freeHeight);
         this.createCommonMarksForUnit(fieldManager.unitManager.currentUnit);
 
@@ -40,8 +42,8 @@ export default class Field extends game.MovableByMouse {
         }
         this.addChild(this.content);
 
-        fieldManager.on(FieldManager.PATHS_READY, (unit: Unit) => this.createCommonMarksForUnit(unit));
-        fieldManager.on(FieldManager.PATH_LINE, (cell: PIXI.Point, direction: game.Direction) => {
+        this.fieldManager.on(FieldManager.PATHS_READY, (unit: Unit) => this.createCommonMarksForUnit(unit));
+        this.fieldManager.on(FieldManager.PATH_LINE, (cell: PIXI.Point, direction: game.Direction) => {
             const pathLine = new game.Rectangle(5, 5, 0x00FF00);
             pathLine.x = cell.x * Unit.WIDTH;
             pathLine.y = cell.y * Unit.HEIGHT;
@@ -61,8 +63,8 @@ export default class Field extends game.MovableByMouse {
             }
             this.pathLayer.addChild(pathLine);
         });
-        fieldManager.unitManager.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => this.addTargetMarksForUnit(unit));
-        fieldManager.unitManager.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
+        this.fieldManager.unitManager.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => this.addTargetMarksForUnit(unit));
+        this.fieldManager.unitManager.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
     }
 
     private removeAllMarksExceptCurrent() {
@@ -108,7 +110,8 @@ export default class Field extends game.MovableByMouse {
     private addTargetMarksForUnit(unit: Unit) {
         this.removeAllMarksExceptCurrent();
         const targets: Unit[] = this.fieldManager.unitManager.units.filter(target => unit.canHit(target));
-        for (const cell of this.fieldManager.findNeighborsForCell(unit.cell, unit.preparedGun.radius)) {
+        for (const cell of this.fieldManager.findNeighborsForCell(
+            unit.cell, this.gunManager.getRadius(unit.preparedGun))) {
             if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Empty) {
                 this.markLayer.addChild(new Mark(0xFFFFFF, cell));
             } else if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Ship) {

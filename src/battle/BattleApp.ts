@@ -15,7 +15,7 @@ export default class BattleApp extends PIXI.Application {
             const act = new Act(BattleApp.WIDTH, BattleApp.HEIGHT);
             this.stage.addChild(act);
 
-            act.on(game.Event.DONE, () => act.destroy({ children: true }));
+            act.once(game.Event.DONE, () => act.destroy({ children: true }));
         });
     }
 }

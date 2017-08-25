@@ -1,35 +1,24 @@
-import { AbstractGun } from "./AbstractGun";
 import * as game from "../../game";
 
-export default class Beam extends AbstractGun {
+export default class Beam extends game.Actor {
 
-    private remainingChargeFrames = 0;
-    private charge: game.Rectangle;
+    private remainingFrames = 12;
 
-    constructor() {
-        super(15);
-    }
-
-    shoot(fromX: number, fromY: number, toX: number, toY: number, container: PIXI.Container) {
-        const dx: number = toX - fromX, dy: number = toY - fromY;
-        this.charge = new game.Rectangle(Math.sqrt(dx * dx + dy * dy), 2, 0xFF0000);
-        this.charge.rotation = Math.atan2(dy, dx);
-        this.charge.pivot.y = this.charge.height / 2;
-        this.charge.x = fromX;
-        this.charge.y = fromY;
-        container.addChild(this.charge);
-
-        this.remainingChargeFrames = 12;
-        PIXI.ticker.shared.add(this.update, this);
+    constructor(from: PIXI.Point, to: PIXI.Point) {
+        super();
+        const dx: number = to.x - from.x, dy: number = to.y - from.y;
+        this.addChild(new game.Rectangle(Math.sqrt(dx * dx + dy * dy), 2, 0xFF0000));
+        this.rotation = Math.atan2(dy, dx);
+        this.pivot.y = this.height / 2;
+        this.position.set(from.x, from.y);
     }
 
     protected update() {
-        if (this.remainingChargeFrames > 0) {
-            this.remainingChargeFrames--;
+        if (this.remainingFrames > 0) {
+            this.remainingFrames--;
         } else {
-            PIXI.ticker.shared.remove(this.update, this);
-            this.charge.destroy();
             this.emit(game.Event.DONE);
+            this.destroy();
         }
     }
 }
