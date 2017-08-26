@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js"
 
 export class Rectangle extends PIXI.Graphics {
 
-    constructor(private _width: number, private _height: number, private _color: number = 0x000000) {
+    constructor(private _width: number = 0, private _height: number = 0, private _color: number = 0x000000) {
         super();
         this.redraw(this.color, this.width, this.height);
     }
@@ -32,10 +32,6 @@ export class Rectangle extends PIXI.Graphics {
     set height(value: number) {
         this._height = value;
         this.redraw(this.color, this.width, value);
-    }
-
-    set size(value: PIXI.Point) {
-        this.redraw(this.color, value.x, value.y);
     }
 
     private redraw(color: number, width: number, height: number) {

@@ -12,15 +12,14 @@ export default class Field extends game.MovableByMouse {
     private readonly currentMark = new Mark(0x00FF00);
     private readonly pathMarks = new Array<Mark>(0);
     private readonly markLayer = new PIXI.Container();
-
     private readonly pathLayer = new PIXI.Container();
+    private readonly bg = new game.Rectangle();
 
-    constructor(private readonly gunManager: GunManager, private readonly fieldManager: FieldManager,
-                freeWidth: number, freeHeight: number) {
-        super(freeWidth, freeHeight);
+    constructor(private readonly gunManager: GunManager, private readonly fieldManager: FieldManager) {
+        super();
         this.createCommonMarksForUnit(fieldManager.unitManager.currentUnit);
 
-        this.addChild(new game.Rectangle(freeWidth, freeHeight, 0x111111));
+        this.addChild(this.bg);
         for (let i = 0; i <= fieldManager.rowsCount; i++) {
             const line = new game.Rectangle(fieldManager.colsCount * Unit.WIDTH + Field.LINE_WIDTH,
                 Field.LINE_WIDTH, 0x777777);
@@ -66,6 +65,12 @@ export default class Field extends game.MovableByMouse {
         });
         this.fieldManager.unitManager.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => this.addTargetMarksForUnit(unit));
         this.fieldManager.unitManager.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
+    }
+
+    resize(freeWidth: number, freeHeight: number) {
+        this.bg.width = freeWidth;
+        this.bg.height = freeHeight;
+        super.resize(freeWidth, freeHeight);
     }
 
     private removeAllMarksExceptCurrent() {

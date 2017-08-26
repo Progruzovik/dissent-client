@@ -1,3 +1,4 @@
+import Queue from "./Queue";
 import Field from "./field/Field";
 import FieldManager from "./field/FieldManager";
 import GunManager from "./gun/GunManager";
@@ -9,13 +10,17 @@ import * as game from "../game";
 
 export default class Act extends PIXI.Container {
 
-    private static readonly FIELD_LENGTH = 15;
+    private static readonly FIELD_LENGTH = 45;
     private static readonly IS_PLAYER_ON_LEFT = true;
 
     private static readonly GUN_BEAM = 1;
     private static readonly GUN_SHELL = 2;
 
-    constructor(stageWidth: number, stageHeight: number) {
+    private readonly queue: Queue;
+    private readonly controls = new game.Rectangle(0, 100);
+    private readonly field: Field;
+
+    constructor(width: number, height: number) {
         super();
         const guns = new Array<GunSpecification>(1);
         guns.push(new GunSpecification(15, GunManager.BEAM));
@@ -42,27 +47,25 @@ export default class Act extends PIXI.Container {
         const unitManager = new UnitManager(units);
         const fieldManager = new FieldManager(Act.FIELD_LENGTH, Act.FIELD_LENGTH, unitManager);
 
-        const controls = new game.Rectangle(stageWidth, 100, 0x111111);
-        const queue = new Queue(Act.IS_PLAYER_ON_LEFT, stageHeight - controls.height, unitManager);
-        const field = new Field(gunManager, fieldManager, stageWidth - queue.width, queue.height);
-        field.x = queue.width;
-        this.addChild(field);
-        this.addChild(queue);
-
+        this.queue = new Queue(Act.IS_PLAYER_ON_LEFT, unitManager);
+        this.field = new Field(gunManager, fieldManager);
+        this.field.x = this.queue.width;
+        this.addChild(this.field);
+        this.addChild(this.queue);
         const btnFirstGun = new game.Button("Лазерн. луч");
         btnFirstGun.x = game.INDENT;
         btnFirstGun.y = game.INDENT;
-        controls.addChild(btnFirstGun);
+        this.controls.addChild(btnFirstGun);
         const btnSecondGun = new game.Button("Бластер");
         btnSecondGun.x = btnFirstGun.x + btnFirstGun.width + game.INDENT;
         btnSecondGun.y = btnFirstGun.y;
-        controls.addChild(btnSecondGun);
+        this.controls.addChild(btnSecondGun);
         const btnFinish = new game.Button("Конец хода");
         btnFinish.x = btnSecondGun.x + btnSecondGun.width + game.INDENT;
         btnFinish.y = btnSecondGun.y;
-        controls.addChild(btnFinish);
-        controls.y = stageHeight - controls.height;
-        this.addChild(controls);
+        this.controls.addChild(btnFinish);
+        this.addChild(this.controls);
+        this.resize(width, height);
 
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
             const isCurrentPlayerTurn: boolean = currentUnit.isLeft == Act.IS_PLAYER_ON_LEFT;
@@ -90,32 +93,12 @@ export default class Act extends PIXI.Container {
         btnFinish.on(game.Event.BUTTON_CLICK, () => unitManager.nextTurn());
         unitManager.once(game.Event.DONE, () => this.emit(game.Event.DONE));
     }
-}
 
-class Queue extends game.Rectangle {
-
-    constructor(isPlayerOnLeft: boolean, height: number, unitManager: UnitManager) {
-        super(Unit.WIDTH, height, 0x111111);
-        unitManager.units.forEach((unit: Unit, i: number) => {
-            const icon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT,
-                unit.isLeft == isPlayerOnLeft ? 0x00FF00 : 0xFF0000);
-            icon.addChild(new PIXI.Sprite(PIXI.loader.resources["Ship-3-2"].texture));
-            icon.y = Unit.HEIGHT * i;
-            this.addChild(icon);
-
-            unit.on(Unit.DESTROY, () => {
-                this.removeChild(icon);
-                this.updateChildrenPositions();
-            });
-        });
-
-        unitManager.on(UnitManager.NEXT_TURN, () => {
-            this.setChildIndex(this.getChildAt(0), this.children.length - 1);
-            this.updateChildrenPositions();
-        });
-    }
-
-    private updateChildrenPositions() {
-        this.children.forEach((child: PIXI.DisplayObject, i: number) => child.y = Unit.HEIGHT * i);
+    resize(width: number, height: number) {
+        const bottomControlsIndent: number = height - this.controls.height;
+        this.queue.height = bottomControlsIndent;
+        this.controls.width = width;
+        this.controls.y = bottomControlsIndent;
+        this.field.resize(width - this.queue.width, bottomControlsIndent);
     }
 }
