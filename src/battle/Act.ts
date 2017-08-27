@@ -2,8 +2,8 @@ import Controls from "./Controls";
 import Queue from "./Queue";
 import Field from "./field/Field";
 import FieldManager from "./field/FieldManager";
+import Gun from "./gun/Gun";
 import GunManager from "./gun/GunManager";
-import GunSpecification from "./gun/GunSpecification";
 import Ship from "./unit/Ship";
 import Unit from "./unit/Unit";
 import UnitManager from "./unit/UnitManager";
@@ -12,10 +12,7 @@ import * as game from "../game";
 export default class Act extends PIXI.Container {
 
     static readonly IS_PLAYER_ON_LEFT = true;
-
     private static readonly FIELD_LENGTH = 15;
-    private static readonly GUN_BEAM = 1;
-    private static readonly GUN_SHELL = 2;
 
     private readonly queue: Queue;
     private readonly controls: Controls;
@@ -23,17 +20,16 @@ export default class Act extends PIXI.Container {
 
     constructor(width: number, height: number) {
         super();
-        const guns = new Array<GunSpecification>(1);
-        guns.push(new GunSpecification(15, GunManager.BEAM));
-        guns.push(new GunSpecification(15, GunManager.SHELL, 3, 15));
-        const gunManager = new GunManager(guns);
+        const gunManager = new GunManager();
         const ship = new Ship(3);
+        const firstGun = new Gun("Лазерн. луч", 15, GunManager.BEAM);
+        const secondGUn = new Gun("Оскол. орудие", 15, GunManager.SHELL, 3, 15);
         const units = new Array<Unit>(0);
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;
                 const unit = new Unit(isLeft, isLeft ? 0 : Act.FIELD_LENGTH - 1, (j + 1) * 3,
-                    ship, Act.GUN_BEAM, Act.GUN_SHELL, gunManager);
+                    ship, firstGun, secondGUn, gunManager);
                 units.push(unit);
             }
         }

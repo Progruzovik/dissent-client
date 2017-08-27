@@ -1,5 +1,6 @@
 import Field from "../field/Field";
 import Ship from "./Ship";
+import Gun from "../gun/Gun";
 import GunManager from "../gun/GunManager";
 import * as game from "../../game";
 
@@ -17,13 +18,13 @@ export default class Unit extends game.Actor {
     private _movementPoints = 0;
     private _isDestroyed = false;
 
-    private _path: game.Direction[] = null;
-    private oldCell: PIXI.Point = null;
+    private _path: game.Direction[];
+    private oldCell: PIXI.Point;
 
-    private _preparedGun: number = null;
+    private _preparedGun: Gun;
 
     constructor(readonly isLeft: boolean, private _col: number, private _row: number, readonly ship: Ship,
-                readonly firstGun: number, readonly secondGun: number, private readonly gunManager: GunManager) {
+                readonly firstGun: Gun, readonly secondGun: Gun, private readonly gunManager: GunManager) {
         super();
         this.interactive = true;
         const sprite = new PIXI.Sprite(PIXI.loader.resources["Ship-3-2"].texture);
@@ -54,11 +55,11 @@ export default class Unit extends game.Actor {
         }
     }
 
-    get preparedGun(): number {
+    get preparedGun(): Gun {
         return this._preparedGun;
     }
 
-    set preparedGun(value: number) {
+    set preparedGun(value: Gun) {
         this._preparedGun = value;
         if (value) {
             this.emit(Unit.PREPARED_TO_SHOT);
@@ -85,7 +86,7 @@ export default class Unit extends game.Actor {
 
     canHit(target: Unit) {
         return this.preparedGun && this.isLeft != target.isLeft && !target.isDestroyed
-            && this.calculateDistanceToCell(target.cell) <= this.gunManager.getRadius(this.preparedGun);
+            && this.calculateDistanceToCell(target.cell) <= this.preparedGun.radius;
     }
 
     calculateDistanceToCell(cell: PIXI.Point): number {

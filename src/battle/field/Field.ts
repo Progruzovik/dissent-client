@@ -116,8 +116,7 @@ export default class Field extends game.MovableByMouse {
     private addTargetMarksForUnit(unit: Unit) {
         this.removeAllMarksExceptCurrent();
         const targets: Unit[] = this.fieldManager.unitManager.units.filter(target => unit.canHit(target));
-        for (const cell of this.fieldManager.findNeighborsForCell(
-            unit.cell, this.gunManager.getRadius(unit.preparedGun))) {
+        for (const cell of this.fieldManager.findNeighborsForCell(unit.cell, unit.preparedGun.radius)) {
             if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Empty) {
                 this.markLayer.addChild(new Mark(0xFFFFFF, cell));
             } else if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Ship) {

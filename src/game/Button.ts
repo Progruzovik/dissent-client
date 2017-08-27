@@ -7,7 +7,7 @@ export class Button extends PIXI.Container {
     private readonly bg = new PIXI.Container();
     private readonly txtMain: PIXI.Text;
 
-    constructor(text: string, width: number = 165, height: number = 40,
+    constructor(text: string = null, width: number = 165, height: number = 40,
                 private readonly bgMouseOut: PIXI.Container = new Rectangle(0x333333),
                 private readonly bgMouseOver: PIXI.Container = new Rectangle(0x666666),
                 private readonly bgMouseDown: PIXI.Container = new Rectangle(0x222222),
@@ -39,6 +39,10 @@ export class Button extends PIXI.Container {
                 this.emit(Event.BUTTON_CLICK);
             }
         });
+    }
+
+    set text(value: string) {
+        this.txtMain.text = value;
     }
 
     set isEnabled(value: boolean) {
