@@ -1,25 +1,25 @@
 import Beam from "./Beam";
 import Gun from "./Gun";
 import Shell from "./Shell";
-import * as game from "../../game";
 import Unit from "../unit/Unit";
+import * as game from "../../game";
 
-export default class GunManager extends PIXI.utils.EventEmitter {
+export default class Projectile extends PIXI.utils.EventEmitter {
 
     static readonly BEAM = "beam";
     static readonly SHELL = "shell";
 
     private static createProjectile(specification: Gun, to: PIXI.Point, from: PIXI.Point): game.Actor {
-        switch (specification.projectile) {
-            case GunManager.BEAM:
+        switch (specification.projectileType) {
+            case Projectile.BEAM:
                 return new Beam(to, from);
-            case GunManager.SHELL:
+            case Projectile.SHELL:
                 return new Shell(specification.shotDelay, to, from);
         }
     }
 
     shoot(gun: Gun, to: PIXI.Point, from: PIXI.Point, shotNumber: number = 1) {
-        const projectile: game.Actor = GunManager.createProjectile(gun, to, from);
+        const projectile: game.Actor = Projectile.createProjectile(gun, to, from);
         this.emit(Unit.SHOT, projectile);
         if (shotNumber < gun.shotsCount) {
             projectile.once(Unit.SHOT, () => this.shoot(gun, to, from, shotNumber + 1));

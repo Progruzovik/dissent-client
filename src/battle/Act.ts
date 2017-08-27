@@ -3,7 +3,7 @@ import Queue from "./Queue";
 import Field from "./field/Field";
 import FieldManager from "./field/FieldManager";
 import Gun from "./gun/Gun";
-import GunManager from "./gun/GunManager";
+import ProjectileManager from "./gun/ProjectileManager";
 import Ship from "./unit/Ship";
 import Unit from "./unit/Unit";
 import UnitManager from "./unit/UnitManager";
@@ -20,16 +20,16 @@ export default class Act extends PIXI.Container {
 
     constructor(width: number, height: number) {
         super();
-        const gunManager = new GunManager();
+        const projectileManager = new ProjectileManager();
         const ship = new Ship(3);
-        const firstGun = new Gun("Лазерн. луч", 15, GunManager.BEAM);
-        const secondGUn = new Gun("Оскол. орудие", 15, GunManager.SHELL, 3, 15);
+        const firstGun = new Gun("Лазерн. луч", 15, ProjectileManager.BEAM);
+        const secondGUn = new Gun("Оскол. орудие", 15, ProjectileManager.SHELL, 3, 15);
         const units = new Array<Unit>(0);
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;
                 const unit = new Unit(isLeft, isLeft ? 0 : Act.FIELD_LENGTH - 1, (j + 1) * 3,
-                    ship, firstGun, secondGUn, gunManager);
+                    ship, firstGun, secondGUn, projectileManager);
                 units.push(unit);
             }
         }
@@ -37,7 +37,7 @@ export default class Act extends PIXI.Container {
         const fieldManager = new FieldManager(Act.FIELD_LENGTH, Act.FIELD_LENGTH, unitManager);
 
         this.queue = new Queue(Act.IS_PLAYER_ON_LEFT, unitManager);
-        this.field = new Field(gunManager, fieldManager);
+        this.field = new Field(projectileManager, fieldManager);
         this.field.x = this.queue.width;
         this.addChild(this.field);
         this.addChild(this.queue);

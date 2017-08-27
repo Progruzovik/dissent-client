@@ -1,9 +1,9 @@
 import FieldManager from "./FieldManager";
 import Mark from "./Mark";
+import ProjectileManager from "../gun/ProjectileManager";
 import Unit from "../unit/Unit";
 import { CellStatus } from "./utils";
 import * as game from "../../game";
-import GunManager from "../gun/GunManager";
 
 export default class Field extends game.MovableByMouse {
 
@@ -15,7 +15,7 @@ export default class Field extends game.MovableByMouse {
     private readonly pathLayer = new PIXI.Container();
     private readonly bg = new game.Rectangle();
 
-    constructor(private readonly gunManager: GunManager, private readonly fieldManager: FieldManager) {
+    constructor(private readonly projectileManager: ProjectileManager, private readonly fieldManager: FieldManager) {
         super();
         this.createCommonMarksForUnit(fieldManager.unitManager.currentUnit);
 
@@ -41,7 +41,7 @@ export default class Field extends game.MovableByMouse {
         }
         this.addChild(this.content);
 
-        this.gunManager.on(Unit.SHOT, (projectile: game.Actor) => this.content.addChild(projectile));
+        this.projectileManager.on(Unit.SHOT, (projectile: game.Actor) => this.content.addChild(projectile));
         this.fieldManager.on(FieldManager.PATHS_READY, (unit: Unit) => this.createCommonMarksForUnit(unit));
         this.fieldManager.on(FieldManager.PATH_LINE, (cell: PIXI.Point, direction: game.Direction) => {
             const pathLine = new game.Rectangle(0x00FF00, 5, 5);
