@@ -21,14 +21,14 @@ export default class Field extends game.MovableByMouse {
 
         this.addChild(this.bg);
         for (let i = 0; i <= fieldManager.rowsCount; i++) {
-            const line = new game.Rectangle(fieldManager.colsCount * Unit.WIDTH + Field.LINE_WIDTH,
-                Field.LINE_WIDTH, 0x777777);
+            const line = new game.Rectangle(0x777777,
+                fieldManager.colsCount * Unit.WIDTH + Field.LINE_WIDTH, Field.LINE_WIDTH);
             line.y = i * Unit.HEIGHT;
             this.content.addChild(line);
         }
         for (let i = 0; i <= fieldManager.colsCount; i++) {
-            const line = new game.Rectangle(Field.LINE_WIDTH,
-                fieldManager.rowsCount * Unit.HEIGHT + Field.LINE_WIDTH, 0x777777);
+            const line = new game.Rectangle(0x777777,
+                Field.LINE_WIDTH, fieldManager.rowsCount * Unit.HEIGHT + Field.LINE_WIDTH);
             line.x = i * Unit.WIDTH;
             this.content.addChild(line);
         }
@@ -44,7 +44,7 @@ export default class Field extends game.MovableByMouse {
         this.gunManager.on(Unit.SHOT, (projectile: game.Actor) => this.content.addChild(projectile));
         this.fieldManager.on(FieldManager.PATHS_READY, (unit: Unit) => this.createCommonMarksForUnit(unit));
         this.fieldManager.on(FieldManager.PATH_LINE, (cell: PIXI.Point, direction: game.Direction) => {
-            const pathLine = new game.Rectangle(5, 5, 0x00FF00);
+            const pathLine = new game.Rectangle(0x00FF00, 5, 5);
             pathLine.x = cell.x * Unit.WIDTH;
             pathLine.y = cell.y * Unit.HEIGHT;
             let k = 0;
@@ -88,7 +88,7 @@ export default class Field extends game.MovableByMouse {
 
                 pathMark.on(game.Event.MOUSE_OVER, () => {
                     this.fieldManager.preparePath(cell, unit.cell);
-                    const pathEnd = new game.Rectangle(15, 15, 0x00FF00);
+                    const pathEnd = new game.Rectangle(0x00FF00, 15, 15);
                     pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
                     pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
                     pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;

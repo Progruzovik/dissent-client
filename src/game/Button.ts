@@ -5,23 +5,23 @@ export class Button extends PIXI.Container {
 
     private _state: State;
     private readonly bg = new PIXI.Container();
+    private readonly txtMain: PIXI.Text;
 
-    constructor(text: string,
-                private readonly bgMouseOut: PIXI.Container = new Rectangle(165, 40, 0x333333),
-                private readonly bgMouseOver: PIXI.Container = new Rectangle(165, 40, 0x666666),
-                private readonly bgMouseDown: PIXI.Container = new Rectangle(165, 40, 0x222222),
-                private readonly bgDisabled: PIXI.Container = new Rectangle(165, 40, 0x666666)) {
+    constructor(text: string, width: number = 165, height: number = 40,
+                private readonly bgMouseOut: PIXI.Container = new Rectangle(0x333333),
+                private readonly bgMouseOver: PIXI.Container = new Rectangle(0x666666),
+                private readonly bgMouseDown: PIXI.Container = new Rectangle(0x222222),
+                private readonly bgDisabled: PIXI.Container = bgMouseOver) {
         super();
         this.interactive = true;
         this.buttonMode = true;
-        this.addChild(this.bg);
         this.state = State.MouseOut;
-
-        const txtMain = new PIXI.Text(text, { fill: 0xFFFFFF, fontSize: 26 });
-        txtMain.anchor.set(CENTER, CENTER);
-        txtMain.x = this.width / 2;
-        txtMain.y = this.height / 2;
-        this.addChild(txtMain);
+        this.addChild(this.bg);
+        this.txtMain = new PIXI.Text(text, { fill: 0xFFFFFF, fontSize: 26 });
+        this.txtMain.anchor.set(CENTER, CENTER);
+        this.addChild(this.txtMain);
+        this.width = width;
+        this.height = height;
 
         this.on(Event.MOUSE_OVER, () => this.state = State.MouseOver);
         this.on(Event.MOUSE_DOWN, () => this.state = State.MouseDown);
@@ -44,6 +44,30 @@ export class Button extends PIXI.Container {
     set isEnabled(value: boolean) {
         this.buttonMode = value;
         this.updateBg();
+    }
+
+    get width(): number {
+        return this.bgMouseOut.width;
+    }
+
+    set width(value: number) {
+        this.bgMouseOut.width = value;
+        this.bgMouseOver.width = value;
+        this.bgMouseDown.width = value;
+        this.bgDisabled.width = value;
+        this.txtMain.x = value / 2;
+    }
+
+    get height() {
+        return this.bgMouseOut.height;
+    }
+
+    set height(value: number) {
+        this.bgMouseOut.height = value;
+        this.bgMouseOver.height = value;
+        this.bgMouseDown.height = value;
+        this.bgDisabled.height = value;
+        this.txtMain.y = value / 2;
     }
 
     private get state(): State {

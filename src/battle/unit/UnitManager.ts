@@ -35,6 +35,7 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
             unit.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) =>
                 this.emit(Unit.MOVE, oldPosition, newPosition));
             unit.on(Unit.PREPARED_TO_SHOT, () => this.emit(Unit.PREPARED_TO_SHOT, unit));
+            unit.on(Unit.SHOT, () => this.emit(Unit.SHOT, unit));
             unit.on(Unit.NOT_PREPARED_TO_SHOT, () => {
                 if (this.highlightedUnit) {
                     this.highlightedUnit.emit(game.Event.MOUSE_OUT);

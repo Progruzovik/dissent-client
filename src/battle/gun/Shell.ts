@@ -10,7 +10,7 @@ export default class Shell extends game.Actor {
         super();
         this.multiplier.set(this.to.x > from.x ? 1 : -1, this.to.y > from.y ? 1 : -1);
 
-        this.addChild(new game.Rectangle(20, 4, 0xFFFF00));
+        this.addChild(new game.Rectangle(0xFFFF00, 20, 4));
         this.rotation = Math.atan2(this.to.y - from.y, this.to.x - from.x);
         this.pivot.x = this.width / 2;
         this.pivot.y = this.height / 2;

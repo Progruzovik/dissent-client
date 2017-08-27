@@ -5,10 +5,10 @@ import * as game from "../game";
 export default class Queue extends game.Rectangle {
 
     constructor(isPlayerOnLeft: boolean, unitManager: UnitManager) {
-        super(Unit.WIDTH);
+        super(0x000000, Unit.WIDTH);
         unitManager.units.forEach((unit: Unit, i: number) => {
-            const icon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT,
-                unit.isLeft == isPlayerOnLeft ? 0x00FF00 : 0xFF0000);
+            const icon = new game.Rectangle(unit.isLeft == isPlayerOnLeft ? 0x00FF00 : 0xFF0000,
+                Unit.WIDTH, Unit.HEIGHT);
             icon.addChild(new PIXI.Sprite(PIXI.loader.resources["Ship-3-2"].texture));
             icon.y = Unit.HEIGHT * i;
             this.addChild(icon);

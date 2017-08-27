@@ -8,7 +8,7 @@ export default class Mark extends game.Rectangle {
     private row: number;
 
     constructor(color: number, cell: PIXI.Point = null) {
-        super(Unit.WIDTH - Field.LINE_WIDTH, Unit.HEIGHT - Field.LINE_WIDTH, color);
+        super(color, Unit.WIDTH - Field.LINE_WIDTH, Unit.HEIGHT - Field.LINE_WIDTH);
         this.interactive = true;
         this.alpha = 0.4;
         if (cell) {
