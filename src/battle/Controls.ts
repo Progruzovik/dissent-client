@@ -54,9 +54,13 @@ export default class Controls extends PIXI.Container {
 
     resize(width: number) {
         const lengthPerSection: number = width / Controls.SECTIONS_COUNT;
+
         this.bgShip.width = lengthPerSection;
         this.bgShip.height = this.bgShip.width / Controls.SECTION_RATIO;
+        const shipRatio: number = this.bgShip.height / Unit.HEIGHT;
+        this.spriteShip.scale.set(shipRatio, shipRatio);
         this.spriteShip.position.set(this.bgShip.width / 2, this.bgShip.height / 2);
+
         this.bgStats.width = lengthPerSection;
         this.bgStats.height = this.bgStats.width / Controls.SECTION_RATIO;
         this.bgStats.x = this.bgShip.width;
