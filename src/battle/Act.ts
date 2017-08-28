@@ -23,8 +23,8 @@ export default class Act extends PIXI.Container {
         const projectileManager = new ProjectileManager();
         const ship = new Ship(4, PIXI.loader.resources["ship-3-2"].texture);
         const flagship = new Ship(3, PIXI.loader.resources["ship-5-3"].texture);
-        const firstGun = new Gun("Лазерн. луч", 15, ProjectileManager.BEAM);
-        const secondGUn = new Gun("Оскол. орудие", 15, ProjectileManager.SHELL, 3, 15);
+        const firstGun = new Gun("Лазерн. луч", 14, 2, ProjectileManager.BEAM);
+        const secondGUn = new Gun("Оскол. орудие", 16, 3, ProjectileManager.SHELL, 3, 15);
         const units = new Array<Unit>(0);
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {

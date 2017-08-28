@@ -27,13 +27,7 @@ export default class Controls extends PIXI.Container {
         this.addChild(this.btnNextTurn);
         this.updateControls(unitManager.currentUnit);
 
-        this.unitManager.on(Unit.SHOT, (unit: Unit) => {
-            if (unit.preparedGun == unit.firstGun) {
-                this.btnFirstGun.isEnabled = false;
-            } else if (unit.preparedGun == unit.secondGun) {
-                this.btnSecondGun.isEnabled = false;
-            }
-        });
+        this.unitManager.on(Unit.SHOT, (unit: Unit) => this.updateControls(unit));
         this.unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.updateControls(currentUnit));
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
             if (unitManager.currentUnit.preparedGun == unitManager.currentUnit.firstGun) {
@@ -78,18 +72,28 @@ export default class Controls extends PIXI.Container {
         this.btnNextTurn.x = this.bgModule.x + this.bgModule.width;
     }
 
-    private updateControls(currentUnit: Unit) {
-        this.spriteShip.texture = currentUnit.ship.texture;
-        if (currentUnit.firstGun) {
-            this.btnFirstGun.text = currentUnit.firstGun.name;
-            this.btnFirstGun.isEnabled = true;
+    private updateControls(unit: Unit) {
+        this.spriteShip.texture = unit.ship.texture;
+        if (unit.firstGun) {
+            this.btnFirstGun.text = unit.firstGun.name;
+            if (unit.firstGunCooldown > 0) {
+                this.btnFirstGun.text += " (" + unit.firstGunCooldown + ")";
+                this.btnFirstGun.isEnabled = false;
+            } else {
+                this.btnFirstGun.isEnabled = true;
+            }
         } else {
             this.btnFirstGun.text = null;
             this.btnFirstGun.isEnabled = false;
         }
-        if (currentUnit.secondGun) {
-            this.btnSecondGun.text = currentUnit.secondGun.name;
-            this.btnSecondGun.isEnabled = true;
+        if (unit.secondGun) {
+            this.btnSecondGun.text = unit.secondGun.name;
+            if (unit.secondGunCooldown > 0) {
+                this.btnSecondGun.text += " (" + unit.secondGunCooldown + ")";
+                this.btnSecondGun.isEnabled = false;
+            } else {
+                this.btnSecondGun.isEnabled = true;
+            }
         } else {
             this.btnSecondGun.text = null;
             this.btnSecondGun.isEnabled = false;

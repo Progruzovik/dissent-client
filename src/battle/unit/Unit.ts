@@ -16,6 +16,8 @@ export default class Unit extends game.Actor {
     static readonly DESTROY = "destroy";
 
     private _movementPoints = 0;
+    private _firstGunCooldown = 0;
+    private _secondGunCooldown = 0;
     private _isDestroyed = false;
 
     private _path: game.Direction[];
@@ -35,6 +37,14 @@ export default class Unit extends game.Actor {
         }
         this.addChild(sprite);
         this.setCell(this.col, this.row);
+    }
+
+    get firstGunCooldown(): number {
+        return this._firstGunCooldown;
+    }
+
+    get secondGunCooldown(): number {
+        return this._secondGunCooldown;
     }
 
     get movementPoints(): number {
@@ -61,10 +71,14 @@ export default class Unit extends game.Actor {
     }
 
     set preparedGun(value: Gun) {
-        this._preparedGun = value;
         if (value) {
-            this.emit(Unit.PREPARED_TO_SHOT);
+            if (value == this.firstGun && this.firstGunCooldown == 0
+                || value == this.secondGun && this.secondGunCooldown == 0) {
+                this._preparedGun = value;
+                this.emit(Unit.PREPARED_TO_SHOT);
+            }
         } else {
+            this._preparedGun = null;
             this.emit(Unit.NOT_PREPARED_TO_SHOT);
         }
     }
@@ -96,10 +110,21 @@ export default class Unit extends game.Actor {
 
     makeCurrent() {
         this._movementPoints = this.ship.speed;
+        if (this.firstGunCooldown > 0) {
+            this._firstGunCooldown--;
+        }
+        if (this.secondGunCooldown > 0) {
+            this._secondGunCooldown--;
+        }
     }
 
     shoot(target: Unit) {
         this.projectileManager.shoot(this.preparedGun, target.center, this.center);
+        if (this.preparedGun == this.firstGun) {
+            this._firstGunCooldown = this.preparedGun.cooldown;
+        } else if (this.preparedGun == this.secondGun) {
+            this._secondGunCooldown = this.preparedGun.cooldown;
+        }
         this.emit(Unit.SHOT);
         this.preparedGun = null;
 

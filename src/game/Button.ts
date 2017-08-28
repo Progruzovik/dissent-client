@@ -41,6 +41,10 @@ export class Button extends PIXI.Container {
         });
     }
 
+    get text(): string {
+        return this.txtMain.text;
+    }
+
     set text(value: string) {
         this.txtMain.text = value;
     }
