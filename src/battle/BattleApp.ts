@@ -8,7 +8,9 @@ export default class BattleApp extends PIXI.Application {
 
     constructor() {
         super(innerWidth, innerHeight, { resolution: devicePixelRatio || 1, autoResize: true });
-        PIXI.loader.add("Ship-3-2", "img/Ship-3-2.png",
+        PIXI.loader.add("ship-3-2", "img/Ship-3-2.png",
+            (resource: PIXI.loaders.Resource) => resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST);
+        PIXI.loader.add("ship-5-3", "img/Ship-5-3.png",
             (resource: PIXI.loaders.Resource) => resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST);
         PIXI.loader.load(() => {
             this.act = new Act(innerWidth, innerHeight);

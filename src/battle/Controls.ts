@@ -7,22 +7,25 @@ export default class Controls extends PIXI.Container {
     private static readonly SECTIONS_COUNT = 6;
     private static readonly SECTION_RATIO = 3;
 
-    private readonly ship = new game.Rectangle();
-    private readonly stats = new game.Rectangle();
+    private readonly spriteShip = new PIXI.Sprite();
+    private readonly bgShip = new game.Rectangle();
+    private readonly bgStats = new game.Rectangle();
     private readonly btnFirstGun = new game.Button();
     private readonly btnSecondGun = new game.Button();
-    private readonly module = new game.Rectangle();
+    private readonly bgModule = new game.Rectangle();
     private readonly btnNextTurn = new game.Button("Конец хода");
 
     constructor(private readonly unitManager: UnitManager) {
         super();
-        this.addChild(this.ship);
-        this.addChild(this.stats);
+        this.spriteShip.anchor.set(game.CENTER, game.CENTER);
+        this.bgShip.addChild(this.spriteShip);
+        this.addChild(this.bgShip);
+        this.addChild(this.bgStats);
         this.addChild(this.btnFirstGun);
         this.addChild(this.btnSecondGun);
-        this.addChild(this.module);
+        this.addChild(this.bgModule);
         this.addChild(this.btnNextTurn);
-        this.updateGunButtons(unitManager.currentUnit);
+        this.updateControls(unitManager.currentUnit);
 
         this.unitManager.on(Unit.SHOT, (unit: Unit) => {
             if (unit.preparedGun == unit.firstGun) {
@@ -31,7 +34,7 @@ export default class Controls extends PIXI.Container {
                 this.btnSecondGun.isEnabled = false;
             }
         });
-        this.unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.updateGunButtons(currentUnit));
+        this.unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.updateControls(currentUnit));
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
             if (unitManager.currentUnit.preparedGun == unitManager.currentUnit.firstGun) {
                 unitManager.currentUnit.preparedGun = null;
@@ -51,26 +54,28 @@ export default class Controls extends PIXI.Container {
 
     resize(width: number) {
         const lengthPerSection: number = width / Controls.SECTIONS_COUNT;
-        this.ship.width = lengthPerSection;
-        this.ship.height = this.ship.width / Controls.SECTION_RATIO;
-        this.stats.width = lengthPerSection;
-        this.stats.height = this.stats.width / Controls.SECTION_RATIO;
-        this.stats.x = this.ship.width;
+        this.bgShip.width = lengthPerSection;
+        this.bgShip.height = this.bgShip.width / Controls.SECTION_RATIO;
+        this.spriteShip.position.set(this.bgShip.width / 2, this.bgShip.height / 2);
+        this.bgStats.width = lengthPerSection;
+        this.bgStats.height = this.bgStats.width / Controls.SECTION_RATIO;
+        this.bgStats.x = this.bgShip.width;
         this.btnFirstGun.width = lengthPerSection;
         this.btnFirstGun.height = this.btnFirstGun.width / Controls.SECTION_RATIO;
-        this.btnFirstGun.x = this.stats.x + this.stats.width;
+        this.btnFirstGun.x = this.bgStats.x + this.bgStats.width;
         this.btnSecondGun.width = lengthPerSection;
         this.btnSecondGun.height = this.btnSecondGun.width / Controls.SECTION_RATIO;
         this.btnSecondGun.x = this.btnFirstGun.x + this.btnFirstGun.width;
-        this.module.width = lengthPerSection;
-        this.module.height = this.module.width / Controls.SECTION_RATIO;
-        this.module.x = this.btnSecondGun.x + this.btnSecondGun.width;
+        this.bgModule.width = lengthPerSection;
+        this.bgModule.height = this.bgModule.width / Controls.SECTION_RATIO;
+        this.bgModule.x = this.btnSecondGun.x + this.btnSecondGun.width;
         this.btnNextTurn.width = lengthPerSection;
         this.btnNextTurn.height = this.btnNextTurn.width / Controls.SECTION_RATIO;
-        this.btnNextTurn.x = this.module.x + this.module.width;
+        this.btnNextTurn.x = this.bgModule.x + this.bgModule.width;
     }
 
-    private updateGunButtons(currentUnit: Unit) {
+    private updateControls(currentUnit: Unit) {
+        this.spriteShip.texture = currentUnit.ship.texture;
         if (currentUnit.firstGun) {
             this.btnFirstGun.text = currentUnit.firstGun.name;
             this.btnFirstGun.isEnabled = true;

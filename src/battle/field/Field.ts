@@ -7,7 +7,7 @@ import * as game from "../../game";
 
 export default class Field extends game.MovableByMouse {
 
-    static readonly LINE_WIDTH = 2;
+    static readonly LINE_WIDTH = 1.5;
 
     private readonly currentMark = new Mark(0x00FF00);
     private readonly pathMarks = new Array<Mark>(0);

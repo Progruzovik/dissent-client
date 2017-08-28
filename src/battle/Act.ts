@@ -21,7 +21,8 @@ export default class Act extends PIXI.Container {
     constructor(width: number, height: number) {
         super();
         const projectileManager = new ProjectileManager();
-        const ship = new Ship(3);
+        const ship = new Ship(4, PIXI.loader.resources["ship-3-2"].texture);
+        const flagship = new Ship(3, PIXI.loader.resources["ship-5-3"].texture);
         const firstGun = new Gun("Лазерн. луч", 15, ProjectileManager.BEAM);
         const secondGUn = new Gun("Оскол. орудие", 15, ProjectileManager.SHELL, 3, 15);
         const units = new Array<Unit>(0);
@@ -29,7 +30,7 @@ export default class Act extends PIXI.Container {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;
                 const unit = new Unit(isLeft, isLeft ? 0 : Act.FIELD_LENGTH - 1, (j + 1) * 3,
-                    ship, firstGun, secondGUn, projectileManager);
+                    j == 2 ? flagship : ship, firstGun, secondGUn, projectileManager);
                 units.push(unit);
             }
         }

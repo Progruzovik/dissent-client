@@ -51,7 +51,7 @@ export class Button extends PIXI.Container {
     }
 
     get width(): number {
-        return this.bgMouseOut.width;
+        return this.bg.width;
     }
 
     set width(value: number) {

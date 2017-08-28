@@ -9,7 +9,7 @@ export default class Queue extends game.Rectangle {
         unitManager.units.forEach((unit: Unit, i: number) => {
             const icon = new game.Rectangle(unit.isLeft == isPlayerOnLeft ? 0x00FF00 : 0xFF0000,
                 Unit.WIDTH, Unit.HEIGHT);
-            icon.addChild(new PIXI.Sprite(PIXI.loader.resources["Ship-3-2"].texture));
+            icon.addChild(new PIXI.Sprite(unit.ship.texture));
             icon.y = Unit.HEIGHT * i;
             this.addChild(icon);
 

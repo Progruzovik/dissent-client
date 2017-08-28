@@ -28,7 +28,7 @@ export default class Unit extends game.Actor {
                 private readonly projectileManager: ProjectileManager) {
         super();
         this.interactive = true;
-        const sprite = new PIXI.Sprite(PIXI.loader.resources["Ship-3-2"].texture);
+        const sprite = new PIXI.Sprite(ship.texture);
         if (!this.isLeft) {
             sprite.scale.x = -1;
             sprite.anchor.x = 1;
