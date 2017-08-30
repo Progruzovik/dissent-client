@@ -32,6 +32,16 @@ export default class Field extends game.MovableByMouse {
             line.x = i * Unit.WIDTH;
             this.content.addChild(line);
         }
+        for (let i = 0; i < fieldManager.map.length; i++) {
+            for (let j = 0; j < fieldManager.map[i].length; j++) {
+                if (fieldManager.map[i][j] == CellStatus.Asteroid) {
+                    const spriteAsteroid = new PIXI.Sprite(PIXI.loader.resources["asteroid"].texture);
+                    spriteAsteroid.x = i * Unit.WIDTH;
+                    spriteAsteroid.y = j * Unit.HEIGHT;
+                    this.content.addChild(spriteAsteroid);
+                }
+            }
+        }
 
         this.markLayer.addChild(this.currentMark);
         this.content.addChild(this.markLayer);
@@ -82,7 +92,7 @@ export default class Field extends game.MovableByMouse {
         this.currentMark.cell = unit.cell;
         this.pathMarks.length = 0;
         for (const cell of this.fieldManager.findNeighborsForCell(unit.cell, unit.movementPoints)) {
-            if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Empty) {
+            if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Empty && this.fieldManager.paths[cell.x][cell.y]) {
                 const pathMark = new Mark(0xFFFF00, cell);
                 this.pathMarks.push(pathMark);
 

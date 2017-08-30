@@ -8,24 +8,20 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
     static readonly PATHS_READY = "pathsReady";
     static readonly PATH_LINE = "pathLine";
 
-    readonly map = new Array<Array<CellStatus>>(this.colsCount);
-
     readonly currentPath = new Array<game.Direction>(0);
-    private readonly paths = new Array<Array<PIXI.Point>>(this.colsCount);
+    readonly paths = new Array<PIXI.Point[]>(this.colsCount);
 
-    constructor(readonly colsCount: number, readonly rowsCount: number, readonly unitManager: UnitManager) {
+    constructor(readonly colsCount: number, readonly rowsCount: number,
+                readonly map: CellStatus[][], readonly unitManager: UnitManager) {
         super();
         for (let i = 0; i < this.colsCount; i++) {
             this.paths[i] = new Array<PIXI.Point>(this.rowsCount);
-            this.map[i] = new Array<CellStatus>(this.rowsCount);
-            for (let j = 0; j < this.rowsCount; j++) {
-                this.map[i][j] = CellStatus.Empty;
-            }
         }
         for (const unit of unitManager.units) {
             this.map[unit.col][unit.row] = CellStatus.Ship;
         }
         this.createPathsForUnit(unitManager.currentUnit);
+
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.createPathsForUnit(currentUnit));
         unitManager.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) => {
             this.map[oldPosition.x][oldPosition.y] = CellStatus.Empty;
@@ -47,7 +43,7 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
 
     createPathsForUnit(unit: Unit) {
         const unitCell = unit.cell;
-        const distances = new Array<Array<number>>(this.colsCount);
+        const distances = new Array<number[]>(this.colsCount);
         for (let i = 0; i < this.colsCount; i++) {
             distances[i] = new Array<number>(this.rowsCount);
             for (let j = 0; j < this.rowsCount; j++) {
@@ -62,12 +58,15 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
         cellQueue.push(unitCell);
         while (cellQueue.length != 0) {
             const cell: PIXI.Point = cellQueue.pop();
-            for (const neighborCell of this.findNeighborsForCell(cell, 1)) {
-                if (unit.calculateDistanceToCell(neighborCell) <= unit.movementPoints
-                    && distances[neighborCell.x][neighborCell.y] > distances[cell.x][cell.y] + 1) {
-                    distances[neighborCell.x][neighborCell.y] = distances[cell.x][cell.y] + 1;
-                    this.paths[neighborCell.x][neighborCell.y] = cell;
-                    cellQueue.push(neighborCell);
+            if (distances[cell.x][cell.y] < unit.movementPoints) {
+                for (const neighborCell of this.findNeighborsForCell(cell, 1)) {
+                    const neighborStatus: CellStatus = this.map[neighborCell.x][neighborCell.y];
+                    if ((neighborStatus == CellStatus.Empty || neighborStatus == CellStatus.Ship)
+                        && distances[neighborCell.x][neighborCell.y] > distances[cell.x][cell.y] + 1) {
+                        distances[neighborCell.x][neighborCell.y] = distances[cell.x][cell.y] + 1;
+                        this.paths[neighborCell.x][neighborCell.y] = cell;
+                        cellQueue.push(neighborCell);
+                    }
                 }
             }
         }
