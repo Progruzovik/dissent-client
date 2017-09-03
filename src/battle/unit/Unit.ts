@@ -70,19 +70,6 @@ export default class Unit extends game.Actor {
         return this._preparedGun;
     }
 
-    set preparedGun(value: Gun) {
-        if (value) {
-            if (value == this.firstGun && this.firstGunCooldown == 0
-                || value == this.secondGun && this.secondGunCooldown == 0) {
-                this._preparedGun = value;
-                this.emit(Unit.PREPARED_TO_SHOT);
-            }
-        } else {
-            this._preparedGun = null;
-            this.emit(Unit.NOT_PREPARED_TO_SHOT);
-        }
-    }
-
     get col(): number {
         return this._col;
     }
@@ -118,6 +105,19 @@ export default class Unit extends game.Actor {
         }
     }
 
+    makeGunPrepared(gun: Gun) {
+        if (gun && this.preparedGun != gun) {
+            if (gun == this.firstGun && this.firstGunCooldown == 0
+                || gun == this.secondGun && this.secondGunCooldown == 0) {
+                this._preparedGun = gun;
+                this.emit(Unit.PREPARED_TO_SHOT);
+            }
+        } else {
+            this._preparedGun = null;
+            this.emit(Unit.NOT_PREPARED_TO_SHOT);
+        }
+    }
+
     shoot(target: Unit) {
         this.projectileManager.shoot(this.preparedGun, target.center, this.center);
         if (this.preparedGun == this.firstGun) {
@@ -126,7 +126,7 @@ export default class Unit extends game.Actor {
             this._secondGunCooldown = this.preparedGun.cooldown;
         }
         this.emit(Unit.SHOT);
-        this.preparedGun = null;
+        this.makeGunPrepared(null);
 
         this.projectileManager.once(game.Event.DONE, () => target.destroyShip());
     }

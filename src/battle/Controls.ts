@@ -29,20 +29,10 @@ export default class Controls extends PIXI.Container {
 
         this.unitManager.on(Unit.SHOT, (unit: Unit) => this.updateControls(unit));
         this.unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.updateControls(currentUnit));
-        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
-            if (unitManager.currentUnit.preparedGun == unitManager.currentUnit.firstGun) {
-                unitManager.currentUnit.preparedGun = null;
-            } else {
-                unitManager.currentUnit.preparedGun = unitManager.currentUnit.firstGun;
-            }
-        });
-        this.btnSecondGun.on(game.Event.BUTTON_CLICK, () => {
-            if (unitManager.currentUnit.preparedGun == unitManager.currentUnit.secondGun) {
-                unitManager.currentUnit.preparedGun = null;
-            } else {
-                unitManager.currentUnit.preparedGun = unitManager.currentUnit.secondGun;
-            }
-        });
+        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () =>
+            unitManager.currentUnit.makeGunPrepared(unitManager.currentUnit.firstGun));
+        this.btnSecondGun.on(game.Event.BUTTON_CLICK, () =>
+            unitManager.currentUnit.makeGunPrepared(unitManager.currentUnit.secondGun));
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => unitManager.nextTurn());
     }
 

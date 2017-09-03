@@ -57,9 +57,7 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
     }
 
     nextTurn() {
-        if (this.currentUnit.preparedGun) {
-            this.currentUnit.preparedGun = null;
-        }
+        this.currentUnit.makeGunPrepared(null);
         this.units.push(this.units.shift());
         this.currentUnit.makeCurrent();
         this.emit(UnitManager.NEXT_TURN, this.currentUnit);
