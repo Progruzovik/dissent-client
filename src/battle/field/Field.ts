@@ -73,7 +73,20 @@ export default class Field extends game.MovableByMouse {
             }
             this.pathLayer.addChild(pathLine);
         });
-        this.fieldManager.unitManager.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => this.addTargetMarksForUnit(unit));
+        this.fieldManager.on(FieldManager.GUN_CELLS_READY, (unit: Unit, gunCells: PIXI.Point[]) => {
+            this.removeAllMarksExceptCurrent();
+            const targets: Unit[] =
+                this.fieldManager.unitManager.units.filter(target => unit.canHit(target));
+            for (const cell of gunCells) {
+                if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Empty) {
+                    this.markLayer.addChild(new Mark(0xFFFFFF, cell));
+                } else if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Ship) {
+                    if (targets.some(target => target.cell.x == cell.x && target.cell.y == cell.y)) {
+                        this.markLayer.addChild(new Mark(0xFF0000, cell));
+                    }
+                }
+            }
+        });
         this.fieldManager.unitManager.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
     }
 
@@ -120,20 +133,6 @@ export default class Field extends game.MovableByMouse {
         this.removeAllMarksExceptCurrent();
         for (const mark of this.pathMarks) {
             this.markLayer.addChild(mark);
-        }
-    }
-
-    private addTargetMarksForUnit(unit: Unit) {
-        this.removeAllMarksExceptCurrent();
-        const targets: Unit[] = this.fieldManager.unitManager.units.filter(target => unit.canHit(target));
-        for (const cell of this.fieldManager.findNeighborsForCell(unit.cell, unit.preparedGun.radius)) {
-            if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Empty) {
-                this.markLayer.addChild(new Mark(0xFFFFFF, cell));
-            } else if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Ship) {
-                if (targets.some(target => target.cell.x == cell.x && target.cell.y == cell.y)) {
-                    this.markLayer.addChild(new Mark(0xFF0000, cell));
-                }
-            }
         }
     }
 }

@@ -19,5 +19,5 @@ export namespace Event {
 }
 
 export const enum Direction {
-    Down, Up, Left, Right
+    Left, Right, Up, Down
 }
