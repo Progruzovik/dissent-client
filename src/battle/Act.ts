@@ -31,7 +31,7 @@ export default class Act extends PIXI.Container {
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < 3; j++) {
                 const isLeft: boolean = i == 0;
-                const unit = new Unit(isLeft, isLeft ? 0 : Act.FIELD_LENGTH - 1, (j + 1) * 3,
+                const unit = new Unit(isLeft, new PIXI.Point(isLeft ? 0 : Act.FIELD_LENGTH - 1, (j + 1) * 3),
                     j == 2 ? flagship : ship, firstGun, secondGUn, projectileManager);
                 units.push(unit);
             }

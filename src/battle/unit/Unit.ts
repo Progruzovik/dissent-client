@@ -25,9 +25,8 @@ export default class Unit extends game.Actor {
 
     private _preparedGun: Gun;
 
-    constructor(readonly isLeft: boolean, private _col: number, private _row: number,
-                readonly ship: Ship, readonly firstGun: Gun, readonly secondGun: Gun,
-                private readonly projectileManager: ProjectileManager) {
+    constructor(readonly isLeft: boolean, readonly cell: PIXI.Point, readonly ship: Ship, readonly firstGun: Gun,
+                readonly secondGun: Gun, private readonly projectileManager: ProjectileManager) {
         super();
         this.interactive = true;
         const sprite = new PIXI.Sprite(ship.texture);
@@ -36,7 +35,7 @@ export default class Unit extends game.Actor {
             sprite.anchor.x = 1;
         }
         this.addChild(sprite);
-        this.setCell(this.col, this.row);
+        this.updatePosition();
     }
 
     get firstGunCooldown(): number {
@@ -62,24 +61,12 @@ export default class Unit extends game.Actor {
     set path(value: game.Direction[]) {
         this._path = value;
         if (value) {
-            this.oldCell = this.cell;
+            this.oldCell = this.cell.clone();
         }
     }
 
     get preparedGun(): Gun {
         return this._preparedGun;
-    }
-
-    get col(): number {
-        return this._col;
-    }
-
-    get row(): number {
-        return this._row;
-    }
-
-    get cell(): PIXI.Point {
-        return new PIXI.Point(this.col, this.row);
     }
 
     get center(): PIXI.Point {
@@ -92,7 +79,7 @@ export default class Unit extends game.Actor {
     }
 
     calculateDistanceToCell(cell: PIXI.Point): number {
-        return Math.abs(cell.x - this.col) + Math.abs(cell.y - this.row);
+        return Math.abs(cell.x - this.cell.x) + Math.abs(cell.y - this.cell.y);
     }
 
     makeCurrent() {
@@ -143,14 +130,15 @@ export default class Unit extends game.Actor {
                 this._movementPoints--;
                 const direction: game.Direction = this.path.pop();
                 if (direction == game.Direction.Left) {
-                    this.setCell(this.col - 1, this.row);
+                    this.cell.x -= 1;
                 } else if (direction == game.Direction.Right) {
-                    this.setCell(this.col + 1, this.row);
-                } else if (direction == game.Direction.Down) {
-                    this.setCell(this.col, this.row - 1);
+                    this.cell.x += 1;
                 } else if (direction == game.Direction.Up) {
-                    this.setCell(this.col, this.row + 1);
+                    this.cell.y -= 1;
+                } else if (direction == game.Direction.Down) {
+                    this.cell.y += 1;
                 }
+                this.updatePosition();
             } else {
                 this.path = null;
                 this.emit(Unit.MOVE, this.oldCell, this.cell);
@@ -158,10 +146,8 @@ export default class Unit extends game.Actor {
         }
     }
 
-    private setCell(col: number, row: number) {
-        this._col = col;
-        this._row = row;
-        this.x = this.col * Unit.WIDTH + Field.LINE_WIDTH / 2;
-        this.y = this.row * Unit.HEIGHT + Field.LINE_WIDTH / 2;
+    private updatePosition() {
+        this.x = this.cell.x * Unit.WIDTH + Field.LINE_WIDTH / 2;
+        this.y = this.cell.y * Unit.HEIGHT + Field.LINE_WIDTH / 2;
     }
 }

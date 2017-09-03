@@ -64,11 +64,11 @@ export default class Field extends game.MovableByMouse {
                 k = direction == game.Direction.Left ? 1 : -1;
                 pathLine.x += pathLine.width / 2 * k;
                 pathLine.y += Unit.HEIGHT / 2;
-            } else if (direction == game.Direction.Down || direction == game.Direction.Up) {
+            } else if (direction == game.Direction.Up || direction == game.Direction.Down) {
                 pathLine.height = Unit.HEIGHT;
                 pathLine.pivot.x = pathLine.width / 2;
                 pathLine.x += Unit.WIDTH / 2;
-                k = direction == game.Direction.Down ? 1 : -1;
+                k = direction == game.Direction.Up ? 1 : -1;
                 pathLine.y += pathLine.height / 2 * k;
             }
             this.pathLayer.addChild(pathLine);
@@ -130,7 +130,7 @@ export default class Field extends game.MovableByMouse {
             if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Empty) {
                 this.markLayer.addChild(new Mark(0xFFFFFF, cell));
             } else if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Ship) {
-                if (targets.some(target => target.col == cell.x && target.row == cell.y)) {
+                if (targets.some(target => target.cell.x == cell.x && target.cell.y == cell.y)) {
                     this.markLayer.addChild(new Mark(0xFF0000, cell));
                 }
             }
