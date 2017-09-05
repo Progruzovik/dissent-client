@@ -99,27 +99,25 @@ export default class Field extends PIXI.Container {
     private createCommonMarksForUnit(unit: Unit) {
         this.currentMark.cell = unit.cell;
         this.pathMarks.length = 0;
-        for (const cell of this.fieldManager.findNeighborsForCell(unit.cell, unit.movementPoints)) {
-            if (this.fieldManager.map[cell.x][cell.y] == CellStatus.Empty && this.fieldManager.paths[cell.x][cell.y]) {
-                const pathMark = new Mark(0xFFFF00, cell);
-                this.pathMarks.push(pathMark);
+        for (const cell of this.fieldManager.findAvailableNeighborsInRadius(unit.cell, unit.movementPoints)) {
+            const pathMark = new Mark(0xFFFF00, cell);
+            this.pathMarks.push(pathMark);
 
-                pathMark.on(game.Event.MOUSE_OVER, () => {
-                    this.fieldManager.preparePath(cell, unit.cell);
-                    const pathEnd = new game.Rectangle(0x00FF00, 15, 15);
-                    pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
-                    pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
-                    pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
-                    this.pathLayer.addChild(pathEnd);
-                });
-                pathMark.on(game.Event.CLICK, () => {
-                    unit.path = this.fieldManager.currentPath;
-                    this.pathLayer.removeChildren();
-                    this.emit(game.Event.MOUSE_UP);
-                    unit.once(Unit.MOVE, () => this.fieldManager.createPathsForUnit(unit));
-                });
-                pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
-            }
+            pathMark.on(game.Event.MOUSE_OVER, () => {
+                this.fieldManager.preparePath(cell, unit.cell);
+                const pathEnd = new game.Rectangle(0x00FF00, 15, 15);
+                pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
+                pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
+                pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
+                this.pathLayer.addChild(pathEnd);
+            });
+            pathMark.on(game.Event.CLICK, () => {
+                unit.path = this.fieldManager.currentPath;
+                this.pathLayer.removeChildren();
+                this.emit(game.Event.MOUSE_UP);
+                unit.once(Unit.MOVE, () => this.fieldManager.createPathsForUnit(unit));
+            });
+            pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
         }
         this.addCurrentPathMarks();
     }

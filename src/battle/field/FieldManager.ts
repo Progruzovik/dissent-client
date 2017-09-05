@@ -10,7 +10,7 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
     static readonly GUN_CELLS_READY = "gunCellsReady";
 
     readonly currentPath = new Array<game.Direction>(0);
-    readonly paths = new Array<PIXI.Point[]>(this.colsCount);
+    private readonly paths = new Array<PIXI.Point[]>(this.colsCount);
 
     constructor(readonly colsCount: number, readonly rowsCount: number,
                 readonly map: CellStatus[][], readonly unitManager: UnitManager) {
@@ -29,8 +29,8 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
             this.map[newPosition.x][newPosition.y] = CellStatus.Ship;
         });
         this.unitManager.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => {
-            let gunCells = this.findNeighborsForCell(unit.cell, unit.preparedGun.radius)
-                .filter(cell => {
+            let gunCells = this.findNeighborsInRadius(unit.cell, unit.preparedGun.radius,
+                (cell: PIXI.Point) => {
                 const cellsInBetween = this.findCellsInBetween(unit.cell.clone(), cell);
                 let isCellReachable = true;
                 let i = 1;
@@ -46,16 +46,9 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
         });
     }
 
-    findNeighborsForCell(cell: PIXI.Point, radius: number): PIXI.Point[] {
-        const result = new Array<PIXI.Point>(0);
-        for (let i = 0; i < radius; i++) {
-            for (let j = 1; j <= radius - i; j++) {
-                result.push(new PIXI.Point(cell.x + i, cell.y - j), new PIXI.Point(cell.x - i, cell.y + j),
-                    new PIXI.Point(cell.x + j, cell.y + i), new PIXI.Point(cell.x - j, cell.y - i));
-            }
-        }
-        return result.filter(cell => cell.x > -1 && cell.x < this.colsCount
-            && cell.y > -1 && cell.y < this.rowsCount);
+    findAvailableNeighborsInRadius(cell: PIXI.Point, radius: number): PIXI.Point[] {
+        return this.findNeighborsInRadius(cell, radius, (cell: PIXI.Point) =>
+                this.map[cell.x][cell.y] == CellStatus.Empty && this.paths[cell.x][cell.y] != null);
     }
 
     createPathsForUnit(unit: Unit) {
@@ -76,7 +69,7 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
         while (cellQueue.length != 0) {
             const cell: PIXI.Point = cellQueue.pop();
             if (distances[cell.x][cell.y] < unit.movementPoints) {
-                for (const neighborCell of this.findNeighborsForCell(cell, 1)) {
+                for (const neighborCell of this.findNeighborsInRadius(cell, 1)) {
                     const neighborStatus: CellStatus = this.map[neighborCell.x][neighborCell.y];
                     if ((neighborStatus == CellStatus.Empty || neighborStatus == CellStatus.Ship)
                         && distances[neighborCell.x][neighborCell.y] > distances[cell.x][cell.y] + 1) {
@@ -113,19 +106,32 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
         }
     }
 
-    private findCellsInBetween(firstCell: PIXI.Point, secondCell: PIXI.Point): PIXI.Point[] {
-        const dx: number = secondCell.x - firstCell.x, dy: number = secondCell.y - firstCell.y;
+    private findNeighborsInRadius(cell: PIXI.Point, radius: number,
+                                  filterCondition: (cell: PIXI.Point) => boolean = () => true): PIXI.Point[] {
+        const result = new Array<PIXI.Point>(0);
+        for (let i = 0; i < radius; i++) {
+            for (let j = 1; j <= radius - i; j++) {
+                result.push(new PIXI.Point(cell.x + i, cell.y - j), new PIXI.Point(cell.x - i, cell.y + j),
+                    new PIXI.Point(cell.x + j, cell.y + i), new PIXI.Point(cell.x - j, cell.y - i));
+            }
+        }
+        return result.filter(cell => cell.x > -1 && cell.x < this.colsCount
+            && cell.y > -1 && cell.y < this.rowsCount && filterCondition(cell));
+    }
+
+    private findCellsInBetween(firstCell: PIXI.Point, lastCell: PIXI.Point): PIXI.Point[] {
+        const dx: number = lastCell.x - firstCell.x, dy: number = lastCell.y - firstCell.y;
         if (dx > -2 && dx < 2 && dy > -2 && dy < 2) {
-            return [firstCell, secondCell];
+            return [firstCell, lastCell];
         }
 
-        const firstCenterCell = new PIXI.Point(firstCell.x + (secondCell.x - firstCell.x) / 2,
-            firstCell.y + (secondCell.y - firstCell.y) / 2);
+        const firstCenterCell = new PIXI.Point(firstCell.x + (lastCell.x - firstCell.x) / 2,
+            firstCell.y + (lastCell.y - firstCell.y) / 2);
         const secondCenterCell = new PIXI.Point();
         if (firstCenterCell.x % 1 == 0) {
             secondCenterCell.x = firstCenterCell.x;
         } else {
-            if (firstCell.x < secondCell.x) {
+            if (firstCell.x < lastCell.x) {
                 firstCenterCell.x = Math.floor(firstCenterCell.x);
                 secondCenterCell.x = firstCenterCell.x + 1;
             } else {
@@ -136,7 +142,7 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
         if (firstCenterCell.y % 1 == 0) {
             secondCenterCell.y = firstCenterCell.y;
         } else {
-            if (firstCell.y < secondCell.y) {
+            if (firstCell.y < lastCell.y) {
                 firstCenterCell.y = Math.floor(firstCenterCell.y);
                 secondCenterCell.y = firstCenterCell.y + 1;
             } else {
