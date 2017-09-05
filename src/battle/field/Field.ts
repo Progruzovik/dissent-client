@@ -5,7 +5,7 @@ import Unit from "../unit/Unit";
 import { CellStatus } from "./utils";
 import * as game from "../../game";
 
-export default class Field extends game.MovableByMouse {
+export default class Field extends PIXI.Container {
 
     static readonly LINE_WIDTH = 1.5;
 
@@ -13,24 +13,24 @@ export default class Field extends game.MovableByMouse {
     private readonly pathMarks = new Array<Mark>(0);
     private readonly markLayer = new PIXI.Container();
     private readonly pathLayer = new PIXI.Container();
-    private readonly bg = new game.Rectangle();
 
     constructor(private readonly projectileManager: ProjectileManager, private readonly fieldManager: FieldManager) {
         super();
         this.createCommonMarksForUnit(fieldManager.unitManager.currentUnit);
 
-        this.addChild(this.bg);
+        const bg = new game.Rectangle();
+        this.addChild(bg);
         for (let i = 0; i <= fieldManager.rowsCount; i++) {
             const line = new game.Rectangle(0x777777,
                 fieldManager.colsCount * Unit.WIDTH + Field.LINE_WIDTH, Field.LINE_WIDTH);
             line.y = i * Unit.HEIGHT;
-            this.content.addChild(line);
+            this.addChild(line);
         }
         for (let i = 0; i <= fieldManager.colsCount; i++) {
             const line = new game.Rectangle(0x777777,
                 Field.LINE_WIDTH, fieldManager.rowsCount * Unit.HEIGHT + Field.LINE_WIDTH);
             line.x = i * Unit.WIDTH;
-            this.content.addChild(line);
+            this.addChild(line);
         }
         for (let i = 0; i < fieldManager.map.length; i++) {
             for (let j = 0; j < fieldManager.map[i].length; j++) {
@@ -38,20 +38,21 @@ export default class Field extends game.MovableByMouse {
                     const spriteAsteroid = new PIXI.Sprite(PIXI.loader.resources["asteroid"].texture);
                     spriteAsteroid.x = i * Unit.WIDTH;
                     spriteAsteroid.y = j * Unit.HEIGHT;
-                    this.content.addChild(spriteAsteroid);
+                    this.addChild(spriteAsteroid);
                 }
             }
         }
+        bg.width = this.width;
+        bg.height = this.height;
 
         this.markLayer.addChild(this.currentMark);
-        this.content.addChild(this.markLayer);
-        this.content.addChild(this.pathLayer);
+        this.addChild(this.markLayer);
+        this.addChild(this.pathLayer);
         for (const unit of fieldManager.unitManager.units) {
-            this.content.addChild(unit);
+            this.addChild(unit);
         }
-        this.addChild(this.content);
 
-        this.projectileManager.on(Unit.SHOT, (projectile: game.Actor) => this.content.addChild(projectile));
+        this.projectileManager.on(Unit.SHOT, (projectile: game.Actor) => this.addChild(projectile));
         this.fieldManager.on(FieldManager.PATHS_READY, (unit: Unit) => this.createCommonMarksForUnit(unit));
         this.fieldManager.on(FieldManager.PATH_LINE, (cell: PIXI.Point, direction: game.Direction) => {
             const pathLine = new game.Rectangle(0x00FF00, 5, 5);
@@ -88,12 +89,6 @@ export default class Field extends game.MovableByMouse {
             }
         });
         this.fieldManager.unitManager.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
-    }
-
-    resize(freeWidth: number, freeHeight: number) {
-        this.bg.width = freeWidth;
-        this.bg.height = freeHeight;
-        super.resize(freeWidth, freeHeight);
     }
 
     private removeAllMarksExceptCurrent() {

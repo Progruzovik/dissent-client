@@ -10,17 +10,17 @@ import UnitManager from "./unit/UnitManager";
 import { CellStatus } from "./field/utils";
 import * as game from "../game";
 
-export default class Act extends PIXI.Container {
+export default class Act extends game.Act {
 
     static readonly IS_PLAYER_ON_LEFT = true;
-    private static readonly FIELD_LENGTH = 15;
+    private static readonly FIELD_LENGTH = 17;
 
     private readonly queue: Queue;
     private readonly controls: Controls;
     private readonly field: Field;
 
     constructor(width: number, height: number) {
-        super();
+        super(width, height);
         const projectileManager = new ProjectileManager();
 
         const ship = new Ship(4, PIXI.loader.resources["ship-3-2"].texture);
@@ -54,12 +54,11 @@ export default class Act extends PIXI.Container {
 
         this.queue = new Queue(Act.IS_PLAYER_ON_LEFT, unitManager);
         this.field = new Field(projectileManager, fieldManager);
-        this.field.x = this.queue.width;
-        this.addChild(this.field);
-        this.addChild(this.queue);
+        this.content = this.field;
+        this.leftUi = this.queue;
         this.controls = new Controls(unitManager);
-        this.addChild(this.controls);
-        this.resize(width, height);
+        this.bottomUi = this.controls;
+        this.resize();
 
         unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
             if (currentUnit.isLeft != Act.IS_PLAYER_ON_LEFT) {
@@ -69,11 +68,8 @@ export default class Act extends PIXI.Container {
         unitManager.once(game.Event.DONE, () => this.emit(game.Event.DONE));
     }
 
-    resize(width: number, height: number) {
-        this.controls.resize(width);
-        const bottomControlsIndent: number = height - this.controls.height;
-        this.queue.height = bottomControlsIndent;
-        this.controls.y = bottomControlsIndent;
-        this.field.resize(width - this.queue.width, bottomControlsIndent);
+    protected resizeUi() {
+        this.controls.resize(this.width);
+        this.queue.height = this.height - this.controls.height;
     }
 }
