@@ -6,9 +6,10 @@ export default class Controls extends PIXI.Container {
 
     private static readonly SECTIONS_COUNT = 6;
     private static readonly SECTION_RATIO = 3;
+    private static readonly EMPTY_SLOT = "(пусто)";
 
     private readonly spriteShip = new PIXI.Sprite();
-    private readonly bgShip = new game.Rectangle();
+    private readonly bgShip = new game.Rectangle(0x333333);
     private readonly bgStats = new game.Rectangle();
     private readonly btnFirstGun = new game.Button();
     private readonly btnSecondGun = new game.Button();
@@ -73,7 +74,7 @@ export default class Controls extends PIXI.Container {
                 this.btnFirstGun.isEnabled = true;
             }
         } else {
-            this.btnFirstGun.text = null;
+            this.btnFirstGun.text = Controls.EMPTY_SLOT;
             this.btnFirstGun.isEnabled = false;
         }
         if (unit.secondGun) {
@@ -85,7 +86,7 @@ export default class Controls extends PIXI.Container {
                 this.btnSecondGun.isEnabled = true;
             }
         } else {
-            this.btnSecondGun.text = null;
+            this.btnSecondGun.text = Controls.EMPTY_SLOT;
             this.btnSecondGun.isEnabled = false;
         }
     }
