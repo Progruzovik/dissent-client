@@ -12,14 +12,26 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
     readonly currentPath = new Array<game.Direction>(0);
     private readonly paths = new Array<PIXI.Point[]>(this.colsCount);
 
+    readonly map: CellStatus[][];
+
     constructor(readonly colsCount: number, readonly rowsCount: number,
-                readonly map: CellStatus[][], readonly unitManager: UnitManager) {
+                readonly unitManager: UnitManager, fieldObjects: PIXI.Point[]) {
         super();
         for (let i = 0; i < this.colsCount; i++) {
             this.paths[i] = new Array<PIXI.Point>(this.rowsCount);
         }
+        this.map = new Array<CellStatus[]>(this.colsCount);
+        for (let i = 0; i < this.map.length; i++) {
+            this.map[i] = new Array<CellStatus>(this.rowsCount);
+            for (let j = 0; j < this.map[i].length; j++) {
+                this.map[i][j] = CellStatus.Empty;
+            }
+        }
         for (const unit of unitManager.units) {
             this.map[unit.cell.x][unit.cell.y] = CellStatus.Ship;
+        }
+        for (const object of fieldObjects) {
+            this.map[object.x][object.y] = CellStatus.Obstacle;
         }
         this.createPathsForUnit(unitManager.currentUnit);
 

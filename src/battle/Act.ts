@@ -7,7 +7,6 @@ import ProjectileManager from "./gun/ProjectileManager";
 import Ship from "./unit/Ship";
 import Unit from "./unit/Unit";
 import UnitManager from "./unit/UnitManager";
-import { CellStatus } from "./field/utils";
 import * as game from "../game";
 
 export default class Act extends game.Act {
@@ -37,23 +36,13 @@ export default class Act extends game.Act {
             }
         }
         const unitManager = new UnitManager(units);
-
-        const map = new Array<CellStatus[]>(Act.FIELD_LENGTH);
-        for (let i = 0; i < map.length; i++) {
-            map[i] = new Array<CellStatus>(Act.FIELD_LENGTH);
-            for (let j = 0; j < map[i].length; j++) {
-                map[i][j] = CellStatus.Empty;
-            }
-        }
-        map[3][2] = CellStatus.Asteroid;
-        map[3][3] = CellStatus.Asteroid;
-        map[3][4] = CellStatus.Asteroid;
-        map[4][3] = CellStatus.Asteroid;
-        map[4][4] = CellStatus.Asteroid;
-        const fieldManager = new FieldManager(Act.FIELD_LENGTH, Act.FIELD_LENGTH, map, unitManager);
+        const asteroids = new Array<PIXI.Point>(0);
+        asteroids.push(new PIXI.Point(3, 2), new PIXI.Point(3, 3), new PIXI.Point(3, 4),
+            new PIXI.Point(4, 3), new PIXI.Point(4, 4));
+        const fieldManager = new FieldManager(Act.FIELD_LENGTH, Act.FIELD_LENGTH, unitManager, asteroids);
 
         this.queue = new Queue(Act.IS_PLAYER_ON_LEFT, unitManager);
-        this.field = new Field(projectileManager, fieldManager);
+        this.field = new Field(projectileManager, fieldManager, asteroids);
         this.content = this.field;
         this.leftUi = this.queue;
         this.controls = new Controls(unitManager);

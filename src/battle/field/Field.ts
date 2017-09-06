@@ -14,7 +14,8 @@ export default class Field extends PIXI.Container {
     private readonly markLayer = new PIXI.Container();
     private readonly pathLayer = new PIXI.Container();
 
-    constructor(private readonly projectileManager: ProjectileManager, private readonly fieldManager: FieldManager) {
+    constructor(private readonly projectileManager: ProjectileManager,
+                private readonly fieldManager: FieldManager, fieldObjects: PIXI.Point[]) {
         super();
         this.createCommonMarksForUnit(fieldManager.unitManager.currentUnit);
 
@@ -32,15 +33,11 @@ export default class Field extends PIXI.Container {
             line.x = i * Unit.WIDTH;
             this.addChild(line);
         }
-        for (let i = 0; i < fieldManager.map.length; i++) {
-            for (let j = 0; j < fieldManager.map[i].length; j++) {
-                if (fieldManager.map[i][j] == CellStatus.Asteroid) {
-                    const spriteAsteroid = new PIXI.Sprite(PIXI.loader.resources["asteroid"].texture);
-                    spriteAsteroid.x = i * Unit.WIDTH;
-                    spriteAsteroid.y = j * Unit.HEIGHT;
-                    this.addChild(spriteAsteroid);
-                }
-            }
+        for (const object of fieldObjects) {
+            const spriteAsteroid = new PIXI.Sprite(PIXI.loader.resources["asteroid"].texture);
+            spriteAsteroid.x = object.x * Unit.WIDTH;
+            spriteAsteroid.y = object.y * Unit.HEIGHT;
+            this.addChild(spriteAsteroid);
         }
         bg.width = this.width;
         bg.height = this.height;
