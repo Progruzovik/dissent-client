@@ -1,7 +1,7 @@
 .idea/
 node_modules/
 
-dist/
+es2015/
 img/
 js/
 bootstrap.min.css

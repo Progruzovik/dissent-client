@@ -13,7 +13,7 @@ module.exports = {
         ]
     },
     output: {
-        filename: "./static/js/" + (isProduction ? "app.min.js" : "app.js")
+        filename: "./build/static/js/" + (isProduction ? "app.min.js" : "app.js")
     },
     plugins: isProduction ? [
         new webpack.optimize.UglifyJsPlugin({
