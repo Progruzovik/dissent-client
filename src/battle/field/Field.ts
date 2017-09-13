@@ -21,15 +21,15 @@ export default class Field extends PIXI.Container {
 
         const bg = new game.Rectangle();
         this.addChild(bg);
-        for (let i = 0; i <= fieldManager.rowsCount; i++) {
+        for (let i = 0; i <= fieldManager.size.y; i++) {
             const line = new game.Rectangle(0x777777,
-                fieldManager.colsCount * Unit.WIDTH + Field.LINE_WIDTH, Field.LINE_WIDTH);
+                fieldManager.size.x * Unit.WIDTH + Field.LINE_WIDTH, Field.LINE_WIDTH);
             line.y = i * Unit.HEIGHT;
             this.addChild(line);
         }
-        for (let i = 0; i <= fieldManager.colsCount; i++) {
+        for (let i = 0; i <= fieldManager.size.y; i++) {
             const line = new game.Rectangle(0x777777,
-                Field.LINE_WIDTH, fieldManager.rowsCount * Unit.HEIGHT + Field.LINE_WIDTH);
+                Field.LINE_WIDTH, fieldManager.size.y * Unit.HEIGHT + Field.LINE_WIDTH);
             line.x = i * Unit.WIDTH;
             this.addChild(line);
         }

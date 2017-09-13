@@ -10,19 +10,18 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
     static readonly GUN_CELLS_READY = "gunCellsReady";
 
     readonly currentPath = new Array<game.Direction>(0);
-    private readonly paths = new Array<PIXI.Point[]>(this.colsCount);
+    private readonly paths = new Array<PIXI.Point[]>(this.size.x);
 
     readonly map: CellStatus[][];
 
-    constructor(readonly colsCount: number, readonly rowsCount: number,
-                readonly unitManager: UnitManager, fieldObjects: PIXI.Point[]) {
+    constructor(readonly size: PIXI.Point, readonly unitManager: UnitManager, fieldObjects: PIXI.Point[]) {
         super();
-        for (let i = 0; i < this.colsCount; i++) {
-            this.paths[i] = new Array<PIXI.Point>(this.rowsCount);
+        for (let i = 0; i < this.size.x; i++) {
+            this.paths[i] = new Array<PIXI.Point>(this.size.y);
         }
-        this.map = new Array<CellStatus[]>(this.colsCount);
+        this.map = new Array<CellStatus[]>(this.size.x);
         for (let i = 0; i < this.map.length; i++) {
-            this.map[i] = new Array<CellStatus>(this.rowsCount);
+            this.map[i] = new Array<CellStatus>(this.size.y);
             for (let j = 0; j < this.map[i].length; j++) {
                 this.map[i][j] = CellStatus.Empty;
             }
@@ -64,10 +63,10 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
     }
 
     createPathsForUnit(unit: Unit) {
-        const distances = new Array<number[]>(this.colsCount);
-        for (let i = 0; i < this.colsCount; i++) {
-            distances[i] = new Array<number>(this.rowsCount);
-            for (let j = 0; j < this.rowsCount; j++) {
+        const distances = new Array<number[]>(this.size.x);
+        for (let i = 0; i < this.size.x; i++) {
+            distances[i] = new Array<number>(this.size.y);
+            for (let j = 0; j < this.size.y; j++) {
                 distances[i][j] = Number.MAX_VALUE;
                 this.paths[i][j] = null;
             }
@@ -127,8 +126,8 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
                     new PIXI.Point(cell.x + j, cell.y + i), new PIXI.Point(cell.x - j, cell.y - i));
             }
         }
-        return result.filter(cell => cell.x > -1 && cell.x < this.colsCount
-            && cell.y > -1 && cell.y < this.rowsCount && filterCondition(cell));
+        return result.filter(cell => cell.x > -1 && cell.x < this.size.x
+            && cell.y > -1 && cell.y < this.size.y && filterCondition(cell));
     }
 
     private findCellsInBetween(firstCell: PIXI.Point, lastCell: PIXI.Point): PIXI.Point[] {
