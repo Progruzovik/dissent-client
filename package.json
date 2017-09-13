@@ -1,19 +1,21 @@
 {
-    "name": "dissent-client",
-    "version": "0.0.1",
-    "dependencies": {
-        "pixi.js": "^4.5.4"
-    },
-    "devDependencies": {
-        "@types/pixi.js": "^4.5.2",
-        "light-server": "^2.2.1",
-        "ts-loader": "^2.3.2",
-        "typescript": "^2.4.2",
-        "webpack": "^3.4.1"
-    },
-    "scripts": {
-        "start": "./node_modules/.bin/light-server -s './build/static/' -w './build/static/js/app.js' -o",
-        "webpack": "./node_modules/.bin/webpack --config webpack.config.js",
-        "webpack-p": "NODE_ENV='production' ./node_modules/.bin/webpack --config webpack.config.js"
-    }
+  "name": "dissent-client",
+  "version": "0.0.1",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "pixi.js": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/pixi.js": "^4.5.2",
+    "light-server": "^2.2.1",
+    "ts-loader": "^2.3.2",
+    "typescript": "^2.4.2",
+    "webpack": "^3.4.1"
+  },
+  "scripts": {
+    "start": "./node_modules/.bin/light-server -s static -w './static/js/app.js' -o",
+    "webpack": "./node_modules/.bin/webpack --config webpack.config.js",
+    "webpack-p": "NODE_ENV='production' ./node_modules/.bin/webpack --config webpack.config.js"
+  }
 }
