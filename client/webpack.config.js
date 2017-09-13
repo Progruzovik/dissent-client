@@ -3,7 +3,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 module.exports = {
     devtool: "source-map",
-    entry: "./src/main.ts",
+    entry: "./src/main/typescript/main.ts",
     module: {
         rules: [
             {
@@ -13,7 +13,7 @@ module.exports = {
         ]
     },
     output: {
-        filename: "./build/static/js/" + (isProduction ? "app.min.js" : "app.js")
+        filename: "./target/classes/static/js/" + (isProduction ? "app.min.js" : "app.js")
     },
     plugins: isProduction ? [
         new webpack.optimize.UglifyJsPlugin({
