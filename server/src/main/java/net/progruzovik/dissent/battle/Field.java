@@ -11,6 +11,8 @@ public interface Field {
 
     int getRowsCount();
 
+    int getTurnNumber();
+
     Unit getCurrentUnit();
 
     Queue<Unit> getQueue();

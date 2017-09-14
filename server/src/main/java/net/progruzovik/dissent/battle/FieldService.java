@@ -13,6 +13,7 @@ public final class FieldService implements Field {
 
     private final int colsCount;
     private final int rowsCount;
+    private int turnNumber = 0;
 
     private final Player leftPlayer;
     private final Player rightPlayer;
@@ -55,6 +56,11 @@ public final class FieldService implements Field {
     }
 
     @Override
+    public int getTurnNumber() {
+        return turnNumber;
+    }
+
+    @Override
     public Unit getCurrentUnit() {
         return queue.element();
     }
@@ -88,6 +94,7 @@ public final class FieldService implements Field {
     }
 
     private void nextTurn() {
+        turnNumber++;
         queue.add(queue.remove());
     }
 }

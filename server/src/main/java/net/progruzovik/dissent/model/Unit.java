@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.progruzovik.dissent.battle.Side;
 
 public final class Unit {
@@ -14,8 +15,13 @@ public final class Unit {
         this.ship = ship;
     }
 
+    @JsonIgnore
     public Side getSide() {
         return side;
+    }
+
+    public int getSideValue() {
+        return side.ordinal();
     }
 
     public void setSide(Side side) {

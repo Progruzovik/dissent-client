@@ -2,8 +2,9 @@ package net.progruzovik.dissent.rest;
 
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.player.Player;
-import org.eclipse.jetty.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,17 +30,25 @@ public final class FieldRest {
         return result;
     }
 
-    @GetMapping("/current")
+    @GetMapping("/side")
+    public int getSide() {
+        return player.getField().getPlayerSide(player).ordinal();
+    }
+
+    @GetMapping("/turn")
+    public int getTurnNumber() {
+        return player.getField().getTurnNumber();
+    }
+
+    @GetMapping("/unit")
     public Unit getCurrentUnit() {
         return player.getField().getCurrentUnit();
     }
 
-    @PostMapping("/current/cell")
-    public void postCurrentUnitCell(@RequestParam("col") int col, @RequestParam("row") int row,
-                                    HttpServletResponse response) {
-        if (!player.getField().moveCurrentUnit(player, col, row)) {
-            response.setStatus(HttpStatus.BAD_REQUEST_400);
-        }
+    @PostMapping("/unit/cell")
+    public ResponseEntity postCurrentUnitCell(@RequestParam("col") int col, @RequestParam("row") int row) {
+        return player.getField().moveCurrentUnit(player, col, row) ? new ResponseEntity(HttpStatus.OK)
+                : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/queue")

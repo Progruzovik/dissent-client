@@ -2,6 +2,7 @@ import Field from "../field/Field";
 import Ship from "./Ship";
 import Gun from "../gun/Gun";
 import ProjectileManager from "../gun/ProjectileManager";
+import { Side } from "../utils";
 import * as game from "../../game";
 
 export default class Unit extends game.Actor {
@@ -25,12 +26,12 @@ export default class Unit extends game.Actor {
 
     private _preparedGun: Gun;
 
-    constructor(readonly isLeft: boolean, readonly cell: PIXI.Point, readonly ship: Ship, readonly firstGun: Gun,
+    constructor(readonly side: Side, readonly cell: PIXI.Point, readonly ship: Ship, readonly firstGun: Gun,
                 readonly secondGun: Gun, private readonly projectileManager: ProjectileManager) {
         super();
         this.interactive = true;
         const sprite = new PIXI.Sprite(ship.texture);
-        if (!this.isLeft) {
+        if (side == Side.Right) {
             sprite.scale.x = -1;
             sprite.anchor.x = 1;
         }
@@ -74,7 +75,7 @@ export default class Unit extends game.Actor {
     }
 
     canHit(target: Unit) {
-        return this.preparedGun && this.isLeft != target.isLeft && !target.isDestroyed
+        return this.preparedGun && this.side != target.side && !target.isDestroyed
             && this.calculateDistanceToCell(target.cell) <= this.preparedGun.radius;
     }
 

@@ -2,7 +2,7 @@ import FieldManager from "./FieldManager";
 import Mark from "./Mark";
 import ProjectileManager from "../gun/ProjectileManager";
 import Unit from "../unit/Unit";
-import { CellStatus } from "./utils";
+import { CellStatus } from "../utils";
 import * as game from "../../game";
 
 export default class Field extends PIXI.Container {
