@@ -11,6 +11,6 @@ import org.springframework.stereotype.Component;
 public final class AiPlayer extends AbstractPlayer {
 
     public AiPlayer() {
-        getUnits().add(new Unit(new Ship(0, "ship-4-2")));
+        getUnits().add(new Unit(new Ship(0, "ship-4-2"), null, null));
     }
 }

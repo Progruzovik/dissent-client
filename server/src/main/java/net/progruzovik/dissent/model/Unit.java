@@ -10,9 +10,13 @@ public final class Unit {
     private int row;
 
     private final Ship ship;
+    private final Gun firstGun;
+    private final Gun secondGun;
 
-    public Unit(Ship ship) {
+    public Unit(Ship ship, Gun firstGun, Gun secondGun) {
         this.ship = ship;
+        this.firstGun = firstGun;
+        this.secondGun = secondGun;
     }
 
     @JsonIgnore
@@ -46,5 +50,13 @@ public final class Unit {
 
     public Ship getShip() {
         return ship;
+    }
+
+    public Gun getFirstGun() {
+        return firstGun;
+    }
+
+    public Gun getSecondGun() {
+        return secondGun;
     }
 }

@@ -2,7 +2,6 @@ import Controls from "./Controls";
 import Queue from "./Queue";
 import Field from "./field/Field";
 import FieldManager from "./field/FieldManager";
-import Gun from "./gun/Gun";
 import ProjectileManager from "./gun/ProjectileManager";
 import Ship from "./unit/Ship";
 import Unit from "./unit/Unit";
@@ -21,12 +20,10 @@ export default class Act extends game.Act {
         const projectileManager = new ProjectileManager();
 
         const units = new Array<Unit>(0);
-        const firstGun = new Gun("Оскол. орудие", 14, 3, ProjectileManager.SHELL, 3, 15);
-        const secondGun = new Gun("Лазерн. луч", 10, 2, ProjectileManager.BEAM);
         for (const unitData of unitsData) {
             const ship = new Ship(unitData.ship.speed, PIXI.loader.resources[unitData.ship.name].texture);
             units.push(new Unit(unitData.sideValue, new PIXI.Point(unitData.col, unitData.row),
-                ship, firstGun, secondGun, projectileManager));
+                ship, unitData.firstGun, unitData.secondGun, projectileManager));
         }
         const unitManager = new UnitManager(units);
         const asteroids = new Array<PIXI.Point>(0);
