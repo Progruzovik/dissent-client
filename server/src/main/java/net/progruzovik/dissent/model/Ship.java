@@ -1,20 +1,32 @@
 package net.progruzovik.dissent.model;
 
+import javax.persistence.*;
+
+@Entity
 public final class Ship {
 
-    private final int speed;
-    private final String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    public Ship(int speed, String name) {
-        this.speed = speed;
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private int speed;
+
+    public Ship(String name, int speed) {
         this.name = name;
+        this.speed = speed;
+    }
+
+    public Ship() {}
+
+    public String getName() {
+        return name;
     }
 
     public int getSpeed() {
         return speed;
-    }
-
-    public String getName() {
-        return name;
     }
 }

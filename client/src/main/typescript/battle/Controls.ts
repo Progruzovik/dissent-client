@@ -37,6 +37,18 @@ export default class Controls extends PIXI.Container {
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => unitManager.nextTurn());
     }
 
+    lock() {
+        this.btnFirstGun.isEnabled = false;
+        this.btnSecondGun.isEnabled = false;
+        this.btnNextTurn.isEnabled = false;
+    }
+
+    unlock() {
+        this.btnFirstGun.isEnabled = true;
+        this.btnSecondGun.isEnabled = true;
+        this.btnNextTurn.isEnabled = true;
+    }
+
     resize(width: number) {
         const lengthPerSection: number = width / Controls.SECTIONS_COUNT;
 

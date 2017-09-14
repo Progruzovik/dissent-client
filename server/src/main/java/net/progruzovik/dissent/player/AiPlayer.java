@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.player;
 
+import net.progruzovik.dissent.dao.ShipDao;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public final class AiPlayer extends AbstractPlayer {
 
-    public AiPlayer() {
-        getUnits().add(new Unit(new Ship(0, "ship-4-2"), null, null));
+    public AiPlayer(ShipDao shipDao) {
+        getUnits().add(new Unit(shipDao.getShip(3), null, null));
     }
 }
