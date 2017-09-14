@@ -1,32 +1,33 @@
 package net.progruzovik.dissent.model;
 
+import javax.persistence.*;
+
+@Entity
 public final class Gun {
 
-    private final String name;
-    private final int radius;
-    private final int cooldown;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    private final String projectileType;
-    private final int shotsCount;
-    private final int shotDelay;
+    @Column(nullable = false)
+    private String name;
 
-    public Gun(String name, int radius, int cooldown, String projectileType) {
-        this.name = name;
-        this.radius = radius;
-        this.cooldown = cooldown;
-        this.projectileType = projectileType;
-        this.shotsCount = 1;
-        this.shotDelay = 0;
-    }
+    @Column(nullable = false)
+    private int radius;
 
-    public Gun(String name, int radius, int cooldown, String projectileType, int shotsCount, int shotDelay) {
-        this.name = name;
-        this.radius = radius;
-        this.cooldown = cooldown;
-        this.projectileType = projectileType;
-        this.shotsCount = shotsCount;
-        this.shotDelay = shotDelay;
-    }
+    @Column(nullable = false)
+    private int cooldown;
+
+    @Column(nullable = false)
+    private String projectileType;
+
+    @Column(nullable = false)
+    private int shotsCount;
+
+    @Column(nullable = false)
+    private int shotDelay;
+
+    public Gun() {}
 
     public String getName() {
         return name;

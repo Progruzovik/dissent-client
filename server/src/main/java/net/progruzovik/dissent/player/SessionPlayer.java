@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.player;
 
+import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.ShipDao;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
@@ -12,13 +13,11 @@ import org.springframework.stereotype.Component;
 @Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
 public final class SessionPlayer extends AbstractPlayer {
 
-    public SessionPlayer(ShipDao shipDao) {
-        final Gun firstGun = new Gun("sharpnel", 14, 3,
-                "shell", 3, 15);
-        final Gun secondGun = new Gun("laser", 10, 2, "beam");
+    public SessionPlayer(ShipDao shipDao, GunDao gunDao) {
         final Ship basicShip = shipDao.getShip(1);
-        getUnits().add(new Unit(basicShip, firstGun, null));
-        getUnits().add(new Unit(shipDao.getShip(2), firstGun, secondGun));
-        getUnits().add(new Unit(basicShip, firstGun, null));
+        final Gun shrapnel = gunDao.getGun(1);
+        getUnits().add(new Unit(basicShip, shrapnel, null));
+        getUnits().add(new Unit(shipDao.getShip(2), shrapnel, gunDao.getGun(2)));
+        getUnits().add(new Unit(basicShip, shrapnel, null));
     }
 }
