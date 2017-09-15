@@ -83,18 +83,33 @@ public final class FieldService implements Field {
 
     @Override
     public boolean moveCurrentUnit(Player player, int col, int row) {
-        if (getPlayerSide(player) == getCurrentUnit().getSide()
-                && col > -1 && col < colsCount && row > -1 && row < rowsCount) {
+        if (player == getCurrentPlayer() && col > -1 && col < colsCount && row > -1 && row < rowsCount) {
             getCurrentUnit().setCol(col);
             getCurrentUnit().setRow(row);
-            nextTurn();
             return true;
         }
         return false;
     }
 
-    private void nextTurn() {
-        turnNumber++;
-        queue.add(queue.remove());
+    @Override
+    public boolean nextTurn(Player player) {
+        if (player == getCurrentPlayer()) {
+            turnNumber++;
+            queue.add(queue.remove());
+            while (player != getCurrentPlayer()) {
+                turnNumber++;
+                queue.add(queue.remove());
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private Player getCurrentPlayer() {
+        switch (getCurrentUnit().getSide()) {
+            case Left: return leftPlayer;
+            case Right: return rightPlayer;
+            default: return null;
+        }
     }
 }

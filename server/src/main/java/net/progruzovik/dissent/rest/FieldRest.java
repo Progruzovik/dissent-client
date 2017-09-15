@@ -39,6 +39,12 @@ public final class FieldRest {
         return player.getField().getTurnNumber();
     }
 
+    @PostMapping("/turn")
+    public ResponseEntity postTurn() {
+        return player.getField().nextTurn(player) ? new ResponseEntity(HttpStatus.OK)
+                : new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
     @GetMapping("/unit")
     public Unit getCurrentUnit() {
         return player.getField().getCurrentUnit();

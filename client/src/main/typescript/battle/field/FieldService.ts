@@ -58,7 +58,7 @@ export default class FieldService extends PIXI.utils.EventEmitter {
     }
 
     findAvailableNeighborsInRadius(cell: PIXI.Point, radius: number): PIXI.Point[] {
-        return this.findNeighborsInRadius(cell, radius, (cell: PIXI.Point) =>
+        return this.findNeighborsInRadius(cell, radius, cell =>
                 this.map[cell.x][cell.y] == CellStatus.Empty && this.paths[cell.x][cell.y] != null);
     }
 

@@ -1,18 +1,18 @@
 import Act from "./Act";
+import axios from "axios";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
-import axios from "axios";
 
 export default class BattleApp extends PIXI.Application {
 
     private act: Act;
 
     constructor() {
-        super(innerWidth, innerHeight, { resolution: devicePixelRatio || 1, autoResize: true });
+        super({ width: innerWidth, height: innerHeight, resolution: devicePixelRatio || 1, autoResize: true });
         axios.all([
-            axios.get("api/field/size"),
-            axios.get("api/field/side"),
-            axios.get("api/field/queue")
+            axios.get("/api/field/size"),
+            axios.get("/api/field/side"),
+            axios.get("/api/field/queue")
         ]).then(axios.spread((size, side, queue) => {
             PIXI.loader.add("asteroid", "img/asteroid.png", (resource: PIXI.loaders.Resource) =>
                 resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST);

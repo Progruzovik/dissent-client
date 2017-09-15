@@ -20,4 +20,6 @@ public interface Field {
     Side getPlayerSide(Player player);
 
     boolean moveCurrentUnit(Player player, int col, int row);
+
+    boolean nextTurn(Player player);
 }

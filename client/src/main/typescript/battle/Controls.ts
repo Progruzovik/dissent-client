@@ -1,5 +1,6 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
+import axios from "axios";
 import * as game from "../game";
 
 export default class Controls extends PIXI.Container {
@@ -28,25 +29,22 @@ export default class Controls extends PIXI.Container {
         this.addChild(this.btnNextTurn);
         this.updateControls(unitService.currentUnit);
 
-        this.unitService.on(Unit.SHOT, (unit: Unit) => this.updateControls(unit));
+        this.unitService.on(Unit.SHOT, unit => this.updateControls(unit));
         this.unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => this.updateControls(currentUnit));
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () =>
             unitService.currentUnit.makeGunPrepared(unitService.currentUnit.firstGun));
         this.btnSecondGun.on(game.Event.BUTTON_CLICK, () =>
             unitService.currentUnit.makeGunPrepared(unitService.currentUnit.secondGun));
-        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => unitService.nextTurn());
+        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => {
+            this.setInterfaceStatus(false);
+            axios.post("/api/field/turn").then(() => unitService.nextTurn());
+        });
     }
 
-    lock() {
-        this.btnFirstGun.isEnabled = false;
-        this.btnSecondGun.isEnabled = false;
-        this.btnNextTurn.isEnabled = false;
-    }
-
-    unlock() {
-        this.btnFirstGun.isEnabled = true;
-        this.btnSecondGun.isEnabled = true;
-        this.btnNextTurn.isEnabled = true;
+    setInterfaceStatus(isEnabled: boolean) {
+        this.btnFirstGun.isEnabled = isEnabled;
+        this.btnSecondGun.isEnabled = isEnabled;
+        this.btnNextTurn.isEnabled = isEnabled;
     }
 
     resize(width: number) {
