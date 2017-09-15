@@ -3,6 +3,7 @@ import Mark from "./Mark";
 import ProjectileService from "../gun/ProjectileService";
 import Unit from "../unit/Unit";
 import { CellStatus } from "../utils";
+import axios from "axios";
 import * as game from "../../game";
 
 export default class Field extends PIXI.Container {
@@ -109,10 +110,12 @@ export default class Field extends PIXI.Container {
                 this.pathLayer.addChild(pathEnd);
             });
             pathMark.on(game.Event.CLICK, () => {
-                unit.path = this.fieldService.currentPath;
-                this.pathLayer.removeChildren();
-                this.emit(game.Event.MOUSE_UP);
-                unit.once(Unit.MOVE, () => this.fieldService.createPathsForUnit(unit));
+                axios.post("/api/field/unit/cell", cell).then(() => {
+                    unit.path = this.fieldService.currentPath;
+                    this.pathLayer.removeChildren();
+                    this.emit(game.Event.MOUSE_UP);
+                    unit.once(Unit.MOVE, () => this.fieldService.createPathsForUnit(unit));
+                });
             });
             pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
         }

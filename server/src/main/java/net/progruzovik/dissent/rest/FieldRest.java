@@ -51,8 +51,9 @@ public final class FieldRest {
     }
 
     @PostMapping("/unit/cell")
-    public ResponseEntity postCurrentUnitCell(@RequestParam("col") int col, @RequestParam("row") int row) {
-        return player.getField().moveCurrentUnit(player, col, row) ? new ResponseEntity(HttpStatus.OK)
+    public ResponseEntity postCurrentUnitCell(@RequestBody Map<String, Integer> cell) {
+        return player.getField().moveCurrentUnit(player, cell.get("x"), cell.get("y"))
+                ? new ResponseEntity(HttpStatus.OK)
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
