@@ -13,10 +13,11 @@ export default class BattleApp extends PIXI.Application {
     constructor() {
         super({ width: innerWidth, height: innerHeight, resolution: devicePixelRatio || 1, autoResize: true });
         postScenario(() => {
-            getField((ships, size, side, units) => {
+            getField((ships, guns, size, side, units) => {
                 const shipsArray = new Array<Ship>(0);
                 for (const shipData of ships) {
-                    PIXI.loader.add(shipData.name, "img/" + shipData.name + ".png", (resource: PIXI.loaders.Resource) => {
+                    PIXI.loader.add(shipData.name, "img/" + shipData.name + ".png",
+                        (resource: PIXI.loaders.Resource) => {
                         resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
                         shipsArray[shipData.id] = new Ship(shipData.speed, resource.texture);
                     });
@@ -28,7 +29,8 @@ export default class BattleApp extends PIXI.Application {
                     const unitsArray = new Array<Unit>(0);
                     for (const unit of units) {
                         unitsArray.push(new Unit(unit.sideValue, new PIXI.Point(unit.cell.x, unit.cell.y),
-                            shipsArray[unit.shipId], unit.firstGun, unit.secondGun, projectileService));
+                            shipsArray[unit.shipId], guns.filter((gun) => gun.id == unit.firstGunId)[0],
+                            guns.filter((gun) => gun.id == unit.secondGunId)[0], projectileService));
                     }
                     this.act = new Act(innerWidth, innerHeight,
                         new PIXI.Point(size.x, size.y), side, unitsArray, projectileService);

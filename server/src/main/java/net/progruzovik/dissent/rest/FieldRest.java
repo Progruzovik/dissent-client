@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.rest;
 
+import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.player.Player;
@@ -9,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/field")
@@ -22,11 +20,6 @@ public final class FieldRest {
 
     public FieldRest(@Qualifier("sessionPlayer") Player player) {
         this.player = player;
-    }
-
-    @GetMapping("/ships")
-    public List<Ship> getShips() {
-        return player.getField().getShips();
     }
 
     @GetMapping("/size")
@@ -53,6 +46,16 @@ public final class FieldRest {
     @GetMapping("/units")
     public Queue<Unit> getUnits() {
         return player.getField().getQueue();
+    }
+
+    @GetMapping("/ships")
+    public Set<Ship> getUniqueShips() {
+        return player.getField().getUniqueShips();
+    }
+
+    @GetMapping("/guns")
+    public Set<Gun> getUniqueGuns() {
+        return player.getField().getUniqueGuns();
     }
 
     @GetMapping("/turn")

@@ -6,5 +6,5 @@ import net.progruzovik.dissent.player.Player;
 @FunctionalInterface
 public interface FieldFactory {
 
-    Field create(Player leftPlayer, Player rightPlayer, ShipDao shipDao);
+    Field create(Player leftPlayer, Player rightPlayer);
 }

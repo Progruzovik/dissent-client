@@ -30,8 +30,8 @@ public class AppConfig {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     Field field(@Qualifier("sessionPlayer") Player leftPlayer,
-                @Qualifier("aiPlayer") Player rightPlayer, ShipDao shipDao) {
-        return new FieldService(leftPlayer, rightPlayer, shipDao);
+                @Qualifier("aiPlayer") Player rightPlayer) {
+        return new FieldService(leftPlayer, rightPlayer);
     }
 
     @Bean

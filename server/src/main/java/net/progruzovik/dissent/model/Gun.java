@@ -29,6 +29,10 @@ public final class Gun {
 
     public Gun() {}
 
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }

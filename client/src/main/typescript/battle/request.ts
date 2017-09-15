@@ -4,14 +4,15 @@ export function postScenario(callback: () => void) {
     axios.post("/api/battle/scenario").then(callback);
 }
 
-export function getField(callback: (ships: Ship[], size: Point, side: Side, units: Unit[]) => void) {
+export function getField(callback: (ships: Ship[], guns: Gun[], size: Point, side: Side, units: Unit[]) => void) {
     axios.all([
         axios.get("/api/field/ships"),
+        axios.get("/api/field/guns"),
         axios.get("/api/field/size"),
         axios.get("/api/field/side"),
         axios.get("/api/field/units")
-    ]).then(axios.spread((ships, size, side, queue) =>
-        callback(ships.data, size.data, side.data, queue.data)));
+    ]).then(axios.spread((ships, guns, size, side, queue) =>
+        callback(ships.data, guns.data, size.data, side.data, queue.data)));
 }
 
 export function postCurrentUnitCell(data: Point, callback: () => void) {
@@ -27,7 +28,7 @@ export const enum Side {
 }
 
 export class Gun {
-    constructor(readonly name: string, readonly radius: number, readonly cooldown: number,
+    constructor(readonly id: number, readonly name: string, readonly radius: number, readonly cooldown: number,
                 readonly projectileType: string, readonly shotsCount: number, readonly shotDelay: number) {}
 }
 
@@ -37,7 +38,7 @@ class Ship {
 
 class Unit {
     constructor(readonly sideValue: Side, readonly cell: Point, readonly shipId: number,
-                readonly firstGun: Gun, readonly secondGun: Gun) {}
+                readonly firstGunId: number, readonly secondGunId: number) {}
 }
 
 class Point {

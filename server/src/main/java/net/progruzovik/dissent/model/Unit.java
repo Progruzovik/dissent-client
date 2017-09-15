@@ -40,19 +40,29 @@ public final class Unit {
         this.cell.set(cell);
     }
 
+    public int getShipId() {
+        return ship.getId();
+    }
+
     @JsonIgnore
     public Ship getShip() {
         return ship;
     }
 
-    public int getShipId() {
-        return ship.getId();
+    public int getFirstGunId() {
+        return firstGun == null ? 0 : firstGun.getId();
     }
 
+    @JsonIgnore
     public Gun getFirstGun() {
         return firstGun;
     }
 
+    public int getSecondGunId() {
+        return secondGun == null ? 0 : secondGun.getId();
+    }
+
+    @JsonIgnore
     public Gun getSecondGun() {
         return secondGun;
     }

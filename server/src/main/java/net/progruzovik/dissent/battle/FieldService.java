@@ -1,14 +1,13 @@
 package net.progruzovik.dissent.battle;
 
 import net.progruzovik.dissent.dao.ShipDao;
+import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.player.Player;
 import net.progruzovik.dissent.util.Point;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public final class FieldService implements Field {
 
@@ -22,9 +21,10 @@ public final class FieldService implements Field {
     private final Player rightPlayer;
 
     private final Queue<Unit> queue = new LinkedList<>();
-    private final ShipDao shipDao;
+    private final Set<Ship> uniqueShips = new HashSet<>();
+    private final Set<Gun> uniqueGuns = new HashSet<>();
 
-    public FieldService(Player leftPlayer, Player rightPlayer, ShipDao shipDao) {
+    public FieldService(Player leftPlayer, Player rightPlayer) {
         final int unitsCount = Math.max(leftPlayer.getUnits().size(), rightPlayer.getUnits().size());
         final int colsCount = unitsCount * UNIT_INDENT + BORDER_INDENT * 2;
         size = new Point(colsCount, colsCount);
@@ -33,7 +33,7 @@ public final class FieldService implements Field {
         for (final Unit unit : leftPlayer.getUnits()) {
             unit.setSide(Side.Left);
             unit.setCell(new Point(0, i * UNIT_INDENT + BORDER_INDENT));
-            queue.add(unit);
+            register(unit);
             i++;
         }
         this.leftPlayer = leftPlayer;
@@ -41,22 +41,15 @@ public final class FieldService implements Field {
         for (final Unit unit : rightPlayer.getUnits()) {
             unit.setSide(Side.Right);
             unit.setCell(new Point(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT));
-            queue.add(unit);
+            register(unit);
             i++;
         }
         this.rightPlayer = rightPlayer;
-
-        this.shipDao = shipDao;
     }
 
     @Override
     public Point getSize() {
         return size;
-    }
-
-    @Override
-    public List<Ship> getShips() {
-        return shipDao.getShips();
     }
 
     @Override
@@ -72,6 +65,16 @@ public final class FieldService implements Field {
     @Override
     public Queue<Unit> getQueue() {
         return queue;
+    }
+
+    @Override
+    public Set<Ship> getUniqueShips() {
+        return uniqueShips;
+    }
+
+    @Override
+    public Set<Gun> getUniqueGuns() {
+        return uniqueGuns;
     }
 
     @Override
@@ -114,6 +117,17 @@ public final class FieldService implements Field {
             case Left: return leftPlayer;
             case Right: return rightPlayer;
             default: return null;
+        }
+    }
+
+    private void register(Unit unit) {
+        queue.add(unit);
+        uniqueShips.add(unit.getShip());
+        if (unit.getFirstGun() != null) {
+            uniqueGuns.add(unit.getFirstGun());
+        }
+        if (unit.getSecondGun() != null) {
+            uniqueGuns.add(unit.getSecondGun());
         }
     }
 }
