@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaQuery;
+import java.util.List;
 
 @Repository
 public final class ShipJpa implements ShipDao {
@@ -15,5 +17,12 @@ public final class ShipJpa implements ShipDao {
     @Override
     public Ship getShip(int id) {
         return entityManager.find(Ship.class, id);
+    }
+
+    @Override
+    public List<Ship> getShips() {
+        CriteriaQuery<Ship> query = entityManager.getCriteriaBuilder().createQuery(Ship.class);
+        query.from(Ship.class);
+        return entityManager.createQuery(query).getResultList();
     }
 }

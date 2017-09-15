@@ -40,8 +40,13 @@ public final class Unit {
         this.cell.set(cell);
     }
 
+    @JsonIgnore
     public Ship getShip() {
         return ship;
+    }
+
+    public int getShipId() {
+        return ship.getId();
     }
 
     public Gun getFirstGun() {

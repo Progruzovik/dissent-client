@@ -15,15 +15,15 @@ export default class Act extends game.Act {
     private readonly controls: Controls;
     private readonly field: Field;
 
-    constructor(width: number, height: number, fieldSize: PIXI.Point, playerSide: Side, unitsData: any) {
+    constructor(width: number, height: number, ships: Ship[],
+                fieldSize: PIXI.Point, playerSide: Side, unitsData: any) {
         super(width, height);
         const projectileService = new ProjectileService();
 
         const units = new Array<Unit>(0);
         for (const unitData of unitsData) {
-            const ship = new Ship(unitData.ship.speed, PIXI.loader.resources[unitData.ship.name].texture);
             units.push(new Unit(unitData.sideValue, new PIXI.Point(unitData.cell.x, unitData.cell.y),
-                ship, unitData.firstGun, unitData.secondGun, projectileService));
+                ships[unitData.shipId], unitData.firstGun, unitData.secondGun, projectileService));
         }
         const unitService = new UnitService(units);
         const asteroids = new Array<PIXI.Point>(0);

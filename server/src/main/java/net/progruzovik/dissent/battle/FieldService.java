@@ -1,10 +1,13 @@
 package net.progruzovik.dissent.battle;
 
+import net.progruzovik.dissent.dao.ShipDao;
+import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.player.Player;
 import net.progruzovik.dissent.util.Point;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public final class FieldService implements Field {
@@ -19,8 +22,9 @@ public final class FieldService implements Field {
     private final Player rightPlayer;
 
     private final Queue<Unit> queue = new LinkedList<>();
+    private final ShipDao shipDao;
 
-    public FieldService(Player leftPlayer, Player rightPlayer) {
+    public FieldService(Player leftPlayer, Player rightPlayer, ShipDao shipDao) {
         final int unitsCount = Math.max(leftPlayer.getUnits().size(), rightPlayer.getUnits().size());
         final int colsCount = unitsCount * UNIT_INDENT + BORDER_INDENT * 2;
         size = new Point(colsCount, colsCount);
@@ -41,11 +45,18 @@ public final class FieldService implements Field {
             i++;
         }
         this.rightPlayer = rightPlayer;
+
+        this.shipDao = shipDao;
     }
 
     @Override
     public Point getSize() {
         return size;
+    }
+
+    @Override
+    public List<Ship> getShips() {
+        return shipDao.getShips();
     }
 
     @Override

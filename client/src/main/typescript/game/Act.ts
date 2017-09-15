@@ -169,5 +169,5 @@ export class Act extends PIXI.Container {
         }
     }
 
-    protected resizeUi() { }
+    protected resizeUi() {}
 }

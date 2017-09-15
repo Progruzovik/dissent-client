@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.rest;
 
+import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.player.Player;
 import net.progruzovik.dissent.util.Point;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -20,6 +22,11 @@ public final class FieldRest {
 
     public FieldRest(@Qualifier("sessionPlayer") Player player) {
         this.player = player;
+    }
+
+    @GetMapping("/ships")
+    public List<Ship> getShips() {
+        return player.getField().getShips();
     }
 
     @GetMapping("/size")
