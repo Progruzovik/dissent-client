@@ -33,8 +33,8 @@ export default class Act extends game.Act {
         this.resize();
 
         unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => {
-            this.controls.setInterfaceStatus(playerSide == currentUnit.side);
             if (playerSide != currentUnit.side) {
+                this.controls.lockInterface();
                 unitService.nextTurn();
             }
         });

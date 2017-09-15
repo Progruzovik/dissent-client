@@ -29,22 +29,22 @@ export default class Controls extends PIXI.Container {
         this.addChild(this.btnNextTurn);
         this.updateControls(unitService.currentUnit);
 
-        this.unitService.on(Unit.SHOT, unit => this.updateControls(unit));
+        this.unitService.on(Unit.SHOT, (unit: Unit) => this.updateControls(unit));
         this.unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => this.updateControls(currentUnit));
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () =>
             unitService.currentUnit.makeGunPrepared(unitService.currentUnit.firstGun));
         this.btnSecondGun.on(game.Event.BUTTON_CLICK, () =>
             unitService.currentUnit.makeGunPrepared(unitService.currentUnit.secondGun));
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => {
-            this.setInterfaceStatus(false);
+            this.lockInterface();
             postTurn(() => unitService.nextTurn());
         });
     }
 
-    setInterfaceStatus(isEnabled: boolean) {
-        this.btnFirstGun.isEnabled = isEnabled;
-        this.btnSecondGun.isEnabled = isEnabled;
-        this.btnNextTurn.isEnabled = isEnabled;
+    lockInterface() {
+        this.btnFirstGun.isEnabled = false;
+        this.btnSecondGun.isEnabled = false;
+        this.btnNextTurn.isEnabled = false;
     }
 
     resize(width: number) {
@@ -99,5 +99,6 @@ export default class Controls extends PIXI.Container {
             this.btnSecondGun.text = Controls.EMPTY_SLOT;
             this.btnSecondGun.isEnabled = false;
         }
+        this.btnNextTurn.isEnabled = true;
     }
 }
