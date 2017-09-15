@@ -1,4 +1,4 @@
-import { Event } from "./constant";
+import { Event } from "./utils";
 import * as PIXI from "pixi.js";
 
 export class Act extends PIXI.Container {

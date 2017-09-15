@@ -1,5 +1,5 @@
 import { Rectangle } from "./Rectangle";
-import { Event, CENTER } from "./constant";
+import { Event, CENTER } from "./utils";
 
 export class Button extends PIXI.Container {
 
