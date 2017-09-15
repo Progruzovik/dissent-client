@@ -1,9 +1,9 @@
 import Unit from "../unit/Unit";
-import UnitManager from "../unit/UnitManager";
+import UnitService from "../unit/UnitService";
 import { CellStatus } from "../utils"
 import * as game from "../../game";
 
-export default class FieldManager extends PIXI.utils.EventEmitter {
+export default class FieldService extends PIXI.utils.EventEmitter {
 
     static readonly PATHS_READY = "pathsReady";
     static readonly PATH_LINE = "pathLine";
@@ -14,7 +14,7 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
 
     readonly map: CellStatus[][];
 
-    constructor(readonly size: PIXI.Point, readonly unitManager: UnitManager, fieldObjects: PIXI.Point[]) {
+    constructor(readonly size: PIXI.Point, readonly unitService: UnitService, fieldObjects: PIXI.Point[]) {
         super();
         for (let i = 0; i < this.size.x; i++) {
             this.paths[i] = new Array<PIXI.Point>(this.size.y);
@@ -26,20 +26,20 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
                 this.map[i][j] = CellStatus.Empty;
             }
         }
-        for (const unit of unitManager.units) {
+        for (const unit of unitService.units) {
             this.map[unit.cell.x][unit.cell.y] = CellStatus.Ship;
         }
         for (const object of fieldObjects) {
             this.map[object.x][object.y] = CellStatus.Obstacle;
         }
-        this.createPathsForUnit(unitManager.currentUnit);
+        this.createPathsForUnit(unitService.currentUnit);
 
-        this.unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.createPathsForUnit(currentUnit));
-        this.unitManager.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) => {
+        this.unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => this.createPathsForUnit(currentUnit));
+        this.unitService.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) => {
             this.map[oldPosition.x][oldPosition.y] = CellStatus.Empty;
             this.map[newPosition.x][newPosition.y] = CellStatus.Ship;
         });
-        this.unitManager.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => {
+        this.unitService.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => {
             let gunCells = this.findNeighborsInRadius(unit.cell, unit.preparedGun.radius,
                 (cell: PIXI.Point) => {
                 const cellsInBetween = this.findCellsInBetween(unit.cell.clone(), cell);
@@ -53,7 +53,7 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
                 }
                 return isCellReachable;
             });
-            this.emit(FieldManager.GUN_CELLS_READY, unit, gunCells);
+            this.emit(FieldService.GUN_CELLS_READY, unit, gunCells);
         });
     }
 
@@ -91,7 +91,7 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
                 }
             }
         }
-        this.emit(FieldManager.PATHS_READY, unit);
+        this.emit(FieldService.PATHS_READY, unit);
     }
 
     preparePath(markCell: PIXI.Point, unitCell: PIXI.Point) {
@@ -111,7 +111,7 @@ export default class FieldManager extends PIXI.utils.EventEmitter {
                     direction = game.Direction.Down;
                 }
                 this.currentPath.push(direction);
-                this.emit(FieldManager.PATH_LINE, cell, direction);
+                this.emit(FieldService.PATH_LINE, cell, direction);
                 cell = previousCell;
             }
         }

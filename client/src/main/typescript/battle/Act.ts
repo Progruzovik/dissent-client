@@ -1,11 +1,11 @@
 import Controls from "./Controls";
 import Queue from "./Queue";
 import Field from "./field/Field";
-import FieldManager from "./field/FieldManager";
-import ProjectileManager from "./gun/ProjectileManager";
+import FieldService from "./field/FieldService";
+import ProjectileService from "./gun/ProjectileService";
 import Ship from "./unit/Ship";
 import Unit from "./unit/Unit";
-import UnitManager from "./unit/UnitManager";
+import UnitService from "./unit/UnitService";
 import { Side } from "./utils";
 import * as game from "../game";
 
@@ -17,34 +17,34 @@ export default class Act extends game.Act {
 
     constructor(width: number, height: number, fieldSize: PIXI.Point, playerSide: Side, unitsData: any) {
         super(width, height);
-        const projectileManager = new ProjectileManager();
+        const projectileService = new ProjectileService();
 
         const units = new Array<Unit>(0);
         for (const unitData of unitsData) {
             const ship = new Ship(unitData.ship.speed, PIXI.loader.resources[unitData.ship.name].texture);
             units.push(new Unit(unitData.sideValue, new PIXI.Point(unitData.col, unitData.row),
-                ship, unitData.firstGun, unitData.secondGun, projectileManager));
+                ship, unitData.firstGun, unitData.secondGun, projectileService));
         }
-        const unitManager = new UnitManager(units);
+        const unitService = new UnitService(units);
         const asteroids = new Array<PIXI.Point>(0);
         asteroids.push(new PIXI.Point(3, 2), new PIXI.Point(3, 3),
             new PIXI.Point(3, 4), new PIXI.Point(4, 3), new PIXI.Point(4, 4));
-        const fieldManager = new FieldManager(fieldSize, unitManager, asteroids);
+        const fieldService = new FieldService(fieldSize, unitService, asteroids);
 
-        this.queue = new Queue(playerSide, unitManager);
-        this.field = new Field(projectileManager, fieldManager, asteroids);
+        this.queue = new Queue(playerSide, unitService);
+        this.field = new Field(projectileService, fieldService, asteroids);
         this.content = this.field;
         this.leftUi = this.queue;
-        this.controls = new Controls(unitManager);
+        this.controls = new Controls(unitService);
         this.bottomUi = this.controls;
         this.resize();
 
-        unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => {
+        unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => {
             if (playerSide != currentUnit.side) {
-                unitManager.nextTurn();
+                unitService.nextTurn();
             }
         });
-        unitManager.once(game.Event.DONE, () => this.emit(game.Event.DONE));
+        unitService.once(game.Event.DONE, () => this.emit(game.Event.DONE));
     }
 
     protected resizeUi() {

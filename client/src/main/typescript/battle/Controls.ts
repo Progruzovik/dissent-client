@@ -1,5 +1,5 @@
 import Unit from "./unit/Unit";
-import UnitManager from "./unit/UnitManager";
+import UnitService from "./unit/UnitService";
 import * as game from "../game";
 
 export default class Controls extends PIXI.Container {
@@ -16,7 +16,7 @@ export default class Controls extends PIXI.Container {
     private readonly bgModule = new game.Rectangle();
     private readonly btnNextTurn = new game.Button("Конец хода");
 
-    constructor(private readonly unitManager: UnitManager) {
+    constructor(private readonly unitService: UnitService) {
         super();
         this.spriteShip.anchor.set(game.CENTER, game.CENTER);
         this.bgShip.addChild(this.spriteShip);
@@ -26,15 +26,15 @@ export default class Controls extends PIXI.Container {
         this.addChild(this.btnSecondGun);
         this.addChild(this.bgModule);
         this.addChild(this.btnNextTurn);
-        this.updateControls(unitManager.currentUnit);
+        this.updateControls(unitService.currentUnit);
 
-        this.unitManager.on(Unit.SHOT, (unit: Unit) => this.updateControls(unit));
-        this.unitManager.on(UnitManager.NEXT_TURN, (currentUnit: Unit) => this.updateControls(currentUnit));
+        this.unitService.on(Unit.SHOT, (unit: Unit) => this.updateControls(unit));
+        this.unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => this.updateControls(currentUnit));
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () =>
-            unitManager.currentUnit.makeGunPrepared(unitManager.currentUnit.firstGun));
+            unitService.currentUnit.makeGunPrepared(unitService.currentUnit.firstGun));
         this.btnSecondGun.on(game.Event.BUTTON_CLICK, () =>
-            unitManager.currentUnit.makeGunPrepared(unitManager.currentUnit.secondGun));
-        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => unitManager.nextTurn());
+            unitService.currentUnit.makeGunPrepared(unitService.currentUnit.secondGun));
+        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => unitService.nextTurn());
     }
 
     lock() {

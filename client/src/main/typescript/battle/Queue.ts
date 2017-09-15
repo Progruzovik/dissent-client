@@ -1,13 +1,13 @@
 import Unit from "./unit/Unit";
-import UnitManager from "./unit/UnitManager";
+import UnitService from "./unit/UnitService";
 import { Side } from "./utils";
 import * as game from "../game";
 
 export default class Queue extends game.Rectangle {
 
-    constructor(playerSide: Side, unitManager: UnitManager) {
+    constructor(playerSide: Side, unitService: UnitService) {
         super(0x000000, Unit.WIDTH);
-        unitManager.units.forEach((unit, i) => {
+        unitService.units.forEach((unit, i) => {
             const icon = new game.Rectangle(playerSide == unit.side ? 0x00FF00 : 0xFF0000,
                 Unit.WIDTH, Unit.HEIGHT);
             icon.addChild(new PIXI.Sprite(unit.ship.texture));
@@ -20,7 +20,7 @@ export default class Queue extends game.Rectangle {
             });
         });
 
-        unitManager.on(UnitManager.NEXT_TURN, () => {
+        unitService.on(UnitService.NEXT_TURN, () => {
             this.setChildIndex(this.getChildAt(0), this.children.length - 1);
             this.updateChildrenPositions();
         });

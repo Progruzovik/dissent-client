@@ -1,7 +1,7 @@
 import Field from "../field/Field";
 import Ship from "./Ship";
 import Gun from "../gun/Gun";
-import ProjectileManager from "../gun/ProjectileManager";
+import ProjectileService from "../gun/ProjectileService";
 import { Side } from "../utils";
 import * as game from "../../game";
 
@@ -27,7 +27,7 @@ export default class Unit extends game.Actor {
     private _preparedGun: Gun;
 
     constructor(readonly side: Side, readonly cell: PIXI.Point, readonly ship: Ship, readonly firstGun: Gun,
-                readonly secondGun: Gun, private readonly projectileManager: ProjectileManager) {
+                readonly secondGun: Gun, private readonly projectileService: ProjectileService) {
         super();
         this.interactive = true;
         const sprite = new PIXI.Sprite(ship.texture);
@@ -107,7 +107,7 @@ export default class Unit extends game.Actor {
     }
 
     shoot(target: Unit) {
-        this.projectileManager.shoot(this.preparedGun, target.center, this.center);
+        this.projectileService.shoot(this.preparedGun, target.center, this.center);
         if (this.preparedGun == this.firstGun) {
             this._firstGunCooldown = this.preparedGun.cooldown;
         } else if (this.preparedGun == this.secondGun) {
@@ -116,7 +116,7 @@ export default class Unit extends game.Actor {
         this.emit(Unit.SHOT);
         this.makeGunPrepared(null);
 
-        this.projectileManager.once(game.Event.DONE, () => target.destroyShip());
+        this.projectileService.once(game.Event.DONE, () => target.destroyShip());
     }
 
     destroyShip() {

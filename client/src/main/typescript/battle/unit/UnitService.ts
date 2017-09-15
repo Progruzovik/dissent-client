@@ -1,7 +1,7 @@
 import Unit from "./Unit";
 import * as game from "../../game";
 
-export default class UnitManager extends PIXI.utils.EventEmitter {
+export default class UnitService extends PIXI.utils.EventEmitter {
 
     static readonly NEXT_TURN = "nextTurn";
 
@@ -60,6 +60,6 @@ export default class UnitManager extends PIXI.utils.EventEmitter {
         this.currentUnit.makeGunPrepared(null);
         this.units.push(this.units.shift());
         this.currentUnit.makeCurrent();
-        this.emit(UnitManager.NEXT_TURN, this.currentUnit);
+        this.emit(UnitService.NEXT_TURN, this.currentUnit);
     }
 }
