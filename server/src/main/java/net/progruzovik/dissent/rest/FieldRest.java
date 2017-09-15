@@ -2,6 +2,7 @@ package net.progruzovik.dissent.rest;
 
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.player.Player;
+import net.progruzovik.dissent.util.Point;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +23,8 @@ public final class FieldRest {
     }
 
     @GetMapping("/size")
-    public Map<String, Integer> getSize() {
-        Map<String, Integer> result = new HashMap<>(2);
-        result.put("x", player.getField().getColsCount());
-        result.put("y", player.getField().getRowsCount());
-        return result;
+    public Point getSize() {
+        return player.getField().getSize();
     }
 
     @GetMapping("/side")
@@ -51,9 +49,8 @@ public final class FieldRest {
     }
 
     @PostMapping("/unit/cell")
-    public ResponseEntity postCurrentUnitCell(@RequestBody Map<String, Integer> cell) {
-        return player.getField().moveCurrentUnit(player, cell.get("x"), cell.get("y"))
-                ? new ResponseEntity(HttpStatus.OK)
+    public ResponseEntity postCurrentUnitCell(@RequestBody Point cell) {
+        return player.getField().moveCurrentUnit(player, cell) ? new ResponseEntity(HttpStatus.OK)
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 

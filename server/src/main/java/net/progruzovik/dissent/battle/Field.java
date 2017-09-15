@@ -2,14 +2,13 @@ package net.progruzovik.dissent.battle;
 
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.player.Player;
+import net.progruzovik.dissent.util.Point;
 
 import java.util.Queue;
 
 public interface Field {
 
-    int getColsCount();
-
-    int getRowsCount();
+    Point getSize();
 
     int getTurnNumber();
 
@@ -19,7 +18,7 @@ public interface Field {
 
     Side getPlayerSide(Player player);
 
-    boolean moveCurrentUnit(Player player, int col, int row);
+    boolean moveCurrentUnit(Player player, Point cell);
 
     boolean nextTurn(Player player);
 }

@@ -2,12 +2,12 @@ package net.progruzovik.dissent.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.progruzovik.dissent.battle.Side;
+import net.progruzovik.dissent.util.Point;
 
 public final class Unit {
 
     private Side side = Side.None;
-    private int col;
-    private int row;
+    private final Point cell = new Point();
 
     private final Ship ship;
     private final Gun firstGun;
@@ -32,20 +32,12 @@ public final class Unit {
         this.side = side;
     }
 
-    public int getCol() {
-        return col;
+    public Point getCell() {
+        return cell;
     }
 
-    public void setCol(int col) {
-        this.col = col;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
+    public void setCell(Point cell) {
+        this.cell.set(cell);
     }
 
     public Ship getShip() {

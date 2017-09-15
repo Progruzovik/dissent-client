@@ -22,7 +22,7 @@ export default class Act extends game.Act {
         const units = new Array<Unit>(0);
         for (const unitData of unitsData) {
             const ship = new Ship(unitData.ship.speed, PIXI.loader.resources[unitData.ship.name].texture);
-            units.push(new Unit(unitData.sideValue, new PIXI.Point(unitData.col, unitData.row),
+            units.push(new Unit(unitData.sideValue, new PIXI.Point(unitData.cell.x, unitData.cell.y),
                 ship, unitData.firstGun, unitData.secondGun, projectileService));
         }
         const unitService = new UnitService(units);

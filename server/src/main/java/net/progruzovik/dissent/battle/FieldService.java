@@ -2,6 +2,7 @@ package net.progruzovik.dissent.battle;
 
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.player.Player;
+import net.progruzovik.dissent.util.Point;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -11,8 +12,7 @@ public final class FieldService implements Field {
     private static final int UNIT_INDENT = 3;
     private static final int BORDER_INDENT = 4;
 
-    private final int colsCount;
-    private final int rowsCount;
+    private final Point size;
     private int turnNumber = 0;
 
     private final Player leftPlayer;
@@ -22,14 +22,13 @@ public final class FieldService implements Field {
 
     public FieldService(Player leftPlayer, Player rightPlayer) {
         final int unitsCount = Math.max(leftPlayer.getUnits().size(), rightPlayer.getUnits().size());
-        colsCount = unitsCount * UNIT_INDENT + BORDER_INDENT * 2;
-        rowsCount = colsCount;
+        final int colsCount = unitsCount * UNIT_INDENT + BORDER_INDENT * 2;
+        size = new Point(colsCount, colsCount);
 
         int i = 0;
         for (final Unit unit : leftPlayer.getUnits()) {
             unit.setSide(Side.Left);
-            unit.setCol(0);
-            unit.setRow(i * UNIT_INDENT + BORDER_INDENT);
+            unit.setCell(new Point(0, i * UNIT_INDENT + BORDER_INDENT));
             queue.add(unit);
             i++;
         }
@@ -37,8 +36,7 @@ public final class FieldService implements Field {
         i = 0;
         for (final Unit unit : rightPlayer.getUnits()) {
             unit.setSide(Side.Right);
-            unit.setCol(colsCount - 1);
-            unit.setRow(i * UNIT_INDENT + BORDER_INDENT);
+            unit.setCell(new Point(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT));
             queue.add(unit);
             i++;
         }
@@ -46,13 +44,8 @@ public final class FieldService implements Field {
     }
 
     @Override
-    public int getColsCount() {
-        return colsCount;
-    }
-
-    @Override
-    public int getRowsCount() {
-        return rowsCount;
+    public Point getSize() {
+        return size;
     }
 
     @Override
@@ -82,10 +75,10 @@ public final class FieldService implements Field {
     }
 
     @Override
-    public boolean moveCurrentUnit(Player player, int col, int row) {
-        if (player == getCurrentPlayer() && col > -1 && col < colsCount && row > -1 && row < rowsCount) {
-            getCurrentUnit().setCol(col);
-            getCurrentUnit().setRow(row);
+    public boolean moveCurrentUnit(Player player, Point cell) {
+        if (player == getCurrentPlayer() && cell.getX() > -1 && cell.getX() < size.getX()
+                && cell.getY() > -1 && cell.getY() < size.getY()) {
+            getCurrentUnit().setCell(cell);
             return true;
         }
         return false;
