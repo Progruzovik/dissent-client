@@ -39,17 +39,6 @@ public final class FieldRest {
         return player.getField().getPlayerSide(player).ordinal();
     }
 
-    @GetMapping("/turn")
-    public int getTurnNumber() {
-        return player.getField().getTurnNumber();
-    }
-
-    @PostMapping("/turn")
-    public ResponseEntity postTurn() {
-        return player.getField().nextTurn(player) ? new ResponseEntity(HttpStatus.OK)
-                : new ResponseEntity(HttpStatus.BAD_REQUEST);
-    }
-
     @GetMapping("/unit")
     public Unit getCurrentUnit() {
         return player.getField().getCurrentUnit();
@@ -64,5 +53,16 @@ public final class FieldRest {
     @GetMapping("/units")
     public Queue<Unit> getUnits() {
         return player.getField().getQueue();
+    }
+
+    @GetMapping("/turn")
+    public int getTurnNumber() {
+        return player.getField().getTurnNumber();
+    }
+
+    @PostMapping("/turn")
+    public ResponseEntity postTurn() {
+        return player.getField().nextTurn(player) ? new ResponseEntity(HttpStatus.OK)
+                : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }

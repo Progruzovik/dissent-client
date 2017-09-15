@@ -1,5 +1,9 @@
 import axios from "axios";
 
+export function postScenario(callback: () => void) {
+    axios.post("/api/battle/scenario").then(callback);
+}
+
 export function getField(callback: (ships: Ship[], size: Point, side: Side, units: Unit[]) => void) {
     axios.all([
         axios.get("/api/field/ships"),
@@ -8,6 +12,14 @@ export function getField(callback: (ships: Ship[], size: Point, side: Side, unit
         axios.get("/api/field/units")
     ]).then(axios.spread((ships, size, side, queue) =>
         callback(ships.data, size.data, side.data, queue.data)));
+}
+
+export function postCurrentUnitCell(data: Point, callback: () => void) {
+    axios.post("/api/field/unit/cell", data).then(callback);
+}
+
+export function postTurn(callback: () => void) {
+    axios.post("/api/field/turn").then(callback);
 }
 
 export const enum Side {

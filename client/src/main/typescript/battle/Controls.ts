@@ -1,6 +1,6 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import axios from "axios";
+import { postTurn } from "./request";
 import * as game from "../game";
 
 export default class Controls extends PIXI.Container {
@@ -37,7 +37,7 @@ export default class Controls extends PIXI.Container {
             unitService.currentUnit.makeGunPrepared(unitService.currentUnit.secondGun));
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => {
             this.setInterfaceStatus(false);
-            axios.post("/api/field/turn").then(() => unitService.nextTurn());
+            postTurn(() => unitService.nextTurn());
         });
     }
 

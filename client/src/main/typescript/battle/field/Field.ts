@@ -2,8 +2,8 @@ import FieldService from "./FieldService";
 import Mark from "./Mark";
 import ProjectileService from "../projectile/ProjectileService";
 import Unit from "../unit/Unit";
+import { postCurrentUnitCell } from "../request";
 import { CellStatus } from "../util";
-import axios from "axios";
 import * as game from "../../game";
 
 export default class Field extends PIXI.Container {
@@ -110,7 +110,7 @@ export default class Field extends PIXI.Container {
                 this.pathLayer.addChild(pathEnd);
             });
             pathMark.on(game.Event.CLICK, () => {
-                axios.post("/api/field/unit/cell", cell).then(() => {
+                postCurrentUnitCell(cell, () => {
                     unit.path = this.fieldService.currentPath;
                     this.pathLayer.removeChildren();
                     this.emit(game.Event.MOUSE_UP);
