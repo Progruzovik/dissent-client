@@ -3,7 +3,6 @@ import Queue from "./Queue";
 import Field from "./field/Field";
 import FieldService from "./field/FieldService";
 import ProjectileService from "./gun/ProjectileService";
-import Ship from "./unit/Ship";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import { Side } from "./utils";
@@ -15,16 +14,10 @@ export default class Act extends game.Act {
     private readonly controls: Controls;
     private readonly field: Field;
 
-    constructor(width: number, height: number, ships: Ship[],
-                fieldSize: PIXI.Point, playerSide: Side, unitsData: any) {
+    constructor(width: number, height: number, fieldSize: PIXI.Point,
+                playerSide: Side, units: Unit[], projectileService: ProjectileService) {
         super(width, height);
-        const projectileService = new ProjectileService();
 
-        const units = new Array<Unit>(0);
-        for (const unitData of unitsData) {
-            units.push(new Unit(unitData.sideValue, new PIXI.Point(unitData.cell.x, unitData.cell.y),
-                ships[unitData.shipId], unitData.firstGun, unitData.secondGun, projectileService));
-        }
         const unitService = new UnitService(units);
         const asteroids = new Array<PIXI.Point>(0);
         asteroids.push(new PIXI.Point(3, 2), new PIXI.Point(3, 3),

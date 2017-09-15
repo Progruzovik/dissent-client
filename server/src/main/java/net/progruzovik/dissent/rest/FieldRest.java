@@ -61,8 +61,8 @@ public final class FieldRest {
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/queue")
-    public Queue<Unit> getQueue() {
+    @GetMapping("/units")
+    public Queue<Unit> getUnits() {
         return player.getField().getQueue();
     }
 }
