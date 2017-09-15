@@ -1,6 +1,6 @@
 import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
-import { CellStatus } from "../utils"
+import { CellStatus } from "../util"
 import * as game from "../../game";
 
 export default class FieldService extends PIXI.utils.EventEmitter {

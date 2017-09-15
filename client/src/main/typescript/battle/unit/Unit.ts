@@ -1,8 +1,7 @@
 import Field from "../field/Field";
 import Ship from "./Ship";
-import Gun from "../gun/Gun";
-import ProjectileService from "../gun/ProjectileService";
-import { Side } from "../utils";
+import ProjectileService from "../projectile/ProjectileService";
+import { Gun, Side } from "../request";
 import * as game from "../../game";
 
 export default class Unit extends game.Actor {

@@ -1,7 +1,7 @@
 import Beam from "./Beam";
-import Gun from "./Gun";
 import Shell from "./Shell";
 import Unit from "../unit/Unit";
+import { Gun } from "../request";
 import * as game from "../../game";
 
 export default class ProjectileService extends PIXI.utils.EventEmitter {

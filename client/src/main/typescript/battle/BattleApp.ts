@@ -1,5 +1,5 @@
 import Act from "./Act";
-import ProjectileService from "./gun/ProjectileService";
+import ProjectileService from "./projectile/ProjectileService";
 import Ship from "./unit/Ship";
 import Unit from "./unit/Unit";
 import { getField } from "./request";

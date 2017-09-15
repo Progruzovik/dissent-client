@@ -2,10 +2,10 @@ import Controls from "./Controls";
 import Queue from "./Queue";
 import Field from "./field/Field";
 import FieldService from "./field/FieldService";
-import ProjectileService from "./gun/ProjectileService";
+import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { Side } from "./utils";
+import { Side } from "./request";
 import * as game from "../game";
 
 export default class Act extends game.Act {

@@ -1,6 +1,6 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { Side } from "./utils";
+import { Side } from "./request";
 import * as game from "../game";
 
 export default class Queue extends game.Rectangle {

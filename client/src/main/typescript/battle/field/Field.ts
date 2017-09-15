@@ -1,8 +1,8 @@
 import FieldService from "./FieldService";
 import Mark from "./Mark";
-import ProjectileService from "../gun/ProjectileService";
+import ProjectileService from "../projectile/ProjectileService";
 import Unit from "../unit/Unit";
-import { CellStatus } from "../utils";
+import { CellStatus } from "../util";
 import axios from "axios";
 import * as game from "../../game";
 

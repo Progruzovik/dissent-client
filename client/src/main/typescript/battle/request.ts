@@ -1,5 +1,3 @@
-import Gun from "./gun/Gun";
-import { Side } from  "./utils";
 import axios from "axios";
 
 export function getField(callback: (ships: Ship[], size: Point, side: Side, units: Unit[]) => void) {
@@ -12,12 +10,21 @@ export function getField(callback: (ships: Ship[], size: Point, side: Side, unit
         callback(ships.data, size.data, side.data, queue.data)));
 }
 
+export const enum Side {
+    None, Left, Right
+}
+
+export class Gun {
+    constructor(readonly name: string, readonly radius: number, readonly cooldown: number,
+                readonly projectileType: string, readonly shotsCount: number, readonly shotDelay: number) {}
+}
+
 class Ship {
     constructor(readonly id: number, readonly name: string, readonly speed: number) {}
 }
 
 class Unit {
-    constructor(readonly sideValue: number, readonly cell: Point, readonly shipId: number,
+    constructor(readonly sideValue: Side, readonly cell: Point, readonly shipId: number,
                 readonly firstGun: Gun, readonly secondGun: Gun) {}
 }
 
