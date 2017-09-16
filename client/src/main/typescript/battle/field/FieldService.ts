@@ -1,5 +1,6 @@
 import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
+import { Point } from "../request";
 import { CellStatus } from "../util"
 import * as game from "../../game";
 
@@ -14,7 +15,7 @@ export default class FieldService extends PIXI.utils.EventEmitter {
 
     readonly map: CellStatus[][];
 
-    constructor(readonly size: PIXI.Point, readonly unitService: UnitService, fieldObjects: PIXI.Point[]) {
+    constructor(readonly size: PIXI.Point, readonly unitService: UnitService, fieldObjects: Point[]) {
         super();
         for (let i = 0; i < this.size.x; i++) {
             this.paths[i] = new Array<PIXI.Point>(this.size.y);

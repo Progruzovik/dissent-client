@@ -16,9 +16,11 @@ public interface Field {
 
     int getTurnNumber();
 
+    List<Point> getAsteroids();
+
     Unit getCurrentUnit();
 
-    Queue<Unit> getQueue();
+    Queue<Unit> getUnitQueue();
 
     Set<Ship> getUniqueShips();
 

@@ -1,18 +1,22 @@
 import axios from "axios";
 
+const FIELD_PREFIX = "/api/field";
+
 export function postScenario(callback: () => void) {
     axios.post("/api/battle/scenario").then(callback);
 }
 
-export function getField(callback: (ships: Ship[], guns: Gun[], size: Point, side: Side, units: Unit[]) => void) {
+export function getField(callback: (ships: Ship[], guns: Gun[], size: Point,
+                                    side: Side, asteroids: Point[], units: Unit[]) => void) {
     axios.all([
-        axios.get("/api/field/ships"),
-        axios.get("/api/field/guns"),
-        axios.get("/api/field/size"),
-        axios.get("/api/field/side"),
-        axios.get("/api/field/units")
-    ]).then(axios.spread((ships, guns, size, side, queue) =>
-        callback(ships.data, guns.data, size.data, side.data, queue.data)));
+        axios.get(FIELD_PREFIX + "/ships"),
+        axios.get(FIELD_PREFIX + "/guns"),
+        axios.get(FIELD_PREFIX + "/size"),
+        axios.get(FIELD_PREFIX + "/side"),
+        axios.get(FIELD_PREFIX + "/asteroids"),
+        axios.get(FIELD_PREFIX + "/units")
+    ]).then(axios.spread((ships, guns, size, side, asteroids, units) =>
+        callback(ships.data, guns.data, size.data, side.data, asteroids.data, units.data)));
 }
 
 export function postCurrentUnitCell(data: Point, callback: () => void) {
@@ -32,6 +36,10 @@ export class Gun {
                 readonly projectileType: string, readonly shotsCount: number, readonly shotDelay: number) {}
 }
 
+export class Point {
+    constructor(readonly x: number, readonly y: number) {}
+}
+
 class Ship {
     constructor(readonly id: number, readonly name: string, readonly speed: number) {}
 }
@@ -39,8 +47,4 @@ class Ship {
 class Unit {
     constructor(readonly sideValue: Side, readonly cell: Point, readonly shipId: number,
                 readonly firstGunId: number, readonly secondGunId: number) {}
-}
-
-class Point {
-    constructor(readonly x: number, readonly y: number) {}
 }

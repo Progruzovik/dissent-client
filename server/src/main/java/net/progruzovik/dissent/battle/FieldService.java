@@ -1,6 +1,5 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.dao.ShipDao;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
@@ -20,7 +19,10 @@ public final class FieldService implements Field {
     private final Player leftPlayer;
     private final Player rightPlayer;
 
-    private final Queue<Unit> queue = new LinkedList<>();
+    private final List<List<CellStatus>> map;
+    private final List<Point> asteroids = new ArrayList<>();
+    private final Queue<Unit> unitQueue = new LinkedList<>();
+
     private final Set<Ship> uniqueShips = new HashSet<>();
     private final Set<Gun> uniqueGuns = new HashSet<>();
 
@@ -28,6 +30,21 @@ public final class FieldService implements Field {
         final int unitsCount = Math.max(leftPlayer.getUnits().size(), rightPlayer.getUnits().size());
         final int colsCount = unitsCount * UNIT_INDENT + BORDER_INDENT * 2;
         size = new Point(colsCount, colsCount);
+        map = new ArrayList<>(colsCount);
+        for (int i = 0; i < colsCount; i++) {
+            map.add(new ArrayList<>(colsCount));
+            for (int j = 0; j < colsCount; j++) {
+                map.get(i).add(CellStatus.Empty);
+            }
+        }
+        asteroids.add(new Point(3, 2));
+        asteroids.add(new Point(3, 3));
+        asteroids.add(new Point(3, 4));
+        asteroids.add(new Point(4, 3));
+        asteroids.add(new Point(4, 4));
+        for (final Point asteroid : asteroids) {
+            map.get(asteroid.getX()).set(asteroid.getY(), CellStatus.Obstacle);
+        }
 
         int i = 0;
         for (final Unit unit : leftPlayer.getUnits()) {
@@ -58,13 +75,18 @@ public final class FieldService implements Field {
     }
 
     @Override
-    public Unit getCurrentUnit() {
-        return queue.element();
+    public List<Point> getAsteroids() {
+        return asteroids;
     }
 
     @Override
-    public Queue<Unit> getQueue() {
-        return queue;
+    public Unit getCurrentUnit() {
+        return unitQueue.element();
+    }
+
+    @Override
+    public Queue<Unit> getUnitQueue() {
+        return unitQueue;
     }
 
     @Override
@@ -102,10 +124,10 @@ public final class FieldService implements Field {
     public boolean nextTurn(Player player) {
         if (player == getCurrentPlayer()) {
             turnNumber++;
-            queue.add(queue.remove());
+            unitQueue.add(unitQueue.remove());
             while (player != getCurrentPlayer()) {
                 turnNumber++;
-                queue.add(queue.remove());
+                unitQueue.add(unitQueue.remove());
             }
             return true;
         }
@@ -121,7 +143,8 @@ public final class FieldService implements Field {
     }
 
     private void register(Unit unit) {
-        queue.add(unit);
+        map.get(unit.getCell().getX()).set(unit.getCell().getY(), CellStatus.Ship);
+        unitQueue.add(unit);
         uniqueShips.add(unit.getShip());
         if (unit.getFirstGun() != null) {
             uniqueGuns.add(unit.getFirstGun());

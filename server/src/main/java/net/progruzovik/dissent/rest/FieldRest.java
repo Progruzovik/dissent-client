@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.rest;
 
+import net.progruzovik.dissent.battle.CellStatus;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
@@ -27,9 +28,20 @@ public final class FieldRest {
         return player.getField().getSize();
     }
 
-    @GetMapping("/side")
-    public int getSide() {
-        return player.getField().getPlayerSide(player).ordinal();
+    @GetMapping("/turn")
+    public int getTurnNumber() {
+        return player.getField().getTurnNumber();
+    }
+
+    @PostMapping("/turn")
+    public ResponseEntity postTurn() {
+        return player.getField().nextTurn(player) ? new ResponseEntity(HttpStatus.OK)
+                : new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/asteroids")
+    public Collection<Point> getAsteroids() {
+        return player.getField().getAsteroids();
     }
 
     @GetMapping("/unit")
@@ -44,28 +56,22 @@ public final class FieldRest {
     }
 
     @GetMapping("/units")
-    public Queue<Unit> getUnits() {
-        return player.getField().getQueue();
+    public Collection<Unit> getUnits() {
+        return player.getField().getUnitQueue();
     }
 
     @GetMapping("/ships")
-    public Set<Ship> getUniqueShips() {
+    public Collection<Ship> getUniqueShips() {
         return player.getField().getUniqueShips();
     }
 
     @GetMapping("/guns")
-    public Set<Gun> getUniqueGuns() {
+    public Collection<Gun> getUniqueGuns() {
         return player.getField().getUniqueGuns();
     }
 
-    @GetMapping("/turn")
-    public int getTurnNumber() {
-        return player.getField().getTurnNumber();
-    }
-
-    @PostMapping("/turn")
-    public ResponseEntity postTurn() {
-        return player.getField().nextTurn(player) ? new ResponseEntity(HttpStatus.OK)
-                : new ResponseEntity(HttpStatus.BAD_REQUEST);
+    @GetMapping("/side")
+    public int getSide() {
+        return player.getField().getPlayerSide(player).ordinal();
     }
 }
