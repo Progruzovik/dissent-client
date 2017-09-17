@@ -123,8 +123,9 @@ public final class FieldService implements Field {
 
     @Override
     public boolean moveCurrentUnit(Player player, Point cell) {
-        if (player == getCurrentPlayer() && cell.getX() > -1 && cell.getX() < size.getX()
-                && cell.getY() > -1 && cell.getY() < size.getY()) {
+        if (player == getCurrentPlayer() && cell.getX() > -1 && cell.getX() < size.getX() && cell.getY() > -1
+                && cell.getY() < size.getY() && paths.get(cell.getX()).get(cell.getY()) != null
+                && map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY) {
             getCurrentUnit().setCell(cell);
             createPathsForCurrentUnit();
             return true;
