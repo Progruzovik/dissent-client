@@ -1,6 +1,6 @@
 import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
-import { getPaths, Point } from "../request";
+import { getCurrentPaths, Point } from "../request";
 import { CellStatus } from "../util"
 import * as game from "../../game";
 
@@ -24,7 +24,7 @@ export default class FieldService extends PIXI.utils.EventEmitter {
             }
         }
         for (const unit of unitService.units) {
-            this.map[unit.cell.x][unit.cell.y] = CellStatus.Ship;
+            this.map[unit.cell.x][unit.cell.y] = CellStatus.Unit;
         }
         for (const object of fieldObjects) {
             this.map[object.x][object.y] = CellStatus.Obstacle;
@@ -33,39 +33,31 @@ export default class FieldService extends PIXI.utils.EventEmitter {
         this.unitService.on(UnitService.NEXT_TURN, () => this.getPathsForCurrentUnit());
         this.unitService.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) => {
             this.map[oldPosition.x][oldPosition.y] = CellStatus.Empty;
-            this.map[newPosition.x][newPosition.y] = CellStatus.Ship;
+            this.map[newPosition.x][newPosition.y] = CellStatus.Unit;
         });
         this.unitService.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => {
             let gunCells = this.findNeighborsInRadius(unit.cell, unit.preparedGun.radius,
                 (cell: PIXI.Point) => {
                 const cellsInBetween = this.findCellsInBetween(unit.cell.clone(), cell);
-                let isCellReachable = true;
-                let i = 1;
-                while (isCellReachable && i < cellsInBetween.length - 1) {
+                for (let i = 1; i < cellsInBetween.length; i++) {
                     if (this.map[cellsInBetween[i].x][cellsInBetween[i].y] != CellStatus.Empty) {
-                        isCellReachable = false;
+                        return false;
                     }
-                    i++;
                 }
-                return isCellReachable;
+                return true;
             });
             this.emit(FieldService.GUN_CELLS_READY, unit, gunCells);
         });
     }
 
-    findAvailableNeighborsInRadius(cell: PIXI.Point, radius: number): PIXI.Point[] {
-        return this.findNeighborsInRadius(cell, radius, cell =>
-                this.map[cell.x][cell.y] == CellStatus.Empty && this.paths[cell.x][cell.y] != null);
-    }
-
     getPathsForCurrentUnit() {
-        getPaths(paths => {
+        getCurrentPaths(paths => {
             this.paths = paths;
             this.emit(FieldService.PATHS_READY, this.unitService.currentUnit);
         });
     }
 
-    preparePath(markCell: PIXI.Point, unitCell: PIXI.Point) {
+    preparePath(markCell: Point, unitCell: PIXI.Point) {
         this.currentPath.length = 0;
         if (this.paths[markCell.x][markCell.y]) {
             let cell: Point = markCell;
@@ -89,7 +81,7 @@ export default class FieldService extends PIXI.utils.EventEmitter {
     }
 
     private findNeighborsInRadius(cell: PIXI.Point, radius: number,
-                                  filterCondition: (cell: PIXI.Point) => boolean = () => true): PIXI.Point[] {
+                                  filterCondition: (cell: PIXI.Point) => boolean): PIXI.Point[] {
         const result = new Array<PIXI.Point>(0);
         for (let i = 0; i < radius; i++) {
             for (let j = 1; j <= radius - i; j++) {

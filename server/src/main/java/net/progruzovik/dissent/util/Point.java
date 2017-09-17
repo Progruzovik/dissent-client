@@ -10,11 +10,6 @@ public class Point {
         this.y = y;
     }
 
-    public Point(Point point) {
-        this.x = point.getX();
-        this.y = point.getY();
-    }
-
     public Point() {}
 
     public int getX() {
@@ -33,8 +28,11 @@ public class Point {
         this.y = y;
     }
 
-    public void set(Point cell) {
-        x = cell.x;
-        y = cell.y;
+    public boolean checkInBorders(Point borders) {
+        return x > -1 && x < borders.x && y > -1 && y < borders.y;
+    }
+
+    public int calculateDistanceToCell(Point point) {
+        return Math.abs(point.x - x) + Math.abs(point.y - y);
     }
 }

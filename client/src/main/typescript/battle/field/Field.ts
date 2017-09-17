@@ -2,7 +2,7 @@ import FieldService from "./FieldService";
 import Mark from "./Mark";
 import ProjectileService from "../projectile/ProjectileService";
 import Unit from "../unit/Unit";
-import { postCurrentUnitCell, Point } from "../request";
+import { getCurrentReachableCells, postCurrentUnitCell, Point } from "../request";
 import { CellStatus } from "../util";
 import * as game from "../../game";
 
@@ -78,7 +78,7 @@ export default class Field extends PIXI.Container {
             for (const cell of gunCells) {
                 if (this.fieldService.map[cell.x][cell.y] == CellStatus.Empty) {
                     this.markLayer.addChild(new Mark(0xFFFFFF, cell));
-                } else if (this.fieldService.map[cell.x][cell.y] == CellStatus.Ship) {
+                } else if (this.fieldService.map[cell.x][cell.y] == CellStatus.Unit) {
                     if (targets.some(target => target.cell.x == cell.x && target.cell.y == cell.y)) {
                         this.markLayer.addChild(new Mark(0xFF0000, cell));
                     }
@@ -94,31 +94,33 @@ export default class Field extends PIXI.Container {
     }
 
     private createCommonMarksForUnit(unit: Unit) {
-        this.currentMark.cell = unit.cell;
-        this.pathMarks.length = 0;
-        for (const cell of this.fieldService.findAvailableNeighborsInRadius(unit.cell, unit.movementPoints)) {
-            const pathMark = new Mark(0xFFFF00, cell);
-            this.pathMarks.push(pathMark);
+        getCurrentReachableCells(reachableCells => {
+            this.currentMark.cell = unit.cell;
+            this.pathMarks.length = 0;
+            for (const cell of reachableCells) {
+                const pathMark = new Mark(0xFFFF00, cell);
+                this.pathMarks.push(pathMark);
 
-            pathMark.on(game.Event.MOUSE_OVER, () => {
-                this.fieldService.preparePath(cell, unit.cell);
-                const pathEnd = new game.Rectangle(0x00FF00, 15, 15);
-                pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
-                pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
-                pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
-                this.pathLayer.addChild(pathEnd);
-            });
-            pathMark.on(game.Event.CLICK, () => {
-                postCurrentUnitCell(cell, () => {
-                    unit.path = this.fieldService.currentPath;
-                    this.pathLayer.removeChildren();
-                    this.emit(game.Event.MOUSE_UP);
-                    unit.once(Unit.MOVE, () => this.fieldService.getPathsForCurrentUnit());
+                pathMark.on(game.Event.MOUSE_OVER, () => {
+                    this.fieldService.preparePath(cell, unit.cell);
+                    const pathEnd = new game.Rectangle(0x00FF00, 15, 15);
+                    pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
+                    pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
+                    pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
+                    this.pathLayer.addChild(pathEnd);
                 });
-            });
-            pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
-        }
-        this.addCurrentPathMarks();
+                pathMark.on(game.Event.CLICK, () => {
+                    postCurrentUnitCell(cell, () => {
+                        unit.path = this.fieldService.currentPath;
+                        this.pathLayer.removeChildren();
+                        this.emit(game.Event.MOUSE_UP);
+                        unit.once(Unit.MOVE, () => this.fieldService.getPathsForCurrentUnit());
+                    });
+                });
+                pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
+            }
+            this.addCurrentPathMarks();
+        });
     }
 
     private addCurrentPathMarks() {

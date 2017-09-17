@@ -9,7 +9,7 @@ public final class Unit {
     private int movementPoints = 0;
 
     private Side side = Side.NONE;
-    private final Point cell = new Point();
+    private Point cell = new Point();
 
     private final Ship ship;
     private final Gun firstGun;
@@ -35,16 +35,8 @@ public final class Unit {
         return side.ordinal();
     }
 
-    public void setSide(Side side) {
-        this.side = side;
-    }
-
     public Point getCell() {
         return cell;
-    }
-
-    public void setCell(Point cell) {
-        this.cell.set(cell);
     }
 
     public int getShipId() {
@@ -74,7 +66,22 @@ public final class Unit {
         return secondGun;
     }
 
+    public void init(Side side, Point cell) {
+        this.side = side;
+        this.cell = cell;
+    }
+
     public void makeCurrent() {
         movementPoints = ship.getSpeed();
+    }
+
+    public boolean move(Point nextCell) {
+        final int distance = cell.calculateDistanceToCell(nextCell);
+        if (distance <= movementPoints) {
+            cell = nextCell;
+            movementPoints -= distance;
+            return true;
+        }
+        return false;
     }
 }

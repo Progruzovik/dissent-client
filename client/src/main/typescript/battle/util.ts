@@ -1,3 +1,3 @@
 export const enum CellStatus {
-    Empty, Ship, Obstacle
+    Empty, Unit, Obstacle
 }

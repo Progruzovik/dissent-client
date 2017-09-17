@@ -16,7 +16,9 @@ public interface Field {
 
     int getTurnNumber();
 
-    List<List<Point>> getPaths();
+    List<List<Point>> getCurrentPaths();
+
+    List<Point> getCurrentReachableCells();
 
     List<Point> getAsteroids();
 

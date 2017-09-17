@@ -7,6 +7,7 @@ import net.progruzovik.dissent.player.Player;
 import net.progruzovik.dissent.util.Point;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public final class FieldService implements Field {
 
@@ -19,7 +20,7 @@ public final class FieldService implements Field {
     private final Player leftPlayer;
     private final Player rightPlayer;
 
-    private final List<List<Point>> paths;
+    private final List<List<Point>> currentPaths;
 
     private final List<List<CellStatus>> map;
     private final List<Point> asteroids = new ArrayList<>();
@@ -32,13 +33,13 @@ public final class FieldService implements Field {
         final int unitsCount = Math.max(leftPlayer.getUnits().size(), rightPlayer.getUnits().size());
         final int colsCount = unitsCount * UNIT_INDENT + BORDER_INDENT * 2;
         size = new Point(colsCount, colsCount);
-        paths = new ArrayList<>(size.getX());
+        currentPaths = new ArrayList<>(size.getX());
         map = new ArrayList<>(size.getX());
         for (int i = 0; i < size.getX(); i++) {
-            paths.add(new ArrayList<>(size.getY()));
+            currentPaths.add(new ArrayList<>(size.getY()));
             map.add(new ArrayList<>(size.getY()));
             for (int j = 0; j < size.getY(); j++) {
-                paths.get(i).add(null);
+                currentPaths.get(i).add(null);
                 map.get(i).add(CellStatus.EMPTY);
             }
         }
@@ -53,16 +54,14 @@ public final class FieldService implements Field {
 
         int i = 0;
         for (final Unit unit : leftPlayer.getUnits()) {
-            unit.setSide(Side.LEFT);
-            unit.setCell(new Point(0, i * UNIT_INDENT + BORDER_INDENT));
+            unit.init(Side.LEFT, new Point(0, i * UNIT_INDENT + BORDER_INDENT));
             registerUnit(unit);
             i++;
         }
         this.leftPlayer = leftPlayer;
         i = 0;
         for (final Unit unit : rightPlayer.getUnits()) {
-            unit.setSide(Side.RIGHT);
-            unit.setCell(new Point(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT));
+            unit.init(Side.RIGHT, new Point(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT));
             registerUnit(unit);
             i++;
         }
@@ -81,8 +80,14 @@ public final class FieldService implements Field {
     }
 
     @Override
-    public List<List<Point>> getPaths() {
-        return paths;
+    public List<List<Point>> getCurrentPaths() {
+        return currentPaths;
+    }
+
+    @Override
+    public List<Point> getCurrentReachableCells() {
+        return findNeighborsInRadius(getCurrentUnit().getCell(),
+                getCurrentUnit().getMovementPoints(), c -> !checkCellReachable(c));
     }
 
     @Override
@@ -123,12 +128,14 @@ public final class FieldService implements Field {
 
     @Override
     public boolean moveCurrentUnit(Player player, Point cell) {
-        if (player == getCurrentPlayer() && cell.getX() > -1 && cell.getX() < size.getX() && cell.getY() > -1
-                && cell.getY() < size.getY() && paths.get(cell.getX()).get(cell.getY()) != null
-                && map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY) {
-            getCurrentUnit().setCell(cell);
-            createPathsForCurrentUnit();
-            return true;
+        if (player == getCurrentPlayer() && cell.checkInBorders(size) && checkCellReachable(cell)) {
+            final Point oldCell = getCurrentUnit().getCell();
+            if (getCurrentUnit().move(cell)) {
+                map.get(oldCell.getX()).set(oldCell.getY(), CellStatus.EMPTY);
+                map.get(cell.getX()).set(cell.getY(), CellStatus.UNIT);
+                createPathsForCurrentUnit();
+                return true;
+            }
         }
         return false;
     }
@@ -148,6 +155,11 @@ public final class FieldService implements Field {
         return false;
     }
 
+    private boolean checkCellReachable(Point cell) {
+        return currentPaths.get(cell.getX()).get(cell.getY()) != null
+                && map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY;
+    }
+
     private Player getCurrentPlayer() {
         switch (getCurrentUnit().getSide()) {
             case LEFT: return leftPlayer;
@@ -157,18 +169,25 @@ public final class FieldService implements Field {
     }
 
     private List<Point> findNeighborsForCell(Point cell) {
+        return findNeighborsInRadius(cell, 1, c -> false);
+    }
+
+    private List<Point> findNeighborsInRadius(Point cell, int radius, Predicate<Point> removeIf) {
         final List<Point> result = new ArrayList<>();
-        result.add(new Point(cell.getX(), cell.getY() - 1));
-        result.add(new Point(cell.getX(), cell.getY() + 1));
-        result.add(new Point(cell.getX() + 1, cell.getY()));
-        result.add(new Point(cell.getX() - 1, cell.getY()));
-        result.removeIf(neighborCell -> neighborCell.getX() < 0 || neighborCell.getX() >= size.getX()
-                || neighborCell.getY() < 0 || neighborCell.getY() >= size.getY());
+        for (int i = 0; i < radius; i++) {
+            for (int j = 1; j <= radius - i; j++) {
+                result.add(new Point(cell.getX() + i, cell.getY() - j));
+                result.add(new Point(cell.getX() - i, cell.getY() + j));
+                result.add(new Point(cell.getX() + j, cell.getY() + i));
+                result.add(new Point(cell.getX() - j, cell.getY() - i));
+            }
+        }
+        result.removeIf(c -> !c.checkInBorders(size) || removeIf.test(c));
         return result;
     }
 
     private void registerUnit(Unit unit) {
-        map.get(unit.getCell().getX()).set(unit.getCell().getY(), CellStatus.SHIP);
+        map.get(unit.getCell().getX()).set(unit.getCell().getY(), CellStatus.UNIT);
         unitQueue.offer(unit);
         uniqueShips.add(unit.getShip());
         if (unit.getFirstGun() != null) {
@@ -190,12 +209,12 @@ public final class FieldService implements Field {
             distances.add(new ArrayList<>(size.getY()));
             for (int j = 0; j < size.getY(); j++) {
                 distances.get(i).add(Integer.MAX_VALUE);
-                paths.get(i).set(j, null);
+                currentPaths.get(i).set(j, null);
             }
         }
-        final Point unitCell = new Point(getCurrentUnit().getCell());
+        final Point unitCell = getCurrentUnit().getCell();
         distances.get(unitCell.getX()).set(unitCell.getY(), 0);
-        paths.get(unitCell.getX()).set(unitCell.getY(), unitCell);
+        currentPaths.get(unitCell.getX()).set(unitCell.getY(), unitCell);
 
         final Queue<Point> cellQueue = new LinkedList<>();
         cellQueue.offer(unitCell);
@@ -208,7 +227,7 @@ public final class FieldService implements Field {
                     if (neighborStatus != CellStatus.OBSTACLE
                             && distances.get(neighborCell.getX()).get(neighborCell.getY()) > distanceToCell + 1) {
                         distances.get(neighborCell.getX()).set(neighborCell.getY(), distanceToCell + 1);
-                        paths.get(neighborCell.getX()).set(neighborCell.getY(), cell);
+                        currentPaths.get(neighborCell.getX()).set(neighborCell.getY(), cell);
                         cellQueue.offer(neighborCell);
                     }
                 }

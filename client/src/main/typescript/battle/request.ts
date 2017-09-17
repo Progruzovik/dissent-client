@@ -19,8 +19,12 @@ export function getField(callback: (ships: Ship[], guns: Gun[], size: Point,
         callback(ships.data, guns.data, size.data, side.data, asteroids.data, units.data)));
 }
 
-export function getPaths(callback: (paths: Point[][]) => void) {
-    axios.get(FIELD_PREFIX + "/paths").then((response) => callback(response.data));
+export function getCurrentPaths(callback: (paths: Point[][]) => void) {
+    axios.get(FIELD_PREFIX + "/unit/paths").then((response) => callback(response.data));
+}
+
+export function getCurrentReachableCells(callback: (reachableCells: Point[]) => void) {
+    axios.get(FIELD_PREFIX + "/unit/cells").then((response) => callback(response.data));
 }
 
 export function postCurrentUnitCell(data: Point, callback: () => void) {
