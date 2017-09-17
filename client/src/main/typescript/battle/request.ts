@@ -19,12 +19,16 @@ export function getField(callback: (ships: Ship[], guns: Gun[], size: Point,
         callback(ships.data, guns.data, size.data, side.data, asteroids.data, units.data)));
 }
 
+export function getPaths(callback: (paths: Point[][]) => void) {
+    axios.get(FIELD_PREFIX + "/paths").then((response) => callback(response.data));
+}
+
 export function postCurrentUnitCell(data: Point, callback: () => void) {
-    axios.post("/api/field/unit/cell", data).then(callback);
+    axios.post(FIELD_PREFIX + "/unit/cell", data).then(callback);
 }
 
 export function postTurn(callback: () => void) {
-    axios.post("/api/field/turn").then(callback);
+    axios.post(FIELD_PREFIX + "/turn").then(callback);
 }
 
 export const enum Side {

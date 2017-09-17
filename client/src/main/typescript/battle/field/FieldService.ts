@@ -1,6 +1,6 @@
 import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
-import { Point } from "../request";
+import { getPaths, Point } from "../request";
 import { CellStatus } from "../util"
 import * as game from "../../game";
 
@@ -11,17 +11,13 @@ export default class FieldService extends PIXI.utils.EventEmitter {
     static readonly GUN_CELLS_READY = "gunCellsReady";
 
     readonly currentPath = new Array<game.Direction>(0);
-    private readonly paths = new Array<PIXI.Point[]>(this.size.x);
+    private paths: Point[][];
 
-    readonly map: CellStatus[][];
+    readonly map: CellStatus[][] = new Array<CellStatus[]>(this.size.x);
 
     constructor(readonly size: PIXI.Point, readonly unitService: UnitService, fieldObjects: Point[]) {
         super();
         for (let i = 0; i < this.size.x; i++) {
-            this.paths[i] = new Array<PIXI.Point>(this.size.y);
-        }
-        this.map = new Array<CellStatus[]>(this.size.x);
-        for (let i = 0; i < this.map.length; i++) {
             this.map[i] = new Array<CellStatus>(this.size.y);
             for (let j = 0; j < this.map[i].length; j++) {
                 this.map[i][j] = CellStatus.Empty;
@@ -33,9 +29,8 @@ export default class FieldService extends PIXI.utils.EventEmitter {
         for (const object of fieldObjects) {
             this.map[object.x][object.y] = CellStatus.Obstacle;
         }
-        this.createPathsForUnit(unitService.currentUnit);
 
-        this.unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => this.createPathsForUnit(currentUnit));
+        this.unitService.on(UnitService.NEXT_TURN, () => this.getPathsForCurrentUnit());
         this.unitService.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) => {
             this.map[oldPosition.x][oldPosition.y] = CellStatus.Empty;
             this.map[newPosition.x][newPosition.y] = CellStatus.Ship;
@@ -63,44 +58,19 @@ export default class FieldService extends PIXI.utils.EventEmitter {
                 this.map[cell.x][cell.y] == CellStatus.Empty && this.paths[cell.x][cell.y] != null);
     }
 
-    createPathsForUnit(unit: Unit) {
-        const distances = new Array<number[]>(this.size.x);
-        for (let i = 0; i < this.size.x; i++) {
-            distances[i] = new Array<number>(this.size.y);
-            for (let j = 0; j < this.size.y; j++) {
-                distances[i][j] = Number.MAX_VALUE;
-                this.paths[i][j] = null;
-            }
-        }
-        const unitCell = unit.cell.clone();
-        distances[unitCell.x][unitCell.y] = 0;
-        this.paths[unitCell.x][unitCell.y] = unitCell;
-
-        const cellQueue = new Array<PIXI.Point>(0);
-        cellQueue.push(unitCell);
-        while (cellQueue.length != 0) {
-            const cell: PIXI.Point = cellQueue.pop();
-            if (distances[cell.x][cell.y] < unit.movementPoints) {
-                for (const neighborCell of this.findNeighborsInRadius(cell, 1)) {
-                    const neighborStatus: CellStatus = this.map[neighborCell.x][neighborCell.y];
-                    if ((neighborStatus == CellStatus.Empty || neighborStatus == CellStatus.Ship)
-                        && distances[neighborCell.x][neighborCell.y] > distances[cell.x][cell.y] + 1) {
-                        distances[neighborCell.x][neighborCell.y] = distances[cell.x][cell.y] + 1;
-                        this.paths[neighborCell.x][neighborCell.y] = cell;
-                        cellQueue.push(neighborCell);
-                    }
-                }
-            }
-        }
-        this.emit(FieldService.PATHS_READY, unit);
+    getPathsForCurrentUnit() {
+        getPaths(paths => {
+            this.paths = paths;
+            this.emit(FieldService.PATHS_READY, this.unitService.currentUnit);
+        });
     }
 
     preparePath(markCell: PIXI.Point, unitCell: PIXI.Point) {
         this.currentPath.length = 0;
         if (this.paths[markCell.x][markCell.y]) {
-            let cell: PIXI.Point = markCell;
+            let cell: Point = markCell;
             while (!(cell.x == unitCell.x && cell.y == unitCell.y)) {
-                const previousCell: PIXI.Point = this.paths[cell.x][cell.y];
+                const previousCell: Point = this.paths[cell.x][cell.y];
                 let direction: game.Direction;
                 if (cell.x == previousCell.x - 1) {
                     direction = game.Direction.Left;

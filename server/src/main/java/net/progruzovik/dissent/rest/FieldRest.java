@@ -39,6 +39,11 @@ public final class FieldRest {
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/paths")
+    public List<List<Point>> getPaths() {
+        return player.getField().getPaths();
+    }
+
     @GetMapping("/asteroids")
     public Collection<Point> getAsteroids() {
         return player.getField().getAsteroids();

@@ -27,7 +27,6 @@ export default class Controls extends PIXI.Container {
         this.addChild(this.btnSecondGun);
         this.addChild(this.bgModule);
         this.addChild(this.btnNextTurn);
-        this.updateControls(unitService.currentUnit);
 
         this.unitService.on(Unit.SHOT, (unit: Unit) => this.updateControls(unit));
         this.unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => this.updateControls(currentUnit));

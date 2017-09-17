@@ -20,9 +20,11 @@ export default class Queue extends game.Rectangle {
             });
         });
 
-        unitService.on(UnitService.NEXT_TURN, () => {
-            this.setChildIndex(this.getChildAt(0), this.children.length - 1);
-            this.updateChildrenPositions();
+        unitService.on(UnitService.NEXT_TURN, (_, isFirst: boolean) => {
+            if (!isFirst) {
+                this.setChildIndex(this.getChildAt(0), this.children.length - 1);
+                this.updateChildrenPositions();
+            }
         });
     }
 

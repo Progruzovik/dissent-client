@@ -6,7 +6,9 @@ import net.progruzovik.dissent.util.Point;
 
 public final class Unit {
 
-    private Side side = Side.None;
+    private int movementPoints = 0;
+
+    private Side side = Side.NONE;
     private final Point cell = new Point();
 
     private final Ship ship;
@@ -17,6 +19,11 @@ public final class Unit {
         this.ship = ship;
         this.firstGun = firstGun;
         this.secondGun = secondGun;
+    }
+
+    @JsonIgnore
+    public int getMovementPoints() {
+        return movementPoints;
     }
 
     @JsonIgnore
@@ -65,5 +72,9 @@ public final class Unit {
     @JsonIgnore
     public Gun getSecondGun() {
         return secondGun;
+    }
+
+    public void makeCurrent() {
+        movementPoints = ship.getSpeed();
     }
 }

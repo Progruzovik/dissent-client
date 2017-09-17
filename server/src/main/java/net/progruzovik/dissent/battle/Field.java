@@ -16,6 +16,8 @@ public interface Field {
 
     int getTurnNumber();
 
+    List<List<Point>> getPaths();
+
     List<Point> getAsteroids();
 
     Unit getCurrentUnit();

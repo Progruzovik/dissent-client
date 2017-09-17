@@ -18,7 +18,6 @@ export default class Field extends PIXI.Container {
     constructor(private readonly projectileService: ProjectileService,
                 private readonly fieldService: FieldService, fieldObjects: Point[]) {
         super();
-        this.createCommonMarksForUnit(fieldService.unitService.currentUnit);
 
         const bg = new game.Rectangle();
         this.addChild(bg);
@@ -114,7 +113,7 @@ export default class Field extends PIXI.Container {
                     unit.path = this.fieldService.currentPath;
                     this.pathLayer.removeChildren();
                     this.emit(game.Event.MOUSE_UP);
-                    unit.once(Unit.MOVE, () => this.fieldService.createPathsForUnit(unit));
+                    unit.once(Unit.MOVE, () => this.fieldService.getPathsForCurrentUnit());
                 });
             });
             pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());

@@ -27,6 +27,7 @@ export default class Act extends game.Act {
         this.controls = new Controls(unitService);
         this.bottomUi = this.controls;
         this.resize();
+        unitService.emit(UnitService.NEXT_TURN, unitService.currentUnit, true);
 
         unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => {
             if (playerSide != currentUnit.side) {
