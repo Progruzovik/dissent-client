@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.util;
+package net.progruzovik.dissent.model.util;
 
 public class Point {
 

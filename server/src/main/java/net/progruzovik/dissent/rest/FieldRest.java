@@ -1,10 +1,11 @@
 package net.progruzovik.dissent.rest;
 
+import net.progruzovik.dissent.battle.Side;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.player.Player;
-import net.progruzovik.dissent.util.Point;
+import net.progruzovik.dissent.model.util.Point;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +49,8 @@ public final class FieldRest {
     }
 
     @GetMapping("/side")
-    public int getSide() {
-        return player.getField().getPlayerSide(player).ordinal();
+    public Side getSide() {
+        return player.getField().getPlayerSide(player);
     }
 
     @GetMapping("/turn")

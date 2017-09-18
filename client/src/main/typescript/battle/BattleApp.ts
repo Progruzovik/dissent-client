@@ -28,7 +28,7 @@ export default class BattleApp extends PIXI.Application {
                     const projectileService = new ProjectileService();
                     const unitsArray = new Array<Unit>(0);
                     for (const unit of units) {
-                        unitsArray.push(new Unit(unit.sideValue, new PIXI.Point(unit.cell.x, unit.cell.y),
+                        unitsArray.push(new Unit(unit.side, new PIXI.Point(unit.cell.x, unit.cell.y),
                             shipsArray[unit.shipId], guns.filter((gun) => gun.id == unit.firstGunId)[0],
                             guns.filter((gun) => gun.id == unit.secondGunId)[0], projectileService));
                     }

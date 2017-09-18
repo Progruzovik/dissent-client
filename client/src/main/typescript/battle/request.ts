@@ -53,6 +53,6 @@ class Ship {
 }
 
 class Unit {
-    constructor(readonly sideValue: Side, readonly cell: Point, readonly shipId: number,
+    constructor(readonly side: Side, readonly cell: Point, readonly shipId: number,
                 readonly firstGunId: number, readonly secondGunId: number) {}
 }

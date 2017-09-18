@@ -2,7 +2,7 @@ package net.progruzovik.dissent.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.progruzovik.dissent.battle.Side;
-import net.progruzovik.dissent.util.Point;
+import net.progruzovik.dissent.model.util.Point;
 
 public final class Unit {
 
@@ -26,13 +26,8 @@ public final class Unit {
         return movementPoints;
     }
 
-    @JsonIgnore
     public Side getSide() {
         return side;
-    }
-
-    public int getSideValue() {
-        return side.ordinal();
     }
 
     public Point getCell() {
