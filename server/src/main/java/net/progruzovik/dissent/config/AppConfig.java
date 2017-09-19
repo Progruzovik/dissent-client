@@ -3,7 +3,7 @@ package net.progruzovik.dissent.config;
 import net.progruzovik.dissent.battle.Field;
 import net.progruzovik.dissent.battle.FieldFactory;
 import net.progruzovik.dissent.battle.FieldService;
-import net.progruzovik.dissent.player.Player;
+import net.progruzovik.dissent.model.player.Player;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;

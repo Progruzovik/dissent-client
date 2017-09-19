@@ -1,8 +1,7 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.dao.ShipDao;
-import net.progruzovik.dissent.player.AiPlayer;
-import net.progruzovik.dissent.player.Player;
+import net.progruzovik.dissent.model.player.AiPlayer;
+import net.progruzovik.dissent.model.player.Player;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

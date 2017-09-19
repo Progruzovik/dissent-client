@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.player;
+package net.progruzovik.dissent.model.player;
 
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.ShipDao;

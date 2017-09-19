@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.model.util;
 
-public class Point {
+public final class Point {
 
     private int x;
     private int y;

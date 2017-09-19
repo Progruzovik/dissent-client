@@ -1,7 +1,6 @@
-package net.progruzovik.dissent.player;
+package net.progruzovik.dissent.model.player;
 
 import net.progruzovik.dissent.dao.ShipDao;
-import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;

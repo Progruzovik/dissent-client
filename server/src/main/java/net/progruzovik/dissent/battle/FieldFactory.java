@@ -1,7 +1,6 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.dao.ShipDao;
-import net.progruzovik.dissent.player.Player;
+import net.progruzovik.dissent.model.player.Player;
 
 @FunctionalInterface
 public interface FieldFactory {

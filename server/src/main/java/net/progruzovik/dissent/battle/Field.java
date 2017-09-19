@@ -3,7 +3,7 @@ package net.progruzovik.dissent.battle;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
-import net.progruzovik.dissent.player.Player;
+import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Point;
 
 import java.util.List;

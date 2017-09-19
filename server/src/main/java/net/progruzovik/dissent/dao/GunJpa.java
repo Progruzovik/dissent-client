@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Repository
-public class GunJpa implements GunDao {
+public final class GunJpa implements GunDao {
 
     @PersistenceContext
     private EntityManager entityManager;
