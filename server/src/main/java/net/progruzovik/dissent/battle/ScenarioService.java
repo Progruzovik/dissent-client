@@ -24,8 +24,8 @@ public final class ScenarioService implements Scenario {
     @Override
     public void start() {
         final Player aiPlayer = aiPlayerFactory.getObject();
-        final Field field = fieldFactory.create(player, aiPlayer);
-        player.setField(field);
-        aiPlayer.setField(field);
+        final Battle battle = fieldFactory.create(player, aiPlayer);
+        player.setBattle(battle);
+        aiPlayer.setBattle(battle);
     }
 }

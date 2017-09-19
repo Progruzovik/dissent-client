@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.battle;
 
+import net.progruzovik.dissent.model.Field;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
@@ -10,21 +11,17 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-public interface Field {
-
-    Point getSize();
+public interface Battle {
 
     int getTurnNumber();
 
-    List<List<Point>> getCurrentPaths();
+    Field getField();
 
-    List<Point> getCurrentReachableCells();
-
-    List<Point> getAsteroids();
+    Queue<Unit> getUnitQueue();
 
     Unit getCurrentUnit();
 
-    Queue<Unit> getUnitQueue();
+    List<Point> getCurrentUnitReachableCells();
 
     Set<Ship> getUniqueShips();
 

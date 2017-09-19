@@ -9,7 +9,7 @@ public final class Unit {
     private int movementPoints = 0;
 
     private Side side = Side.NONE;
-    private Point cell = new Point();
+    private Point cell;
 
     private final Ship ship;
     private final Gun firstGun;

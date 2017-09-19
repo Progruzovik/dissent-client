@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.model.player;
 
-import net.progruzovik.dissent.battle.Field;
+import net.progruzovik.dissent.battle.Battle;
 import net.progruzovik.dissent.model.Unit;
 
 import java.util.ArrayList;
@@ -8,17 +8,17 @@ import java.util.List;
 
 public abstract class AbstractPlayer implements Player {
 
-    private Field field;
+    private Battle battle;
     private final List<Unit> units = new ArrayList<>();
 
     @Override
-    public Field getField() {
-        return field;
+    public Battle getBattle() {
+        return battle;
     }
 
     @Override
-    public void setField(Field field) {
-        this.field = field;
+    public void setBattle(Battle battle) {
+        this.battle = battle;
     }
 
     @Override

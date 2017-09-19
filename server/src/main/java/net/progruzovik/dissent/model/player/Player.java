@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.model.player;
 
-import net.progruzovik.dissent.battle.Field;
+import net.progruzovik.dissent.battle.Battle;
 import net.progruzovik.dissent.model.Unit;
 
 import java.util.List;
@@ -9,7 +9,7 @@ public interface Player {
 
     List<Unit> getUnits();
 
-    Field getField();
+    Battle getBattle();
 
-    void setField(Field field);
+    void setBattle(Battle battle);
 }
