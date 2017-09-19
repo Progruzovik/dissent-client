@@ -2,7 +2,7 @@ import FieldService from "./FieldService";
 import Mark from "./Mark";
 import ProjectileService from "../projectile/ProjectileService";
 import Unit from "../unit/Unit";
-import { getCurrentReachableCells, postCurrentUnitCell, Point } from "../request";
+import { getCurrentReachableCells, postCurrentUnitCell, Cell } from "../request";
 import { CellStatus } from "../util";
 import * as game from "../../game";
 
@@ -16,7 +16,7 @@ export default class Field extends PIXI.Container {
     private readonly pathLayer = new PIXI.Container();
 
     constructor(private readonly projectileService: ProjectileService,
-                private readonly fieldService: FieldService, fieldObjects: Point[]) {
+                private readonly fieldService: FieldService, fieldObjects: Cell[]) {
         super();
 
         const bg = new game.Rectangle();

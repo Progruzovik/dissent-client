@@ -5,7 +5,7 @@ import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.model.player.Player;
-import net.progruzovik.dissent.model.util.Point;
+import net.progruzovik.dissent.model.util.Cell;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +24,12 @@ public final class BattleRest {
     }
 
     @GetMapping("/size")
-    public Point getSize() {
+    public Cell getSize() {
         return player.getBattle().getField().getSize();
     }
 
     @GetMapping("/asteroids")
-    public Collection<Point> getAsteroids() {
+    public Collection<Cell> getAsteroids() {
         return player.getBattle().getField().getAsteroids();
     }
 
@@ -70,23 +70,23 @@ public final class BattleRest {
     }
 
     @GetMapping("/unit/paths")
-    public List<List<Point>> getCurrentPaths() {
+    public List<List<Cell>> getCurrentPaths() {
         return player.getBattle().getField().getPaths();
     }
 
     @GetMapping("/unit/cells")
-    public Collection<Point> getCurrentReachableCells() {
-        return player.getBattle().getCurrentUnitReachableCells();
+    public Collection<Cell> getCurrentReachableCells() {
+        return player.getBattle().findReachableCellsForCurrentUnit();
     }
 
     @PostMapping("/unit/cell")
-    public ResponseEntity postCurrentUnitCell(@RequestBody Point cell) {
+    public ResponseEntity postCurrentUnitCell(@RequestBody Cell cell) {
         return player.getBattle().moveCurrentUnit(player, cell) ? new ResponseEntity(HttpStatus.OK)
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/unit/gun")
-    public int getCurrentGunCells(@RequestParam int number) {
-        return number;
+    @GetMapping("/unit/shot")
+    public List<Cell> getCellsForShot(@RequestParam int gunNumber) {
+        return player.getBattle().findCellsForCurrentUnitShot(gunNumber);
     }
 }

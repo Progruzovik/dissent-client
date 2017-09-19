@@ -1,6 +1,6 @@
 import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
-import { getCurrentPaths, Point } from "../request";
+import { getCurrentShotCells, getCurrentPaths, Cell } from "../request";
 import { CellStatus } from "../util"
 import * as game from "../../game";
 
@@ -11,11 +11,11 @@ export default class FieldService extends PIXI.utils.EventEmitter {
     static readonly GUN_CELLS_READY = "gunCellsReady";
 
     readonly currentPath = new Array<game.Direction>(0);
-    private paths: Point[][];
+    private paths: Cell[][];
 
     readonly map: CellStatus[][] = new Array<CellStatus[]>(this.size.x);
 
-    constructor(readonly size: PIXI.Point, readonly unitService: UnitService, fieldObjects: Point[]) {
+    constructor(readonly size: PIXI.Point, readonly unitService: UnitService, fieldObjects: Cell[]) {
         super();
         for (let i = 0; i < this.size.x; i++) {
             this.map[i] = new Array<CellStatus>(this.size.y);
@@ -36,17 +36,8 @@ export default class FieldService extends PIXI.utils.EventEmitter {
             this.map[newPosition.x][newPosition.y] = CellStatus.Unit;
         });
         this.unitService.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => {
-            let gunCells = this.findNeighborsInRadius(unit.cell, unit.preparedGun.radius,
-                (cell: PIXI.Point) => {
-                const cellsInBetween = this.findCellsInBetween(unit.cell.clone(), cell);
-                for (let i = 1; i < cellsInBetween.length; i++) {
-                    if (this.map[cellsInBetween[i].x][cellsInBetween[i].y] != CellStatus.Empty) {
-                        return false;
-                    }
-                }
-                return true;
-            });
-            this.emit(FieldService.GUN_CELLS_READY, unit, gunCells);
+            getCurrentShotCells(unit.preparedGun == unit.firstGun ? 0 : 1, gunCells =>
+                this.emit(FieldService.GUN_CELLS_READY, unit, gunCells));
         });
     }
 
@@ -57,12 +48,12 @@ export default class FieldService extends PIXI.utils.EventEmitter {
         });
     }
 
-    preparePath(markCell: Point, unitCell: PIXI.Point) {
+    preparePath(markCell: Cell, unitCell: PIXI.Point) {
         this.currentPath.length = 0;
         if (this.paths[markCell.x][markCell.y]) {
-            let cell: Point = markCell;
+            let cell: Cell = markCell;
             while (!(cell.x == unitCell.x && cell.y == unitCell.y)) {
-                const previousCell: Point = this.paths[cell.x][cell.y];
+                const previousCell: Cell = this.paths[cell.x][cell.y];
                 let direction: game.Direction;
                 if (cell.x == previousCell.x - 1) {
                     direction = game.Direction.Left;
@@ -78,65 +69,5 @@ export default class FieldService extends PIXI.utils.EventEmitter {
                 cell = previousCell;
             }
         }
-    }
-
-    private findNeighborsInRadius(cell: PIXI.Point, radius: number,
-                                  filterCondition: (cell: PIXI.Point) => boolean): PIXI.Point[] {
-        const result = new Array<PIXI.Point>(0);
-        for (let i = 0; i < radius; i++) {
-            for (let j = 1; j <= radius - i; j++) {
-                result.push(new PIXI.Point(cell.x + i, cell.y - j), new PIXI.Point(cell.x - i, cell.y + j),
-                    new PIXI.Point(cell.x + j, cell.y + i), new PIXI.Point(cell.x - j, cell.y - i));
-            }
-        }
-        return result.filter(cell => cell.x > -1 && cell.x < this.size.x
-            && cell.y > -1 && cell.y < this.size.y && filterCondition(cell));
-    }
-
-    private findCellsInBetween(firstCell: PIXI.Point, lastCell: PIXI.Point): PIXI.Point[] {
-        const dx: number = lastCell.x - firstCell.x, dy: number = lastCell.y - firstCell.y;
-        if (dx > -2 && dx < 2 && dy > -2 && dy < 2) {
-            return [firstCell, lastCell];
-        }
-
-        const firstCenterCell = new PIXI.Point(firstCell.x + (lastCell.x - firstCell.x) / 2,
-            firstCell.y + (lastCell.y - firstCell.y) / 2);
-        const secondCenterCell = new PIXI.Point();
-        if (firstCenterCell.x % 1 == 0) {
-            secondCenterCell.x = firstCenterCell.x;
-        } else {
-            if (firstCell.x < lastCell.x) {
-                firstCenterCell.x = Math.floor(firstCenterCell.x);
-                secondCenterCell.x = firstCenterCell.x + 1;
-            } else {
-                firstCenterCell.x = Math.ceil(firstCenterCell.x);
-                secondCenterCell.x = firstCenterCell.x - 1;
-            }
-        }
-        if (firstCenterCell.y % 1 == 0) {
-            secondCenterCell.y = firstCenterCell.y;
-        } else {
-            if (firstCell.y < lastCell.y) {
-                firstCenterCell.y = Math.floor(firstCenterCell.y);
-                secondCenterCell.y = firstCenterCell.y + 1;
-            } else {
-                firstCenterCell.y = Math.ceil(firstCenterCell.y);
-                secondCenterCell.y = firstCenterCell.y - 1;
-            }
-        }
-
-        const result: PIXI.Point[] = this.findCellsInBetween(firstCell, firstCenterCell);
-        const firstCellWithOffsetIndex: number = result.length - 2;
-        if (firstCenterCell.x != secondCenterCell.x || firstCenterCell.y != secondCenterCell.y) {
-            result.push(secondCenterCell);
-        }
-        let element: PIXI.Point = secondCenterCell.clone();
-        for (let i = firstCellWithOffsetIndex; i > -1; i--) {
-            element.x += result[i + 1].x - result[i].x;
-            element.y += result[i + 1].y - result[i].y;
-            result.push(element);
-            element = element.clone();
-        }
-        return result;
     }
 }

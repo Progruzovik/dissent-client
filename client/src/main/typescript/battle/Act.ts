@@ -5,7 +5,7 @@ import FieldService from "./field/FieldService";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { Point, Side } from "./request";
+import { Cell, Side } from "./request";
 import * as game from "../game";
 
 export default class Act extends game.Act {
@@ -15,7 +15,7 @@ export default class Act extends game.Act {
     private readonly field: Field;
 
     constructor(width: number, height: number, fieldSize: PIXI.Point, playerSide: Side,
-                asteroids: Point[], units: Unit[], projectileService: ProjectileService) {
+                asteroids: Cell[], units: Unit[], projectileService: ProjectileService) {
         super(width, height);
         const unitService = new UnitService(units);
         const fieldService = new FieldService(fieldSize, unitService, asteroids);

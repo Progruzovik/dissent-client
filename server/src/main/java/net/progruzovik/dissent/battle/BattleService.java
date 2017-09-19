@@ -5,7 +5,7 @@ import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.model.player.Player;
-import net.progruzovik.dissent.model.util.Point;
+import net.progruzovik.dissent.model.util.Cell;
 
 import java.util.*;
 
@@ -28,18 +28,18 @@ public final class BattleService implements Battle {
     public BattleService(Player leftPlayer, Player rightPlayer) {
         final int maxUnitsCountOnSide = Math.max(leftPlayer.getUnits().size(), rightPlayer.getUnits().size());
         final int colsCount = maxUnitsCountOnSide * UNIT_INDENT + BORDER_INDENT * 2;
-        field = new Field(new Point(colsCount, colsCount));
+        field = new Field(new Cell(colsCount, colsCount));
 
         int i = 0;
         for (final Unit unit : leftPlayer.getUnits()) {
-            unit.init(Side.LEFT, new Point(0, i * UNIT_INDENT + BORDER_INDENT));
+            unit.init(Side.LEFT, new Cell(0, i * UNIT_INDENT + BORDER_INDENT));
             registerUnit(unit);
             i++;
         }
         this.leftPlayer = leftPlayer;
         i = 0;
         for (final Unit unit : rightPlayer.getUnits()) {
-            unit.init(Side.RIGHT, new Point(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT));
+            unit.init(Side.RIGHT, new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT));
             registerUnit(unit);
             i++;
         }
@@ -68,11 +68,6 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public List<Point> getCurrentUnitReachableCells() {
-        return field.getReachableCellsForUnit(getCurrentUnit());
-    }
-
-    @Override
     public Set<Ship> getUniqueShips() {
         return uniqueShips;
     }
@@ -94,9 +89,21 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public boolean moveCurrentUnit(Player player, Point cell) {
+    public List<Cell> findReachableCellsForCurrentUnit() {
+        return field.findReachableCellsForUnit(getCurrentUnit());
+    }
+
+    @Override
+    public List<Cell> findCellsForCurrentUnitShot(int gunNumber) {
+        final int gunRadius = gunNumber == 0 ? getCurrentUnit().getFirstGun().getRadius()
+                : getCurrentUnit().getSecondGun().getRadius();
+        return field.findCellsForShot(getCurrentUnit().getCell(), gunRadius);
+    }
+
+    @Override
+    public boolean moveCurrentUnit(Player player, Cell cell) {
         if (player == getCurrentPlayer() && cell.checkInBorders(field.getSize()) && field.checkCellReachable(cell)) {
-            final Point oldCell = getCurrentUnit().getCell();
+            final Cell oldCell = getCurrentUnit().getCell();
             if (getCurrentUnit().move(cell)) {
                 field.moveUnit(oldCell, cell);
                 field.createPathsForUnit(getCurrentUnit());

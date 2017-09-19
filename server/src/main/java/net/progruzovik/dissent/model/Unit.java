@@ -2,14 +2,14 @@ package net.progruzovik.dissent.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.progruzovik.dissent.battle.Side;
-import net.progruzovik.dissent.model.util.Point;
+import net.progruzovik.dissent.model.util.Cell;
 
 public final class Unit {
 
     private int movementPoints = 0;
 
     private Side side = Side.NONE;
-    private Point cell;
+    private Cell cell;
 
     private final Ship ship;
     private final Gun firstGun;
@@ -30,7 +30,7 @@ public final class Unit {
         return side;
     }
 
-    public Point getCell() {
+    public Cell getCell() {
         return cell;
     }
 
@@ -61,7 +61,7 @@ public final class Unit {
         return secondGun;
     }
 
-    public void init(Side side, Point cell) {
+    public void init(Side side, Cell cell) {
         this.side = side;
         this.cell = cell;
     }
@@ -70,8 +70,8 @@ public final class Unit {
         movementPoints = ship.getSpeed();
     }
 
-    public boolean move(Point nextCell) {
-        final int distance = cell.calculateDistanceToCell(nextCell);
+    public boolean move(Cell nextCell) {
+        final int distance = cell.findDistanceToCell(nextCell);
         if (distance <= movementPoints) {
             cell = nextCell;
             movementPoints -= distance;

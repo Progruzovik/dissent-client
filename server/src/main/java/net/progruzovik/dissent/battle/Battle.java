@@ -5,7 +5,7 @@ import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Ship;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.model.player.Player;
-import net.progruzovik.dissent.model.util.Point;
+import net.progruzovik.dissent.model.util.Cell;
 
 import java.util.List;
 import java.util.Queue;
@@ -21,15 +21,17 @@ public interface Battle {
 
     Unit getCurrentUnit();
 
-    List<Point> getCurrentUnitReachableCells();
-
     Set<Ship> getUniqueShips();
 
     Set<Gun> getUniqueGuns();
 
     Side getPlayerSide(Player player);
 
-    boolean moveCurrentUnit(Player player, Point cell);
+    List<Cell> findReachableCellsForCurrentUnit();
+
+    List<Cell> findCellsForCurrentUnitShot(int gunNumber);
+
+    boolean moveCurrentUnit(Player player, Cell cell);
 
     boolean nextTurn(Player player);
 }
