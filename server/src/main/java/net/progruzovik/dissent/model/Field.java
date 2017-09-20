@@ -2,6 +2,7 @@ package net.progruzovik.dissent.model;
 
 import net.progruzovik.dissent.battle.CellStatus;
 import net.progruzovik.dissent.model.util.Cell;
+import net.progruzovik.dissent.model.util.Point;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -59,16 +60,30 @@ public final class Field {
         return findNeighborsInRadius(unit.getCell(), unit.getMovementPoints(), c -> !checkCellReachable(c));
     }
 
-    public List<Cell> findCellsForShot(Cell startCell, int radius) {
-        return findNeighborsInRadius(startCell, radius, c -> {
+    public Map<String, List<Cell>> findShotAndTargetCells(Cell startCell, int radius) {
+        Map<String, List<Cell>> result = new HashMap<>(2);
+
+        List<Cell> availableCells = findNeighborsInRadius(startCell, radius, c -> {
             final List<Cell> cellsInBetween = findCellsInBetween(startCell, c);
-            for (int i = 1; i < cellsInBetween.size(); i++) {
+            for (int i = 1; i < cellsInBetween.size() - 1; i++) {
                 if (map.get(cellsInBetween.get(i).getX()).get(cellsInBetween.get(i).getY()) != CellStatus.EMPTY) {
                     return true;
                 }
             }
             return false;
         });
+        List<Cell> shotCells = new ArrayList<>();
+        List<Cell> targetCells = new ArrayList<>();
+        for (final Cell cell : availableCells) {
+            if (map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY) {
+                shotCells.add(cell);
+            }  else if (map.get(cell.getX()).get(cell.getY()) == CellStatus.UNIT) {
+                targetCells.add(cell);
+            }
+        }
+        result.put("shotCells", shotCells);
+        result.put("targetCells", targetCells);
+        return result;
     }
 
     public void addUnit(Cell cell) {
@@ -139,37 +154,36 @@ public final class Field {
             return result;
         }
 
+        final Point<Float> center = firstCell.findCenter(lastCell);
         final Cell firstCenterCell = new Cell(), secondCenterCell = new Cell();
-        final float centerX = firstCell.findCenterX(lastCell.getX());
-        if (centerX == Math.floor(centerX)) {
-            firstCenterCell.setX((int) centerX);
+        if (center.getX() == Math.floor(center.getX())) {
+            firstCenterCell.setX(center.getX().intValue());
             secondCenterCell.setX(firstCenterCell.getX());
         } else {
             if (firstCell.getX() < lastCell.getX()) {
-                firstCenterCell.setX((int) Math.floor(centerX));
+                firstCenterCell.setX((int) Math.floor(center.getX()));
                 secondCenterCell.setX(firstCenterCell.getX() + 1);
             } else {
-                firstCenterCell.setX((int) Math.ceil(centerX));
+                firstCenterCell.setX((int) Math.ceil(center.getX()));
                 secondCenterCell.setX(firstCenterCell.getX() - 1);
             }
         }
-        final double centerY = firstCell.findCenterY(lastCell.getY());
-        if (centerY == Math.floor(centerY)) {
-            firstCenterCell.setY((int) centerY);
+        if (center.getY() == Math.floor(center.getY())) {
+            firstCenterCell.setY(center.getY().intValue());
             secondCenterCell.setY(firstCenterCell.getY());
         } else {
             if (firstCell.getY() < lastCell.getY()) {
-                firstCenterCell.setY((int) Math.floor(centerY));
+                firstCenterCell.setY((int) Math.floor(center.getY()));
                 secondCenterCell.setY(firstCenterCell.getY() + 1);
             } else {
-                firstCenterCell.setY((int) Math.ceil(centerY));
+                firstCenterCell.setY((int) Math.ceil(center.getY()));
                 secondCenterCell.setY(firstCenterCell.getY() - 1);
             }
         }
 
         final List<Cell> result = findCellsInBetween(firstCell, firstCenterCell);
         final int firstCellIndexWithOffset = result.size() - 2;
-        if (!firstCenterCell.isSame(secondCenterCell)) {
+        if (!firstCenterCell.equals(secondCenterCell)) {
             result.add(secondCenterCell);
         }
         Cell nextCell = new Cell(secondCenterCell);

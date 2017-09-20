@@ -1,55 +1,36 @@
 package net.progruzovik.dissent.model.util;
 
-public final class Cell {
+public final class Cell extends Point<Integer> {
 
-    private int x;
-    private int y;
-
-    public Cell(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Cell(Integer x, Integer y) {
+        super(x, y);
     }
 
     public Cell(Cell cell) {
-        x = cell.x;
-        y = cell.y;
+        super(cell);
     }
 
-    public Cell() {}
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public boolean isSame(Cell cell) {
-        return x == cell.x && y == cell.y;
-    }
+    public Cell() { super(); }
 
     public boolean checkInBorders(Cell borders) {
-        return x > -1 && x < borders.x && y > -1 && y < borders.y;
+        return getX() > -1 && getX() < borders.getX() && getY() > -1 && getY() < borders.getY();
     }
 
-    public float findCenterX(int destinationX) {
-        return x + (float) (destinationX - x) / 2;
+    public Point<Float> findCenter(Cell destination) {
+        return new Point<>(getX().floatValue() + (destination.getX().floatValue() - getX().floatValue()) / 2,
+                getY().floatValue() + (destination.getY().floatValue() - getY().floatValue()) / 2);
     }
 
-    public float findCenterY(int destinationY) {
-        return y + (float) (destinationY - y) / 2;
+    public int findDistanceToCell(Cell cell) {
+        return Math.abs(cell.getX() - getX()) + Math.abs(cell.getY() - getY());
     }
 
-    public int findDistanceToCell(Cell point) {
-        return Math.abs(point.x - x) + Math.abs(point.y - y);
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() == obj.getClass()) {
+            Cell cell = (Cell) obj;
+            return getX().equals(cell.getX()) && getY().equals(cell.getY());
+        }
+        return false;
     }
 }

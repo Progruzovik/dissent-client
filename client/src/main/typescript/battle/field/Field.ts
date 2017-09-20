@@ -71,17 +71,17 @@ export default class Field extends PIXI.Container {
             }
             this.pathLayer.addChild(pathLine);
         });
-        this.fieldService.on(FieldService.GUN_CELLS_READY, (unit: Unit, gunCells: PIXI.Point[]) => {
+        this.fieldService.on(FieldService.SHOT_CELLS_READY,
+            (unit: Unit, shotCells: Cell[], targetCells: Cell[]) => {
             this.removeAllMarksExceptCurrent();
             const targets: Unit[] =
                 this.fieldService.unitService.units.filter(target => unit.canHit(target));
-            for (const cell of gunCells) {
-                if (this.fieldService.map[cell.x][cell.y] == CellStatus.Empty) {
-                    this.markLayer.addChild(new Mark(0xFFFFFF, cell));
-                } else if (this.fieldService.map[cell.x][cell.y] == CellStatus.Unit) {
-                    if (targets.some(target => target.cell.x == cell.x && target.cell.y == cell.y)) {
-                        this.markLayer.addChild(new Mark(0xFF0000, cell));
-                    }
+            for (const cell of shotCells) {
+                this.markLayer.addChild(new Mark(0xFFFFFF, cell));
+            }
+            for (const cell of targetCells) {
+                if (targets.some(target => target.cell.x == cell.x && target.cell.y == cell.y)) {
+                    this.markLayer.addChild(new Mark(0xFF0000, cell));
                 }
             }
         });

@@ -94,10 +94,10 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public List<Cell> findCellsForCurrentUnitShot(int gunNumber) {
+    public Map<String, List<Cell>> findCellsForCurrentUnitShot(int gunNumber) {
         final int gunRadius = gunNumber == 0 ? getCurrentUnit().getFirstGun().getRadius()
                 : getCurrentUnit().getSecondGun().getRadius();
-        return field.findCellsForShot(getCurrentUnit().getCell(), gunRadius);
+        return field.findShotAndTargetCells(getCurrentUnit().getCell(), gunRadius);
     }
 
     @Override

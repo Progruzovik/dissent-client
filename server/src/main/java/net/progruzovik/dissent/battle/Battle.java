@@ -8,6 +8,7 @@ import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -29,7 +30,7 @@ public interface Battle {
 
     List<Cell> findReachableCellsForCurrentUnit();
 
-    List<Cell> findCellsForCurrentUnitShot(int gunNumber);
+    Map<String, List<Cell>> findCellsForCurrentUnitShot(int gunNumber);
 
     boolean moveCurrentUnit(Player player, Cell cell);
 

@@ -18,7 +18,7 @@ export default class Act extends game.Act {
                 asteroids: Cell[], units: Unit[], projectileService: ProjectileService) {
         super(width, height);
         const unitService = new UnitService(units);
-        const fieldService = new FieldService(fieldSize, unitService, asteroids);
+        const fieldService = new FieldService(fieldSize, unitService);
 
         this.queue = new Queue(playerSide, unitService);
         this.field = new Field(projectileService, fieldService, asteroids);

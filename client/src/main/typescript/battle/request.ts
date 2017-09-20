@@ -31,9 +31,9 @@ export function postCurrentUnitCell(data: Cell, callback: () => void) {
     axios.post(BATTLE_PREFIX + "/unit/cell", data).then(callback);
 }
 
-export function getCurrentShotCells(gunNumber: number, callback: (gunCells: Cell[]) => void) {
+export function getCurrentShotCells(gunNumber: number, callback: (shotCells: Cell[], targetCells: Cell[]) => void) {
     axios.get(BATTLE_PREFIX + "/unit/shot", { params: { gunNumber: gunNumber } })
-        .then(response => callback(response.data));
+        .then(response => callback(response.data.shotCells, response.data.targetCells));
 }
 
 export function postTurn(callback: () => void) {

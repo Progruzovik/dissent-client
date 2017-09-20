@@ -1,43 +1,23 @@
 import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
 import { getCurrentShotCells, getCurrentPaths, Cell } from "../request";
-import { CellStatus } from "../util"
 import * as game from "../../game";
 
 export default class FieldService extends PIXI.utils.EventEmitter {
 
     static readonly PATHS_READY = "pathsReady";
     static readonly PATH_LINE = "pathLine";
-    static readonly GUN_CELLS_READY = "gunCellsReady";
+    static readonly SHOT_CELLS_READY = "shotCellsReady";
 
     readonly currentPath = new Array<game.Direction>(0);
     private paths: Cell[][];
 
-    readonly map: CellStatus[][] = new Array<CellStatus[]>(this.size.x);
-
-    constructor(readonly size: PIXI.Point, readonly unitService: UnitService, fieldObjects: Cell[]) {
+    constructor(readonly size: PIXI.Point, readonly unitService: UnitService) {
         super();
-        for (let i = 0; i < this.size.x; i++) {
-            this.map[i] = new Array<CellStatus>(this.size.y);
-            for (let j = 0; j < this.map[i].length; j++) {
-                this.map[i][j] = CellStatus.Empty;
-            }
-        }
-        for (const unit of unitService.units) {
-            this.map[unit.cell.x][unit.cell.y] = CellStatus.Unit;
-        }
-        for (const object of fieldObjects) {
-            this.map[object.x][object.y] = CellStatus.Obstacle;
-        }
-
         this.unitService.on(UnitService.NEXT_TURN, () => this.getPathsForCurrentUnit());
-        this.unitService.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) => {
-            this.map[oldPosition.x][oldPosition.y] = CellStatus.Empty;
-            this.map[newPosition.x][newPosition.y] = CellStatus.Unit;
-        });
         this.unitService.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => {
-            getCurrentShotCells(unit.preparedGun == unit.firstGun ? 0 : 1, gunCells =>
-                this.emit(FieldService.GUN_CELLS_READY, unit, gunCells));
+            getCurrentShotCells(unit.preparedGun == unit.firstGun ? 0 : 1, (shotCells, targetCells) =>
+                this.emit(FieldService.SHOT_CELLS_READY, unit, shotCells, targetCells));
         });
     }
 

@@ -86,7 +86,7 @@ public final class BattleRest {
     }
 
     @GetMapping("/unit/shot")
-    public List<Cell> getCellsForShot(@RequestParam int gunNumber) {
+    public Map<String, List<Cell>> getCellsForShot(@RequestParam int gunNumber) {
         return player.getBattle().findCellsForCurrentUnitShot(gunNumber);
     }
 }
