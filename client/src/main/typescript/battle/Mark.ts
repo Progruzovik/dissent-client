@@ -1,7 +1,7 @@
 import Field from "./Field";
-import Unit from "../unit/Unit";
-import { Cell } from "../request";
-import * as game from "../../game";
+import Unit from "./unit/Unit";
+import { Cell } from "./request";
+import * as game from "../game";
 
 export default class Mark extends game.Rectangle {
 

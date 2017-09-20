@@ -1,7 +1,6 @@
 import Controls from "./Controls";
 import Queue from "./Queue";
-import Field from "./field/Field";
-import FieldService from "./field/FieldService";
+import Field from "./Field";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
@@ -18,10 +17,9 @@ export default class Act extends game.Act {
                 asteroids: Cell[], units: Unit[], projectileService: ProjectileService) {
         super(width, height);
         const unitService = new UnitService(units);
-        const fieldService = new FieldService(fieldSize, unitService);
 
         this.queue = new Queue(playerSide, unitService);
-        this.field = new Field(projectileService, fieldService, asteroids);
+        this.field = new Field(fieldSize, projectileService, unitService, asteroids);
         this.content = this.field;
         this.leftUi = this.queue;
         this.controls = new Controls(unitService);

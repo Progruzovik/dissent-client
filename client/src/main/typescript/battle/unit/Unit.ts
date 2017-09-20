@@ -1,4 +1,4 @@
-import Field from "../field/Field";
+import Field from "../Field";
 import Ship from "./Ship";
 import ProjectileService from "../projectile/ProjectileService";
 import { Gun, Side } from "../request";
