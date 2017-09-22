@@ -12,7 +12,7 @@ public final class Cell extends Point<Integer> {
 
     public Cell() { super(); }
 
-    public boolean checkInBorders(Cell borders) {
+    public boolean isInBorders(Cell borders) {
         return getX() > -1 && getX() < borders.getX() && getY() > -1 && getY() < borders.getY();
     }
 

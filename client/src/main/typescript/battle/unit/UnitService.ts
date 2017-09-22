@@ -1,4 +1,5 @@
 import Unit from "./Unit";
+import { postCurrentUnitShot } from "../request";
 import * as game from "../../game";
 
 export default class UnitService extends PIXI.utils.EventEmitter {
@@ -21,7 +22,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
             });
             unit.on(game.Event.CLICK, () => {
                 if (unit == this.highlightedUnit && this.currentUnit.canHit(unit)) {
-                    this.currentUnit.shoot(unit);
+                    postCurrentUnitShot(unit.cell, () => this.currentUnit.shoot(unit));
                 }
             });
             unit.on(game.Event.MOUSE_OUT, () => {

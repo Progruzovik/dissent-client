@@ -11,20 +11,21 @@ public final class Field {
 
     private final Cell size;
 
-    private final List<List<Cell>> paths;
+    private final List<List<Cell>> currentPaths;
+    private final List<Cell> currentTargets = new ArrayList<>();
 
     private final List<List<CellStatus>> map;
     private final List<Cell> asteroids = new ArrayList<>();
 
     public Field(Cell size) {
         this.size = size;
-        paths = new ArrayList<>(size.getX());
+        currentPaths = new ArrayList<>(size.getX());
         map = new ArrayList<>(size.getX());
         for (int i = 0; i < size.getX(); i++) {
-            paths.add(new ArrayList<>(size.getY()));
+            currentPaths.add(new ArrayList<>(size.getY()));
             map.add(new ArrayList<>(size.getY()));
             for (int j = 0; j < size.getY(); j++) {
-                paths.get(i).add(null);
+                currentPaths.get(i).add(null);
                 map.get(i).add(CellStatus.EMPTY);
             }
         }
@@ -43,26 +44,29 @@ public final class Field {
         return size;
     }
 
-    public List<List<Cell>> getPaths() {
-        return paths;
+    public List<List<Cell>> getCurrentPaths() {
+        return currentPaths;
     }
 
     public List<Cell> getAsteroids() {
         return asteroids;
     }
 
-    public boolean checkCellReachable(Cell cell) {
-        return paths.get(cell.getX()).get(cell.getY()) != null
+    public boolean isCellInCurrentPaths(Cell cell) {
+        return currentPaths.get(cell.getX()).get(cell.getY()) != null
                 && map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY;
     }
 
+    public boolean isCellInCurrentTargets(Cell cell) {
+        return currentTargets.contains(cell);
+    }
+
     public List<Cell> findReachableCellsForUnit(Unit unit) {
-        return findNeighborsInRadius(unit.getCell(), unit.getMovementPoints(), c -> !checkCellReachable(c));
+        return findNeighborsInRadius(unit.getCell(), unit.getMovementPoints(), c -> !isCellInCurrentPaths(c));
     }
 
     public Map<String, List<Cell>> findShotAndTargetCells(Cell startCell, int radius) {
         Map<String, List<Cell>> result = new HashMap<>(2);
-
         List<Cell> availableCells = findNeighborsInRadius(startCell, radius, c -> {
             final List<Cell> cellsInBetween = findCellsInBetween(startCell, c);
             for (int i = 1; i < cellsInBetween.size() - 1; i++) {
@@ -72,17 +76,18 @@ public final class Field {
             }
             return false;
         });
+
         List<Cell> shotCells = new ArrayList<>();
-        List<Cell> targetCells = new ArrayList<>();
+        currentTargets.clear();
         for (final Cell cell : availableCells) {
             if (map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY) {
                 shotCells.add(cell);
             }  else if (map.get(cell.getX()).get(cell.getY()) == CellStatus.UNIT) {
-                targetCells.add(cell);
+                currentTargets.add(cell);
             }
         }
         result.put("shotCells", shotCells);
-        result.put("targetCells", targetCells);
+        result.put("targetCells", currentTargets);
         return result;
     }
 
@@ -101,12 +106,12 @@ public final class Field {
             distances.add(new ArrayList<>(size.getY()));
             for (int j = 0; j < size.getY(); j++) {
                 distances.get(i).add(Integer.MAX_VALUE);
-                paths.get(i).set(j, null);
+                currentPaths.get(i).set(j, null);
             }
         }
         final Cell unitCell = unit.getCell();
         distances.get(unitCell.getX()).set(unitCell.getY(), 0);
-        paths.get(unitCell.getX()).set(unitCell.getY(), unitCell);
+        currentPaths.get(unitCell.getX()).set(unitCell.getY(), unitCell);
 
         final Queue<Cell> cellQueue = new LinkedList<>();
         cellQueue.offer(unitCell);
@@ -119,7 +124,7 @@ public final class Field {
                     if (neighborStatus != CellStatus.OBSTACLE
                             && distances.get(neighborCell.getX()).get(neighborCell.getY()) > distanceToCell + 1) {
                         distances.get(neighborCell.getX()).set(neighborCell.getY(), distanceToCell + 1);
-                        paths.get(neighborCell.getX()).set(neighborCell.getY(), cell);
+                        currentPaths.get(neighborCell.getX()).set(neighborCell.getY(), cell);
                         cellQueue.offer(neighborCell);
                     }
                 }
@@ -141,7 +146,7 @@ public final class Field {
                 result.add(new Cell(cell.getX() - j, cell.getY() - i));
             }
         }
-        result.removeIf(c -> !c.checkInBorders(size) || removeIf.test(c));
+        result.removeIf(c -> !c.isInBorders(size) || removeIf.test(c));
         return result;
     }
 

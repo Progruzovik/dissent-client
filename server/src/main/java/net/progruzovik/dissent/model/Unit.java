@@ -6,12 +6,18 @@ import net.progruzovik.dissent.model.util.Cell;
 
 public final class Unit {
 
+    private boolean isDestroyed = false;
+
     private int movementPoints = 0;
+    private int firstGunCooldown = 0;
+    private int secondGunCooldown = 0;
 
     private Side side = Side.NONE;
     private Cell cell;
 
     private final Ship ship;
+
+    private Gun preparedGun;
     private final Gun firstGun;
     private final Gun secondGun;
 
@@ -43,6 +49,11 @@ public final class Unit {
         return ship;
     }
 
+    @JsonIgnore
+    public Gun getPreparedGun() {
+        return preparedGun;
+    }
+
     public int getFirstGunId() {
         return firstGun == null ? 0 : firstGun.getId();
     }
@@ -68,6 +79,12 @@ public final class Unit {
 
     public void makeCurrent() {
         movementPoints = ship.getSpeed();
+        if (firstGunCooldown > 0) {
+            firstGunCooldown--;
+        }
+        if (secondGunCooldown > 0) {
+            secondGunCooldown--;
+        }
     }
 
     public boolean move(Cell nextCell) {
@@ -78,5 +95,34 @@ public final class Unit {
             return true;
         }
         return false;
+    }
+
+    public boolean prepareGun(int gunNumber) {
+        if (gunNumber == -1) {
+            preparedGun = null;
+            return true;
+        }
+        if (gunNumber == 0 && firstGunCooldown == 0) {
+            preparedGun = firstGun;
+            return true;
+        }
+        if (gunNumber == 1 && secondGunCooldown == 0) {
+            preparedGun = secondGun;
+            return true;
+        }
+        return false;
+    }
+
+    public void shoot() {
+        if (preparedGun == firstGun) {
+            firstGunCooldown = firstGun.getCooldown();
+        } else if (preparedGun == secondGun) {
+            secondGunCooldown = secondGun.getCooldown();
+        }
+        preparedGun = null;
+    }
+
+    public void destroy() {
+        this.isDestroyed = true;
     }
 }

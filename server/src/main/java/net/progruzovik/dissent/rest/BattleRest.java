@@ -71,7 +71,7 @@ public final class BattleRest {
 
     @GetMapping("/unit/paths")
     public List<List<Cell>> getCurrentPaths() {
-        return player.getBattle().getField().getPaths();
+        return player.getBattle().getField().getCurrentPaths();
     }
 
     @GetMapping("/unit/cells")
@@ -86,7 +86,18 @@ public final class BattleRest {
     }
 
     @GetMapping("/unit/shot")
-    public Map<String, List<Cell>> getCellsForShot(@RequestParam int gunNumber) {
-        return player.getBattle().findCellsForCurrentUnitShot(gunNumber);
+    public ResponseEntity<Map<String, List<Cell>>> getCellsForCurrentUnitShot(@RequestParam int gunNumber) {
+        if (player.getBattle().prepareCurrentUnitGun(player, gunNumber)) {
+            return new ResponseEntity<>(player.getBattle().findCellsForCurrentUnitShot(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/unit/shot")
+    public ResponseEntity postCurrentUnitShot(@RequestBody Cell cell) {
+        if (player.getBattle().shootByCurrentUnit(player, cell)) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }

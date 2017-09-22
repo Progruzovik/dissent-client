@@ -20,7 +20,7 @@ public final class BattleService implements Battle {
     private final Player rightPlayer;
 
     private final Field field;
-    private final Queue<Unit> unitQueue = new LinkedList<>();
+    private final LinkedList<Unit> unitQueue = new LinkedList<>();
 
     private final Set<Ship> uniqueShips = new HashSet<>();
     private final Set<Gun> uniqueGuns = new HashSet<>();
@@ -94,21 +94,43 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public Map<String, List<Cell>> findCellsForCurrentUnitShot(int gunNumber) {
-        final int gunRadius = gunNumber == 0 ? getCurrentUnit().getFirstGun().getRadius()
-                : getCurrentUnit().getSecondGun().getRadius();
-        return field.findShotAndTargetCells(getCurrentUnit().getCell(), gunRadius);
-    }
-
-    @Override
     public boolean moveCurrentUnit(Player player, Cell cell) {
-        if (player == getCurrentPlayer() && cell.checkInBorders(field.getSize()) && field.checkCellReachable(cell)) {
+        if (player == getCurrentPlayer() && cell.isInBorders(field.getSize()) && field.isCellInCurrentPaths(cell)) {
             final Cell oldCell = getCurrentUnit().getCell();
             if (getCurrentUnit().move(cell)) {
                 field.moveUnit(oldCell, cell);
                 field.createPathsForUnit(getCurrentUnit());
                 return true;
             }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean prepareCurrentUnitGun(Player player, int gunNumber) {
+        return player == getCurrentPlayer() && getCurrentUnit().prepareGun(gunNumber);
+    }
+
+    @Override
+    public Map<String, List<Cell>> findCellsForCurrentUnitShot() {
+        return field.findShotAndTargetCells(getCurrentUnit().getCell(), getCurrentUnit().getPreparedGun().getRadius());
+    }
+
+    @Override
+    public boolean shootByCurrentUnit(Player player, Cell cell) {
+        if (player == getCurrentPlayer() && field.isCellInCurrentTargets(cell)) {
+            getCurrentUnit().shoot();
+            int i = 0;
+            boolean isTargetFound = false;
+            while (!isTargetFound) {
+                if (unitQueue.get(i).getCell().equals(cell)) {
+                    unitQueue.get(i).destroy();
+                    unitQueue.remove(i);
+                    isTargetFound = true;
+                }
+                i++;
+            }
+            return true;
         }
         return false;
     }

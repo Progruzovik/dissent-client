@@ -30,9 +30,13 @@ public interface Battle {
 
     List<Cell> findReachableCellsForCurrentUnit();
 
-    Map<String, List<Cell>> findCellsForCurrentUnitShot(int gunNumber);
-
     boolean moveCurrentUnit(Player player, Cell cell);
+
+    boolean prepareCurrentUnitGun(Player player, int gunNumber);
+
+    Map<String, List<Cell>> findCellsForCurrentUnitShot();
+
+    boolean shootByCurrentUnit(Player player, Cell cell);
 
     boolean nextTurn(Player player);
 }

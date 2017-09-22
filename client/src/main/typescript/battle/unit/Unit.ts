@@ -74,12 +74,7 @@ export default class Unit extends game.Actor {
     }
 
     canHit(target: Unit) {
-        return this.preparedGun && this.side != target.side && !target.isDestroyed
-            && this.calculateDistanceToCell(target.cell) <= this.preparedGun.radius;
-    }
-
-    calculateDistanceToCell(cell: PIXI.Point): number {
-        return Math.abs(cell.x - this.cell.x) + Math.abs(cell.y - this.cell.y);
+        return this.preparedGun && this.side != target.side && !target.isDestroyed;
     }
 
     makeCurrent() {

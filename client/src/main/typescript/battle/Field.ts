@@ -1,7 +1,7 @@
 import Mark from "./Mark";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
-import { getCurrentReachableCells, postCurrentUnitCell, Cell, getCurrentPaths, getCurrentShotCells } from "./request";
+import { getCurrentReachableCells, postCurrentUnitCell, Cell, getCurrentPaths, getCellsForCurrentUnitShot } from "./request";
 import * as game from "../game";
 import UnitService from "./unit/UnitService";
 
@@ -53,7 +53,7 @@ export default class Field extends PIXI.Container {
         this.projectileService.on(Unit.SHOT, (projectile: game.Actor) => this.addChild(projectile));
         this.unitService.on(UnitService.NEXT_TURN, () => this.getPathsForCurrentUnit());
         this.unitService.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => {
-            getCurrentShotCells(unit.preparedGun == unit.firstGun ? 0 : 1,
+            getCellsForCurrentUnitShot(unit.preparedGun == unit.firstGun ? 0 : 1,
                 (shotCells, targetCells) => {
                 this.removeAllMarksExceptCurrent();
                 const targets: Unit[] =
