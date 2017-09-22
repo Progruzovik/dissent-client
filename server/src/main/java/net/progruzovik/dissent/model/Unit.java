@@ -15,14 +15,14 @@ public final class Unit {
     private Side side = Side.NONE;
     private Cell cell;
 
-    private final Ship ship;
+    private final Hull hull;
 
     private Gun preparedGun;
     private final Gun firstGun;
     private final Gun secondGun;
 
-    public Unit(Ship ship, Gun firstGun, Gun secondGun) {
-        this.ship = ship;
+    public Unit(Hull hull, Gun firstGun, Gun secondGun) {
+        this.hull = hull;
         this.firstGun = firstGun;
         this.secondGun = secondGun;
     }
@@ -40,13 +40,13 @@ public final class Unit {
         return cell;
     }
 
-    public int getShipId() {
-        return ship.getId();
+    public int getHullId() {
+        return hull.getId();
     }
 
     @JsonIgnore
-    public Ship getShip() {
-        return ship;
+    public Hull getHull() {
+        return hull;
     }
 
     @JsonIgnore
@@ -78,7 +78,7 @@ public final class Unit {
     }
 
     public void makeCurrent() {
-        movementPoints = ship.getSpeed();
+        movementPoints = hull.getSpeed();
         if (firstGunCooldown > 0) {
             firstGunCooldown--;
         }

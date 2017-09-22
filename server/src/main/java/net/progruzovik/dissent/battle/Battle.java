@@ -1,8 +1,8 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.model.Field;
+import net.progruzovik.dissent.model.battle.Field;
 import net.progruzovik.dissent.model.Gun;
-import net.progruzovik.dissent.model.Ship;
+import net.progruzovik.dissent.model.Hull;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
@@ -22,21 +22,21 @@ public interface Battle {
 
     Unit getCurrentUnit();
 
-    Set<Ship> getUniqueShips();
+    Set<Hull> getUniqueHulls();
 
     Set<Gun> getUniqueGuns();
 
-    Side getPlayerSide(Player player);
+    Side getPlayerSide(String playerId);
 
     List<Cell> findReachableCellsForCurrentUnit();
 
-    boolean moveCurrentUnit(Player player, Cell cell);
+    boolean moveCurrentUnit(String playerId, Cell cell);
 
-    boolean prepareCurrentUnitGun(Player player, int gunNumber);
+    boolean prepareCurrentUnitGun(String playerId, int gunNumber);
 
     Map<String, List<Cell>> findCellsForCurrentUnitShot();
 
-    boolean shootByCurrentUnit(Player player, Cell cell);
+    boolean shootByCurrentUnit(String playerId, Cell cell);
 
-    boolean nextTurn(Player player);
+    boolean nextTurn(String playerId);
 }

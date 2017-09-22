@@ -1,6 +1,7 @@
-package net.progruzovik.dissent.model;
+package net.progruzovik.dissent.model.battle;
 
 import net.progruzovik.dissent.battle.CellStatus;
+import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.model.util.Cell;
 import net.progruzovik.dissent.model.util.Point;
 

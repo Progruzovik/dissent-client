@@ -3,7 +3,7 @@ package net.progruzovik.dissent.model;
 import javax.persistence.*;
 
 @Entity
-public final class Ship {
+public final class Hull {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,12 +15,12 @@ public final class Ship {
     @Column(nullable = false)
     private int speed;
 
-    public Ship(String name, int speed) {
+    public Hull(String name, int speed) {
         this.name = name;
         this.speed = speed;
     }
 
-    public Ship() {}
+    public Hull() {}
 
     public int getId() {
         return id;

@@ -2,7 +2,7 @@ package net.progruzovik.dissent.rest;
 
 import net.progruzovik.dissent.battle.Side;
 import net.progruzovik.dissent.model.Gun;
-import net.progruzovik.dissent.model.Ship;
+import net.progruzovik.dissent.model.Hull;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
@@ -39,8 +39,8 @@ public final class BattleRest {
     }
 
     @GetMapping("/ships")
-    public Collection<Ship> getUniqueShips() {
-        return player.getBattle().getUniqueShips();
+    public Collection<Hull> getUniqueHulls() {
+        return player.getBattle().getUniqueHulls();
     }
 
     @GetMapping("/guns")
@@ -50,7 +50,7 @@ public final class BattleRest {
 
     @GetMapping("/side")
     public Side getSide() {
-        return player.getBattle().getPlayerSide(player);
+        return player.getBattle().getPlayerSide(player.getId());
     }
 
     @GetMapping("/turn")
@@ -60,7 +60,7 @@ public final class BattleRest {
 
     @PostMapping("/turn")
     public ResponseEntity postTurn() {
-        return player.getBattle().nextTurn(player) ? new ResponseEntity(HttpStatus.OK)
+        return player.getBattle().nextTurn(player.getId()) ? new ResponseEntity(HttpStatus.OK)
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
@@ -81,13 +81,13 @@ public final class BattleRest {
 
     @PostMapping("/unit/cell")
     public ResponseEntity postCurrentUnitCell(@RequestBody Cell cell) {
-        return player.getBattle().moveCurrentUnit(player, cell) ? new ResponseEntity(HttpStatus.OK)
+        return player.getBattle().moveCurrentUnit(player.getId(), cell) ? new ResponseEntity(HttpStatus.OK)
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/unit/shot")
     public ResponseEntity<Map<String, List<Cell>>> getCellsForCurrentUnitShot(@RequestParam int gunNumber) {
-        if (player.getBattle().prepareCurrentUnitGun(player, gunNumber)) {
+        if (player.getBattle().prepareCurrentUnitGun(player.getId(), gunNumber)) {
             return new ResponseEntity<>(player.getBattle().findCellsForCurrentUnitShot(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -95,7 +95,7 @@ public final class BattleRest {
 
     @PostMapping("/unit/shot")
     public ResponseEntity postCurrentUnitShot(@RequestBody Cell cell) {
-        if (player.getBattle().shootByCurrentUnit(player, cell)) {
+        if (player.getBattle().shootByCurrentUnit(player.getId(), cell)) {
             return new ResponseEntity(HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);

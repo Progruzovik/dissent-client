@@ -1,5 +1,7 @@
 package net.progruzovik.dissent.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -37,6 +39,7 @@ public final class Gun {
         return name;
     }
 
+    @JsonIgnore
     public int getRadius() {
         return radius;
     }

@@ -1,5 +1,5 @@
+import Hull from "./Hull";
 import Field from "../Field";
-import Ship from "./Ship";
 import ProjectileService from "../projectile/ProjectileService";
 import { Gun, Side } from "../request";
 import * as game from "../../game";
@@ -25,11 +25,11 @@ export default class Unit extends game.Actor {
 
     private _preparedGun: Gun;
 
-    constructor(readonly side: Side, readonly cell: PIXI.Point, readonly ship: Ship, readonly firstGun: Gun,
+    constructor(readonly side: Side, readonly cell: PIXI.Point, readonly hull: Hull, readonly firstGun: Gun,
                 readonly secondGun: Gun, private readonly projectileService: ProjectileService) {
         super();
         this.interactive = true;
-        const sprite = new PIXI.Sprite(ship.texture);
+        const sprite = new PIXI.Sprite(hull.texture);
         if (side == Side.Right) {
             sprite.scale.x = -1;
             sprite.anchor.x = 1;
@@ -78,7 +78,7 @@ export default class Unit extends game.Actor {
     }
 
     makeCurrent() {
-        this._movementPoints = this.ship.speed;
+        this._movementPoints = this.hull.speed;
         if (this.firstGunCooldown > 0) {
             this._firstGunCooldown--;
         }
@@ -110,10 +110,10 @@ export default class Unit extends game.Actor {
         this.emit(Unit.SHOT);
         this.makeGunPrepared(null);
 
-        this.projectileService.once(game.Event.DONE, () => target.destroyShip());
+        this.projectileService.once(game.Event.DONE, () => target.destroyUnit());
     }
 
-    destroyShip() {
+    destroyUnit() {
         this._isDestroyed = true;
         this.alpha = 0.5;
         this.emit(Unit.DESTROY);

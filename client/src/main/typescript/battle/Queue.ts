@@ -10,7 +10,7 @@ export default class Queue extends game.Rectangle {
         unitService.units.forEach((unit, i) => {
             const icon = new game.Rectangle(playerSide == unit.side ? 0x00FF00 : 0xFF0000,
                 Unit.WIDTH, Unit.HEIGHT);
-            icon.addChild(new PIXI.Sprite(unit.ship.texture));
+            icon.addChild(new PIXI.Sprite(unit.hull.texture));
             icon.y = Unit.HEIGHT * i;
             this.addChild(icon);
 

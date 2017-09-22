@@ -1,8 +1,8 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.model.Field;
+import net.progruzovik.dissent.model.battle.Field;
 import net.progruzovik.dissent.model.Gun;
-import net.progruzovik.dissent.model.Ship;
+import net.progruzovik.dissent.model.Hull;
 import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
@@ -16,13 +16,13 @@ public final class BattleService implements Battle {
 
     private int turnNumber = 0;
 
-    private final Player leftPlayer;
-    private final Player rightPlayer;
+    private final String leftPlayerId;
+    private final String rightPlayerId;
 
     private final Field field;
     private final LinkedList<Unit> unitQueue = new LinkedList<>();
 
-    private final Set<Ship> uniqueShips = new HashSet<>();
+    private final Set<Hull> uniqueHulls = new HashSet<>();
     private final Set<Gun> uniqueGuns = new HashSet<>();
 
     public BattleService(Player leftPlayer, Player rightPlayer) {
@@ -36,14 +36,14 @@ public final class BattleService implements Battle {
             registerUnit(unit);
             i++;
         }
-        this.leftPlayer = leftPlayer;
+        this.leftPlayerId = leftPlayer.getId();
         i = 0;
         for (final Unit unit : rightPlayer.getUnits()) {
             unit.init(Side.RIGHT, new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT));
             registerUnit(unit);
             i++;
         }
-        this.rightPlayer = rightPlayer;
+        this.rightPlayerId = rightPlayer.getId();
         onNextTurn();
     }
 
@@ -68,8 +68,8 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public Set<Ship> getUniqueShips() {
-        return uniqueShips;
+    public Set<Hull> getUniqueHulls() {
+        return uniqueHulls;
     }
 
     @Override
@@ -78,11 +78,11 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public Side getPlayerSide(Player player) {
-        if (player == leftPlayer) {
+    public Side getPlayerSide(String playerId) {
+        if (playerId.equals(leftPlayerId)) {
             return Side.LEFT;
         }
-        if (player == rightPlayer) {
+        if (playerId.equals(rightPlayerId)) {
             return Side.RIGHT;
         }
         return Side.NONE;
@@ -94,8 +94,9 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public boolean moveCurrentUnit(Player player, Cell cell) {
-        if (player == getCurrentPlayer() && cell.isInBorders(field.getSize()) && field.isCellInCurrentPaths(cell)) {
+    public boolean moveCurrentUnit(String playerId, Cell cell) {
+        if (isIdBelongsToCurrentPlayer(playerId)
+                && cell.isInBorders(field.getSize()) && field.isCellInCurrentPaths(cell)) {
             final Cell oldCell = getCurrentUnit().getCell();
             if (getCurrentUnit().move(cell)) {
                 field.moveUnit(oldCell, cell);
@@ -107,8 +108,8 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public boolean prepareCurrentUnitGun(Player player, int gunNumber) {
-        return player == getCurrentPlayer() && getCurrentUnit().prepareGun(gunNumber);
+    public boolean prepareCurrentUnitGun(String playerId, int gunNumber) {
+        return isIdBelongsToCurrentPlayer(playerId) && getCurrentUnit().prepareGun(gunNumber);
     }
 
     @Override
@@ -117,8 +118,8 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public boolean shootByCurrentUnit(Player player, Cell cell) {
-        if (player == getCurrentPlayer() && field.isCellInCurrentTargets(cell)) {
+    public boolean shootByCurrentUnit(String playerId, Cell cell) {
+        if (isIdBelongsToCurrentPlayer(playerId) && field.isCellInCurrentTargets(cell)) {
             getCurrentUnit().shoot();
             int i = 0;
             boolean isTargetFound = false;
@@ -136,11 +137,11 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public boolean nextTurn(Player player) {
-        if (player == getCurrentPlayer()) {
+    public boolean nextTurn(String playerId) {
+        if (isIdBelongsToCurrentPlayer(playerId)) {
             turnNumber++;
             unitQueue.offer(unitQueue.poll());
-            while (player != getCurrentPlayer()) {
+            while (!isIdBelongsToCurrentPlayer(playerId)) {
                 turnNumber++;
                 unitQueue.offer(unitQueue.poll());
             }
@@ -150,18 +151,18 @@ public final class BattleService implements Battle {
         return false;
     }
 
-    private Player getCurrentPlayer() {
+    private boolean isIdBelongsToCurrentPlayer(String id) {
         switch (getCurrentUnit().getSide()) {
-            case LEFT: return leftPlayer;
-            case RIGHT: return rightPlayer;
-            default: return null;
+            case LEFT: return leftPlayerId.equals(id);
+            case RIGHT: return rightPlayerId.equals(id);
+            default: return false;
         }
     }
 
     private void registerUnit(Unit unit) {
         field.addUnit(unit.getCell());
         unitQueue.offer(unit);
-        uniqueShips.add(unit.getShip());
+        uniqueHulls.add(unit.getHull());
         if (unit.getFirstGun() != null) {
             uniqueGuns.add(unit.getFirstGun());
         }

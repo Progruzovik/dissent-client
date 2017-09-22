@@ -6,7 +6,7 @@ export function postScenario(callback: () => void) {
     axios.post("/api/scenario").then(callback);
 }
 
-export function getField(callback: (ships: Ship[], guns: Gun[], size: Cell,
+export function getField(callback: (ships: Hull[], guns: Gun[], size: Cell,
                                     side: Side, asteroids: Cell[], units: Unit[]) => void) {
     axios.all([
         axios.get(BATTLE_PREFIX + "/ships"),
@@ -50,7 +50,7 @@ export const enum Side {
 }
 
 export class Gun {
-    constructor(readonly id: number, readonly name: string, readonly radius: number, readonly cooldown: number,
+    constructor(readonly id: number, readonly name: string, readonly cooldown: number,
                 readonly projectileType: string, readonly shotsCount: number, readonly shotDelay: number) {}
 }
 
@@ -58,11 +58,11 @@ export class Cell {
     constructor(readonly x: number, readonly y: number) {}
 }
 
-class Ship {
+class Hull {
     constructor(readonly id: number, readonly name: string, readonly speed: number) {}
 }
 
 class Unit {
-    constructor(readonly side: Side, readonly cell: Cell, readonly shipId: number,
+    constructor(readonly side: Side, readonly cell: Cell, readonly hullId: number,
                 readonly firstGunId: number, readonly secondGunId: number) {}
 }

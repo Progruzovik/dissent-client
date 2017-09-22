@@ -9,8 +9,8 @@ export default class Controls extends PIXI.Container {
     private static readonly SECTION_RATIO = 3;
     private static readonly EMPTY_SLOT = "(пусто)";
 
-    private readonly spriteShip = new PIXI.Sprite();
-    private readonly bgShip = new game.Rectangle(0x333333);
+    private readonly spriteHull = new PIXI.Sprite();
+    private readonly bgHull = new game.Rectangle(0x333333);
     private readonly bgStats = new game.Rectangle();
     private readonly btnFirstGun = new game.Button();
     private readonly btnSecondGun = new game.Button();
@@ -19,9 +19,9 @@ export default class Controls extends PIXI.Container {
 
     constructor(private readonly unitService: UnitService) {
         super();
-        this.spriteShip.anchor.set(game.CENTER, game.CENTER);
-        this.bgShip.addChild(this.spriteShip);
-        this.addChild(this.bgShip);
+        this.spriteHull.anchor.set(game.CENTER, game.CENTER);
+        this.bgHull.addChild(this.spriteHull);
+        this.addChild(this.bgHull);
         this.addChild(this.bgStats);
         this.addChild(this.btnFirstGun);
         this.addChild(this.btnSecondGun);
@@ -46,15 +46,15 @@ export default class Controls extends PIXI.Container {
     resize(width: number) {
         const lengthPerSection: number = width / Controls.SECTIONS_COUNT;
 
-        this.bgShip.width = lengthPerSection;
-        this.bgShip.height = this.bgShip.width / Controls.SECTION_RATIO;
-        const shipRatio: number = this.bgShip.height / Unit.HEIGHT;
-        this.spriteShip.scale.set(shipRatio, shipRatio);
-        this.spriteShip.position.set(this.bgShip.width / 2, this.bgShip.height / 2);
+        this.bgHull.width = lengthPerSection;
+        this.bgHull.height = this.bgHull.width / Controls.SECTION_RATIO;
+        const shipRatio: number = this.bgHull.height / Unit.HEIGHT;
+        this.spriteHull.scale.set(shipRatio, shipRatio);
+        this.spriteHull.position.set(this.bgHull.width / 2, this.bgHull.height / 2);
 
         this.bgStats.width = lengthPerSection;
         this.bgStats.height = this.bgStats.width / Controls.SECTION_RATIO;
-        this.bgStats.x = this.bgShip.width;
+        this.bgStats.x = this.bgHull.width;
         this.btnFirstGun.width = lengthPerSection;
         this.btnFirstGun.height = this.btnFirstGun.width / Controls.SECTION_RATIO;
         this.btnFirstGun.x = this.bgStats.x + this.bgStats.width;
@@ -70,7 +70,7 @@ export default class Controls extends PIXI.Container {
     }
 
     private updateControls(unit: Unit) {
-        this.spriteShip.texture = unit.ship.texture;
+        this.spriteHull.texture = unit.hull.texture;
         if (unit.firstGun) {
             this.btnFirstGun.text = unit.firstGun.name;
             if (unit.firstGunCooldown > 0) {
