@@ -9,7 +9,6 @@
         <artifactId>dissent-parent</artifactId>
         <groupId>net.progruzovik.dissent</groupId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <build>

@@ -9,7 +9,6 @@
         <artifactId>dissent-parent</artifactId>
         <groupId>net.progruzovik.dissent</groupId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <dependencies>
@@ -36,7 +35,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>${jetty.version}</version>
+            <version>9.4.6.v20170531</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -83,9 +82,7 @@
     </dependencies>
 
     <properties>
-        <jetty.version>9.4.6.v20170531</jetty.version>
         <spring.version>4.3.11.RELEASE</spring.version>
-
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>

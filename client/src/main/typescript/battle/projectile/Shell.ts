@@ -3,8 +3,9 @@ import Unit from "../unit/Unit";
 
 export default class Shell extends game.Actor {
 
-    private multiplier = new PIXI.Point();
+    private isNextShotReady = false;
     private frameNumber = 0;
+    private multiplier = new PIXI.Point();
 
     constructor(private readonly delay: number, private readonly to: PIXI.Point, from: PIXI.Point) {
         super();
@@ -18,17 +19,25 @@ export default class Shell extends game.Actor {
     }
 
     protected update() {
-        if (this.frameNumber < this.delay) {
+        if (!this.isNextShotReady) {
             this.frameNumber++;
             if (this.frameNumber == this.delay) {
-                this.emit(Unit.SHOT);
+                this.emitNextShot();
             }
         }
         this.x += Math.sin(this.rotation + Math.PI / 2) * 35;
         this.y -= Math.cos(this.rotation + Math.PI / 2) * 35;
         if (this.x > this.to.x * this.multiplier.x && this.y > this.to.y * this.multiplier.y) {
+            if (!this.isNextShotReady) {
+                this.emitNextShot();
+            }
             this.emit(game.Event.DONE);
             this.destroy();
         }
+    }
+
+    private emitNextShot() {
+        this.isNextShotReady = true;
+        this.emit(Unit.SHOT);
     }
 }
