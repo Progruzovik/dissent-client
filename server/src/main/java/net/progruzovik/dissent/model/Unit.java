@@ -113,16 +113,18 @@ public final class Unit {
         return false;
     }
 
-    public void shoot() {
+    public boolean shoot(Unit target) {
+        if (target == null || (preparedGun != firstGun && preparedGun != secondGun)) {
+            return false;
+        }
+
         if (preparedGun == firstGun) {
             firstGunCooldown = firstGun.getCooldown();
-        } else if (preparedGun == secondGun) {
+        } else {
             secondGunCooldown = secondGun.getCooldown();
         }
         preparedGun = null;
-    }
-
-    public void destroy() {
-        this.isDestroyed = true;
+        target.isDestroyed = true;
+        return true;
     }
 }

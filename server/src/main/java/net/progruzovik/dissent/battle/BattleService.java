@@ -4,6 +4,7 @@ import net.progruzovik.dissent.model.battle.Field;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Hull;
 import net.progruzovik.dissent.model.Unit;
+import net.progruzovik.dissent.model.battle.UnitQueue;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
 
@@ -14,16 +15,11 @@ public final class BattleService implements Battle {
     private static final int UNIT_INDENT = 3;
     private static final int BORDER_INDENT = 4;
 
-    private int turnNumber = 0;
-
     private final String leftPlayerId;
     private final String rightPlayerId;
 
+    private final UnitQueue unitQueue = new UnitQueue();
     private final Field field;
-    private final LinkedList<Unit> unitQueue = new LinkedList<>();
-
-    private final Set<Hull> uniqueHulls = new HashSet<>();
-    private final Set<Gun> uniqueGuns = new HashSet<>();
 
     public BattleService(Player leftPlayer, Player rightPlayer) {
         final int maxUnitsCountOnSide = Math.max(leftPlayer.getUnits().size(), rightPlayer.getUnits().size());
@@ -48,33 +44,13 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public int getTurnNumber() {
-        return turnNumber;
-    }
-
-    @Override
     public Field getField() {
         return field;
     }
 
     @Override
-    public Queue<Unit> getUnitQueue() {
+    public UnitQueue getUnitQueue() {
         return unitQueue;
-    }
-
-    @Override
-    public Unit getCurrentUnit() {
-        return unitQueue.element();
-    }
-
-    @Override
-    public Set<Hull> getUniqueHulls() {
-        return uniqueHulls;
-    }
-
-    @Override
-    public Set<Gun> getUniqueGuns() {
-        return uniqueGuns;
     }
 
     @Override
@@ -90,17 +66,17 @@ public final class BattleService implements Battle {
 
     @Override
     public List<Cell> findReachableCellsForCurrentUnit() {
-        return field.findReachableCellsForUnit(getCurrentUnit());
+        return field.findReachableCellsForUnit(unitQueue.getCurrentUnit());
     }
 
     @Override
     public boolean moveCurrentUnit(String playerId, Cell cell) {
         if (isIdBelongsToCurrentPlayer(playerId)
                 && cell.isInBorders(field.getSize()) && field.isCellInCurrentPaths(cell)) {
-            final Cell oldCell = getCurrentUnit().getCell();
-            if (getCurrentUnit().move(cell)) {
+            final Cell oldCell = unitQueue.getCurrentUnit().getCell();
+            if (unitQueue.getCurrentUnit().move(cell)) {
                 field.moveUnit(oldCell, cell);
-                field.createPathsForUnit(getCurrentUnit());
+                field.createPathsForUnit(unitQueue.getCurrentUnit());
                 return true;
             }
         }
@@ -109,41 +85,27 @@ public final class BattleService implements Battle {
 
     @Override
     public boolean prepareCurrentUnitGun(String playerId, int gunNumber) {
-        return isIdBelongsToCurrentPlayer(playerId) && getCurrentUnit().prepareGun(gunNumber);
+        return isIdBelongsToCurrentPlayer(playerId) && unitQueue.getCurrentUnit().prepareGun(gunNumber);
     }
 
     @Override
     public Map<String, List<Cell>> findCellsForCurrentUnitShot() {
-        return field.findShotAndTargetCells(getCurrentUnit().getCell(), getCurrentUnit().getPreparedGun().getRadius());
+        return field.findShotAndTargetCells(unitQueue.getCurrentUnit().getCell(),
+                unitQueue.getCurrentUnit().getPreparedGun().getRadius());
     }
 
     @Override
-    public boolean shootByCurrentUnit(String playerId, Cell cell) {
-        if (isIdBelongsToCurrentPlayer(playerId) && field.isCellInCurrentTargets(cell)) {
-            getCurrentUnit().shoot();
-            int i = 0;
-            boolean isTargetFound = false;
-            while (!isTargetFound) {
-                if (unitQueue.get(i).getCell().equals(cell)) {
-                    unitQueue.get(i).destroy();
-                    unitQueue.remove(i);
-                    isTargetFound = true;
-                }
-                i++;
-            }
-            return true;
-        }
-        return false;
+    public boolean shootWithCurrentUnit(String playerId, Cell cell) {
+        return isIdBelongsToCurrentPlayer(playerId) && field.isCellInCurrentTargets(cell)
+                && unitQueue.getCurrentUnit().shoot(unitQueue.removeUnitOnCell(cell));
     }
 
     @Override
     public boolean nextTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
-            turnNumber++;
-            unitQueue.offer(unitQueue.poll());
+            unitQueue.nextTurn();
             while (!isIdBelongsToCurrentPlayer(playerId)) {
-                turnNumber++;
-                unitQueue.offer(unitQueue.poll());
+                unitQueue.nextTurn();
             }
             onNextTurn();
             return true;
@@ -152,7 +114,7 @@ public final class BattleService implements Battle {
     }
 
     private boolean isIdBelongsToCurrentPlayer(String id) {
-        switch (getCurrentUnit().getSide()) {
+        switch (unitQueue.getCurrentUnit().getSide()) {
             case LEFT: return leftPlayerId.equals(id);
             case RIGHT: return rightPlayerId.equals(id);
             default: return false;
@@ -161,18 +123,11 @@ public final class BattleService implements Battle {
 
     private void registerUnit(Unit unit) {
         field.addUnit(unit.getCell());
-        unitQueue.offer(unit);
-        uniqueHulls.add(unit.getHull());
-        if (unit.getFirstGun() != null) {
-            uniqueGuns.add(unit.getFirstGun());
-        }
-        if (unit.getSecondGun() != null) {
-            uniqueGuns.add(unit.getSecondGun());
-        }
+        unitQueue.addUnit(unit);
     }
 
     private void onNextTurn() {
-        getCurrentUnit().makeCurrent();
-        field.createPathsForUnit(getCurrentUnit());
+        unitQueue.getCurrentUnit().makeCurrent();
+        field.createPathsForUnit(unitQueue.getCurrentUnit());
     }
 }

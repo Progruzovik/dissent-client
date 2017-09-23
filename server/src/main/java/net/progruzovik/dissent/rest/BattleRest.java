@@ -35,17 +35,17 @@ public final class BattleRest {
 
     @GetMapping("/units")
     public Collection<Unit> getUnits() {
-        return player.getBattle().getUnitQueue();
+        return player.getBattle().getUnitQueue().getQueue();
     }
 
     @GetMapping("/ships")
     public Collection<Hull> getUniqueHulls() {
-        return player.getBattle().getUniqueHulls();
+        return player.getBattle().getUnitQueue().getUniqueHulls();
     }
 
     @GetMapping("/guns")
     public Collection<Gun> getUniqueGuns() {
-        return player.getBattle().getUniqueGuns();
+        return player.getBattle().getUnitQueue().getUniqueGuns();
     }
 
     @GetMapping("/side")
@@ -55,7 +55,7 @@ public final class BattleRest {
 
     @GetMapping("/turn")
     public int getTurnNumber() {
-        return player.getBattle().getTurnNumber();
+        return player.getBattle().getUnitQueue().getTurnNumber();
     }
 
     @PostMapping("/turn")
@@ -66,7 +66,7 @@ public final class BattleRest {
 
     @GetMapping("/unit")
     public Unit getCurrentUnit() {
-        return player.getBattle().getCurrentUnit();
+        return player.getBattle().getUnitQueue().getCurrentUnit();
     }
 
     @GetMapping("/unit/paths")
@@ -95,7 +95,7 @@ public final class BattleRest {
 
     @PostMapping("/unit/shot")
     public ResponseEntity postCurrentUnitShot(@RequestBody Cell cell) {
-        if (player.getBattle().shootByCurrentUnit(player.getId(), cell)) {
+        if (player.getBattle().shootWithCurrentUnit(player.getId(), cell)) {
             return new ResponseEntity(HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
