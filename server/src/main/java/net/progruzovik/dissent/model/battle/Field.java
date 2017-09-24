@@ -1,7 +1,5 @@
 package net.progruzovik.dissent.model.battle;
 
-import net.progruzovik.dissent.battle.CellStatus;
-import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.model.util.Cell;
 import net.progruzovik.dissent.model.util.Point;
 
@@ -66,10 +64,10 @@ public final class Field {
         return findNeighborsInRadius(unit.getCell(), unit.getMovementPoints(), c -> !isCellInCurrentPaths(c));
     }
 
-    public Map<String, List<Cell>> findShotAndTargetCells(Cell startCell, int radius) {
+    public Map<String, List<Cell>> findShotAndTargetCells(Unit unit) {
         Map<String, List<Cell>> result = new HashMap<>(2);
-        List<Cell> availableCells = findNeighborsInRadius(startCell, radius, c -> {
-            final List<Cell> cellsInBetween = findCellsInBetween(startCell, c);
+        List<Cell> availableCells = findNeighborsInRadius(unit.getCell(), unit.getPreparedGun().getRadius(), c -> {
+            final List<Cell> cellsInBetween = findCellsInBetween(unit.getCell(), c);
             for (int i = 1; i < cellsInBetween.size() - 1; i++) {
                 if (map.get(cellsInBetween.get(i).getX()).get(cellsInBetween.get(i).getY()) != CellStatus.EMPTY) {
                     return true;
@@ -80,10 +78,11 @@ public final class Field {
 
         List<Cell> shotCells = new ArrayList<>();
         currentTargets.clear();
+        final CellStatus targetStatus = unit.getSide() == Side.LEFT ? CellStatus.UNIT_RIGHT : CellStatus.UNIT_LEFT;
         for (final Cell cell : availableCells) {
             if (map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY) {
                 shotCells.add(cell);
-            }  else if (map.get(cell.getX()).get(cell.getY()) == CellStatus.UNIT) {
+            }  else if (map.get(cell.getX()).get(cell.getY()) == targetStatus) {
                 currentTargets.add(cell);
             }
         }
@@ -92,13 +91,15 @@ public final class Field {
         return result;
     }
 
-    public void addUnit(Cell cell) {
-        map.get(cell.getX()).set(cell.getY(), CellStatus.UNIT);
+    public void addUnit(Unit unit) {
+        map.get(unit.getCell().getX()).set(unit.getCell().getY(),
+                unit.getSide() == Side.LEFT ? CellStatus.UNIT_LEFT : CellStatus.UNIT_RIGHT);
     }
 
     public void moveUnit(Cell oldCell, Cell newCell) {
+        final CellStatus oldStatus = map.get(oldCell.getX()).get(oldCell.getY());
         map.get(oldCell.getX()).set(oldCell.getY(), CellStatus.EMPTY);
-        map.get(newCell.getX()).set(newCell.getY(), CellStatus.UNIT);
+        map.get(newCell.getX()).set(newCell.getY(), oldStatus);
     }
 
     public void createPathsForUnit(Unit unit) {

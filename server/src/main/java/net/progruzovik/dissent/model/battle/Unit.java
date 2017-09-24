@@ -1,7 +1,8 @@
-package net.progruzovik.dissent.model;
+package net.progruzovik.dissent.model.battle;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.progruzovik.dissent.battle.Side;
+import net.progruzovik.dissent.model.Gun;
+import net.progruzovik.dissent.model.Hull;
 import net.progruzovik.dissent.model.util.Cell;
 
 public final class Unit {

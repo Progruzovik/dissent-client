@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.model.player;
 
 import net.progruzovik.dissent.dao.HullDao;
-import net.progruzovik.dissent.model.Unit;
+import net.progruzovik.dissent.model.battle.Unit;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

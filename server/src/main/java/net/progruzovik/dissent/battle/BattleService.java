@@ -1,9 +1,8 @@
 package net.progruzovik.dissent.battle;
 
 import net.progruzovik.dissent.model.battle.Field;
-import net.progruzovik.dissent.model.Gun;
-import net.progruzovik.dissent.model.Hull;
-import net.progruzovik.dissent.model.Unit;
+import net.progruzovik.dissent.model.battle.Side;
+import net.progruzovik.dissent.model.battle.Unit;
 import net.progruzovik.dissent.model.battle.UnitQueue;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
@@ -55,10 +54,10 @@ public final class BattleService implements Battle {
 
     @Override
     public Side getPlayerSide(String playerId) {
-        if (playerId.equals(leftPlayerId)) {
+        if (leftPlayerId.equals(playerId)) {
             return Side.LEFT;
         }
-        if (playerId.equals(rightPlayerId)) {
+        if (rightPlayerId.equals(playerId)) {
             return Side.RIGHT;
         }
         return Side.NONE;
@@ -90,8 +89,7 @@ public final class BattleService implements Battle {
 
     @Override
     public Map<String, List<Cell>> findCellsForCurrentUnitShot() {
-        return field.findShotAndTargetCells(unitQueue.getCurrentUnit().getCell(),
-                unitQueue.getCurrentUnit().getPreparedGun().getRadius());
+        return field.findShotAndTargetCells(unitQueue.getCurrentUnit());
     }
 
     @Override
@@ -122,7 +120,7 @@ public final class BattleService implements Battle {
     }
 
     private void registerUnit(Unit unit) {
-        field.addUnit(unit.getCell());
+        field.addUnit(unit);
         unitQueue.addUnit(unit);
     }
 

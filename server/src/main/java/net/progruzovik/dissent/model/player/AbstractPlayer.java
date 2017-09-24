@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.model.player;
 
 import net.progruzovik.dissent.battle.Battle;
-import net.progruzovik.dissent.model.Unit;
+import net.progruzovik.dissent.model.battle.Unit;
 
 import java.util.ArrayList;
 import java.util.List;

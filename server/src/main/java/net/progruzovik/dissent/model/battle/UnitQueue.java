@@ -2,7 +2,6 @@ package net.progruzovik.dissent.model.battle;
 
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Hull;
-import net.progruzovik.dissent.model.Unit;
 import net.progruzovik.dissent.model.util.Cell;
 
 import java.util.HashSet;

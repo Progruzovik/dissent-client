@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.battle;
 
 import net.progruzovik.dissent.model.battle.Field;
+import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.battle.UnitQueue;
 import net.progruzovik.dissent.model.util.Cell;
 

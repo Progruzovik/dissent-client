@@ -1,9 +1,9 @@
 package net.progruzovik.dissent.rest;
 
-import net.progruzovik.dissent.battle.Side;
+import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Hull;
-import net.progruzovik.dissent.model.Unit;
+import net.progruzovik.dissent.model.battle.Unit;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
 import org.springframework.beans.factory.annotation.Qualifier;
