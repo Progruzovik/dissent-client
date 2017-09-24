@@ -15,13 +15,14 @@ export default class UnitService extends PIXI.utils.EventEmitter {
 
         for (const unit of this.units) {
             unit.on(game.Event.MOUSE_OVER, () => {
-                if (this.currentUnit.canHit(unit)) {
+                if (this.currentUnit.preparedGunNumber != -1
+                    && this.currentUnit.side != unit.side && !unit.isDestroyed) {
                     unit.alpha = 0.75;
+                    this.highlightedUnit = unit;
                 }
-                this.highlightedUnit = unit;
             });
             unit.on(game.Event.CLICK, () => {
-                if (unit == this.highlightedUnit && this.currentUnit.canHit(unit)) {
+                if (unit == this.highlightedUnit) {
                     postCurrentUnitShot(unit.cell, () => this.currentUnit.shoot(unit));
                 }
             });
@@ -58,7 +59,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     }
 
     nextTurn() {
-        this.currentUnit.makeGunPrepared(null);
+        this.currentUnit.preparedGunNumber = -1;
         this.units.push(this.units.shift());
         this.currentUnit.makeCurrent();
         this.emit(UnitService.NEXT_TURN, this.currentUnit, false);

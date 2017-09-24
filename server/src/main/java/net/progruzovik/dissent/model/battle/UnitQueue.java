@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
-public class UnitQueue {
+public final class UnitQueue {
 
     private int turnNumber = 1;
     private final LinkedList<Unit> queue = new LinkedList<>();

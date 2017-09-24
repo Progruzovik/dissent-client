@@ -53,16 +53,14 @@ export default class Field extends PIXI.Container {
         this.projectileService.on(Unit.SHOT, (projectile: game.Actor) => this.addChild(projectile));
         this.unitService.on(UnitService.NEXT_TURN, () => this.getPathsForCurrentUnit());
         this.unitService.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => {
-            getCellsForCurrentUnitShot(unit.preparedGun == unit.firstGun ? 0 : 1,
-                (shotCells, targetCells) => {
+            getCellsForCurrentUnitShot(unit.preparedGunNumber, (shotCells, targetCells) => {
                 this.removeAllMarksExceptCurrent();
-                const targets: Unit[] =
-                    this.unitService.units.filter(target => unit.canHit(target));
                 for (const cell of shotCells) {
                     this.markLayer.addChild(new Mark(0xFFFFFF, cell));
                 }
                 for (const cell of targetCells) {
-                    if (targets.some(target => target.cell.x == cell.x && target.cell.y == cell.y)) {
+                    if (this.unitService.units.some(unit =>
+                            unit.cell.x == cell.x && unit.cell.y == cell.y)) {
                         this.markLayer.addChild(new Mark(0xFF0000, cell));
                     }
                 }

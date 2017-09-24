@@ -8,6 +8,8 @@ export default class Unit extends game.Actor {
 
     static readonly WIDTH = 64;
     static readonly HEIGHT = 32;
+    static readonly FIRST_GUN = 0;
+    static readonly SECOND_GUN = 1;
 
     static readonly MOVE = "move";
     static readonly PREPARED_TO_SHOT = "preparedToShot";
@@ -16,14 +18,13 @@ export default class Unit extends game.Actor {
     static readonly DESTROY = "destroy";
 
     private _movementPoints = 0;
+    private _preparedGunNumber = -1;
     private _firstGunCooldown = 0;
     private _secondGunCooldown = 0;
     private _isDestroyed = false;
 
     private _path: game.Direction[];
     private oldCell: PIXI.Point;
-
-    private _preparedGun: Gun;
 
     constructor(readonly side: Side, readonly cell: PIXI.Point, readonly hull: Hull, readonly firstGun: Gun,
                 readonly secondGun: Gun, private readonly projectileService: ProjectileService) {
@@ -61,20 +62,29 @@ export default class Unit extends game.Actor {
     set path(value: game.Direction[]) {
         this._path = value;
         if (value) {
+            this._movementPoints -= value.length;
             this.oldCell = this.cell.clone();
         }
     }
 
-    get preparedGun(): Gun {
-        return this._preparedGun;
+    get preparedGunNumber(): number {
+        return this._preparedGunNumber;
+    }
+
+    set preparedGunNumber(value: number) {
+        if (this.preparedGunNumber != value) {
+            if (value == -1) {
+                this._preparedGunNumber = -1;
+                this.emit(Unit.NOT_PREPARED_TO_SHOT);
+            } else if (value == Unit.FIRST_GUN || value == Unit.SECOND_GUN) {
+                this._preparedGunNumber = value;
+                this.emit(Unit.PREPARED_TO_SHOT);
+            }
+        }
     }
 
     get center(): PIXI.Point {
         return new PIXI.Point(this.x + this.width / 2, this.y + this.height / 2);
-    }
-
-    canHit(target: Unit) {
-        return this.preparedGun && this.side != target.side && !target.isDestroyed;
     }
 
     makeCurrent() {
@@ -87,28 +97,16 @@ export default class Unit extends game.Actor {
         }
     }
 
-    makeGunPrepared(gun: Gun) {
-        if (gun && this.preparedGun != gun) {
-            if (gun == this.firstGun && this.firstGunCooldown == 0
-                || gun == this.secondGun && this.secondGunCooldown == 0) {
-                this._preparedGun = gun;
-                this.emit(Unit.PREPARED_TO_SHOT);
-            }
-        } else {
-            this._preparedGun = null;
-            this.emit(Unit.NOT_PREPARED_TO_SHOT);
-        }
-    }
-
     shoot(target: Unit) {
-        this.projectileService.shoot(this.preparedGun, target.center, this.center);
-        if (this.preparedGun == this.firstGun) {
-            this._firstGunCooldown = this.preparedGun.cooldown;
-        } else if (this.preparedGun == this.secondGun) {
-            this._secondGunCooldown = this.preparedGun.cooldown;
+        if (this.preparedGunNumber == Unit.FIRST_GUN) {
+            this._firstGunCooldown = this.firstGun.cooldown;
+            this.projectileService.shoot(this.firstGun, target.center, this.center);
+        } else if (this.preparedGunNumber == Unit.SECOND_GUN) {
+            this._secondGunCooldown = this.secondGun.cooldown;
+            this.projectileService.shoot(this.secondGun, target.center, this.center);
         }
         this.emit(Unit.SHOT);
-        this.makeGunPrepared(null);
+        this.preparedGunNumber = -1;
 
         this.projectileService.once(game.Event.DONE, () => target.destroyUnit());
     }
@@ -121,8 +119,7 @@ export default class Unit extends game.Actor {
 
     protected update() {
         if (this.path) {
-            if (this.path.length > 0 && this.movementPoints > 0) {
-                this._movementPoints--;
+            if (this.path.length > 0) {
                 const direction: game.Direction = this.path.pop();
                 if (direction == game.Direction.Left) {
                     this.cell.x -= 1;

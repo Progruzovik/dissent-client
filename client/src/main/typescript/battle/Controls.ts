@@ -30,10 +30,20 @@ export default class Controls extends PIXI.Container {
 
         this.unitService.on(Unit.SHOT, (unit: Unit) => this.updateControls(unit));
         this.unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => this.updateControls(currentUnit));
-        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () =>
-            unitService.currentUnit.makeGunPrepared(unitService.currentUnit.firstGun));
-        this.btnSecondGun.on(game.Event.BUTTON_CLICK, () =>
-            unitService.currentUnit.makeGunPrepared(unitService.currentUnit.secondGun));
+        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
+            if (unitService.currentUnit.preparedGunNumber == Unit.FIRST_GUN) {
+                unitService.currentUnit.preparedGunNumber = -1;
+            } else {
+                unitService.currentUnit.preparedGunNumber = Unit.FIRST_GUN;
+            }
+        });
+        this.btnSecondGun.on(game.Event.BUTTON_CLICK, () => {
+            if (unitService.currentUnit.preparedGunNumber == Unit.SECOND_GUN) {
+                unitService.currentUnit.preparedGunNumber = -1;
+            } else {
+                unitService.currentUnit.preparedGunNumber = Unit.SECOND_GUN;
+            }
+        });
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => postTurn(() => unitService.nextTurn()));
     }
 
