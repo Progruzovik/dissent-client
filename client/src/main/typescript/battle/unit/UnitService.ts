@@ -1,12 +1,14 @@
 import Unit from "./Unit";
-import { postCurrentUnitShot } from "../request";
+import { getCellsForCurrentUnitShot, postCurrentUnitShot } from "../request";
 import * as game from "../../game";
 
 export default class UnitService extends PIXI.utils.EventEmitter {
 
+    static readonly SHOT_CELL = "shotCell";
+    static readonly TARGET_CELL = "targetCell";
     static readonly NEXT_TURN = "nextTurn";
 
-    private highlightedUnit: Unit = null;
+    private readonly currentTargets = new Array<Unit>(0);
     private readonly destroyedUnits = new Array<Unit>(0);
 
     constructor(readonly units: Unit[]) {
@@ -18,31 +20,37 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 if (this.currentUnit.preparedGunNumber != -1
                     && this.currentUnit.side != unit.side && !unit.isDestroyed) {
                     unit.alpha = 0.75;
-                    this.highlightedUnit = unit;
                 }
             });
             unit.on(game.Event.CLICK, () => {
-                if (unit == this.highlightedUnit) {
+                if (this.currentTargets.indexOf(unit) != -1) {
                     postCurrentUnitShot(unit.cell, () => this.currentUnit.shoot(unit));
                 }
             });
             unit.on(game.Event.MOUSE_OUT, () => {
-                if (unit == this.highlightedUnit) {
-                    if (!unit.isDestroyed) {
-                        unit.alpha = 1;
-                    }
-                    this.highlightedUnit = null;
+                if (!unit.isDestroyed) {
+                    unit.alpha = 1;
                 }
             });
             unit.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) =>
                 this.emit(Unit.MOVE, oldPosition, newPosition));
-            unit.on(Unit.PREPARED_TO_SHOT, () => this.emit(Unit.PREPARED_TO_SHOT, unit));
+            unit.on(Unit.PREPARED_TO_SHOT, () => {
+                getCellsForCurrentUnitShot(unit.preparedGunNumber, (shotCells, targetCells) => {
+                    this.emit(Unit.PREPARED_TO_SHOT);
+                    for (const cell of shotCells) {
+                        this.emit(UnitService.SHOT_CELL, cell);
+                    }
+                    for (const cell of targetCells) {
+                        this.currentTargets.push(this.units.filter(unit =>
+                            unit.cell.x == cell.x && unit.cell.y == cell.y)[0]);
+                        this.emit(UnitService.TARGET_CELL, cell);
+                    }
+                });
+            });
             unit.on(Unit.SHOT, () => this.emit(Unit.SHOT, unit));
             unit.on(Unit.NOT_PREPARED_TO_SHOT, () => {
-                if (this.highlightedUnit) {
-                    this.highlightedUnit.emit(game.Event.MOUSE_OUT);
-                }
-                this.emit(Unit.NOT_PREPARED_TO_SHOT);
+                this.currentTargets.length = 0;
+                this.emit(Unit.NOT_PREPARED_TO_SHOT)
             });
             unit.on(Unit.DESTROY, () => {
                 this.units.splice(this.units.indexOf(unit), 1);

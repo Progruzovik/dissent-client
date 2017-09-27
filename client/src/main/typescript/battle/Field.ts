@@ -1,7 +1,7 @@
 import Mark from "./Mark";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
-import { getCurrentReachableCells, postCurrentUnitCell, Cell, getCurrentPaths, getCellsForCurrentUnitShot } from "./request";
+import { Cell, getCurrentReachableCells, getCurrentPaths, postCurrentUnitCell } from "./request";
 import * as game from "../game";
 import UnitService from "./unit/UnitService";
 
@@ -17,8 +17,8 @@ export default class Field extends PIXI.Container {
     private readonly markLayer = new PIXI.Container();
     private readonly pathLayer = new PIXI.Container();
 
-    constructor(private readonly size: Cell, private readonly projectileService: ProjectileService,
-                private readonly unitService: UnitService, fieldObjects: Cell[]) {
+    constructor(private readonly size: Cell, private readonly unitService: UnitService,
+                private readonly projectileService: ProjectileService, fieldObjects: Cell[]) {
         super();
 
         const bg = new game.Rectangle();
@@ -50,23 +50,14 @@ export default class Field extends PIXI.Container {
             this.addChild(unit);
         }
 
-        this.projectileService.on(Unit.SHOT, (projectile: game.Actor) => this.addChild(projectile));
-        this.unitService.on(UnitService.NEXT_TURN, () => this.getPathsForCurrentUnit());
-        this.unitService.on(Unit.PREPARED_TO_SHOT, (unit: Unit) => {
-            getCellsForCurrentUnitShot(unit.preparedGunNumber, (shotCells, targetCells) => {
-                this.removeAllMarksExceptCurrent();
-                for (const cell of shotCells) {
-                    this.markLayer.addChild(new Mark(0xFFFFFF, cell));
-                }
-                for (const cell of targetCells) {
-                    if (this.unitService.units.some(unit =>
-                            unit.cell.x == cell.x && unit.cell.y == cell.y)) {
-                        this.markLayer.addChild(new Mark(0xFF0000, cell));
-                    }
-                }
-            });
-        });
+        this.unitService.on(Unit.PREPARED_TO_SHOT, () => this.removeAllMarksExceptCurrent());
+        this.unitService.on(UnitService.SHOT_CELL, (cell: Cell) =>
+            this.markLayer.addChild(new Mark(0xFFFFFF, cell)));
+        this.unitService.on(UnitService.TARGET_CELL, (cell: Cell) =>
+            this.markLayer.addChild(new Mark(0xFF0000, cell)));
         this.unitService.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
+        this.unitService.on(UnitService.NEXT_TURN, () => this.getPathsForCurrentUnit());
+        this.projectileService.on(Unit.SHOT, (projectile: game.Actor) => this.addChild(projectile));
     }
 
     private getPathsForCurrentUnit() {
