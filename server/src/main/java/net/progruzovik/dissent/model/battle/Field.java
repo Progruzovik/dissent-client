@@ -102,6 +102,10 @@ public final class Field {
         map.get(newCell.getX()).set(newCell.getY(), oldStatus);
     }
 
+    public void destroyUnitOnCell(Cell cell) {
+        map.get(cell.getX()).set(cell.getY(), CellStatus.UNIT_DESTROYED);
+    }
+
     public void createPathsForUnit(Unit unit) {
         final List<List<Integer>> distances = new ArrayList<>(size.getX());
         for (int i = 0; i < size.getX(); i++) {

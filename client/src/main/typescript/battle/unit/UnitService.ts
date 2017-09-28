@@ -9,7 +9,6 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     static readonly NEXT_TURN = "nextTurn";
 
     private readonly currentTargets = new Array<Unit>(0);
-    private readonly destroyedUnits = new Array<Unit>(0);
 
     constructor(readonly units: Unit[]) {
         super();
@@ -54,7 +53,6 @@ export default class UnitService extends PIXI.utils.EventEmitter {
             });
             unit.on(Unit.DESTROY, () => {
                 this.units.splice(this.units.indexOf(unit), 1);
-                this.destroyedUnits.push(unit);
                 if (!this.units.some(activeUnit => unit.side == activeUnit.side)) {
                     this.emit(game.Event.DONE);
                 }

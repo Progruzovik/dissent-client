@@ -11,15 +11,10 @@ import java.util.Set;
 
 public final class UnitQueue {
 
-    private int turnNumber = 1;
     private final LinkedList<Unit> queue = new LinkedList<>();
 
     private final Set<Hull> uniqueHulls = new HashSet<>();
     private final Set<Gun> uniqueGuns = new HashSet<>();
-
-    public int getTurnNumber() {
-        return turnNumber;
-    }
 
     public Unit getCurrentUnit() {
         return queue.element();
@@ -48,19 +43,16 @@ public final class UnitQueue {
         }
     }
 
-    public Unit removeUnitOnCell(Cell cell) {
-        for (int i = 0; i < queue.size(); i++) {
-            final Unit target = queue.get(i);
-            if (target.getCell().equals(cell)) {
-                queue.remove(i);
-                return target;
+    public Unit getUnitOnCell(Cell cell) {
+        for (final Unit unit : queue) {
+            if (unit.getCell().equals(cell)) {
+                return unit;
             }
         }
         return null;
     }
 
     public void nextTurn() {
-        turnNumber++;
         queue.offer(queue.poll());
     }
 }

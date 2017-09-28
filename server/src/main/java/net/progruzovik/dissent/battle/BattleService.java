@@ -94,8 +94,18 @@ public final class BattleService implements Battle {
 
     @Override
     public boolean shootWithCurrentUnit(String playerId, Cell cell) {
-        return isIdBelongsToCurrentPlayer(playerId) && field.isCellInCurrentTargets(cell)
-                && unitQueue.getCurrentUnit().shoot(unitQueue.removeUnitOnCell(cell));
+        if (isIdBelongsToCurrentPlayer(playerId) && field.isCellInCurrentTargets(cell)) {
+            final Unit target = unitQueue.getUnitOnCell(cell);
+            if (unitQueue.getCurrentUnit().shoot(target)) {
+                if (target.isDestroyed()) {
+                    unitQueue.getQueue().remove(target);
+                    field.destroyUnitOnCell(cell);
+                }
+                actions.add(new Action(ActionType.SHOT, unitQueue.getCurrentUnit().getCell(), cell));
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

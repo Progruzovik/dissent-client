@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.model.player;
 
 import net.progruzovik.dissent.dao.HullDao;
+import net.progruzovik.dissent.model.Hull;
 import net.progruzovik.dissent.model.battle.Unit;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Component;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public final class AiPlayer extends AbstractPlayer {
 
-    public AiPlayer(HullDao shipDao) {
-        getUnits().add(new Unit(shipDao.getHull(3), null, null));
+    public AiPlayer(HullDao hullDao) {
+        final Hull hull = hullDao.getHull(3);
+        getUnits().add(new Unit(hull, null, null));
+        getUnits().add(new Unit(hull, null, null));
     }
 
     @Override

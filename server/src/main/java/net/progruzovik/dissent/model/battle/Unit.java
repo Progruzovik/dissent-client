@@ -29,6 +29,11 @@ public final class Unit {
     }
 
     @JsonIgnore
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
+    @JsonIgnore
     public int getMovementPoints() {
         return movementPoints;
     }
