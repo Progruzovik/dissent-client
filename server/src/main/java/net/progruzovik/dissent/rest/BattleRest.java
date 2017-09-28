@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.rest;
 
+import net.progruzovik.dissent.model.battle.Action;
 import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Hull;
@@ -53,15 +54,14 @@ public final class BattleRest {
         return player.getBattle().getPlayerSide(player.getId());
     }
 
-    @GetMapping("/turn")
-    public int getTurnNumber() {
-        return player.getBattle().getUnitQueue().getTurnNumber();
+    @GetMapping("/actions")
+    public Collection<Action> getActions(@RequestParam(required = false) Integer fromIndex) {
+        return player.getBattle().getActions(fromIndex == null ? 0 : fromIndex);
     }
 
-    @PostMapping("/turn")
-    public ResponseEntity postTurn() {
-        return player.getBattle().nextTurn(player.getId()) ? new ResponseEntity(HttpStatus.OK)
-                : new ResponseEntity(HttpStatus.BAD_REQUEST);
+    @GetMapping("/actions/count")
+    public int getActionsCount() {
+        return player.getBattle().getActionsCount();
     }
 
     @GetMapping("/unit")
@@ -99,5 +99,11 @@ public final class BattleRest {
             return new ResponseEntity(HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/turn")
+    public ResponseEntity postTurn() {
+        return player.getBattle().nextTurn(player.getId()) ? new ResponseEntity(HttpStatus.OK)
+                : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }

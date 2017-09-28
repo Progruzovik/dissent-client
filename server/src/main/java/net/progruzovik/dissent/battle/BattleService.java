@@ -1,9 +1,7 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.model.battle.Field;
-import net.progruzovik.dissent.model.battle.Side;
-import net.progruzovik.dissent.model.battle.Unit;
-import net.progruzovik.dissent.model.battle.UnitQueue;
+import net.progruzovik.dissent.model.battle.*;
+import net.progruzovik.dissent.model.player.AiPlayer;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
 
@@ -14,37 +12,39 @@ public final class BattleService implements Battle {
     private static final int UNIT_INDENT = 3;
     private static final int BORDER_INDENT = 4;
 
-    private final String leftPlayerId;
-    private final String rightPlayerId;
+    private final Player leftPlayer;
+    private final Player rightPlayer;
 
     private final UnitQueue unitQueue = new UnitQueue();
     private final Field field;
 
+    private final List<Action> actions = new ArrayList<>();
+
     public BattleService(Player leftPlayer, Player rightPlayer) {
+        this.leftPlayer = leftPlayer;
+        this.rightPlayer = rightPlayer;
+
         final int maxUnitsCountOnSide = Math.max(leftPlayer.getUnits().size(), rightPlayer.getUnits().size());
         final int colsCount = maxUnitsCountOnSide * UNIT_INDENT + BORDER_INDENT * 2;
         field = new Field(new Cell(colsCount, colsCount));
-
         int i = 0;
         for (final Unit unit : leftPlayer.getUnits()) {
             unit.init(Side.LEFT, new Cell(0, i * UNIT_INDENT + BORDER_INDENT));
             registerUnit(unit);
             i++;
         }
-        this.leftPlayerId = leftPlayer.getId();
         i = 0;
         for (final Unit unit : rightPlayer.getUnits()) {
             unit.init(Side.RIGHT, new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT));
             registerUnit(unit);
             i++;
         }
-        this.rightPlayerId = rightPlayer.getId();
         onNextTurn();
     }
 
     @Override
-    public Field getField() {
-        return field;
+    public int getActionsCount() {
+        return actions.size();
     }
 
     @Override
@@ -53,14 +53,24 @@ public final class BattleService implements Battle {
     }
 
     @Override
+    public Field getField() {
+        return field;
+    }
+
+    @Override
     public Side getPlayerSide(String playerId) {
-        if (leftPlayerId.equals(playerId)) {
+        if (leftPlayer.getId().equals(playerId)) {
             return Side.LEFT;
         }
-        if (rightPlayerId.equals(playerId)) {
+        if (rightPlayer.getId().equals(playerId)) {
             return Side.RIGHT;
         }
         return Side.NONE;
+    }
+
+    @Override
+    public List<Action> getActions(int fromIndex) {
+        return actions.subList(fromIndex, actions.size());
     }
 
     @Override
@@ -76,6 +86,7 @@ public final class BattleService implements Battle {
             if (unitQueue.getCurrentUnit().move(cell)) {
                 field.moveUnit(oldCell, cell);
                 field.createPathsForUnit(unitQueue.getCurrentUnit());
+                actions.add(new Action(ActionType.MOVE, getPlayerSide(playerId), oldCell, cell));
                 return true;
             }
         }
@@ -101,7 +112,8 @@ public final class BattleService implements Battle {
                     unitQueue.getQueue().remove(target);
                     field.destroyUnitOnCell(cell);
                 }
-                actions.add(new Action(ActionType.SHOT, unitQueue.getCurrentUnit().getCell(), cell));
+                actions.add(new Action(ActionType.SHOT, getPlayerSide(playerId),
+                        unitQueue.getCurrentUnit().getCell(), cell));
                 return true;
             }
         }
@@ -112,20 +124,26 @@ public final class BattleService implements Battle {
     public boolean nextTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
             unitQueue.nextTurn();
-            while (!isIdBelongsToCurrentPlayer(playerId)) {
-                unitQueue.nextTurn();
-            }
+            actions.add(new Action(ActionType.NEXT_TURN, getPlayerSide(playerId)));
             onNextTurn();
+            if (getCurrentPlayer() instanceof AiPlayer) {
+                nextTurn(getCurrentPlayer().getId());
+            }
             return true;
         }
         return false;
     }
 
     private boolean isIdBelongsToCurrentPlayer(String id) {
+        final Player currentPlayer = getCurrentPlayer();
+        return currentPlayer != null && currentPlayer.getId().equals(id);
+    }
+
+    private Player getCurrentPlayer() {
         switch (unitQueue.getCurrentUnit().getSide()) {
-            case LEFT: return leftPlayerId.equals(id);
-            case RIGHT: return rightPlayerId.equals(id);
-            default: return false;
+            case LEFT: return leftPlayer;
+            case RIGHT: return rightPlayer;
+            default: return null;
         }
     }
 

@@ -44,7 +44,7 @@ export default class Controls extends PIXI.Container {
                 unitService.currentUnit.preparedGunNumber = Unit.SECOND_GUN;
             }
         });
-        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => postTurn(() => unitService.nextTurn()));
+        this.btnNextTurn.on(game.Event.BUTTON_CLICK, postTurn);
     }
 
     lockInterface() {

@@ -65,6 +65,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     }
 
     nextTurn() {
+        console.log(this.currentUnit);
         this.currentUnit.preparedGunNumber = -1;
         this.units.push(this.units.shift());
         this.currentUnit.makeCurrent();

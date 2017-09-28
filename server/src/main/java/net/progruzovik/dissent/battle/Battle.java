@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.battle;
 
+import net.progruzovik.dissent.model.battle.Action;
 import net.progruzovik.dissent.model.battle.Field;
 import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.battle.UnitQueue;
@@ -10,11 +11,15 @@ import java.util.Map;
 
 public interface Battle {
 
-    Field getField();
+    int getActionsCount();
 
     UnitQueue getUnitQueue();
 
+    Field getField();
+
     Side getPlayerSide(String playerId);
+
+    List<Action> getActions(int fromIndex);
 
     List<Cell> findReachableCellsForCurrentUnit();
 
