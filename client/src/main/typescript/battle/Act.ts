@@ -14,10 +14,10 @@ export default class Act extends game.Act {
     private readonly controls: Controls;
     private readonly field: Field;
 
-    constructor(width: number, height: number, fieldSize: PIXI.Point, currentPlayerSide: Side,
-                asteroids: Cell[], units: Unit[], projectileService: ProjectileService) {
+    constructor(width: number, height: number, actionsCount: number, fieldSize: PIXI.Point,
+                currentPlayerSide: Side, asteroids: Cell[], units: Unit[], projectileService: ProjectileService) {
         super(width, height);
-        const actionService = new ActionService();
+        const actionService = new ActionService(actionsCount);
         const unitService = new UnitService(units);
 
         this.queue = new Queue(currentPlayerSide, unitService);
@@ -29,10 +29,7 @@ export default class Act extends game.Act {
         this.resize();
         unitService.emit(UnitService.NEXT_TURN, unitService.currentUnit, true);
 
-        actionService.on(ActionType.NextTurn.toString(), action => {
-            this.controls.lockInterface();
-            unitService.nextTurn();
-        });
+        actionService.on(ActionType.NextTurn.toString(), () => unitService.nextTurn());
         unitService.once(game.Event.DONE, () => this.emit(game.Event.DONE));
     }
 

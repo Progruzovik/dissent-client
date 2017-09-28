@@ -5,9 +5,8 @@ export default class ActionService extends PIXI.utils.EventEmitter {
 
     private isProcessingRequests = false;
     private framesCount = 0;
-    private actionsCount = 0;
 
-    constructor() {
+    constructor(private actionsCount: number) {
         super();
 
         PIXI.ticker.shared.add(() => {

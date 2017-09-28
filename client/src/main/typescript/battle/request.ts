@@ -6,17 +6,18 @@ export function postScenario(callback: () => void) {
     axios.post("/api/scenario").then(callback);
 }
 
-export function getField(callback: (ships: Hull[], guns: Gun[], size: Cell,
+export function getField(callback: (actionsCount: number, ships: Hull[], guns: Gun[], size: Cell,
                                     side: Side, asteroids: Cell[], units: Unit[]) => void) {
     axios.all([
+        axios.get(BATTLE_PREFIX + "/actions/count"),
         axios.get(BATTLE_PREFIX + "/ships"),
         axios.get(BATTLE_PREFIX + "/guns"),
         axios.get(BATTLE_PREFIX + "/size"),
         axios.get(BATTLE_PREFIX + "/side"),
         axios.get(BATTLE_PREFIX + "/asteroids"),
-        axios.get(BATTLE_PREFIX + "/units")
-    ]).then(axios.spread((ships, guns, size, side, asteroids, units) =>
-        callback(ships.data, guns.data, size.data, side.data, asteroids.data, units.data)));
+        axios.get(BATTLE_PREFIX + "/units"),
+    ]).then(axios.spread((actionsCount, ships, guns, size, side, asteroids, units) =>
+        callback(actionsCount.data, ships.data, guns.data, size.data, side.data, asteroids.data, units.data)));
 }
 
 export function getActionsCount(callback: (actionsCount: number) => void) {

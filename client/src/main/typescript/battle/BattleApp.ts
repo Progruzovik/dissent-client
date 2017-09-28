@@ -13,7 +13,7 @@ export default class BattleApp extends PIXI.Application {
     constructor() {
         super({ width: innerWidth, height: innerHeight, resolution: devicePixelRatio || 1, autoResize: true });
         postScenario(() => {
-            getField((ships, guns, size, side, asteroids, units) => {
+            getField((actionsCount, ships, guns, size, side, asteroids, units) => {
                 const shipsArray = new Array<Hull>(0);
                 for (const shipData of ships) {
                     PIXI.loader.add(shipData.name, "img/" + shipData.name + ".png",
@@ -32,8 +32,8 @@ export default class BattleApp extends PIXI.Application {
                             shipsArray[unit.hullId], guns.filter((gun) => gun.id == unit.firstGunId)[0],
                             guns.filter((gun) => gun.id == unit.secondGunId)[0], projectileService));
                     }
-                    this.act = new Act(innerWidth, innerHeight, new PIXI.Point(size.x, size.y),
-                        side, asteroids, unitsArray, projectileService);
+                    this.act = new Act(innerWidth, innerHeight, actionsCount,
+                        new PIXI.Point(size.x, size.y), side, asteroids, unitsArray, projectileService);
                     this.stage.addChild(this.act);
 
                     this.act.once(game.Event.DONE, () => {
