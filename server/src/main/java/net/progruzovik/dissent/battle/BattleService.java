@@ -1,6 +1,9 @@
 package net.progruzovik.dissent.battle;
 
 import net.progruzovik.dissent.model.battle.*;
+import net.progruzovik.dissent.model.battle.action.Action;
+import net.progruzovik.dissent.model.battle.action.ActionType;
+import net.progruzovik.dissent.model.battle.action.Shot;
 import net.progruzovik.dissent.model.player.AiPlayer;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
@@ -15,10 +18,11 @@ public final class BattleService implements Battle {
     private final Player leftPlayer;
     private final Player rightPlayer;
 
+    private final List<Action> actions = new ArrayList<>();
+    private final List<Shot> shots = new ArrayList<>();
+
     private final UnitQueue unitQueue = new UnitQueue();
     private final Field field;
-
-    private final List<Action> actions = new ArrayList<>();
 
     public BattleService(Player leftPlayer, Player rightPlayer) {
         this.leftPlayer = leftPlayer;
@@ -74,6 +78,11 @@ public final class BattleService implements Battle {
     }
 
     @Override
+    public Shot getShot(int number) {
+        return shots.get(number);
+    }
+
+    @Override
     public List<Cell> findReachableCellsForCurrentUnit() {
         return field.findReachableCellsForUnit(unitQueue.getCurrentUnit());
     }
@@ -84,9 +93,9 @@ public final class BattleService implements Battle {
                 && cell.isInBorders(field.getSize()) && field.isCellInCurrentPaths(cell)) {
             final Cell oldCell = unitQueue.getCurrentUnit().getCell();
             if (unitQueue.getCurrentUnit().move(cell)) {
+                actions.add(new Action(ActionType.MOVE));
                 field.moveUnit(oldCell, cell);
                 field.createPathsForUnit(unitQueue.getCurrentUnit());
-                actions.add(new Action(ActionType.MOVE, cell));
                 return true;
             }
         }
@@ -107,12 +116,14 @@ public final class BattleService implements Battle {
     public boolean shootWithCurrentUnit(String playerId, Cell cell) {
         if (isIdBelongsToCurrentPlayer(playerId) && field.isCellInCurrentTargets(cell)) {
             final Unit target = unitQueue.getUnitOnCell(cell);
-            if (unitQueue.getCurrentUnit().shoot(target)) {
+            if (target != null) {
+                actions.add(new Action(shots.size(), ActionType.SHOT));
+                shots.add(new Shot(unitQueue.getCurrentUnit().getPreparedGun().getId(), cell));
+                unitQueue.getCurrentUnit().shoot(target);
                 if (target.isDestroyed()) {
                     unitQueue.getQueue().remove(target);
                     field.destroyUnitOnCell(cell);
                 }
-                actions.add(new Action(ActionType.SHOT, cell));
                 return true;
             }
         }
@@ -122,8 +133,8 @@ public final class BattleService implements Battle {
     @Override
     public boolean nextTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
-            unitQueue.nextTurn();
             actions.add(new Action(ActionType.NEXT_TURN));
+            unitQueue.nextTurn();
             onNextTurn();
             if (getCurrentPlayer() instanceof AiPlayer) {
                 nextTurn(getCurrentPlayer().getId());

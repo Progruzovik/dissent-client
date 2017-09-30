@@ -1,12 +1,12 @@
 package net.progruzovik.dissent.rest;
 
-import net.progruzovik.dissent.model.battle.Action;
+import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Hull;
 import net.progruzovik.dissent.model.battle.Unit;
+import net.progruzovik.dissent.model.battle.action.Shot;
 import net.progruzovik.dissent.model.player.Player;
-import net.progruzovik.dissent.model.player.SessionPlayer;
 import net.progruzovik.dissent.model.util.Cell;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -63,6 +63,11 @@ public final class BattleRest {
     @GetMapping("/actions/count")
     public int getActionsCount() {
         return player.getBattle().getActionsCount();
+    }
+
+    @GetMapping("/shot/{number}")
+    public Shot getShot(@PathVariable int number) {
+        return player.getBattle().getShot(number);
     }
 
     @GetMapping("/unit")

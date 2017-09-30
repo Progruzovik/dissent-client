@@ -119,11 +119,7 @@ public final class Unit {
         return false;
     }
 
-    public boolean shoot(Unit target) {
-        if (target == null || (preparedGun != firstGun && preparedGun != secondGun)) {
-            return false;
-        }
-
+    public void shoot(Unit target) {
         if (preparedGun == firstGun) {
             firstGunCooldown = firstGun.getCooldown();
         } else {
@@ -131,6 +127,5 @@ public final class Unit {
         }
         preparedGun = null;
         target.isDestroyed = true;
-        return true;
     }
 }

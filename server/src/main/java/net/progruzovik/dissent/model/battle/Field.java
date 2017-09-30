@@ -13,8 +13,8 @@ public final class Field {
     private final List<List<Cell>> currentPaths;
     private final List<Cell> currentTargets = new ArrayList<>();
 
-    private final List<List<CellStatus>> map;
     private final List<Cell> asteroids = new ArrayList<>();
+    private final List<List<CellStatus>> map;
 
     public Field(Cell size) {
         this.size = size;

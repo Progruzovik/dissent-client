@@ -20,13 +20,17 @@ export function getField(callback: (actionsCount: number, ships: Hull[], guns: G
         callback(actionsCount.data, ships.data, guns.data, size.data, side.data, asteroids.data, units.data)));
 }
 
+export function getActions(fromIndex: number, callback: (actions: Action[]) => void) {
+    axios.get(BATTLE_PREFIX + "/actions", { params: { fromIndex: fromIndex } })
+        .then(response => callback(response.data));
+}
+
 export function getActionsCount(callback: (actionsCount: number) => void) {
     axios.get(BATTLE_PREFIX + "/actions/count").then(response => callback(response.data));
 }
 
-export function getActions(fromIndex: number, callback: (actions: Action[]) => void) {
-    axios.get(BATTLE_PREFIX + "/actions", { params: { fromIndex: fromIndex } })
-        .then(response => callback(response.data));
+export function getShot(number: number, callback: (shot: Shot) => void) {
+    axios.get(BATTLE_PREFIX + "/shot/" + number).then(response => callback(response.data));
 }
 
 export function getCurrentPaths(callback: (paths: Cell[][]) => void) {
@@ -64,7 +68,7 @@ export const enum Side {
 }
 
 export class Action {
-    constructor(readonly type: ActionType, readonly cell: Cell) {}
+    constructor(readonly number: number, readonly type: ActionType) {}
 }
 
 export class Cell {
@@ -78,6 +82,10 @@ export class Gun {
 
 class Hull {
     constructor(readonly id: number, readonly name: string, readonly speed: number) {}
+}
+
+class Shot {
+    constructor(readonly gunId: number, readonly cell: Cell) {}
 }
 
 class Unit {

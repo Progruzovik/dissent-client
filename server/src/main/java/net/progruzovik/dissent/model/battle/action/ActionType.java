@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.model.battle;
+package net.progruzovik.dissent.model.battle.action;
 
 public enum ActionType {
     MOVE,
