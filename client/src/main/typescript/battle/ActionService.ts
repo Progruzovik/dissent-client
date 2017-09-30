@@ -1,7 +1,11 @@
-import { getActionsCount, getActions } from "./request";
+import { ActionType, getActionsCount, getActions } from "./request";
 import * as PIXI from "pixi.js";
 
 export default class ActionService extends PIXI.utils.EventEmitter {
+
+    static readonly MOVE: string = ActionType.Move.toString();
+    static readonly SHOT: string = ActionType.Shot.toString();
+    static readonly NEXT_TURN: string = ActionType.NextTurn.toString();
 
     private isProcessingRequests = false;
     private framesCount = 0;

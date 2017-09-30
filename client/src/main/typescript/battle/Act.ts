@@ -29,20 +29,20 @@ export default class Act extends game.Act {
         this.resize();
         unitService.emit(UnitService.NEXT_TURN, unitService.currentUnit, true);
 
-        actionService.on(ActionType.Move.toString(), (action: Action) => {
+        actionService.on(ActionService.MOVE, (action: Action) => {
            getMove(action.number, move => {
                this.field.removeMarks();
                unitService.currentUnit.path = this.field.currentPath;
                unitService.currentUnit.once(Unit.MOVE, () => this.field.findPathsForCurrentUnit());
            });
         });
-        actionService.on(ActionType.Shot.toString(), (action: Action) => {
+        actionService.on(ActionService.SHOT, (action: Action) => {
             getShot(action.number, shot => {
                 unitService.currentUnit.shoot(unitService.units.filter(unit =>
                     unit.cell.x == shot.cell.x && unit.cell.y == shot.cell.y)[0], shot.gunId);
             });
         });
-        actionService.on(ActionType.NextTurn.toString(), () => unitService.nextTurn());
+        actionService.on(ActionService.NEXT_TURN, () => unitService.nextTurn());
         unitService.once(game.Event.DONE, () => this.emit(game.Event.DONE));
     }
 
