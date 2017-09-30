@@ -29,6 +29,10 @@ export function getActionsCount(callback: (actionsCount: number) => void) {
     axios.get(BATTLE_PREFIX + "/actions/count").then(response => callback(response.data));
 }
 
+export function getMove(number: number, callback: (move: Cell[]) => void) {
+    axios.get(BATTLE_PREFIX + "/move/" + number).then(response => callback(response.data));
+}
+
 export function getShot(number: number, callback: (shot: Shot) => void) {
     axios.get(BATTLE_PREFIX + "/shot/" + number).then(response => callback(response.data));
 }
@@ -41,8 +45,8 @@ export function getCurrentReachableCells(callback: (reachableCells: Cell[]) => v
     axios.get(BATTLE_PREFIX + "/unit/cells").then(response => callback(response.data));
 }
 
-export function postCurrentUnitCell(cell: Cell, callback: () => void) {
-    axios.post(BATTLE_PREFIX + "/unit/cell", cell).then(callback);
+export function postCurrentUnitCell(cell: Cell) {
+    axios.post(BATTLE_PREFIX + "/unit/cell", cell);
 }
 
 export function getCellsForCurrentUnitShot(gunId: number, callback: (shotCells: Cell[], targetCells: Cell[]) => void) {

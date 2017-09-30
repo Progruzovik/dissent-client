@@ -5,7 +5,7 @@ import Queue from "./Queue";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { Action, ActionType, Cell, getShot, Side } from "./request";
+import { Action, ActionType, Cell, getMove, getShot, Side } from "./request";
 import * as game from "../game";
 
 export default class Act extends game.Act {
@@ -29,6 +29,13 @@ export default class Act extends game.Act {
         this.resize();
         unitService.emit(UnitService.NEXT_TURN, unitService.currentUnit, true);
 
+        actionService.on(ActionType.Move.toString(), (action: Action) => {
+           getMove(action.number, move => {
+               this.field.removeMarks();
+               unitService.currentUnit.path = this.field.currentPath;
+               unitService.currentUnit.once(Unit.MOVE, () => this.field.findPathsForCurrentUnit());
+           });
+        });
         actionService.on(ActionType.Shot.toString(), (action: Action) => {
             getShot(action.number, shot => {
                 unitService.currentUnit.shoot(unitService.units.filter(unit =>

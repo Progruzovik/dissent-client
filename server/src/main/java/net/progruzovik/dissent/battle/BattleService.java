@@ -3,6 +3,7 @@ package net.progruzovik.dissent.battle;
 import net.progruzovik.dissent.model.battle.*;
 import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.battle.action.ActionType;
+import net.progruzovik.dissent.model.battle.action.Move;
 import net.progruzovik.dissent.model.battle.action.Shot;
 import net.progruzovik.dissent.model.player.AiPlayer;
 import net.progruzovik.dissent.model.player.Player;
@@ -19,6 +20,7 @@ public final class BattleService implements Battle {
     private final Player rightPlayer;
 
     private final List<Action> actions = new ArrayList<>();
+    private final List<Move> moves = new ArrayList<>();
     private final List<Shot> shots = new ArrayList<>();
 
     private final UnitQueue unitQueue = new UnitQueue();
@@ -78,6 +80,11 @@ public final class BattleService implements Battle {
     }
 
     @Override
+    public Move getMove(int number) {
+        return moves.get(number);
+    }
+
+    @Override
     public Shot getShot(int number) {
         return shots.get(number);
     }
@@ -89,15 +96,12 @@ public final class BattleService implements Battle {
 
     @Override
     public boolean moveCurrentUnit(String playerId, Cell cell) {
-        if (isIdBelongsToCurrentPlayer(playerId)
-                && cell.isInBorders(field.getSize()) && field.isCellInCurrentPaths(cell)) {
-            final Cell oldCell = unitQueue.getCurrentUnit().getCell();
-            if (unitQueue.getCurrentUnit().move(cell)) {
-                actions.add(new Action(ActionType.MOVE));
-                field.moveUnit(oldCell, cell);
-                field.createPathsForUnit(unitQueue.getCurrentUnit());
-                return true;
-            }
+        if (isIdBelongsToCurrentPlayer(playerId) && cell.isInBorders(field.getSize())
+                && field.isCellInCurrentPaths(cell) && unitQueue.getCurrentUnit().move(cell)) {
+            actions.add(new Action(ActionType.MOVE));
+            moves.add(field.moveUnit(cell));
+            field.createPathsForUnit(unitQueue.getCurrentUnit());
+            return true;
         }
         return false;
     }

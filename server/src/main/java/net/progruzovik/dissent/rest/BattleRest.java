@@ -1,10 +1,11 @@
 package net.progruzovik.dissent.rest;
 
-import net.progruzovik.dissent.model.battle.action.Action;
-import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Hull;
+import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.battle.Unit;
+import net.progruzovik.dissent.model.battle.action.Action;
+import net.progruzovik.dissent.model.battle.action.Move;
 import net.progruzovik.dissent.model.battle.action.Shot;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
@@ -13,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/battle")
@@ -63,6 +66,11 @@ public final class BattleRest {
     @GetMapping("/actions/count")
     public int getActionsCount() {
         return player.getBattle().getActionsCount();
+    }
+
+    @GetMapping("/move/{number}")
+    public Move getMove(@PathVariable int number) {
+        return player.getBattle().getMove(number);
     }
 
     @GetMapping("/shot/{number}")

@@ -50,17 +50,22 @@ export default class Field extends PIXI.Container {
             this.addChild(unit);
         }
 
-        this.unitService.on(Unit.PREPARED_TO_SHOT, () => this.removeAllMarksExceptCurrent());
+        this.unitService.on(Unit.PREPARED_TO_SHOT, () => this.removeMarksExceptCurrent());
         this.unitService.on(UnitService.SHOT_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xFFFFFF, cell)));
         this.unitService.on(UnitService.TARGET_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xFF0000, cell)));
         this.unitService.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
-        this.unitService.on(UnitService.NEXT_TURN, () => this.getPathsForCurrentUnit());
+        this.unitService.on(UnitService.NEXT_TURN, () => this.findPathsForCurrentUnit());
         this.projectileService.on(Unit.SHOT, (projectile: game.Actor) => this.addChild(projectile));
     }
 
-    private getPathsForCurrentUnit() {
+    removeMarks() {
+        this.pathLayer.removeChildren();
+        this.markLayer.removeChildren();
+    }
+
+    findPathsForCurrentUnit() {
         getCurrentPaths(paths => {
             this.paths = paths;
             this.createCommonMarksForUnit(this.unitService.currentUnit);
@@ -109,7 +114,7 @@ export default class Field extends PIXI.Container {
         }
     }
 
-    private removeAllMarksExceptCurrent() {
+    private removeMarksExceptCurrent() {
         this.markLayer.removeChildren();
         this.markLayer.addChild(this.currentMark);
     }
@@ -130,15 +135,7 @@ export default class Field extends PIXI.Container {
                     pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
                     this.pathLayer.addChild(pathEnd);
                 });
-                pathMark.on(game.Event.CLICK, () => {
-                    postCurrentUnitCell(cell, () => {
-                        this.pathLayer.removeChildren();
-                        this.markLayer.removeChildren();
-                        unit.path = this.currentPath;
-                        this.emit(game.Event.MOUSE_UP);
-                        unit.once(Unit.MOVE, () => this.getPathsForCurrentUnit());
-                    });
-                });
+                pathMark.on(game.Event.CLICK, () => postCurrentUnitCell(cell));
                 pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
             }
             this.addCurrentPathMarks();
@@ -146,7 +143,7 @@ export default class Field extends PIXI.Container {
     }
 
     private addCurrentPathMarks() {
-        this.removeAllMarksExceptCurrent();
+        this.removeMarksExceptCurrent();
         for (const mark of this.pathMarks) {
             this.markLayer.addChild(mark);
         }
