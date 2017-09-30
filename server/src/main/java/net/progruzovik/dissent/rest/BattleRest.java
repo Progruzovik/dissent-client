@@ -6,6 +6,7 @@ import net.progruzovik.dissent.model.Gun;
 import net.progruzovik.dissent.model.Hull;
 import net.progruzovik.dissent.model.battle.Unit;
 import net.progruzovik.dissent.model.player.Player;
+import net.progruzovik.dissent.model.player.SessionPlayer;
 import net.progruzovik.dissent.model.util.Cell;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;

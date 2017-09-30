@@ -97,11 +97,11 @@ export default class Unit extends game.Actor {
         }
     }
 
-    shoot(target: Unit) {
-        if (this.preparedGunNumber == Unit.FIRST_GUN) {
+    shoot(target: Unit, gunNumber: number) {
+        if (gunNumber == Unit.FIRST_GUN) {
             this._firstGunCooldown = this.firstGun.cooldown;
             this.projectileService.shoot(this.firstGun, target.center, this.center);
-        } else if (this.preparedGunNumber == Unit.SECOND_GUN) {
+        } else if (gunNumber == Unit.SECOND_GUN) {
             this._secondGunCooldown = this.secondGun.cooldown;
             this.projectileService.shoot(this.secondGun, target.center, this.center);
         }

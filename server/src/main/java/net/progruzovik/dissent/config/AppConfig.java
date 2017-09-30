@@ -1,8 +1,8 @@
 package net.progruzovik.dissent.config;
 
 import net.progruzovik.dissent.battle.Battle;
-import net.progruzovik.dissent.battle.FieldFactory;
 import net.progruzovik.dissent.battle.BattleService;
+import net.progruzovik.dissent.battle.FieldFactory;
 import net.progruzovik.dissent.model.player.Player;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -28,8 +28,7 @@ public class AppConfig {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    Battle field(@Qualifier("sessionPlayer") Player leftPlayer,
-                 @Qualifier("aiPlayer") Player rightPlayer) {
+    Battle field(@Qualifier("sessionPlayer") Player leftPlayer, @Qualifier("aiPlayer") Player rightPlayer) {
         return new BattleService(leftPlayer, rightPlayer);
     }
 

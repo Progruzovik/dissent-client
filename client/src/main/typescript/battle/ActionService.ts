@@ -19,7 +19,6 @@ export default class ActionService extends PIXI.utils.EventEmitter {
                         this.isProcessingRequests = false;
                     } else {
                         getActions(this.actionsCount, actions => {
-                            console.log(this.actionsCount);
                             this.isProcessingRequests = false;
                             this.actionsCount = actionsCount;
                             for (const action of actions) {

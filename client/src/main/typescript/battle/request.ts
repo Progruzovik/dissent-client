@@ -47,29 +47,33 @@ export function getCellsForCurrentUnitShot(gunNumber: number,
         .then(response => callback(response.data.shotCells, response.data.targetCells));
 }
 
-export function postCurrentUnitShot(cell: Cell, callback: () => void) {
-    axios.post(BATTLE_PREFIX + "/unit/shot", cell).then(callback);
+export function postCurrentUnitShot(cell: Cell) {
+    axios.post(BATTLE_PREFIX + "/unit/shot", cell);
 }
 
 export function postTurn() {
     axios.post(BATTLE_PREFIX + "/turn");
 }
 
+export const enum ActionType {
+    Move, Shot, NextTurn
+}
+
 export const enum Side {
     None, Left, Right
 }
 
-export const enum ActionType {
-    Move, Shot, NextTurn
+export class Action {
+    constructor(readonly type: ActionType, readonly cell: Cell) {}
+}
+
+export class Cell {
+    constructor(readonly x: number, readonly y: number) {}
 }
 
 export class Gun {
     constructor(readonly id: number, readonly name: string, readonly cooldown: number,
                 readonly projectileType: string, readonly shotsCount: number, readonly shotDelay: number) {}
-}
-
-export class Cell {
-    constructor(readonly x: number, readonly y: number) {}
 }
 
 class Hull {
@@ -79,9 +83,4 @@ class Hull {
 class Unit {
     constructor(readonly side: Side, readonly cell: Cell, readonly hullId: number,
                 readonly firstGunId: number, readonly secondGunId: number) {}
-}
-
-class Action {
-    constructor(readonly type: ActionType, readonly playerSide: Side,
-                readonly firstCell: Cell, readonly secondCell: Cell) {}
 }

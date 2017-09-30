@@ -14,8 +14,8 @@ export default class Field extends PIXI.Container {
 
     private readonly currentMark = new Mark(0x00FF00);
     private readonly pathMarks = new Array<Mark>(0);
-    private readonly markLayer = new PIXI.Container();
     private readonly pathLayer = new PIXI.Container();
+    private readonly markLayer = new PIXI.Container();
 
     constructor(private readonly size: Cell, private readonly unitService: UnitService,
                 private readonly projectileService: ProjectileService, fieldObjects: Cell[]) {
@@ -132,8 +132,9 @@ export default class Field extends PIXI.Container {
                 });
                 pathMark.on(game.Event.CLICK, () => {
                     postCurrentUnitCell(cell, () => {
-                        unit.path = this.currentPath;
                         this.pathLayer.removeChildren();
+                        this.markLayer.removeChildren();
+                        unit.path = this.currentPath;
                         this.emit(game.Event.MOUSE_UP);
                         unit.once(Unit.MOVE, () => this.getPathsForCurrentUnit());
                     });

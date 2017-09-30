@@ -86,7 +86,7 @@ public final class BattleService implements Battle {
             if (unitQueue.getCurrentUnit().move(cell)) {
                 field.moveUnit(oldCell, cell);
                 field.createPathsForUnit(unitQueue.getCurrentUnit());
-                actions.add(new Action(ActionType.MOVE, getPlayerSide(playerId), oldCell, cell));
+                actions.add(new Action(ActionType.MOVE, cell));
                 return true;
             }
         }
@@ -112,8 +112,7 @@ public final class BattleService implements Battle {
                     unitQueue.getQueue().remove(target);
                     field.destroyUnitOnCell(cell);
                 }
-                actions.add(new Action(ActionType.SHOT, getPlayerSide(playerId),
-                        unitQueue.getCurrentUnit().getCell(), cell));
+                actions.add(new Action(ActionType.SHOT, cell));
                 return true;
             }
         }
@@ -124,7 +123,7 @@ public final class BattleService implements Battle {
     public boolean nextTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
             unitQueue.nextTurn();
-            actions.add(new Action(ActionType.NEXT_TURN, getPlayerSide(playerId)));
+            actions.add(new Action(ActionType.NEXT_TURN));
             onNextTurn();
             if (getCurrentPlayer() instanceof AiPlayer) {
                 nextTurn(getCurrentPlayer().getId());

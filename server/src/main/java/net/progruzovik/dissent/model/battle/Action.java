@@ -5,38 +5,23 @@ import net.progruzovik.dissent.model.util.Cell;
 public final class Action {
 
     private final ActionType type;
-    private final Side playerSide;
+    private final Cell cell;
 
-    private final Cell firstCell;
-    private final Cell secondCell;
-
-    public Action(ActionType type, Side playerSide, Cell firstCell, Cell secondCell) {
+    public Action(ActionType type, Cell cell) {
         this.type = type;
-        this.playerSide = playerSide;
-        this.firstCell = firstCell;
-        this.secondCell = secondCell;
+        this.cell = cell;
     }
 
-    public Action(ActionType type, Side playerSide) {
+    public Action(ActionType type) {
         this.type = type;
-        this.playerSide = playerSide;
-        firstCell = null;
-        secondCell = null;
+        cell = null;
     }
 
     public ActionType getType() {
         return type;
     }
 
-    public Side getPlayerSide() {
-        return playerSide;
-    }
-
-    public Cell getFirstCell() {
-        return firstCell;
-    }
-
-    public Cell getSecondCell() {
-        return secondCell;
+    public Cell getCell() {
+        return cell;
     }
 }
