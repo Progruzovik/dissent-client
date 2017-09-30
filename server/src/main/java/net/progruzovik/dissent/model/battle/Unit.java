@@ -103,16 +103,16 @@ public final class Unit {
         return false;
     }
 
-    public boolean prepareGun(int gunNumber) {
-        if (gunNumber == -1) {
+    public boolean prepareGun(int gunId) {
+        if (gunId == -1) {
             preparedGun = null;
             return true;
         }
-        if (gunNumber == 0 && firstGunCooldown == 0) {
+        if (gunId == firstGun.getId() && firstGunCooldown == 0) {
             preparedGun = firstGun;
             return true;
         }
-        if (gunNumber == 1 && secondGunCooldown == 0) {
+        if (gunId == secondGun.getId() && secondGunCooldown == 0) {
             preparedGun = secondGun;
             return true;
         }

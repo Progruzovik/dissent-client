@@ -8,8 +8,6 @@ export default class Unit extends game.Actor {
 
     static readonly WIDTH = 64;
     static readonly HEIGHT = 32;
-    static readonly FIRST_GUN = 0;
-    static readonly SECOND_GUN = 1;
 
     static readonly MOVE = "move";
     static readonly PREPARED_TO_SHOT = "preparedToShot";
@@ -18,7 +16,7 @@ export default class Unit extends game.Actor {
     static readonly DESTROY = "destroy";
 
     private _movementPoints = 0;
-    private _preparedGunNumber = -1;
+    private _preparedGunId = -1;
     private _firstGunCooldown = 0;
     private _secondGunCooldown = 0;
     private _isDestroyed = false;
@@ -67,17 +65,17 @@ export default class Unit extends game.Actor {
         }
     }
 
-    get preparedGunNumber(): number {
-        return this._preparedGunNumber;
+    get preparedGunId(): number {
+        return this._preparedGunId;
     }
 
-    set preparedGunNumber(value: number) {
-        if (this.preparedGunNumber != value) {
+    set preparedGunId(value: number) {
+        if (this.preparedGunId != value) {
             if (value == -1) {
-                this._preparedGunNumber = -1;
+                this._preparedGunId = -1;
                 this.emit(Unit.NOT_PREPARED_TO_SHOT);
-            } else if (value == Unit.FIRST_GUN || value == Unit.SECOND_GUN) {
-                this._preparedGunNumber = value;
+            } else if (value == this.firstGun.id || value == this.secondGun.id) {
+                this._preparedGunId = value;
                 this.emit(Unit.PREPARED_TO_SHOT);
             }
         }
@@ -106,7 +104,7 @@ export default class Unit extends game.Actor {
             this.projectileService.shoot(this.secondGun, target.center, this.center);
         }
         this.emit(Unit.SHOT);
-        this.preparedGunNumber = -1;
+        this.preparedGunId = -1;
 
         this.projectileService.once(game.Event.DONE, () => target.destroyUnit());
     }

@@ -103,8 +103,8 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public boolean prepareCurrentUnitGun(String playerId, int gunNumber) {
-        return isIdBelongsToCurrentPlayer(playerId) && unitQueue.getCurrentUnit().prepareGun(gunNumber);
+    public boolean prepareCurrentUnitGun(String playerId, int gunId) {
+        return isIdBelongsToCurrentPlayer(playerId) && unitQueue.getCurrentUnit().prepareGun(gunId);
     }
 
     @Override
