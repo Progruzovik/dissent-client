@@ -1,12 +1,10 @@
 package net.progruzovik.dissent.dao;
 
-import net.progruzovik.dissent.model.Hull;
+import net.progruzovik.dissent.model.entity.Hull;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaQuery;
-import java.util.List;
 
 @Repository
 public final class HullJpa implements HullDao {

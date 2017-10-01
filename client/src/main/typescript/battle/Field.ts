@@ -9,7 +9,6 @@ export default class Field extends PIXI.Container {
 
     static readonly LINE_WIDTH = 1.5;
 
-    readonly currentPath = new Array<game.Direction>(0);
     private paths: Cell[][];
 
     private readonly currentMark = new Mark(0x00FF00);
@@ -72,39 +71,37 @@ export default class Field extends PIXI.Container {
         });
     }
 
-    private preparePath(markCell: Cell, unitCell: PIXI.Point) {
-        this.currentPath.length = 0;
+    private preparePath(markCell: Cell, unitCell: Cell) {
         if (this.paths[markCell.x][markCell.y]) {
             let cell: Cell = markCell;
             while (!(cell.x == unitCell.x && cell.y == unitCell.y)) {
                 const previousCell: Cell = this.paths[cell.x][cell.y];
-                let direction: game.Direction;
+                let direction: Direction;
                 if (cell.x == previousCell.x - 1) {
-                    direction = game.Direction.Left;
+                    direction = Direction.Left;
                 } else if (cell.x == previousCell.x + 1) {
-                    direction = game.Direction.Right;
+                    direction = Direction.Right;
                 } else if (cell.y == previousCell.y - 1) {
-                    direction = game.Direction.Up;
+                    direction = Direction.Up;
                 } else if (cell.y == previousCell.y + 1) {
-                    direction = game.Direction.Down;
+                    direction = Direction.Down;
                 }
-                this.currentPath.push(direction);
 
                 const pathLine = new game.Rectangle(0x00FF00, 5, 5);
                 pathLine.x = cell.x * Unit.WIDTH;
                 pathLine.y = cell.y * Unit.HEIGHT;
                 let k = 0;
-                if (direction == game.Direction.Left || direction == game.Direction.Right) {
+                if (direction == Direction.Left || direction == Direction.Right) {
                     pathLine.width = Unit.WIDTH;
                     pathLine.pivot.y = pathLine.height / 2;
-                    k = direction == game.Direction.Left ? 1 : -1;
+                    k = direction == Direction.Left ? 1 : -1;
                     pathLine.x += pathLine.width / 2 * k;
                     pathLine.y += Unit.HEIGHT / 2;
-                } else if (direction == game.Direction.Up || direction == game.Direction.Down) {
+                } else if (direction == Direction.Up || direction == Direction.Down) {
                     pathLine.height = Unit.HEIGHT;
                     pathLine.pivot.x = pathLine.width / 2;
                     pathLine.x += Unit.WIDTH / 2;
-                    k = direction == game.Direction.Up ? 1 : -1;
+                    k = direction == Direction.Up ? 1 : -1;
                     pathLine.y += pathLine.height / 2 * k;
                 }
                 this.pathLayer.addChild(pathLine);
@@ -148,4 +145,8 @@ export default class Field extends PIXI.Container {
             this.markLayer.addChild(mark);
         }
     }
+}
+
+const enum Direction {
+    Left, Right, Up, Down
 }

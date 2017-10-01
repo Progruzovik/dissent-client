@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.dao;
 
-import net.progruzovik.dissent.model.Gun;
+import net.progruzovik.dissent.model.entity.Gun;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

@@ -1,8 +1,6 @@
 package net.progruzovik.dissent.dao;
 
-import net.progruzovik.dissent.model.Hull;
-
-import java.util.List;
+import net.progruzovik.dissent.model.entity.Hull;
 
 public interface HullDao {
 

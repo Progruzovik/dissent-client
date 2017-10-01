@@ -31,8 +31,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                     unit.alpha = 1;
                 }
             });
-            unit.on(Unit.MOVE, (oldPosition: PIXI.Point, newPosition: PIXI.Point) =>
-                this.emit(Unit.MOVE, oldPosition, newPosition));
+            unit.on(Unit.MOVE, () => this.emit(Unit.MOVE));
             unit.on(Unit.PREPARED_TO_SHOT, () => {
                 getCellsForCurrentUnitShot(unit.preparedGunId, (shotCells, targetCells) => {
                     this.emit(Unit.PREPARED_TO_SHOT);

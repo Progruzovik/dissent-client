@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.model;
+package net.progruzovik.dissent.model.entity;
 
 import javax.persistence.*;
 

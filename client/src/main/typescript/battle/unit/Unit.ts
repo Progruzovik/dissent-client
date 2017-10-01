@@ -1,7 +1,7 @@
 import Hull from "./Hull";
 import Field from "../Field";
 import ProjectileService from "../projectile/ProjectileService";
-import { Gun, Side } from "../request";
+import { Cell, Gun, Side } from "../request";
 import * as game from "../../game";
 
 export default class Unit extends game.Actor {
@@ -21,10 +21,9 @@ export default class Unit extends game.Actor {
     private _secondGunCooldown = 0;
     private _isDestroyed = false;
 
-    private _path: game.Direction[];
-    private oldCell: PIXI.Point;
+    private _path: Cell[];
 
-    constructor(readonly side: Side, readonly cell: PIXI.Point, readonly hull: Hull, readonly firstGun: Gun,
+    constructor(readonly side: Side, private _cell: Cell, readonly hull: Hull, readonly firstGun: Gun,
                 readonly secondGun: Gun, private readonly projectileService: ProjectileService) {
         super();
         this.interactive = true;
@@ -35,6 +34,10 @@ export default class Unit extends game.Actor {
         }
         this.addChild(sprite);
         this.updatePosition();
+    }
+
+    get cell(): Cell {
+        return this._cell;
     }
 
     get firstGunCooldown(): number {
@@ -53,15 +56,14 @@ export default class Unit extends game.Actor {
         return this._isDestroyed;
     }
 
-    get path(): game.Direction[] {
+    get path(): Cell[] {
         return this._path;
     }
 
-    set path(value: game.Direction[]) {
+    set path(value: Cell[]) {
         this._path = value;
         if (value) {
             this._movementPoints -= value.length;
-            this.oldCell = this.cell.clone();
         }
     }
 
@@ -118,20 +120,11 @@ export default class Unit extends game.Actor {
     protected update() {
         if (this.path) {
             if (this.path.length > 0) {
-                const direction: game.Direction = this.path.pop();
-                if (direction == game.Direction.Left) {
-                    this.cell.x -= 1;
-                } else if (direction == game.Direction.Right) {
-                    this.cell.x += 1;
-                } else if (direction == game.Direction.Up) {
-                    this.cell.y -= 1;
-                } else if (direction == game.Direction.Down) {
-                    this.cell.y += 1;
-                }
+                this._cell = this.path.pop();
                 this.updatePosition();
             } else {
                 this.path = null;
-                this.emit(Unit.MOVE, this.oldCell, this.cell);
+                this.emit(Unit.MOVE);
             }
         }
     }

@@ -98,7 +98,7 @@ public final class BattleService implements Battle {
     public boolean moveCurrentUnit(String playerId, Cell cell) {
         if (isIdBelongsToCurrentPlayer(playerId) && cell.isInBorders(field.getSize())
                 && field.isCellInCurrentPaths(cell) && unitQueue.getCurrentUnit().move(cell)) {
-            actions.add(new Action(ActionType.MOVE));
+            actions.add(new Action(moves.size(), ActionType.MOVE));
             moves.add(field.moveUnit(cell));
             field.createPathsForUnit(unitQueue.getCurrentUnit());
             return true;

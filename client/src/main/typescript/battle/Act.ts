@@ -5,7 +5,7 @@ import Queue from "./Queue";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { Action, ActionType, Cell, getMove, getShot, Side } from "./request";
+import { Action, Cell, getMove, getShot, Side } from "./request";
 import * as game from "../game";
 
 export default class Act extends game.Act {
@@ -32,7 +32,7 @@ export default class Act extends game.Act {
         actionService.on(ActionService.MOVE, (action: Action) => {
            getMove(action.number, move => {
                this.field.removeMarks();
-               unitService.currentUnit.path = this.field.currentPath;
+               unitService.currentUnit.path = move;
                unitService.currentUnit.once(Unit.MOVE, () => this.field.findPathsForCurrentUnit());
            });
         });

@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.rest;
 
-import net.progruzovik.dissent.model.Gun;
-import net.progruzovik.dissent.model.Hull;
+import net.progruzovik.dissent.model.entity.Gun;
+import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.battle.Unit;
 import net.progruzovik.dissent.model.battle.action.Action;
