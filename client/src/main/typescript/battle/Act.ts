@@ -31,7 +31,7 @@ export default class Act extends game.Act {
 
         actionService.on(ActionService.MOVE, (action: Action) => {
            getMove(action.number, move => {
-               this.field.removeMarks();
+               this.field.removeMarksAndPath(true);
                unitService.currentUnit.path = move;
                unitService.currentUnit.once(Unit.MOVE, () => this.field.findPathsForCurrentUnit());
            });
