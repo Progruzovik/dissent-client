@@ -1,10 +1,11 @@
+import { Cell } from "../request";
 import * as game from "../../game";
 
 export default class Beam extends game.Actor {
 
     private remainingFrames = 12;
 
-    constructor(to: PIXI.Point, from: PIXI.Point) {
+    constructor(to: Cell, from: Cell) {
         super();
         const dx: number = to.x - from.x, dy: number = to.y - from.y;
         this.addChild(new game.Rectangle(0xFF0000, Math.sqrt(dx * dx + dy * dy), 2));

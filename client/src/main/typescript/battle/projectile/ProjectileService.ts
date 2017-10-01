@@ -1,7 +1,7 @@
 import Beam from "./Beam";
 import Shell from "./Shell";
 import Unit from "../unit/Unit";
-import { Gun } from "../request";
+import { Cell, Gun } from "../request";
 import * as game from "../../game";
 
 export default class ProjectileService extends PIXI.utils.EventEmitter {
@@ -9,7 +9,7 @@ export default class ProjectileService extends PIXI.utils.EventEmitter {
     static readonly BEAM = "beam";
     static readonly SHELL = "shell";
 
-    private static createProjectile(specification: Gun, to: PIXI.Point, from: PIXI.Point): game.Actor {
+    private static createProjectile(specification: Gun, to: Cell, from: Cell): game.Actor {
         switch (specification.projectileType) {
             case ProjectileService.BEAM:
                 return new Beam(to, from);
@@ -18,7 +18,7 @@ export default class ProjectileService extends PIXI.utils.EventEmitter {
         }
     }
 
-    shoot(gun: Gun, to: PIXI.Point, from: PIXI.Point, shotNumber: number = 1) {
+    shoot(gun: Gun, to: Cell, from: Cell, shotNumber: number = 1) {
         const projectile: game.Actor = ProjectileService.createProjectile(gun, to, from);
         this.emit(Unit.SHOT, projectile);
         if (shotNumber < gun.shotsCount) {

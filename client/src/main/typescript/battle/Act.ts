@@ -14,7 +14,7 @@ export default class Act extends game.Act {
     private readonly controls: Controls;
     private readonly field: Field;
 
-    constructor(width: number, height: number, actionsCount: number, fieldSize: PIXI.Point,
+    constructor(width: number, height: number, actionsCount: number, fieldSize: Cell,
                 currentPlayerSide: Side, asteroids: Cell[], units: Unit[], projectileService: ProjectileService) {
         super(width, height);
         const actionService = new ActionService(actionsCount);

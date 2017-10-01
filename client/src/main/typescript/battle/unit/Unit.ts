@@ -83,8 +83,8 @@ export default class Unit extends game.Actor {
         }
     }
 
-    get center(): PIXI.Point {
-        return new PIXI.Point(this.x + this.width / 2, this.y + this.height / 2);
+    get center(): Cell {
+        return new Cell(this.x + this.width / 2, this.y + this.height / 2);
     }
 
     makeCurrent() {
