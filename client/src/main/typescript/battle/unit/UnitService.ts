@@ -1,12 +1,12 @@
 import Unit from "./Unit";
 import { getCellsForCurrentUnitShot, postCurrentUnitShot } from "../request";
+import { MOVE, NEXT_TURN, SHOT } from "../util";
 import * as game from "../../game";
 
 export default class UnitService extends PIXI.utils.EventEmitter {
 
     static readonly SHOT_CELL = "shotCell";
     static readonly TARGET_CELL = "targetCell";
-    static readonly NEXT_TURN = "nextTurn";
 
     private readonly currentTargets = new Array<Unit>(0);
 
@@ -30,6 +30,8 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                     unit.alpha = 1;
                 }
             });
+
+            unit.on(MOVE, () => this.emit(MOVE));
             unit.on(Unit.PREPARED_TO_SHOT, () => {
                 getCellsForCurrentUnitShot(unit.preparedGunId, (shotCells, targetCells) => {
                     this.emit(Unit.PREPARED_TO_SHOT);
@@ -43,7 +45,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                     }
                 });
             });
-            unit.on(Unit.SHOT, () => this.emit(Unit.SHOT, unit));
+            unit.on(SHOT, () => this.emit(SHOT));
             unit.on(Unit.NOT_PREPARED_TO_SHOT, () => {
                 this.currentTargets.length = 0;
                 this.emit(Unit.NOT_PREPARED_TO_SHOT)
@@ -65,6 +67,6 @@ export default class UnitService extends PIXI.utils.EventEmitter {
         this.currentUnit.preparedGunId = -1;
         this.units.push(this.units.shift());
         this.currentUnit.makeCurrent();
-        this.emit(UnitService.NEXT_TURN, this.currentUnit, false);
+        this.emit(NEXT_TURN, false);
     }
 }

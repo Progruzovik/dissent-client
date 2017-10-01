@@ -37,5 +37,5 @@ public interface Battle {
 
     boolean shootWithCurrentUnit(String playerId, Cell cell);
 
-    boolean nextTurn(String playerId);
+    boolean endTurn(String playerId);
 }

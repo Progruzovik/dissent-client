@@ -62,7 +62,7 @@ public final class Field {
         return currentTargets.contains(cell);
     }
 
-    public List<Cell> findReachableCellsForUnit(Unit unit) {
+    public List<Cell> findReachableCells(Unit unit) {
         return findNeighborsInRadius(unit.getCell(), unit.getMovementPoints(), c -> !isCellInCurrentPaths(c));
     }
 

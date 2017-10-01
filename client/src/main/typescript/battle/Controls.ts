@@ -1,6 +1,7 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { postTurn } from "./request";
+import { postTurn, Side } from "./request";
+import { MOVE, NEXT_TURN, SHOT } from "./util";
 import * as game from "../game";
 
 export default class Controls extends PIXI.Container {
@@ -17,7 +18,7 @@ export default class Controls extends PIXI.Container {
     private readonly bgModule = new game.Rectangle();
     private readonly btnNextTurn = new game.Button("Конец хода");
 
-    constructor(private readonly unitService: UnitService) {
+    constructor(private readonly currentPlayerSide: Side, private readonly unitService: UnitService) {
         super();
         this.spriteHull.anchor.set(game.CENTER, game.CENTER);
         this.bgHull.addChild(this.spriteHull);
@@ -28,8 +29,9 @@ export default class Controls extends PIXI.Container {
         this.addChild(this.bgModule);
         this.addChild(this.btnNextTurn);
 
-        this.unitService.on(Unit.SHOT, (unit: Unit) => this.updateControls(unit));
-        this.unitService.on(UnitService.NEXT_TURN, (currentUnit: Unit) => this.updateControls(currentUnit));
+        this.unitService.on(MOVE, () => this.updateInterface());
+        this.unitService.on(SHOT, () => this.updateInterface());
+        this.unitService.on(NEXT_TURN, () => this.updateInterface());
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
             if (unitService.currentUnit.preparedGunId == unitService.currentUnit.firstGun.id) {
                 unitService.currentUnit.preparedGunId = -1;
@@ -79,32 +81,34 @@ export default class Controls extends PIXI.Container {
         this.btnNextTurn.x = this.bgModule.x + this.bgModule.width;
     }
 
-    private updateControls(unit: Unit) {
-        this.spriteHull.texture = unit.hull.texture;
-        if (unit.firstGun) {
-            this.btnFirstGun.text = unit.firstGun.name;
-            if (unit.firstGunCooldown > 0) {
-                this.btnFirstGun.text += " (" + unit.firstGunCooldown + ")";
+    private updateInterface() {
+        const currentUnit: Unit = this.unitService.currentUnit;
+        const isCurrentPlayerTurn: boolean = currentUnit.side == this.currentPlayerSide;
+        this.spriteHull.texture = currentUnit.hull.texture;
+        if (currentUnit.firstGun) {
+            this.btnFirstGun.text = currentUnit.firstGun.name;
+            if (currentUnit.firstGunCooldown > 0) {
+                this.btnFirstGun.text += " (" + currentUnit.firstGunCooldown + ")";
                 this.btnFirstGun.isEnabled = false;
             } else {
-                this.btnFirstGun.isEnabled = true;
+                this.btnFirstGun.isEnabled = isCurrentPlayerTurn;
             }
         } else {
             this.btnFirstGun.text = Controls.EMPTY_SLOT;
             this.btnFirstGun.isEnabled = false;
         }
-        if (unit.secondGun) {
-            this.btnSecondGun.text = unit.secondGun.name;
-            if (unit.secondGunCooldown > 0) {
-                this.btnSecondGun.text += " (" + unit.secondGunCooldown + ")";
+        if (currentUnit.secondGun) {
+            this.btnSecondGun.text = currentUnit.secondGun.name;
+            if (currentUnit.secondGunCooldown > 0) {
+                this.btnSecondGun.text += " (" + currentUnit.secondGunCooldown + ")";
                 this.btnSecondGun.isEnabled = false;
             } else {
-                this.btnSecondGun.isEnabled = true;
+                this.btnSecondGun.isEnabled = isCurrentPlayerTurn;
             }
         } else {
             this.btnSecondGun.text = Controls.EMPTY_SLOT;
             this.btnSecondGun.isEnabled = false;
         }
-        this.btnNextTurn.isEnabled = true;
+        this.btnNextTurn.isEnabled = isCurrentPlayerTurn;
     }
 }

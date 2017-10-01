@@ -2,6 +2,7 @@ import Hull from "./Hull";
 import Field from "../Field";
 import ProjectileService from "../projectile/ProjectileService";
 import { Cell, Gun, Side } from "../request";
+import { MOVE, SHOT } from "../util";
 import * as game from "../../game";
 
 export default class Unit extends game.Actor {
@@ -9,9 +10,7 @@ export default class Unit extends game.Actor {
     static readonly WIDTH = 64;
     static readonly HEIGHT = 32;
 
-    static readonly MOVE = "move";
     static readonly PREPARED_TO_SHOT = "preparedToShot";
-    static readonly SHOT = "shot";
     static readonly NOT_PREPARED_TO_SHOT = "notPreparedToShot";
     static readonly DESTROY = "destroy";
 
@@ -105,7 +104,7 @@ export default class Unit extends game.Actor {
             this._secondGunCooldown = this.secondGun.cooldown;
             this.projectileService.shoot(this.secondGun, target.center, this.center);
         }
-        this.emit(Unit.SHOT);
+        this.emit(SHOT);
         this.preparedGunId = -1;
 
         this.projectileService.once(game.Event.DONE, () => target.destroyUnit());
@@ -124,7 +123,7 @@ export default class Unit extends game.Actor {
                 this.updatePosition();
             } else {
                 this.path = null;
-                this.emit(Unit.MOVE);
+                this.emit(MOVE);
             }
         }
     }

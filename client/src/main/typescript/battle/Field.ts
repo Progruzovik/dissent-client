@@ -1,9 +1,10 @@
 import Mark from "./Mark";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
-import { Cell, getCurrentReachableCells, getCurrentPaths, postCurrentUnitCell } from "./request";
-import * as game from "../game";
 import UnitService from "./unit/UnitService";
+import { Cell, getCurrentReachableCells, getCurrentPaths, postCurrentUnitCell } from "./request";
+import { MOVE, NEXT_TURN, SHOT } from "./util";
+import * as game from "../game";
 
 export default class Field extends PIXI.Container {
 
@@ -49,14 +50,15 @@ export default class Field extends PIXI.Container {
             this.addChild(unit);
         }
 
+        this.unitService.on(MOVE, () => this.findPathsForCurrentUnit());
         this.unitService.on(Unit.PREPARED_TO_SHOT, () => this.removeMarksAndPath(false));
         this.unitService.on(UnitService.SHOT_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xFFFFFF, cell)));
         this.unitService.on(UnitService.TARGET_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xFF0000, cell)));
         this.unitService.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
-        this.unitService.on(UnitService.NEXT_TURN, () => this.findPathsForCurrentUnit());
-        this.projectileService.on(Unit.SHOT, (projectile: game.Actor) => this.addChild(projectile));
+        this.unitService.on(NEXT_TURN, () => this.findPathsForCurrentUnit());
+        this.projectileService.on(SHOT, (projectile: game.Actor) => this.addChild(projectile));
     }
 
     removeMarksAndPath(withCurrentMark: boolean) {
@@ -67,7 +69,7 @@ export default class Field extends PIXI.Container {
         }
     }
 
-    findPathsForCurrentUnit() {
+    private findPathsForCurrentUnit() {
         getCurrentPaths(paths => {
             this.paths = paths;
             this.createCommonMarksForUnit(this.unitService.currentUnit);

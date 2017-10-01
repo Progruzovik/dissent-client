@@ -1,6 +1,7 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import { Side } from "./request";
+import { NEXT_TURN } from "./util";
 import * as game from "../game";
 
 export default class Queue extends game.Rectangle {
@@ -20,7 +21,7 @@ export default class Queue extends game.Rectangle {
             });
         });
 
-        unitService.on(UnitService.NEXT_TURN, (_, isFirst: boolean) => {
+        unitService.on(NEXT_TURN, (isFirst: boolean) => {
             if (!isFirst) {
                 this.setChildIndex(this.getChildAt(0), this.children.length - 1);
                 this.updateChildrenPositions();

@@ -91,7 +91,7 @@ public final class BattleService implements Battle {
 
     @Override
     public List<Cell> findReachableCellsForCurrentUnit() {
-        return field.findReachableCellsForUnit(unitQueue.getCurrentUnit());
+        return field.findReachableCells(unitQueue.getCurrentUnit());
     }
 
     @Override
@@ -135,14 +135,11 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public boolean nextTurn(String playerId) {
+    public boolean endTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
             actions.add(new Action(ActionType.NEXT_TURN));
             unitQueue.nextTurn();
             onNextTurn();
-            if (getCurrentPlayer() instanceof AiPlayer) {
-                nextTurn(getCurrentPlayer().getId());
-            }
             return true;
         }
         return false;
@@ -169,5 +166,8 @@ public final class BattleService implements Battle {
     private void onNextTurn() {
         unitQueue.getCurrentUnit().makeCurrent();
         field.createPathsForUnit(unitQueue.getCurrentUnit());
+        if (getCurrentPlayer() instanceof AiPlayer) {
+            ((AiPlayer) getCurrentPlayer()).act();
+        }
     }
 }

@@ -117,7 +117,7 @@ public final class BattleRest {
 
     @PostMapping("/turn")
     public ResponseEntity postTurn() {
-        return player.getBattle().nextTurn(player.getId()) ? new ResponseEntity(HttpStatus.OK)
+        return player.getBattle().endTurn(player.getId()) ? new ResponseEntity(HttpStatus.OK)
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }

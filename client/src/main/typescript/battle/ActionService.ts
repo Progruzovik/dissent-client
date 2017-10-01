@@ -1,37 +1,47 @@
-import { ActionType, getActionsCount, getActions } from "./request";
+import { Action, getActionsCount, getActions } from "./request";
 import * as PIXI from "pixi.js";
 
 export default class ActionService extends PIXI.utils.EventEmitter {
 
-    static readonly MOVE: string = ActionType.Move.toString();
-    static readonly SHOT: string = ActionType.Shot.toString();
-    static readonly NEXT_TURN: string = ActionType.NextTurn.toString();
-
+    private isRunning = true;
     private isProcessingRequests = false;
     private framesCount = 0;
 
-    constructor(private actionsCount: number) {
+    private remainingActions = new Array<Action>(0);
+
+    constructor(private receivedActionsCount: number) {
         super();
 
         PIXI.ticker.shared.add(() => {
-            this.framesCount++;
-            if (!this.isProcessingRequests && this.framesCount > 10) {
-                this.isProcessingRequests = true;
-                this.framesCount = 0;
-                getActionsCount(actionsCount => {
-                    if (this.actionsCount == actionsCount) {
-                        this.isProcessingRequests = false;
-                    } else {
-                        getActions(this.actionsCount, actions => {
-                            this.isProcessingRequests = false;
-                            this.actionsCount = actionsCount;
-                            for (const action of actions) {
-                                this.emit(action.type.toString(), action);
+            if (this.isRunning) {
+                this.framesCount++;
+                if (!this.isProcessingRequests) {
+                    if (this.framesCount > 10) {
+                        this.isProcessingRequests = true;
+                        this.framesCount = 0;
+                        getActionsCount(actionsCount => {
+                            if (this.receivedActionsCount == actionsCount) {
+                                this.isProcessingRequests = false;
+                            } else {
+                                getActions(this.receivedActionsCount, actions => {
+                                    this.isProcessingRequests = false;
+                                    this.receivedActionsCount = actionsCount;
+                                    this.remainingActions = this.remainingActions.concat(actions);
+                                });
                             }
                         });
                     }
-                });
+                }
+                if (this.remainingActions.length > 0) {
+                    this.isRunning = false;
+                    const action: Action = this.remainingActions.shift();
+                    this.emit(action.type.toString(), action);
+                }
             }
         }, this);
+    }
+
+    run() {
+        this.isRunning = true;
     }
 }

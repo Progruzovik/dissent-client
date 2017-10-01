@@ -1,3 +1,5 @@
-export const enum CellStatus {
-    Empty, Unit, Obstacle
-}
+import { ActionType } from "./request";
+
+export const MOVE: string = ActionType.Move.toString();
+export const SHOT: string = ActionType.Shot.toString();
+export const NEXT_TURN: string = ActionType.NextTurn.toString();

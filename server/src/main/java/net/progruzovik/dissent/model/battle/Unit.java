@@ -108,11 +108,11 @@ public final class Unit {
             preparedGun = null;
             return true;
         }
-        if (gunId == firstGun.getId() && firstGunCooldown == 0) {
+        if (firstGun != null && gunId == firstGun.getId() && firstGunCooldown == 0) {
             preparedGun = firstGun;
             return true;
         }
-        if (gunId == secondGun.getId() && secondGunCooldown == 0) {
+        if (secondGun != null && gunId == secondGun.getId() && secondGunCooldown == 0) {
             preparedGun = secondGun;
             return true;
         }
