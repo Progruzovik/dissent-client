@@ -50,6 +50,7 @@ export default class ActionService extends PIXI.utils.EventEmitter {
     private processNextAction() {
         this.isRunning = false;
         const action: Action = this.remainingActions.shift();
+        this.field.isTurnActual = this.remainingActions.length == 0;
         if (action.type == ActionType.Move) {
             this.field.removeMarksAndPath(true);
             this.controls.lockInterface();

@@ -9,6 +9,7 @@ export default class Field extends PIXI.Container {
 
     static readonly LINE_WIDTH = 1.5;
 
+    private _isTurnActual = true;
     private paths: Cell[][];
 
     private readonly currentMark = new Mark(0x00FF00);
@@ -60,6 +61,10 @@ export default class Field extends PIXI.Container {
         this.projectileService.on(SHOT, (projectile: game.Actor) => this.addChild(projectile));
     }
 
+    set isTurnActual(value: boolean) {
+        this._isTurnActual = value;
+    }
+
     removeMarksAndPath(withCurrentMark: boolean) {
         this.pathLayer.removeChildren();
         this.markLayer.removeChildren();
@@ -69,29 +74,31 @@ export default class Field extends PIXI.Container {
     }
 
     private findPathsForCurrentUnit() {
-        getCurrentPaths(paths => {
-            this.paths = paths;
-            getCurrentReachableCells(reachableCells => {
-                this.currentMark.cell = this.unitService.currentUnit.cell;
-                this.pathMarks.length = 0;
-                for (const cell of reachableCells) {
-                    const pathMark = new Mark(0xFFFF00, cell);
-                    this.pathMarks.push(pathMark);
+        if (this._isTurnActual) {
+            getCurrentPaths(paths => {
+                this.paths = paths;
+                getCurrentReachableCells(reachableCells => {
+                    this.currentMark.cell = this.unitService.currentUnit.cell;
+                    this.pathMarks.length = 0;
+                    for (const cell of reachableCells) {
+                        const pathMark = new Mark(0xFFFF00, cell);
+                        this.pathMarks.push(pathMark);
 
-                    pathMark.on(game.Event.MOUSE_OVER, () => {
-                        this.preparePath(cell, this.unitService.currentUnit.cell);
-                        const pathEnd = new game.Rectangle(0x00FF00, 15, 15);
-                        pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
-                        pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
-                        pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
-                        this.pathLayer.addChild(pathEnd);
-                    });
-                    pathMark.on(game.Event.CLICK, () => postCurrentUnitCell(cell));
-                    pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
-                }
-                this.addCurrentPathMarks();
+                        pathMark.on(game.Event.MOUSE_OVER, () => {
+                            this.preparePath(cell, this.unitService.currentUnit.cell);
+                            const pathEnd = new game.Rectangle(0x00FF00, 15, 15);
+                            pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
+                            pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
+                            pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
+                            this.pathLayer.addChild(pathEnd);
+                        });
+                        pathMark.on(game.Event.CLICK, () => postCurrentUnitCell(cell));
+                        pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
+                    }
+                    this.addCurrentPathMarks();
+                });
             });
-        });
+        }
     }
 
     private preparePath(markCell: Cell, unitCell: Cell) {
