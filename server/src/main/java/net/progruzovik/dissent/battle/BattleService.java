@@ -16,6 +16,8 @@ public final class BattleService implements Battle {
     private static final int UNIT_INDENT = 3;
     private static final int BORDER_INDENT = 4;
 
+    private boolean isRunning = true;
+
     private final Player leftPlayer;
     private final Player rightPlayer;
 
@@ -127,6 +129,10 @@ public final class BattleService implements Battle {
                 if (target.isDestroyed()) {
                     unitQueue.getQueue().remove(target);
                     field.destroyUnitOnCell(cell);
+                    if (!unitQueue.hasUnitsOnBothSides()) {
+                        isRunning = false;
+                        actions.add(new Action(ActionType.FINISH));
+                    }
                 }
                 return true;
             }
@@ -151,6 +157,7 @@ public final class BattleService implements Battle {
     }
 
     private Player getCurrentPlayer() {
+        if (!isRunning) return null;
         switch (unitQueue.getCurrentUnit().getSide()) {
             case LEFT: return leftPlayer;
             case RIGHT: return rightPlayer;

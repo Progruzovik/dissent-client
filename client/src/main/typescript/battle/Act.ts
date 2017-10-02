@@ -6,7 +6,7 @@ import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import { Action, Cell, getMove, getShot, Side } from "./request";
-import { MOVE, NEXT_TURN, SHOT } from "./util";
+import { FINISH, MOVE, NEXT_TURN, SHOT } from "./util";
 import * as game from "../game";
 
 export default class Act extends game.Act {
@@ -51,7 +51,7 @@ export default class Act extends game.Act {
             unitService.nextTurn();
             actionService.run();
         });
-        unitService.once(game.Event.DONE, () => this.emit(game.Event.DONE));
+        actionService.on(FINISH, () => this.emit(game.Event.DONE));
     }
 
     protected resizeUi() {

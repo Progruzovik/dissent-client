@@ -4,10 +4,7 @@ import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.util.Cell;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 public final class UnitQueue {
 
@@ -15,6 +12,10 @@ public final class UnitQueue {
 
     private final Set<Hull> uniqueHulls = new HashSet<>();
     private final Set<Gun> uniqueGuns = new HashSet<>();
+
+    public boolean hasUnitsOnBothSides() {
+        return queue.stream().anyMatch(u -> u.getSide() != getCurrentUnit().getSide());
+    }
 
     public Unit getCurrentUnit() {
         return queue.element();

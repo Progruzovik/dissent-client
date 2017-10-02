@@ -63,7 +63,7 @@ export function postTurn() {
 }
 
 export const enum ActionType {
-    Move, Shot, NextTurn
+    Move, Shot, NextTurn, Finish
 }
 
 export const enum Side {
