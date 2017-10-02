@@ -35,7 +35,7 @@ export default class Act extends game.Act {
             this.controls.lockInterface();
             getMove(action.number, move => {
                 unitService.currentUnit.path = move;
-                actionService.run();
+                unitService.once(MOVE, () => actionService.run());
             });
         });
         actionService.on(SHOT, (action: Action) => {
@@ -44,7 +44,7 @@ export default class Act extends game.Act {
             getShot(action.number, shot => {
                 unitService.currentUnit.shoot(unitService.units.filter(unit =>
                     unit.cell.x == shot.cell.x && unit.cell.y == shot.cell.y)[0], shot.gunId);
-                actionService.run();
+                unitService.once(SHOT, () => actionService.run());
             });
         });
         actionService.on(NEXT_TURN, () => {
