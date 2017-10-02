@@ -6,14 +6,14 @@ export default class Shell extends game.Actor {
 
     private isNextShotReady = false;
     private frameNumber = 0;
-    private multiplier: Cell;
+    private readonly multiplier: Cell;
 
-    constructor(private readonly delay: number, private readonly to: Cell, from: Cell) {
+    constructor(private readonly delay: number, private readonly target: Cell, from: Cell) {
         super();
-        this.multiplier = new Cell(this.to.x > from.x ? 1 : -1, this.to.y > from.y ? 1 : -1);
+        this.multiplier = new Cell(this.target.x < from.x ? -1 : 1, this.target.y < from.y ? -1 : 1);
 
         this.addChild(new game.Rectangle(0xFFFF00, 20, 4));
-        this.rotation = Math.atan2(this.to.y - from.y, this.to.x - from.x);
+        this.rotation = Math.atan2(this.target.y - from.y, this.target.x - from.x);
         this.pivot.x = this.width / 2;
         this.pivot.y = this.height / 2;
         this.position.set(from.x, from.y);
@@ -28,7 +28,7 @@ export default class Shell extends game.Actor {
         }
         this.x += Math.sin(this.rotation + Math.PI / 2) * 35;
         this.y -= Math.cos(this.rotation + Math.PI / 2) * 35;
-        if (this.x > this.to.x * this.multiplier.x && this.y > this.to.y * this.multiplier.y) {
+        if ((this.target.x - this.x) * this.multiplier.x <= 0 && (this.target.y - this.y) * this.multiplier.y <= 0) {
             if (!this.isNextShotReady) {
                 this.emitNextShot();
             }
