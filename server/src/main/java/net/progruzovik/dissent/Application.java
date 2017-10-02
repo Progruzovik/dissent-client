@@ -18,7 +18,7 @@ public final class Application {
         contextHandler.setResourceBase(new ClassPathResource("/static").getURI().toString());
         contextHandler.addServlet(new ServletHolder(new DispatcherServlet(context)), "/*");
 
-        final Server server = new Server(5000);
+        final Server server = new Server(8080);
         server.setHandler(contextHandler);
         server.start();
         server.join();
