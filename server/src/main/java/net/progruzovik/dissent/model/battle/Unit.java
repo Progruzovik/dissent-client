@@ -18,7 +18,6 @@ public final class Unit {
 
     private final Hull hull;
 
-    private Gun preparedGun;
     private final Gun firstGun;
     private final Gun secondGun;
 
@@ -55,11 +54,6 @@ public final class Unit {
         return hull;
     }
 
-    @JsonIgnore
-    public Gun getPreparedGun() {
-        return preparedGun;
-    }
-
     public int getFirstGunId() {
         return firstGun == null ? 0 : firstGun.getId();
     }
@@ -76,6 +70,16 @@ public final class Unit {
     @JsonIgnore
     public Gun getSecondGun() {
         return secondGun;
+    }
+
+    public Gun getGun(int gunId) {
+        if (firstGun != null && gunId == firstGun.getId()) {
+            return firstGun;
+        }
+        if (secondGun != null && gunId == secondGun.getId()) {
+            return secondGun;
+        }
+        return null;
     }
 
     public void init(Side side, Cell cell) {
@@ -103,29 +107,23 @@ public final class Unit {
         return false;
     }
 
-    public boolean prepareGun(int gunId) {
-        if (gunId == -1) {
-            preparedGun = null;
-            return true;
-        }
-        if (firstGun != null && gunId == firstGun.getId() && firstGunCooldown == 0) {
-            preparedGun = firstGun;
-            return true;
-        }
-        if (secondGun != null && gunId == secondGun.getId() && secondGunCooldown == 0) {
-            preparedGun = secondGun;
+    public boolean shoot(int gunId, Unit target) {
+        if (makeGunCooldown(gunId)) {
+            target.isDestroyed = true;
             return true;
         }
         return false;
     }
 
-    public void shoot(Unit target) {
-        if (preparedGun == firstGun) {
+    private boolean makeGunCooldown(int gunId) {
+        if (firstGun != null && gunId == firstGun.getId() && firstGunCooldown == 0) {
             firstGunCooldown = firstGun.getCooldown();
-        } else {
-            secondGunCooldown = secondGun.getCooldown();
+            return true;
         }
-        preparedGun = null;
-        target.isDestroyed = true;
+        if (secondGun != null && gunId == secondGun.getId() && secondGunCooldown == 0) {
+            secondGunCooldown = secondGun.getCooldown();
+            return true;
+        }
+        return false;
     }
 }

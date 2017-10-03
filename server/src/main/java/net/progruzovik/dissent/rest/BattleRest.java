@@ -100,16 +100,13 @@ public final class BattleRest {
     }
 
     @GetMapping("/unit/shot")
-    public ResponseEntity<Map<String, List<Cell>>> getCellsForCurrentUnitShot(@RequestParam int gunId) {
-        if (player.getBattle().prepareCurrentUnitGun(player.getId(), gunId)) {
-            return new ResponseEntity<>(player.getBattle().findCellsForCurrentUnitShot(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public Map<String, List<Cell>> getCellsForCurrentUnitShot(@RequestParam int gunId) {
+        return player.getBattle().findCellsForCurrentUnitShot(gunId);
     }
 
     @PostMapping("/unit/shot")
-    public ResponseEntity postCurrentUnitShot(@RequestBody Cell cell) {
-        if (player.getBattle().shootWithCurrentUnit(player.getId(), cell)) {
+    public ResponseEntity postCurrentUnitShot(@RequestParam int gunId, @RequestBody Cell cell) {
+        if (player.getBattle().shootWithCurrentUnit(player.getId(), gunId, cell)) {
             return new ResponseEntity(HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);

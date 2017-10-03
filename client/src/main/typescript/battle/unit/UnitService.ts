@@ -22,7 +22,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
             });
             unit.on(game.Event.CLICK, () => {
                 if (this.currentTargets.indexOf(unit) != -1) {
-                    postCurrentUnitShot(unit.cell);
+                    postCurrentUnitShot(this.currentUnit.preparedGunId, unit.cell);
                 }
             });
             unit.on(game.Event.MOUSE_OUT, () => {

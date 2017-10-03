@@ -104,9 +104,9 @@ export default class Unit extends game.Actor {
             this._secondGunCooldown = this.secondGun.cooldown;
             this.projectileService.shoot(this.secondGun, target.center, this.center);
         }
-        this.preparedGunId = -1;
 
         this.projectileService.once(game.Event.DONE, () => {
+            this.preparedGunId = -1;
             target.destroyUnit();
             this.emit(SHOT);
         });

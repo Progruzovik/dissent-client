@@ -31,11 +31,9 @@ public interface Battle {
 
     boolean moveCurrentUnit(String playerId, Cell cell);
 
-    boolean prepareCurrentUnitGun(String playerId, int gunId);
+    Map<String, List<Cell>> findCellsForCurrentUnitShot(int gunId);
 
-    Map<String, List<Cell>> findCellsForCurrentUnitShot();
-
-    boolean shootWithCurrentUnit(String playerId, Cell cell);
+    boolean shootWithCurrentUnit(String playerId, int gunId, Cell cell);
 
     boolean endTurn(String playerId);
 }

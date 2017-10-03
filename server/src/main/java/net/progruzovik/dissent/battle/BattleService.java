@@ -109,23 +109,17 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public boolean prepareCurrentUnitGun(String playerId, int gunId) {
-        return isIdBelongsToCurrentPlayer(playerId) && unitQueue.getCurrentUnit().prepareGun(gunId);
+    public Map<String, List<Cell>> findCellsForCurrentUnitShot(int gunId) {
+        return field.findShotAndTargetCells(gunId, unitQueue.getCurrentUnit());
     }
 
     @Override
-    public Map<String, List<Cell>> findCellsForCurrentUnitShot() {
-        return field.findShotAndTargetCells(unitQueue.getCurrentUnit());
-    }
-
-    @Override
-    public boolean shootWithCurrentUnit(String playerId, Cell cell) {
+    public boolean shootWithCurrentUnit(String playerId, int gunId, Cell cell) {
         if (isIdBelongsToCurrentPlayer(playerId) && field.isCellInCurrentTargets(cell)) {
             final Unit target = unitQueue.getUnitOnCell(cell);
-            if (target != null) {
+            if (target != null && unitQueue.getCurrentUnit().shoot(gunId, target)) {
                 actions.add(new Action(shots.size(), ActionType.SHOT));
-                shots.add(new Shot(unitQueue.getCurrentUnit().getPreparedGun().getId(), cell));
-                unitQueue.getCurrentUnit().shoot(target);
+                shots.add(new Shot(gunId, cell));
                 if (target.isDestroyed()) {
                     unitQueue.getQueue().remove(target);
                     field.destroyUnitOnCell(cell);

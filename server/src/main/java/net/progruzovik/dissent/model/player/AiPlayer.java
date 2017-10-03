@@ -30,11 +30,11 @@ public final class AiPlayer extends AbstractPlayer {
 
     public void act() {
         final Unit currentUnit = getBattle().getUnitQueue().getCurrentUnit();
-        if (currentUnit.prepareGun(currentUnit.getFirstGunId())) {
+        if (currentUnit.getFirstGun() != null) {
             final List<Cell> targetCells =  getBattle().getField()
-                    .findShotAndTargetCells(currentUnit).get("targetCells");
+                    .findShotAndTargetCells(currentUnit.getFirstGunId(), currentUnit).get("targetCells");
             if (!targetCells.isEmpty()) {
-                getBattle().shootWithCurrentUnit(getId(), targetCells.get(0));
+                getBattle().shootWithCurrentUnit(getId(), currentUnit.getFirstGunId(), targetCells.get(0));
             }
         }
         getBattle().endTurn(getId());

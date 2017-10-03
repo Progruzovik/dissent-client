@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.model.battle;
 
 import net.progruzovik.dissent.model.battle.action.Move;
+import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.util.Cell;
 import net.progruzovik.dissent.model.util.Point;
 
@@ -66,29 +67,33 @@ public final class Field {
         return findNeighborsInRadius(unit.getCell(), unit.getMovementPoints(), c -> !isCellInCurrentPaths(c));
     }
 
-    public Map<String, List<Cell>> findShotAndTargetCells(Unit unit) {
+    public Map<String, List<Cell>> findShotAndTargetCells(int gunId, Unit unit) {
+        currentTargets.clear();
+
         final Map<String, List<Cell>> result = new HashMap<>(2);
-        final List<Cell> availableCells = findNeighborsInRadius(unit.getCell(),
-                unit.getPreparedGun().getRadius(), c -> {
-            final List<Cell> cellsInBetween = findCellsInBetween(unit.getCell(), c);
-            for (int i = 1; i < cellsInBetween.size() - 1; i++) {
-                if (map.get(cellsInBetween.get(i).getX()).get(cellsInBetween.get(i).getY()) != CellStatus.EMPTY) {
-                    return true;
+        final List<Cell> shotCells = new ArrayList<>();
+        final Gun gun = unit.getGun(gunId);
+        if (gun != null) {
+            final List<Cell> availableCells = findNeighborsInRadius(unit.getCell(), gun.getRadius(), c -> {
+                final List<Cell> cellsInBetween = findCellsInBetween(unit.getCell(), c);
+                for (int i = 1; i < cellsInBetween.size() - 1; i++) {
+                    if (map.get(cellsInBetween.get(i).getX()).get(cellsInBetween.get(i).getY()) != CellStatus.EMPTY) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            final CellStatus targetStatus = unit.getSide() == Side.LEFT ? CellStatus.UNIT_RIGHT : CellStatus.UNIT_LEFT;
+            for (final Cell cell : availableCells) {
+                if (map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY) {
+                    shotCells.add(cell);
+                }  else if (map.get(cell.getX()).get(cell.getY()) == targetStatus) {
+                    currentTargets.add(cell);
                 }
             }
-            return false;
-        });
-
-        final List<Cell> shotCells = new ArrayList<>();
-        currentTargets.clear();
-        final CellStatus targetStatus = unit.getSide() == Side.LEFT ? CellStatus.UNIT_RIGHT : CellStatus.UNIT_LEFT;
-        for (final Cell cell : availableCells) {
-            if (map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY) {
-                shotCells.add(cell);
-            }  else if (map.get(cell.getX()).get(cell.getY()) == targetStatus) {
-                currentTargets.add(cell);
-            }
         }
+
         result.put("shotCells", shotCells);
         result.put("targetCells", currentTargets);
         return result;

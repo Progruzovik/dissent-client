@@ -54,8 +54,8 @@ export function getCellsForCurrentUnitShot(gunId: number, callback: (shotCells: 
         .then(response => callback(response.data.shotCells, response.data.targetCells));
 }
 
-export function postCurrentUnitShot(cell: Cell) {
-    axios.post(BATTLE_PREFIX + "/unit/shot", cell);
+export function postCurrentUnitShot(gunId: number, cell: Cell) {
+    axios.post(BATTLE_PREFIX + "/unit/shot", cell, { params: { gunId: gunId } });
 }
 
 export function postTurn() {
