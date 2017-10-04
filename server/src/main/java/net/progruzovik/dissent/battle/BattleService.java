@@ -51,11 +51,6 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public int getActionsCount() {
-        return actions.size();
-    }
-
-    @Override
     public UnitQueue getUnitQueue() {
         return unitQueue;
     }
@@ -79,6 +74,11 @@ public final class BattleService implements Battle {
     @Override
     public List<Action> getActions(int fromIndex) {
         return actions.subList(fromIndex, actions.size());
+    }
+
+    @Override
+    public int getActionsCount() {
+        return actions.size();
     }
 
     @Override

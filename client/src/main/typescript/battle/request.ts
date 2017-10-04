@@ -25,10 +25,6 @@ export function getActions(fromIndex: number, callback: (actions: Action[]) => v
         .then(response => callback(response.data));
 }
 
-export function getActionsCount(callback: (actionsCount: number) => void) {
-    axios.get(BATTLE_PREFIX + "/actions/count").then(response => callback(response.data));
-}
-
 export function getMove(number: number, callback: (move: Cell[]) => void) {
     axios.get(BATTLE_PREFIX + "/move/" + number).then(response => callback(response.data));
 }

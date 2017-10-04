@@ -13,8 +13,6 @@ import java.util.Map;
 
 public interface Battle {
 
-    int getActionsCount();
-
     UnitQueue getUnitQueue();
 
     Field getField();
@@ -22,6 +20,8 @@ public interface Battle {
     Side getPlayerSide(String playerId);
 
     List<Action> getActions(int fromIndex);
+
+    int getActionsCount();
 
     Move getMove(int number);
 

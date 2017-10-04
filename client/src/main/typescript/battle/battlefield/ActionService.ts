@@ -1,14 +1,14 @@
 import Controls from "./Controls";
 import Field from "./Field";
 import UnitService from "./unit/UnitService";
-import { Action, getActionsCount, getActions, ActionType, getMove, getShot } from "../request";
+import { Action, getActions, ActionType, getMove, getShot } from "../request";
 import { FINISH, MOVE, NEXT_TURN, SHOT } from "../util";
 import * as PIXI from "pixi.js";
 
 export default class ActionService extends PIXI.utils.EventEmitter {
 
     private isRunning = true;
-    private isPerformingRequests = false;
+    private isPerformingRequest = false;
     private framesCount = 0;
 
     private remainingActions = new Array<Action>(0);
@@ -19,19 +19,13 @@ export default class ActionService extends PIXI.utils.EventEmitter {
 
         PIXI.ticker.shared.add(() => {
             if (this.isRunning) {
-                if (!this.isPerformingRequests) {
+                if (!this.isPerformingRequest) {
                     if (this.framesCount > 20) {
-                        this.isPerformingRequests = true;
-                        getActionsCount(actionsCount => {
-                            if (this.receivedActionsCount == actionsCount) {
-                                this.isPerformingRequests = false;
-                            } else {
-                                getActions(this.receivedActionsCount, actions => {
-                                    this.isPerformingRequests = false;
-                                    this.receivedActionsCount = actionsCount;
-                                    this.remainingActions = this.remainingActions.concat(actions);
-                                });
-                            }
+                        this.isPerformingRequest = true;
+                        getActions(this.receivedActionsCount, actions => {
+                            this.isPerformingRequest = false;
+                            this.receivedActionsCount += actions.length;
+                            this.remainingActions = this.remainingActions.concat(actions);
                         });
                         this.framesCount = 0;
                     }
