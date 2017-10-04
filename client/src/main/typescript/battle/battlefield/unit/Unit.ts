@@ -1,9 +1,8 @@
-import Hull from "./Hull";
 import Field from "../Field";
 import ProjectileService from "../projectile/ProjectileService";
-import { Cell, Gun, Side } from "../request";
-import { MOVE, SHOT } from "../util";
-import * as game from "../../game";
+import { Cell, Gun, Hull, Side } from "../../request";
+import { MOVE, SHOT } from "../../util";
+import * as game from "../../../game";
 
 export default class Unit extends game.Actor {
 
@@ -26,7 +25,7 @@ export default class Unit extends game.Actor {
                 readonly secondGun: Gun, private readonly projectileService: ProjectileService) {
         super();
         this.interactive = true;
-        const sprite = new PIXI.Sprite(hull.texture);
+        const sprite = new PIXI.Sprite(PIXI.loader.resources[hull.name].texture);
         if (side == Side.Right) {
             sprite.scale.x = -1;
             sprite.anchor.x = 1;

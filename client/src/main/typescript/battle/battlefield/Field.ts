@@ -1,9 +1,9 @@
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { Cell, getCurrentReachableCells, getCurrentPaths, postCurrentUnitCell } from "./request";
-import { MOVE, NEXT_TURN, SHOT } from "./util";
-import * as game from "../game";
+import { Cell, getCurrentReachableCells, getCurrentPaths, postCurrentUnitCell } from "../request";
+import { MOVE, NEXT_TURN, SHOT } from "../util";
+import * as game from "../../game";
 
 export default class Field extends PIXI.Container {
 

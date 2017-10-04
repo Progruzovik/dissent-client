@@ -1,8 +1,8 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { Side } from "./request";
-import { NEXT_TURN } from "./util";
-import * as game from "../game";
+import { Side } from "../request";
+import { NEXT_TURN } from "../util";
+import * as game from "../../game";
 
 export default class Queue extends game.Rectangle {
 
@@ -11,7 +11,7 @@ export default class Queue extends game.Rectangle {
         unitService.units.forEach((unit, i) => {
             const icon = new game.Rectangle(currentPlayerSide == unit.side ? 0x00FF00 : 0xFF0000,
                 Unit.WIDTH, Unit.HEIGHT);
-            icon.addChild(new PIXI.Sprite(unit.hull.texture));
+            icon.addChild(new PIXI.Sprite(PIXI.loader.resources[unit.hull.name].texture));
             icon.y = Unit.HEIGHT * i;
             this.addChild(icon);
 

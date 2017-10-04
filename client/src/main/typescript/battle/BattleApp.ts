@@ -1,26 +1,23 @@
-import Act from "./Act";
-import ProjectileService from "./projectile/ProjectileService";
-import Hull from "./unit/Hull";
-import Unit from "./unit/Unit";
+import BattlefieldAct from "./battlefield/Act";
+import ProjectileService from "./battlefield/projectile/ProjectileService";
+import Unit from "./battlefield/unit/Unit";
 import { getField, postScenario } from "./request";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
 export default class BattleApp extends PIXI.Application {
 
-    private act: Act;
+    private act: game.Act;
 
     constructor() {
         super({ width: innerWidth, height: innerHeight, resolution: devicePixelRatio || 1, autoResize: true });
         postScenario(() => {
-            getField((actionsCount, ships, guns, size, side, asteroids, units) => {
-                const shipsArray = new Array<Hull>(0);
-                for (const shipData of ships) {
+            getField((actionsCount, hulls, guns, size, side, asteroids, units) => {
+                PIXI.loader.reset();
+                for (const shipData of hulls) {
                     PIXI.loader.add(shipData.name, "img/" + shipData.name + ".png",
-                        (resource: PIXI.loaders.Resource) => {
-                        resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-                        shipsArray[shipData.id] = new Hull(shipData.speed, resource.texture);
-                    });
+                        (resource: PIXI.loaders.Resource) =>
+                            resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST);
                 }
                 PIXI.loader.add("asteroid", "img/asteroid.png", (resource: PIXI.loaders.Resource) =>
                     resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST);
@@ -28,11 +25,12 @@ export default class BattleApp extends PIXI.Application {
                     const projectileService = new ProjectileService();
                     const unitsArray = new Array<Unit>(0);
                     for (const unit of units) {
-                        unitsArray.push(new Unit(unit.side, unit.cell, shipsArray[unit.hullId],
-                            guns.filter((gun) => gun.id == unit.firstGunId)[0],
-                            guns.filter((gun) => gun.id == unit.secondGunId)[0], projectileService));
+                        unitsArray.push(new Unit(unit.side, unit.cell,
+                            hulls.filter(hull => hull.id == unit.hullId)[0],
+                            guns.filter(gun => gun.id == unit.firstGunId)[0],
+                            guns.filter(gun => gun.id == unit.secondGunId)[0], projectileService));
                     }
-                    this.act = new Act(innerWidth, innerHeight, actionsCount,
+                    this.act = new BattlefieldAct(innerWidth, innerHeight, actionsCount,
                         size, side, asteroids, unitsArray, projectileService);
                     this.stage.addChild(this.act);
 

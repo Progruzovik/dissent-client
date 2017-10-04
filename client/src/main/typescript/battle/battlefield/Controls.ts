@@ -1,8 +1,8 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { postTurn, Side } from "./request";
-import { MOVE, NEXT_TURN, SHOT } from "./util";
-import * as game from "../game";
+import { postTurn, Side } from "../request";
+import { MOVE, NEXT_TURN, SHOT } from "../util";
+import * as game from "../../game";
 
 export default class Controls extends PIXI.Container {
 
@@ -84,7 +84,7 @@ export default class Controls extends PIXI.Container {
     private updateInterface() {
         const currentUnit: Unit = this.unitService.currentUnit;
         const isCurrentPlayerTurn: boolean = currentUnit.side == this.currentPlayerSide;
-        this.spriteHull.texture = currentUnit.hull.texture;
+        this.spriteHull.texture = PIXI.loader.resources[currentUnit.hull.name].texture;
         if (currentUnit.firstGun) {
             this.btnFirstGun.text = currentUnit.firstGun.name;
             if (currentUnit.firstGunCooldown > 0) {

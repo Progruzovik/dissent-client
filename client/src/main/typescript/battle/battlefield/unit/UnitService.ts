@@ -1,7 +1,7 @@
 import Unit from "./Unit";
-import { getCellsForCurrentUnitShot, postCurrentUnitShot } from "../request";
-import { MOVE, NEXT_TURN, SHOT } from "../util";
-import * as game from "../../game";
+import { getCellsForCurrentUnitShot, postCurrentUnitShot } from "../../request";
+import { MOVE, NEXT_TURN, SHOT } from "../../util";
+import * as game from "../../../game";
 
 export default class UnitService extends PIXI.utils.EventEmitter {
 

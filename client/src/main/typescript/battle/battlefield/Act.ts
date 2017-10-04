@@ -5,9 +5,9 @@ import Queue from "./Queue";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { Cell, Side } from "./request";
-import { FINISH, NEXT_TURN } from "./util";
-import * as game from "../game";
+import { Cell, Side } from "../request";
+import { FINISH, NEXT_TURN } from "../util";
+import * as game from "../../game";
 
 export default class Act extends game.Act {
 

@@ -83,7 +83,7 @@ export class Gun {
                 readonly projectileType: string, readonly shotsCount: number, readonly shotDelay: number) {}
 }
 
-class Hull {
+export class Hull {
     constructor(readonly id: number, readonly name: string, readonly speed: number) {}
 }
 

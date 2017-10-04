@@ -1,6 +1,6 @@
-import { Cell } from "../request";
-import { SHOT } from "../util";
-import * as game from "../../game";
+import { Cell } from "../../request";
+import { SHOT } from "../../util";
+import * as game from "../../../game";
 
 export default class Shell extends game.Actor {
 

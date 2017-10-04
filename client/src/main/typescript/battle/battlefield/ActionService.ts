@@ -1,8 +1,8 @@
 import Controls from "./Controls";
 import Field from "./Field";
 import UnitService from "./unit/UnitService";
-import { Action, getActionsCount, getActions, ActionType, getMove, getShot } from "./request";
-import { FINISH, MOVE, NEXT_TURN, SHOT } from "./util";
+import { Action, getActionsCount, getActions, ActionType, getMove, getShot } from "../request";
+import { FINISH, MOVE, NEXT_TURN, SHOT } from "../util";
 import * as PIXI from "pixi.js";
 
 export default class ActionService extends PIXI.utils.EventEmitter {
@@ -20,7 +20,7 @@ export default class ActionService extends PIXI.utils.EventEmitter {
         PIXI.ticker.shared.add(() => {
             if (this.isRunning) {
                 if (!this.isPerformingRequests) {
-                    if (this.framesCount > 10) {
+                    if (this.framesCount > 20) {
                         this.isPerformingRequests = true;
                         getActionsCount(actionsCount => {
                             if (this.receivedActionsCount == actionsCount) {

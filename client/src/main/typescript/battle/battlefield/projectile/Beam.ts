@@ -1,5 +1,5 @@
-import { Cell } from "../request";
-import * as game from "../../game";
+import { Cell } from "../../request";
+import * as game from "../../../game";
 
 export default class Beam extends game.Actor {
 
