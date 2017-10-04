@@ -19,7 +19,7 @@ public interface Battle {
 
     Side getPlayerSide(String playerId);
 
-    List<Action> getActions(int fromIndex);
+    Action getAction(int number);
 
     int getActionsCount();
 

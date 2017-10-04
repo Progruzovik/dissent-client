@@ -21,9 +21,9 @@ public final class BattleService implements Battle {
     private final Player leftPlayer;
     private final Player rightPlayer;
 
-    private final List<Action> actions = new ArrayList<>();
     private final List<Move> moves = new ArrayList<>();
     private final List<Shot> shots = new ArrayList<>();
+    private final List<Action> actions = new ArrayList<>();
 
     private final UnitQueue unitQueue = new UnitQueue();
     private final Field field;
@@ -72,8 +72,8 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public List<Action> getActions(int fromIndex) {
-        return actions.subList(fromIndex, actions.size());
+    public Action getAction(int number) {
+        return actions.get(number);
     }
 
     @Override
@@ -100,9 +100,9 @@ public final class BattleService implements Battle {
     public boolean moveCurrentUnit(String playerId, Cell cell) {
         if (isIdBelongsToCurrentPlayer(playerId) && cell.isInBorders(field.getSize())
                 && field.isCellInCurrentPaths(cell) && unitQueue.getCurrentUnit().move(cell)) {
-            actions.add(new Action(moves.size(), ActionType.MOVE));
             moves.add(field.moveUnit(cell));
             field.createPathsForUnit(unitQueue.getCurrentUnit());
+            addAction(new Action(moves.size() - 1, ActionType.MOVE));
             return true;
         }
         return false;
@@ -118,14 +118,14 @@ public final class BattleService implements Battle {
         if (isIdBelongsToCurrentPlayer(playerId) && field.isCellInCurrentTargets(cell)) {
             final Unit target = unitQueue.getUnitOnCell(cell);
             if (target != null && unitQueue.getCurrentUnit().shoot(gunId, target)) {
-                actions.add(new Action(shots.size(), ActionType.SHOT));
                 shots.add(new Shot(gunId, cell));
+                addAction(new Action(shots.size() - 1, ActionType.SHOT));
                 if (target.isDestroyed()) {
                     unitQueue.getQueue().remove(target);
                     field.destroyUnitOnCell(cell);
                     if (!unitQueue.hasUnitsOnBothSides()) {
                         isRunning = false;
-                        actions.add(new Action(ActionType.FINISH));
+                        addAction(new Action(ActionType.FINISH));
                     }
                 }
                 return true;
@@ -137,8 +137,8 @@ public final class BattleService implements Battle {
     @Override
     public boolean endTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
-            actions.add(new Action(ActionType.NEXT_TURN));
             unitQueue.nextTurn();
+            addAction(new Action(ActionType.NEXT_TURN));
             onNextTurn();
             return true;
         }
@@ -159,16 +159,22 @@ public final class BattleService implements Battle {
         }
     }
 
-    private void registerUnit(Unit unit) {
-        field.addUnit(unit);
-        unitQueue.addUnit(unit);
-    }
-
     private void onNextTurn() {
         unitQueue.getCurrentUnit().makeCurrent();
         field.createPathsForUnit(unitQueue.getCurrentUnit());
         if (getCurrentPlayer() instanceof AiPlayer) {
             ((AiPlayer) getCurrentPlayer()).act();
         }
+    }
+
+    private void registerUnit(Unit unit) {
+        field.addUnit(unit);
+        unitQueue.addUnit(unit);
+    }
+
+    private void addAction(Action action) {
+        leftPlayer.newAction(actions.size(), action);
+        rightPlayer.newAction(actions.size(), action);
+        actions.add(action);
     }
 }

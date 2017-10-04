@@ -1,5 +1,5 @@
 import Unit from "./Unit";
-import { getCellsForCurrentUnitShot, postCurrentUnitShot } from "../../request";
+import { getCellsForCurrentUnitShot, postCurrentUnitShot, Side } from "../../request";
 import { MOVE, NEXT_TURN, SHOT } from "../../util";
 import * as game from "../../../game";
 
@@ -10,7 +10,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
 
     private readonly currentTargets = new Array<Unit>(0);
 
-    constructor(readonly units: Unit[]) {
+    constructor(private readonly currentPlayerSide: Side, readonly units: Unit[]) {
         super();
         this.currentUnit.makeCurrent();
 
@@ -52,6 +52,10 @@ export default class UnitService extends PIXI.utils.EventEmitter {
             });
             unit.on(Unit.DESTROY, () => this.units.splice(this.units.indexOf(unit), 1));
         }
+    }
+
+    get isCurrentPlayerTurn(): boolean {
+        return this.currentPlayerSide == this.currentUnit.side;
     }
 
     get currentUnit(): Unit {

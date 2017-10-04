@@ -18,10 +18,10 @@ export default class Act extends game.Act {
     constructor(width: number, height: number, actionsCount: number, fieldSize: Cell,
                 currentPlayerSide: Side, asteroids: Cell[], units: Unit[], projectileService: ProjectileService) {
         super(width, height);
-        const unitService = new UnitService(units);
+        const unitService = new UnitService(currentPlayerSide, units);
         this.queue = new Queue(currentPlayerSide, unitService);
         this.field = new Field(fieldSize, unitService, projectileService, asteroids);
-        this.controls = new Controls(currentPlayerSide, unitService);
+        this.controls = new Controls(unitService);
         const actionService = new ActionService(actionsCount, this.field, this.controls, unitService);
 
         this.content = this.field;

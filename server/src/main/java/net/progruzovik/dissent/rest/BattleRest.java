@@ -1,15 +1,14 @@
 package net.progruzovik.dissent.rest;
 
-import net.progruzovik.dissent.model.entity.Gun;
-import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.battle.Unit;
-import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.battle.action.Move;
 import net.progruzovik.dissent.model.battle.action.Shot;
-import net.progruzovik.dissent.model.player.Player;
+import net.progruzovik.dissent.model.entity.Gun;
+import net.progruzovik.dissent.model.entity.Hull;
+import net.progruzovik.dissent.model.player.SessionPlayer;
 import net.progruzovik.dissent.model.util.Cell;
-import org.springframework.beans.factory.annotation.Qualifier;
+import net.progruzovik.dissent.rest.deferred.DeferredAction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +21,9 @@ import java.util.Map;
 @RequestMapping("/api/battle")
 public final class BattleRest {
 
-    private final Player player;
+    private final SessionPlayer player;
 
-    public BattleRest(@Qualifier("sessionPlayer") Player player) {
+    public BattleRest(SessionPlayer player) {
         this.player = player;
     }
 
@@ -58,9 +57,15 @@ public final class BattleRest {
         return player.getBattle().getPlayerSide(player.getId());
     }
 
-    @GetMapping("/actions")
-    public Collection<Action> getActions(@RequestParam(required = false) Integer fromIndex) {
-        return player.getBattle().getActions(fromIndex == null ? 0 : fromIndex);
+    @GetMapping("/action/{number}")
+    public DeferredAction getActions(@PathVariable int number) {
+        final DeferredAction result = new DeferredAction(number);
+        if (player.getBattle().getActionsCount() > number) {
+            result.setResult(player.getBattle().getAction(number));
+        } else {
+            player.setDeferredAction(result);
+        }
+        return result;
     }
 
     @GetMapping("/actions/count")

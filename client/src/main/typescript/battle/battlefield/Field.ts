@@ -9,7 +9,6 @@ export default class Field extends PIXI.Container {
 
     static readonly LINE_WIDTH = 1.5;
 
-    private _isTurnActual = true;
     private paths: Cell[][];
 
     private readonly currentMark = new Mark(0x00FF00);
@@ -61,10 +60,6 @@ export default class Field extends PIXI.Container {
         this.projectileService.on(SHOT, (projectile: game.Actor) => this.addChild(projectile));
     }
 
-    set isTurnActual(value: boolean) {
-        this._isTurnActual = value;
-    }
-
     removeMarksAndPath(withCurrentMark: boolean) {
         this.pathLayer.removeChildren();
         this.markLayer.removeChildren();
@@ -74,7 +69,7 @@ export default class Field extends PIXI.Container {
     }
 
     private findPathsForCurrentUnit() {
-        if (this._isTurnActual) {
+        if (this.unitService.isCurrentPlayerTurn) {
             getCurrentPaths(paths => {
                 this.paths = paths;
                 getCurrentReachableCells(reachableCells => {

@@ -1,6 +1,6 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { postTurn, Side } from "../request";
+import { postTurn } from "../request";
 import { MOVE, NEXT_TURN, SHOT } from "../util";
 import * as game from "../../game";
 
@@ -18,7 +18,7 @@ export default class Controls extends PIXI.Container {
     private readonly bgModule = new game.Rectangle();
     private readonly btnNextTurn = new game.Button("Конец хода");
 
-    constructor(private readonly currentPlayerSide: Side, private readonly unitService: UnitService) {
+    constructor(private readonly unitService: UnitService) {
         super();
         this.spriteHull.anchor.set(game.CENTER, game.CENTER);
         this.bgHull.addChild(this.spriteHull);
@@ -83,7 +83,6 @@ export default class Controls extends PIXI.Container {
 
     private updateInterface() {
         const currentUnit: Unit = this.unitService.currentUnit;
-        const isCurrentPlayerTurn: boolean = currentUnit.side == this.currentPlayerSide;
         this.spriteHull.texture = PIXI.loader.resources[currentUnit.hull.name].texture;
         if (currentUnit.firstGun) {
             this.btnFirstGun.text = currentUnit.firstGun.name;
@@ -91,7 +90,7 @@ export default class Controls extends PIXI.Container {
                 this.btnFirstGun.text += " (" + currentUnit.firstGunCooldown + ")";
                 this.btnFirstGun.isEnabled = false;
             } else {
-                this.btnFirstGun.isEnabled = isCurrentPlayerTurn;
+                this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn;
             }
         } else {
             this.btnFirstGun.text = Controls.EMPTY_SLOT;
@@ -103,12 +102,12 @@ export default class Controls extends PIXI.Container {
                 this.btnSecondGun.text += " (" + currentUnit.secondGunCooldown + ")";
                 this.btnSecondGun.isEnabled = false;
             } else {
-                this.btnSecondGun.isEnabled = isCurrentPlayerTurn;
+                this.btnSecondGun.isEnabled = this.unitService.isCurrentPlayerTurn;
             }
         } else {
             this.btnSecondGun.text = Controls.EMPTY_SLOT;
             this.btnSecondGun.isEnabled = false;
         }
-        this.btnNextTurn.isEnabled = isCurrentPlayerTurn;
+        this.btnNextTurn.isEnabled = this.unitService.isCurrentPlayerTurn;
     }
 }
