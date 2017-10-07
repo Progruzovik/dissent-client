@@ -5,7 +5,7 @@ import { Cell, getCurrentReachableCells, getCurrentPaths, postCurrentUnitCell } 
 import { MOVE, NEXT_TURN, SHOT } from "../util";
 import * as game from "../../game";
 
-export default class Field extends PIXI.Container {
+export default class Field extends game.UiElement {
 
     static readonly LINE_WIDTH = 1.5;
 

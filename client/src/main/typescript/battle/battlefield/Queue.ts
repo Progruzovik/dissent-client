@@ -4,32 +4,39 @@ import { Side } from "../request";
 import { NEXT_TURN } from "../util";
 import * as game from "../../game";
 
-export default class Queue extends game.Rectangle {
+export default class Queue extends game.UiElement {
+
+    private readonly bg = new game.Rectangle(0x000000, Unit.WIDTH);
 
     constructor(currentPlayerSide: Side, unitService: UnitService) {
-        super(0x000000, Unit.WIDTH);
+        super();
+        this.addChild(this.bg);
         unitService.units.forEach((unit, i) => {
-            const icon = new game.Rectangle(currentPlayerSide == unit.side ? 0x00FF00 : 0xFF0000,
+            const unitIcon = new game.Rectangle(currentPlayerSide == unit.side ? 0x00FF00 : 0xFF0000,
                 Unit.WIDTH, Unit.HEIGHT);
-            icon.addChild(new PIXI.Sprite(PIXI.loader.resources[unit.hull.name].texture));
-            icon.y = Unit.HEIGHT * i;
-            this.addChild(icon);
+            unitIcon.addChild(new PIXI.Sprite(PIXI.loader.resources[unit.hull.name].texture));
+            unitIcon.y = Unit.HEIGHT * i;
+            this.bg.addChild(unitIcon);
 
             unit.on(Unit.DESTROY, () => {
-                this.removeChild(icon);
+                this.bg.removeChild(unitIcon);
                 this.updateChildrenPositions();
             });
         });
 
         unitService.on(NEXT_TURN, (isFirst: boolean) => {
             if (!isFirst) {
-                this.setChildIndex(this.getChildAt(0), this.children.length - 1);
+                this.bg.setChildIndex(this.bg.getChildAt(0), this.bg.children.length - 1);
                 this.updateChildrenPositions();
             }
         });
     }
 
+    resize(width: number, height: number) {
+        this.bg.height = height;
+    }
+
     private updateChildrenPositions() {
-        this.children.forEach((child, i) => child.y = Unit.HEIGHT * i);
+        this.bg.children.forEach((child, i) => child.y = Unit.HEIGHT * i);
     }
 }

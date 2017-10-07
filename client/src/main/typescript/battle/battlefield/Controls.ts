@@ -4,7 +4,7 @@ import { postTurn } from "../request";
 import { MOVE, NEXT_TURN, SHOT } from "../util";
 import * as game from "../../game";
 
-export default class Controls extends PIXI.Container {
+export default class Controls extends game.UiElement {
 
     private static readonly SECTIONS_COUNT = 6;
     private static readonly SECTION_RATIO = 3;
@@ -49,13 +49,7 @@ export default class Controls extends PIXI.Container {
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, postTurn);
     }
 
-    lockInterface() {
-        this.btnFirstGun.isEnabled = false;
-        this.btnSecondGun.isEnabled = false;
-        this.btnNextTurn.isEnabled = false;
-    }
-
-    resize(width: number) {
+    resize(width: number, height: number) {
         const lengthPerSection: number = width / Controls.SECTIONS_COUNT;
 
         this.bgHull.width = lengthPerSection;
@@ -79,6 +73,12 @@ export default class Controls extends PIXI.Container {
         this.btnNextTurn.width = lengthPerSection;
         this.btnNextTurn.height = this.btnNextTurn.width / Controls.SECTION_RATIO;
         this.btnNextTurn.x = this.bgModule.x + this.bgModule.width;
+    }
+
+    lockInterface() {
+        this.btnFirstGun.isEnabled = false;
+        this.btnSecondGun.isEnabled = false;
+        this.btnNextTurn.isEnabled = false;
     }
 
     private updateInterface() {

@@ -1,18 +1,19 @@
+import { UiElement } from "./UiElement";
 import { Event } from "./util";
 import * as PIXI from "pixi.js";
 
-export class Act extends PIXI.Container {
+export class Screen extends PIXI.Container {
 
     private isLeftMouseButtonDown = false;
     private freeWidth = 0;
     private freeHeight = 0;
     private readonly savedMousePosition = new PIXI.Point();
 
-    private _content: PIXI.Container;
-    private _leftUi: PIXI.Container;
-    private _rightUi: PIXI.Container;
-    private _topUi: PIXI.Container;
-    private _bottomUi: PIXI.Container;
+    private _content: UiElement;
+    private _leftUi: UiElement;
+    private _rightUi: UiElement;
+    private _topUi: UiElement;
+    private _bottomUi: UiElement;
 
     private readonly contentLayer = new PIXI.Container();
 
@@ -66,11 +67,11 @@ export class Act extends PIXI.Container {
         return this._height;
     }
 
-    get content(): PIXI.Container {
+    get content(): UiElement {
         return this._content;
     }
 
-    set content(value: PIXI.Container) {
+    set content(value: UiElement) {
         if (this.content) {
             this.contentLayer.removeChild(this.content);
         }
@@ -80,11 +81,11 @@ export class Act extends PIXI.Container {
         }
     }
 
-    get leftUi(): PIXI.Container {
+    get leftUi(): UiElement {
         return this._leftUi;
     }
 
-    set leftUi(value: PIXI.Container) {
+    set leftUi(value: UiElement) {
         if (this.leftUi) {
             this.freeWidth += this.leftUi.width;
             this.removeChild(this.leftUi);
@@ -96,11 +97,11 @@ export class Act extends PIXI.Container {
         }
     }
 
-    get rightUi(): PIXI.Container {
+    get rightUi(): UiElement {
         return this._rightUi;
     }
 
-    set rightUi(value: PIXI.Container) {
+    set rightUi(value: UiElement) {
         if (this.rightUi) {
             this.freeWidth += this.leftUi.width;
             this.removeChild(this.rightUi);
@@ -112,11 +113,11 @@ export class Act extends PIXI.Container {
         }
     }
 
-    get topUi(): PIXI.Container {
+    get topUi(): UiElement {
         return this._topUi;
     }
 
-    set topUi(value: PIXI.Container) {
+    set topUi(value: UiElement) {
         if (this.topUi) {
             this.freeHeight += this.leftUi.height;
             this.removeChild(this.topUi);
@@ -128,11 +129,11 @@ export class Act extends PIXI.Container {
         }
     }
 
-    get bottomUi(): PIXI.Container {
+    get bottomUi(): UiElement {
         return this._bottomUi;
     }
 
-    set bottomUi(value: PIXI.Container) {
+    set bottomUi(value: UiElement) {
         if (this.bottomUi) {
             this.freeHeight += this.leftUi.height;
             this.removeChild(this.bottomUi);
@@ -149,25 +150,26 @@ export class Act extends PIXI.Container {
         this._height = height;
         this.freeWidth = width;
         this.freeHeight = height;
-        this.resizeUi();
 
         if (this.leftUi) {
+            this.leftUi.resize(width, height);
             this.freeWidth -= this.leftUi.width;
             this.contentLayer.x = this.leftUi.width;
         }
         if (this.rightUi) {
-            this.freeWidth -= this.rightUi.width;
+            this.rightUi.resize(width, height);
             this.rightUi.x = width - this.rightUi.width;
+            this.freeWidth -= this.rightUi.width;
         }
         if (this.topUi) {
+            this.topUi.resize(width, height);
             this.freeHeight -= this.topUi.height;
             this.contentLayer.y = this.topUi.height;
         }
         if (this.bottomUi) {
-            this.freeHeight -= this.bottomUi.height;
+            this.bottomUi.resize(width, height);
             this.bottomUi.y = height - this.bottomUi.height;
+            this.freeHeight -= this.bottomUi.height;
         }
     }
-
-    protected resizeUi() {}
 }

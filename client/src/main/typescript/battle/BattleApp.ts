@@ -1,4 +1,4 @@
-import BattlefieldAct from "./battlefield/Act";
+import BattlefieldScreen from "./battlefield/BattlefieldScreen";
 import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import { getField, postScenario } from "./request";
@@ -7,7 +7,7 @@ import * as PIXI from "pixi.js";
 
 export default class BattleApp extends PIXI.Application {
 
-    private act: game.Act;
+    private act: game.Screen;
 
     constructor() {
         super({ width: innerWidth, height: innerHeight, resolution: devicePixelRatio || 1, autoResize: true });
@@ -30,7 +30,7 @@ export default class BattleApp extends PIXI.Application {
                             guns.filter(gun => gun.id == unit.firstGunId)[0],
                             guns.filter(gun => gun.id == unit.secondGunId)[0], projectileService));
                     }
-                    this.act = new BattlefieldAct(innerWidth, innerHeight, actionsCount,
+                    this.act = new BattlefieldScreen(innerWidth, innerHeight, actionsCount,
                         size, side, asteroids, unitsArray, projectileService);
                     this.stage.addChild(this.act);
 
