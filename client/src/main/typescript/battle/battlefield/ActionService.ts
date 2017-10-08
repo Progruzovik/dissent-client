@@ -27,6 +27,9 @@ export default class ActionService extends PIXI.utils.EventEmitter {
                 this.processNextAction();
             }
             this.getNextAction();
+        }, () => {
+            console.log("timeout");
+            this.getNextAction();
         });
     }
 
