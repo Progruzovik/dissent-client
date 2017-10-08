@@ -2,6 +2,7 @@ import Unit from "./Unit";
 import { getCellsForCurrentUnitShot, postCurrentUnitShot, Side } from "../../request";
 import { MOVE, NEXT_TURN, SHOT } from "../../util";
 import * as game from "../../../game";
+import * as PIXI from "pixi.js";
 
 export default class UnitService extends PIXI.utils.EventEmitter {
 

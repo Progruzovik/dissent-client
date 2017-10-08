@@ -11,9 +11,9 @@ import * as game from "../../game";
 
 export default class BattlefieldScreen extends game.Screen {
 
-    constructor(width: number, height: number, actionsCount: number, fieldSize: Cell,
-                currentPlayerSide: Side, asteroids: Cell[], units: Unit[], projectileService: ProjectileService) {
-        super(width, height);
+    constructor(actionsCount: number, fieldSize: Cell, currentPlayerSide: Side,
+                asteroids: Cell[], units: Unit[], projectileService: ProjectileService) {
+        super();
         const unitService = new UnitService(currentPlayerSide, units);
 
         const field = new Field(fieldSize, unitService, projectileService, asteroids);
@@ -21,7 +21,6 @@ export default class BattlefieldScreen extends game.Screen {
         this.leftUi = new Queue(currentPlayerSide, unitService);
         const controls = new Controls(unitService);
         this.bottomUi = controls;
-        this.resize();
 
         const actionService = new ActionService(actionsCount, field, controls, unitService);
         unitService.emit(NEXT_TURN, true);

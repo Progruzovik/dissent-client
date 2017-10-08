@@ -3,6 +3,7 @@ import ProjectileService from "../projectile/ProjectileService";
 import { Cell, Gun, Hull, Side } from "../../request";
 import { MOVE, SHOT } from "../../util";
 import * as game from "../../../game";
+import * as PIXI from "pixi.js";
 
 export default class Unit extends game.Actor {
 

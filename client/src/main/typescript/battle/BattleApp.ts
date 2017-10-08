@@ -1,17 +1,19 @@
 import BattlefieldScreen from "./battlefield/BattlefieldScreen";
 import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
-import { getField, postScenario } from "./request";
+import MenuScreen from "./menu/MenuScreen";
+import { getField } from "./request";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
-export default class BattleApp extends PIXI.Application {
+export default class BattleApp extends game.Application {
 
-    private act: game.Screen;
+    private readonly menuScreen = new MenuScreen();
 
     constructor() {
-        super({ width: innerWidth, height: innerHeight, resolution: devicePixelRatio || 1, autoResize: true });
-        postScenario(() => {
+        super();
+        this.currentScreen = this.menuScreen;
+        this.menuScreen.on(game.Event.DONE, () => {
             getField((actionsCount, hulls, guns, size, side, asteroids, units) => {
                 PIXI.loader.reset();
                 for (const shipData of hulls) {
@@ -30,23 +32,10 @@ export default class BattleApp extends PIXI.Application {
                             guns.filter(gun => gun.id == unit.firstGunId)[0],
                             guns.filter(gun => gun.id == unit.secondGunId)[0], projectileService));
                     }
-                    this.act = new BattlefieldScreen(innerWidth, innerHeight, actionsCount,
+                    this.currentScreen = new BattlefieldScreen(actionsCount,
                         size, side, asteroids, unitsArray, projectileService);
-                    this.stage.addChild(this.act);
-
-                    this.act.once(game.Event.DONE, () => {
-                        this.act.destroy({ children: true });
-                        this.act = null;
-                    });
                 });
             });
         });
-
-        onresize = () => {
-            this.renderer.resize(innerWidth, innerHeight);
-            if (this.act) {
-                this.act.resize(innerWidth, innerHeight);
-            }
-        }
     }
 }
