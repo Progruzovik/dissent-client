@@ -1,4 +1,5 @@
 export const CENTER = 0.5;
+export const INDENT = 20;
 
 export namespace Event {
 
