@@ -1,11 +1,11 @@
 package net.progruzovik.dissent.config;
 
 import net.progruzovik.dissent.battle.Battle;
+import net.progruzovik.dissent.battle.BattleFactory;
 import net.progruzovik.dissent.battle.BattleService;
-import net.progruzovik.dissent.battle.FieldFactory;
 import net.progruzovik.dissent.model.player.Player;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,13 +22,13 @@ import javax.sql.DataSource;
 public class AppConfig {
 
     @Bean
-    FieldFactory fieldFactory() {
-        return this::field;
+    BattleFactory battleFactory() {
+        return this::battle;
     }
 
     @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    Battle field(@Qualifier("sessionPlayer") Player leftPlayer, @Qualifier("aiPlayer") Player rightPlayer) {
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    Battle battle(@Qualifier("sessionPlayer") Player leftPlayer, @Qualifier("aiPlayer") Player rightPlayer) {
         return new BattleService(leftPlayer, rightPlayer);
     }
 

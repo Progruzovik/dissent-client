@@ -24,11 +24,10 @@ export class Application extends PIXI.Application {
         this._currentScreen = value;
         if (value) {
             value.resize(innerWidth, innerHeight);
+            this.stage.removeChildren();
             this.stage.addChild(value);
-            value.once(Event.DONE, () => {
-                this.currentScreen.destroy({ children: true });
-                this.currentScreen = null;
-            });
+
+            value.once(Event.DONE, () => this.currentScreen.destroy({ children: true }));
         }
     }
 }

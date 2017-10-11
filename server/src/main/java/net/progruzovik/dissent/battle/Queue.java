@@ -2,7 +2,9 @@ package net.progruzovik.dissent.battle;
 
 import net.progruzovik.dissent.model.player.Player;
 
-public interface Scenario {
+public interface Queue {
 
-    void start(Player player);
+    boolean add(Player player);
+
+    boolean remove(Player player);
 }

@@ -1,9 +1,22 @@
 import axios from "axios";
 
+const PLAYER_PREFIX = "/api/player";
 const BATTLE_PREFIX = "/api/battle";
 
+export function getTextures(callback: (textures: Texture[]) => void) {
+    axios.get("/api/textures").then(response => callback(response.data));
+}
+
+export function postQueue(callback: () => void) {
+    axios.post(PLAYER_PREFIX + "/queue").then(callback);
+}
+
+export function deleteQueue(callback: () => void) {
+    axios.delete(PLAYER_PREFIX + "/queue").then(callback);
+}
+
 export function postScenario(callback: () => void) {
-    axios.post("/api/scenario").then(callback);
+    axios.post(PLAYER_PREFIX + "/scenario").then(callback);
 }
 
 export function getField(callback: (actionsCount: number, ships: Hull[], guns: Gun[], size: Cell,
@@ -67,6 +80,10 @@ export const enum Side {
     None, Left, Right
 }
 
+export const enum Status {
+    Idle, Queued, InBattle
+}
+
 export class Action {
     constructor(readonly number: number, readonly type: ActionType) {}
 }
@@ -81,14 +98,21 @@ export class Gun {
 }
 
 export class Hull {
-    constructor(readonly id: number, readonly name: string, readonly speed: number) {}
+    constructor(readonly id: number, readonly speed: number, readonly texture: Texture) {}
 }
 
 class Shot {
     constructor(readonly gunId: number, readonly cell: Cell) {}
 }
 
+class Texture {
+    constructor(readonly id: number, readonly name: string) {}
+}
+
 class Unit {
-    constructor(readonly side: Side, readonly cell: Cell, readonly hullId: number,
-                readonly firstGunId: number, readonly secondGunId: number) {}
+    constructor(readonly side: Side, readonly cell: Cell, readonly ship: Ship) {}
+}
+
+class Ship {
+    constructor(readonly hullId: number, readonly firstGunId: number, readonly secondGunId: number) {}
 }

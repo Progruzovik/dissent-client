@@ -7,6 +7,7 @@ import net.progruzovik.dissent.model.battle.Unit;
 import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
+import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.util.Cell;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -19,14 +20,14 @@ import java.util.List;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public final class AiPlayer implements Player {
 
-    private final List<Unit> units = new ArrayList<>();
+    private final List<Ship> ships = new ArrayList<>();
     private Battle battle;
 
     public AiPlayer(HullDao hullDao, GunDao gunDao) {
         final Hull aiHull = hullDao.getHull(3);
         final Gun shrapnel = gunDao.getGun(1);
-        units.add(new Unit(aiHull, shrapnel, null));
-        units.add(new Unit(aiHull, shrapnel, null));
+        ships.add(new Ship(aiHull, shrapnel, null));
+        ships.add(new Ship(aiHull, shrapnel, null));
     }
 
     @Override
@@ -35,9 +36,12 @@ public final class AiPlayer implements Player {
     }
 
     @Override
-    public List<Unit> getUnits() {
-        return units;
+    public List<Ship> getShips() {
+        return ships;
     }
+
+    @Override
+    public void setStatus(Status status) { }
 
     @Override
     public Battle getBattle() {
@@ -52,13 +56,14 @@ public final class AiPlayer implements Player {
     @Override
     public void newAction(int number, Action action) { }
 
+    @Override
     public void act() {
         final Unit currentUnit = getBattle().getUnitQueue().getCurrentUnit();
-        if (currentUnit.getFirstGun() != null) {
+        if (currentUnit.getShip().getFirstGun() != null) {
             final List<Cell> targetCells =  getBattle().getField()
-                    .findShotAndTargetCells(currentUnit.getFirstGunId(), currentUnit).get("targetCells");
+                    .findShotAndTargetCells(currentUnit.getShip().getFirstGunId(), currentUnit).get("targetCells");
             if (!targetCells.isEmpty()) {
-                getBattle().shootWithCurrentUnit(getId(), currentUnit.getFirstGunId(), targetCells.get(0));
+                getBattle().shootWithCurrentUnit(getId(), currentUnit.getShip().getFirstGunId(), targetCells.get(0));
             }
         }
         getBattle().endTurn(getId());

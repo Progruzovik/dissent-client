@@ -7,6 +7,7 @@ import * as PIXI from "pixi.js";
 
 export default class ActionService extends PIXI.utils.EventEmitter {
 
+    private isRunning = true;
     private isProcessingAction = false;
     private readonly remainingActions = new Array<Action>(0);
 
@@ -19,18 +20,21 @@ export default class ActionService extends PIXI.utils.EventEmitter {
         this.unitService.on(NEXT_TURN, () => this.finishProcessing());
     }
 
+    stop() {
+        this.isRunning = false;
+    }
+
     private getNextAction() {
-        getAction(this.nextActionNumber, action => {
-            this.nextActionNumber++;
-            this.remainingActions.push(action);
-            if (!this.isProcessingAction) {
-                this.processNextAction();
-            }
-            this.getNextAction();
-        }, () => {
-            console.log("timeout");
-            this.getNextAction();
-        });
+        if (this.isRunning) {
+            getAction(this.nextActionNumber, action => {
+                this.nextActionNumber++;
+                this.remainingActions.push(action);
+                if (!this.isProcessingAction) {
+                    this.processNextAction();
+                }
+                this.getNextAction();
+            }, () => this.getNextAction());
+        }
     }
 
     private processNextAction() {

@@ -1,15 +1,21 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.model.battle.*;
+import net.progruzovik.dissent.model.battle.Field;
+import net.progruzovik.dissent.model.battle.Side;
+import net.progruzovik.dissent.model.battle.Unit;
+import net.progruzovik.dissent.model.battle.UnitQueue;
 import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.battle.action.ActionType;
 import net.progruzovik.dissent.model.battle.action.Move;
 import net.progruzovik.dissent.model.battle.action.Shot;
-import net.progruzovik.dissent.model.player.AiPlayer;
+import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.player.Player;
+import net.progruzovik.dissent.model.player.Status;
 import net.progruzovik.dissent.model.util.Cell;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public final class BattleService implements Battle {
 
@@ -30,21 +36,21 @@ public final class BattleService implements Battle {
 
     public BattleService(Player leftPlayer, Player rightPlayer) {
         this.leftPlayer = leftPlayer;
+        leftPlayer.setBattle(this);
         this.rightPlayer = rightPlayer;
+        rightPlayer.setBattle(this);
 
-        final int maxUnitsCountOnSide = Math.max(leftPlayer.getUnits().size(), rightPlayer.getUnits().size());
-        final int colsCount = maxUnitsCountOnSide * UNIT_INDENT + BORDER_INDENT * 2;
+        final int maxShipsCountOnSide = Math.max(leftPlayer.getShips().size(), rightPlayer.getShips().size());
+        final int colsCount = maxShipsCountOnSide * UNIT_INDENT + BORDER_INDENT * 2;
         field = new Field(new Cell(colsCount, colsCount));
         int i = 0;
-        for (final Unit unit : leftPlayer.getUnits()) {
-            unit.init(Side.LEFT, new Cell(0, i * UNIT_INDENT + BORDER_INDENT));
-            registerUnit(unit);
+        for (final Ship ship : leftPlayer.getShips()) {
+            registerUnit(new Unit(new Cell(0, i * UNIT_INDENT + BORDER_INDENT), ship, Side.LEFT));
             i++;
         }
         i = 0;
-        for (final Unit unit : rightPlayer.getUnits()) {
-            unit.init(Side.RIGHT, new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT));
-            registerUnit(unit);
+        for (final Ship ship : rightPlayer.getShips()) {
+            registerUnit(new Unit(new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT), ship, Side.RIGHT));
             i++;
         }
         onNextTurn();
@@ -125,6 +131,8 @@ public final class BattleService implements Battle {
                     field.destroyUnitOnCell(cell);
                     if (!unitQueue.hasUnitsOnBothSides()) {
                         isRunning = false;
+                        leftPlayer.setStatus(Status.IDLE);
+                        rightPlayer.setStatus(Status.IDLE);
                         addAction(new Action(ActionType.FINISH));
                     }
                 }
@@ -160,10 +168,11 @@ public final class BattleService implements Battle {
     }
 
     private void onNextTurn() {
-        unitQueue.getCurrentUnit().makeCurrent();
-        field.createPathsForUnit(unitQueue.getCurrentUnit());
-        if (getCurrentPlayer() instanceof AiPlayer) {
-            ((AiPlayer) getCurrentPlayer()).act();
+        final Player player = getCurrentPlayer();
+        if (player != null) {
+            unitQueue.getCurrentUnit().makeCurrent();
+            field.createPathsForUnit(unitQueue.getCurrentUnit());
+            player.act();
         }
     }
 

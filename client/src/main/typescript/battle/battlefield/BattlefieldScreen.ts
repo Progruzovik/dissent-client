@@ -24,6 +24,9 @@ export default class BattlefieldScreen extends game.Screen {
 
         const actionService = new ActionService(actionsCount, field, controls, unitService);
         unitService.emit(NEXT_TURN, true);
-        actionService.on(FINISH, () => this.emit(game.Event.DONE));
+        actionService.on(FINISH, () => {
+            actionService.stop();
+            this.emit(game.Event.DONE)
+        });
     }
 }

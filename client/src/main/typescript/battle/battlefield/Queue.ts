@@ -14,7 +14,7 @@ export default class Queue extends game.UiElement {
         unitService.units.forEach((unit, i) => {
             const unitIcon = new game.Rectangle(currentPlayerSide == unit.side ? 0x00FF00 : 0xFF0000,
                 Unit.WIDTH, Unit.HEIGHT);
-            unitIcon.addChild(new PIXI.Sprite(PIXI.loader.resources[unit.hull.name].texture));
+            unitIcon.addChild(new PIXI.Sprite(PIXI.loader.resources[unit.hull.texture.name].texture));
             unitIcon.y = Unit.HEIGHT * i;
             this.bg.addChild(unitIcon);
 

@@ -35,12 +35,12 @@ public final class UnitQueue {
 
     public void addUnit(Unit unit) {
         queue.offer(unit);
-        uniqueHulls.add(unit.getHull());
-        if (unit.getFirstGun() != null) {
-            uniqueGuns.add(unit.getFirstGun());
+        uniqueHulls.add(unit.getShip().getHull());
+        if (unit.getShip().getFirstGun() != null) {
+            uniqueGuns.add(unit.getShip().getFirstGun());
         }
-        if (unit.getSecondGun() != null) {
-            uniqueGuns.add(unit.getSecondGun());
+        if (unit.getShip().getSecondGun() != null) {
+            uniqueGuns.add(unit.getShip().getSecondGun());
         }
     }
 

@@ -72,7 +72,7 @@ public final class Field {
 
         final Map<String, List<Cell>> result = new HashMap<>(2);
         final List<Cell> shotCells = new ArrayList<>();
-        final Gun gun = unit.getGun(gunId);
+        final Gun gun = unit.getShip().getGun(gunId);
         if (gun != null) {
             final List<Cell> availableCells = findNeighborsInRadius(unit.getCell(), gun.getRadius(), c -> {
                 final List<Cell> cellsInBetween = findCellsInBetween(unit.getCell(), c);

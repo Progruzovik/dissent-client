@@ -7,7 +7,7 @@ import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.battle.action.ActionType;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
-import net.progruzovik.dissent.model.battle.Unit;
+import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.rest.deferred.DeferredAction;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -19,10 +19,11 @@ import java.util.List;
 
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class SessionPlayer implements Player {
+public class SessionPlayer implements Session {
 
     private final String id;
-    private final List<Unit> units = new ArrayList<>();
+    private final List<Ship> ships = new ArrayList<>();
+    private Status status = Status.IDLE;
 
     private BattleConnector battleConnector;
 
@@ -30,9 +31,9 @@ public class SessionPlayer implements Player {
         id = session.getId();
         final Hull basicHull = shipDao.getHull(1);
         final Gun shrapnel = gunDao.getGun(1);
-        units.add(new Unit(basicHull, shrapnel, null));
-        units.add(new Unit(shipDao.getHull(2), shrapnel, gunDao.getGun(2)));
-        units.add(new Unit(basicHull, shrapnel, null));
+        ships.add(new Ship(basicHull, shrapnel, null));
+        ships.add(new Ship(shipDao.getHull(2), shrapnel, gunDao.getGun(2)));
+        ships.add(new Ship(basicHull, shrapnel, null));
     }
 
     @Override
@@ -41,8 +42,18 @@ public class SessionPlayer implements Player {
     }
 
     @Override
-    public List<Unit> getUnits() {
-        return units;
+    public List<Ship> getShips() {
+        return ships;
+    }
+
+    @Override
+    public Status getStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override
@@ -59,6 +70,11 @@ public class SessionPlayer implements Player {
     }
 
     @Override
+    public void setDeferredAction(DeferredAction deferredAction) {
+        battleConnector.setDeferredAction(deferredAction);
+    }
+
+    @Override
     public void newAction(int number, Action action) {
         if (battleConnector.getDeferredAction() != null && battleConnector.getDeferredAction().getNumber() == number) {
             battleConnector.getDeferredAction().setResult(action);
@@ -66,7 +82,6 @@ public class SessionPlayer implements Player {
         }
     }
 
-    public void setDeferredAction(DeferredAction deferredAction) {
-        battleConnector.setDeferredAction(deferredAction);
-    }
+    @Override
+    public void act() { }
 }

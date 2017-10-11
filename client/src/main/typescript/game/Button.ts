@@ -18,7 +18,7 @@ export class Button extends PIXI.Container {
         this.buttonMode = true;
         this.state = State.MouseOut;
         this.addChild(this.bg);
-        this.txtMain = new PIXI.Text(text, { fill: 0xFFFFFF, fontSize: 26 });
+        this.txtMain = new PIXI.Text(text, { fill: 0xffffff, fontSize: 26 });
         this.txtMain.anchor.set(CENTER, CENTER);
         this.addChild(this.txtMain);
         this.width = width;

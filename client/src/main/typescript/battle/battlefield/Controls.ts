@@ -83,7 +83,7 @@ export default class Controls extends game.UiElement {
 
     private updateInterface() {
         const currentUnit: Unit = this.unitService.currentUnit;
-        this.spriteHull.texture = PIXI.loader.resources[currentUnit.hull.name].texture;
+        this.spriteHull.texture = PIXI.loader.resources[currentUnit.hull.texture.name].texture;
         if (currentUnit.firstGun) {
             this.btnFirstGun.text = currentUnit.firstGun.name;
             if (currentUnit.firstGunCooldown > 0) {

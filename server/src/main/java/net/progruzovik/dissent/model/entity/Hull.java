@@ -10,27 +10,23 @@ public final class Hull {
     private int id;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
     private int speed;
 
-    public Hull(String name, int speed) {
-        this.name = name;
-        this.speed = speed;
-    }
+    @ManyToOne
+    @JoinColumn(name = "textureId", nullable = false)
+    private Texture texture;
 
-    public Hull() {}
+    public Hull() { }
 
     public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public int getSpeed() {
         return speed;
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 }

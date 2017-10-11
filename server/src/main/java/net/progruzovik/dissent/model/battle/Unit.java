@@ -1,8 +1,7 @@
 package net.progruzovik.dissent.model.battle;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.progruzovik.dissent.model.entity.Gun;
-import net.progruzovik.dissent.model.entity.Hull;
+import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.util.Cell;
 
 public final class Unit {
@@ -12,19 +11,16 @@ public final class Unit {
     private int movementPoints = 0;
     private int firstGunCooldown = 0;
     private int secondGunCooldown = 0;
-
-    private Side side = Side.NONE;
+    
     private Cell cell;
+    
+    private final Ship ship;
+    private final Side side;
 
-    private final Hull hull;
-
-    private final Gun firstGun;
-    private final Gun secondGun;
-
-    public Unit(Hull hull, Gun firstGun, Gun secondGun) {
-        this.hull = hull;
-        this.firstGun = firstGun;
-        this.secondGun = secondGun;
+    public Unit(Cell cell, Ship ship, Side side) {
+        this.cell = cell;
+        this.ship = ship;
+        this.side = side;
     }
 
     @JsonIgnore
@@ -45,50 +41,12 @@ public final class Unit {
         return cell;
     }
 
-    public int getHullId() {
-        return hull.getId();
-    }
-
-    @JsonIgnore
-    public Hull getHull() {
-        return hull;
-    }
-
-    public int getFirstGunId() {
-        return firstGun == null ? 0 : firstGun.getId();
-    }
-
-    @JsonIgnore
-    public Gun getFirstGun() {
-        return firstGun;
-    }
-
-    public int getSecondGunId() {
-        return secondGun == null ? 0 : secondGun.getId();
-    }
-
-    @JsonIgnore
-    public Gun getSecondGun() {
-        return secondGun;
-    }
-
-    public Gun getGun(int gunId) {
-        if (firstGun != null && gunId == firstGun.getId()) {
-            return firstGun;
-        }
-        if (secondGun != null && gunId == secondGun.getId()) {
-            return secondGun;
-        }
-        return null;
-    }
-
-    public void init(Side side, Cell cell) {
-        this.side = side;
-        this.cell = cell;
+    public Ship getShip() {
+        return ship;
     }
 
     public void makeCurrent() {
-        movementPoints = hull.getSpeed();
+        movementPoints = ship.getHull().getSpeed();
         if (firstGunCooldown > 0) {
             firstGunCooldown--;
         }
@@ -108,20 +66,20 @@ public final class Unit {
     }
 
     public boolean shoot(int gunId, Unit target) {
-        if (makeGunCooldown(gunId)) {
+        if (dischargeGun(gunId)) {
             target.isDestroyed = true;
             return true;
         }
         return false;
     }
 
-    private boolean makeGunCooldown(int gunId) {
-        if (firstGun != null && gunId == firstGun.getId() && firstGunCooldown == 0) {
-            firstGunCooldown = firstGun.getCooldown();
+    private boolean dischargeGun(int gunId) {
+        if (ship.getFirstGun() != null && gunId == ship.getFirstGun().getId() && firstGunCooldown == 0) {
+            firstGunCooldown = ship.getFirstGun().getCooldown();
             return true;
         }
-        if (secondGun != null && gunId == secondGun.getId() && secondGunCooldown == 0) {
-            secondGunCooldown = secondGun.getCooldown();
+        if (ship.getSecondGun() != null && gunId == ship.getSecondGun().getId() && secondGunCooldown == 0) {
+            secondGunCooldown = ship.getSecondGun().getCooldown();
             return true;
         }
         return false;

@@ -26,7 +26,7 @@ export default class Unit extends game.Actor {
                 readonly secondGun: Gun, private readonly projectileService: ProjectileService) {
         super();
         this.interactive = true;
-        const sprite = new PIXI.Sprite(PIXI.loader.resources[hull.name].texture);
+        const sprite = new PIXI.Sprite(PIXI.loader.resources[hull.texture.name].texture);
         if (side == Side.Right) {
             sprite.scale.x = -1;
             sprite.anchor.x = 1;
