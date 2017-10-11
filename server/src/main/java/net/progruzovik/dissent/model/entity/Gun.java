@@ -29,8 +29,6 @@ public final class Gun {
     @Column(nullable = false)
     private int shotDelay;
 
-    public Gun() { }
-
     public int getId() {
         return id;
     }

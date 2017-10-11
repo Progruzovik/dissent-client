@@ -12,8 +12,6 @@ public final class Texture {
     @Column(nullable = false)
     private String name;
 
-    public Texture() { }
-
     public int getId() {
         return id;
     }

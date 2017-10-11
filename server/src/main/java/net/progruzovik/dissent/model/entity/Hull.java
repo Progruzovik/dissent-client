@@ -16,8 +16,6 @@ public final class Hull {
     @JoinColumn(name = "textureId", nullable = false)
     private Texture texture;
 
-    public Hull() { }
-
     public int getId() {
         return id;
     }
