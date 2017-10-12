@@ -33,10 +33,10 @@ export function getField(callback: (actionsCount: number, ships: Hull[], guns: G
         callback(actionsCount.data, ships.data, guns.data, size.data, side.data, asteroids.data, units.data)));
 }
 
-export function getAction(number: number, callback: (action: Action) => void, timeout: () => void) {
+export function getAction(number: number, onSuccess: (action: Action) => void, onError: () => void) {
     axios.get(BATTLE_PREFIX + "/action/" + number)
-        .then(response => callback(response.data))
-        .catch(timeout);
+        .then(response => onSuccess(response.data))
+        .catch(onError);
 }
 
 export function getMove(number: number, callback: (move: Cell[]) => void) {
