@@ -1,24 +1,22 @@
 package net.progruzovik.dissent.rest;
 
-import net.progruzovik.dissent.battle.Queue;
 import net.progruzovik.dissent.battle.Scenario;
 import net.progruzovik.dissent.model.player.Session;
 import net.progruzovik.dissent.model.player.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 @RestController
 @RequestMapping("/api/player")
 public final class PlayerRest {
 
     private final Session session;
-    private final Queue queue;
     private final Scenario scenario;
 
-    public PlayerRest(Session session, Queue queue, Scenario scenario) {
+    public PlayerRest(Session session, Scenario scenario) {
         this.session = session;
-        this.queue = queue;
         this.scenario = scenario;
     }
 
@@ -27,21 +25,27 @@ public final class PlayerRest {
         return session.getStatus();
     }
 
+    @GetMapping("/status/next")
+    public DeferredResult<Status> getNextStatus() {
+        final DeferredResult<Status> result = new DeferredResult<>();
+        session.setDeferredStatus(result);
+        return result;
+    }
+
     @PostMapping("/queue")
     public ResponseEntity postQueue() {
-        return queue.add(session) ? new ResponseEntity(HttpStatus.OK)
-                : new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return session.addToQueue() ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/queue")
     public ResponseEntity deleteQueue() {
-        return queue.remove(session) ? new ResponseEntity(HttpStatus.OK)
+        return session.removeFromQueue() ? new ResponseEntity(HttpStatus.OK)
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/scenario")
     public void postScenario() {
-        queue.remove(session);
+        session.removeFromQueue();
         scenario.start(session);
     }
 }

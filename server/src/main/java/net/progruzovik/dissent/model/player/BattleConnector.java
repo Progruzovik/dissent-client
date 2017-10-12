@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.model.player;
 
 import net.progruzovik.dissent.battle.Battle;
-import net.progruzovik.dissent.rest.deferred.DeferredAction;
+import net.progruzovik.dissent.model.battle.action.DeferredAction;
 
 final class BattleConnector {
 

@@ -23,8 +23,6 @@ public final class QueueService implements Queue {
             player.setStatus(Status.QUEUED);
         } else {
             battleFactory.create(queuedPlayer, player);
-            queuedPlayer.setStatus(Status.IN_BATTLE);
-            player.setStatus(Status.IN_BATTLE);
             queuedPlayer = null;
         }
         return true;

@@ -8,13 +8,15 @@ import * as PIXI from "pixi.js";
 
 export default class ActionService extends PIXI.utils.EventEmitter {
 
-    private readonly longPoller = new game.LongPoller<Action>(this.nextActionNumber, getAction);
+    private readonly longPoller;
 
-    constructor(private nextActionNumber: number, private readonly field: Field,
+    constructor(nextActionNumber: number, private readonly field: Field,
                 private readonly controls: Controls, private readonly unitService: UnitService) {
         super();
+        this.longPoller = new game.LongPoller<Action>(getAction, true, nextActionNumber);
+
         this.longPoller.on(game.LongPoller.NEXT_RESPONSE, (action: Action) => {
-            this.field.removeMarksAndPath(true);
+            this.field.removePathsAndMarksExceptCurrent();
             this.controls.lockInterface();
             if (action.type == ActionType.Move) {
                 getMove(action.number, move => this.unitService.currentUnit.path = move);
@@ -26,7 +28,7 @@ export default class ActionService extends PIXI.utils.EventEmitter {
             } else if (action.type == ActionType.NextTurn) {
                 this.unitService.nextTurn();
             } else if (action.type == ActionType.Finish) {
-                this.longPoller.stop();
+                this.longPoller.isRunning = false;
                 this.emit(FINISH);
             }
         });

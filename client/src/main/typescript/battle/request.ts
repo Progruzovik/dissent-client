@@ -7,16 +7,26 @@ export function getTextures(callback: (textures: Texture[]) => void) {
     axios.get("/api/textures").then(response => callback(response.data));
 }
 
-export function postQueue(callback: () => void) {
-    axios.post(PLAYER_PREFIX + "/queue").then(callback);
+export function getStatus(callback: (status: Status) => void) {
+    axios.get(PLAYER_PREFIX + "/status").then(response => callback(response.data));
 }
 
-export function deleteQueue(callback: () => void) {
-    axios.delete(PLAYER_PREFIX + "/queue").then(callback);
+export function getNextStatus(_, callback: (status: Status) => void, onError: () => void) {
+    axios.get(PLAYER_PREFIX + "/status/next")
+        .then(response => callback(response.data))
+        .catch(onError);
 }
 
-export function postScenario(callback: () => void) {
-    axios.post(PLAYER_PREFIX + "/scenario").then(callback);
+export function postQueue() {
+    axios.post(PLAYER_PREFIX + "/queue");
+}
+
+export function deleteQueue() {
+    axios.delete(PLAYER_PREFIX + "/queue");
+}
+
+export function postScenario() {
+    axios.post(PLAYER_PREFIX + "/scenario");
 }
 
 export function getField(callback: (actionsCount: number, ships: Hull[], guns: Gun[], size: Cell,
@@ -33,9 +43,9 @@ export function getField(callback: (actionsCount: number, ships: Hull[], guns: G
         callback(actionsCount.data, ships.data, guns.data, size.data, side.data, asteroids.data, units.data)));
 }
 
-export function getAction(number: number, onSuccess: (action: Action) => void, onError: () => void) {
+export function getAction(number: number, callback: (action: Action) => void, onError: () => void) {
     axios.get(BATTLE_PREFIX + "/action/" + number)
-        .then(response => onSuccess(response.data))
+        .then(response => callback(response.data))
         .catch(onError);
 }
 
@@ -80,7 +90,7 @@ export const enum Side {
     None, Left, Right
 }
 
-export const enum Status {
+export enum Status {
     Idle, Queued, InBattle
 }
 

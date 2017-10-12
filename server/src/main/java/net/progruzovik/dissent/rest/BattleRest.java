@@ -8,7 +8,7 @@ import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.player.Session;
 import net.progruzovik.dissent.model.util.Cell;
-import net.progruzovik.dissent.rest.deferred.DeferredAction;
+import net.progruzovik.dissent.model.battle.action.DeferredAction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

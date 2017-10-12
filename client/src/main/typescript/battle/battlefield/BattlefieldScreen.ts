@@ -1,4 +1,4 @@
-import ActionService from "./ActionService"
+import ActionService from "./ActionReceiver"
 import Controls from "./Controls";
 import Field from "./Field";
 import Queue from "./Queue";
@@ -16,7 +16,7 @@ export default class BattlefieldScreen extends game.Screen {
         super();
         const unitService = new UnitService(currentPlayerSide, units);
 
-        const field = new Field(fieldSize, unitService, projectileService, asteroids);
+        const field = new Field(fieldSize, asteroids, unitService, projectileService);
         this.content = field;
         this.leftUi = new Queue(currentPlayerSide, unitService);
         const controls = new Controls(unitService);

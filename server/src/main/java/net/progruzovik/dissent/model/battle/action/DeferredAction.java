@@ -1,6 +1,5 @@
-package net.progruzovik.dissent.rest.deferred;
+package net.progruzovik.dissent.model.battle.action;
 
-import net.progruzovik.dissent.model.battle.action.Action;
 import org.springframework.web.context.request.async.DeferredResult;
 
 public final class DeferredAction extends DeferredResult<Action> {

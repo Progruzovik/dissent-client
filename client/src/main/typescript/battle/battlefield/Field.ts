@@ -16,8 +16,8 @@ export default class Field extends game.UiElement {
     private readonly pathLayer = new PIXI.Container();
     private readonly markLayer = new PIXI.Container();
 
-    constructor(private readonly size: Cell, private readonly unitService: UnitService,
-                private readonly projectileService: ProjectileService, fieldObjects: Cell[]) {
+    constructor(private readonly size: Cell, fieldObjects: Cell[], private readonly unitService: UnitService,
+                private readonly projectileService: ProjectileService) {
         super();
 
         const bg = new game.Rectangle();
@@ -49,31 +49,29 @@ export default class Field extends game.UiElement {
             this.addChild(unit);
         }
 
-        this.unitService.on(MOVE, () => this.findPathsForCurrentUnit());
-        this.unitService.on(Unit.PREPARED_TO_SHOT, () => this.removeMarksAndPath(false));
+        this.unitService.on(MOVE, () => this.updatePathsAndMarks());
+        this.unitService.on(Unit.PREPARED_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
         this.unitService.on(UnitService.SHOT_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xFFFFFF, cell)));
         this.unitService.on(UnitService.TARGET_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xFF0000, cell)));
         this.unitService.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
-        this.unitService.on(NEXT_TURN, () => this.findPathsForCurrentUnit());
+        this.unitService.on(NEXT_TURN, () => this.updatePathsAndMarks());
         this.projectileService.on(SHOT, (projectile: game.Actor) => this.addChild(projectile));
     }
 
-    removeMarksAndPath(withCurrentMark: boolean) {
+    removePathsAndMarksExceptCurrent() {
         this.pathLayer.removeChildren();
         this.markLayer.removeChildren();
-        if (!withCurrentMark) {
-            this.markLayer.addChild(this.currentMark);
-        }
+        this.markLayer.addChild(this.currentMark);
     }
 
-    private findPathsForCurrentUnit() {
+    private updatePathsAndMarks() {
+        this.currentMark.cell = this.unitService.currentUnit.cell;
         if (this.unitService.isCurrentPlayerTurn) {
             getCurrentPaths(paths => {
                 this.paths = paths;
                 getCurrentReachableCells(reachableCells => {
-                    this.currentMark.cell = this.unitService.currentUnit.cell;
                     this.pathMarks.length = 0;
                     for (const cell of reachableCells) {
                         const pathMark = new Mark(0xFFFF00, cell);
@@ -137,7 +135,7 @@ export default class Field extends game.UiElement {
     }
 
     private addCurrentPathMarks() {
-        this.removeMarksAndPath(false);
+        this.removePathsAndMarksExceptCurrent();
         for (const mark of this.pathMarks) {
             this.markLayer.addChild(mark);
         }

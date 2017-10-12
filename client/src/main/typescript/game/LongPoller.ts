@@ -7,12 +7,20 @@ export class LongPoller<T> extends PIXI.utils.EventEmitter {
     private readonly remainingResponses = new Array<T>(0);
 
     private isProcessingResponse = false;
-    private isRunning = true;
 
-    constructor(private nextResponseNumber: number,
-                private readonly getResponse:
-                    (number: number, onSuccess: (response: T) => void, onError: () => void) => void) {
+    constructor(private readonly getResponse:
+                    (number: number, callback: (response: T) => void, onError: () => void) => void,
+                private _isRunning = false, private nextResponseNumber: number = 0) {
         super();
+        this.waitForNextResponse();
+    }
+
+    public get isRunning(): boolean {
+        return this._isRunning;
+    }
+
+    public set isRunning(value: boolean) {
+        this._isRunning = value;
         this.waitForNextResponse();
     }
 
@@ -22,10 +30,6 @@ export class LongPoller<T> extends PIXI.utils.EventEmitter {
         } else {
             this.startNextResponseProcessing();
         }
-    }
-
-    public stop() {
-        this.isRunning = false;
     }
 
     private startNextResponseProcessing() {
