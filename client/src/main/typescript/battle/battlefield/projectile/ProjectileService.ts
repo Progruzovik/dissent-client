@@ -10,7 +10,7 @@ export default class ProjectileService extends PIXI.utils.EventEmitter {
     static readonly SHELL = "shell";
 
     private static createProjectile(specification: Gun, to: Cell, from: Cell): game.Actor {
-        switch (specification.projectileType) {
+        switch (specification.gunTypeName) {
             case ProjectileService.BEAM:
                 return new Beam(to, from);
             case ProjectileService.SHELL:

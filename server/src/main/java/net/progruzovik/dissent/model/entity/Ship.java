@@ -26,22 +26,22 @@ public final class Ship {
         return hull.getId();
     }
 
-    public int getFirstGunId() {
-        return firstGun == null ? 0 : firstGun.getId();
-    }
-
     @JsonIgnore
     public Gun getFirstGun() {
         return firstGun;
     }
 
-    public int getSecondGunId() {
-        return secondGun == null ? 0 : secondGun.getId();
+    public int getFirstGunId() {
+        return firstGun == null ? 0 : firstGun.getId();
     }
 
     @JsonIgnore
     public Gun getSecondGun() {
         return secondGun;
+    }
+
+    public int getSecondGunId() {
+        return secondGun == null ? 0 : secondGun.getId();
     }
 
     public Gun getGun(int gunId) {

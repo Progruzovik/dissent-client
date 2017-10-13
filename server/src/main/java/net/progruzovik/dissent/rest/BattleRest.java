@@ -42,13 +42,13 @@ public final class BattleRest {
         return session.getBattle().getUnitQueue().getQueue();
     }
 
-    @GetMapping("/ships")
-    public Collection<Hull> getUniqueHulls() {
+    @GetMapping("/hulls")
+    public Collection<Hull> getHulls() {
         return session.getBattle().getUnitQueue().getUniqueHulls();
     }
 
     @GetMapping("/guns")
-    public Collection<Gun> getUniqueGuns() {
+    public Collection<Gun> getGuns() {
         return session.getBattle().getUnitQueue().getUniqueGuns();
     }
 

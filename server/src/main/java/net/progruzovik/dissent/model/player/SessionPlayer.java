@@ -21,7 +21,7 @@ import java.util.List;
 
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
-public class SessionPlayer implements Session {
+public final class SessionPlayer implements Session {
 
     private final String id;
     private final List<Ship> ships = new ArrayList<>();

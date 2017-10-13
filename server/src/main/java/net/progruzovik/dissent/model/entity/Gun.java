@@ -20,25 +20,22 @@ public final class Gun {
     @Column(nullable = false)
     private int cooldown;
 
-    @Column(nullable = false)
-    private String projectileType;
-
-    @Column(nullable = false)
+    @Column
     private int shotsCount;
 
-    @Column(nullable = false)
+    @Column
     private int shotDelay;
+
+    @ManyToOne
+    @JoinColumn(name = "gunTypeId", nullable = false)
+    private GunType gunType;
 
     public Gun() { }
 
-    public Gun(int id, String name, int radius, int cooldown, String projectileType, int shotsCount, int shotDelay) {
-        this.id = id;
-        this.name = name;
+    public Gun(int radius, int cooldown, GunType gunType) {
         this.radius = radius;
         this.cooldown = cooldown;
-        this.projectileType = projectileType;
-        this.shotsCount = shotsCount;
-        this.shotDelay = shotDelay;
+        this.gunType = gunType;
     }
 
     public int getId() {
@@ -58,15 +55,20 @@ public final class Gun {
         return cooldown;
     }
 
-    public String getProjectileType() {
-        return projectileType;
-    }
-
     public int getShotsCount() {
         return shotsCount;
     }
 
     public int getShotDelay() {
         return shotDelay;
+    }
+
+    @JsonIgnore
+    public GunType getGunType() {
+        return gunType;
+    }
+
+    public String getGunTypeName() {
+        return gunType.getName();
     }
 }

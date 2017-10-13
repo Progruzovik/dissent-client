@@ -2,10 +2,7 @@ package net.progruzovik.dissent.model.battle;
 
 import net.progruzovik.dissent.exception.InvalidMoveException;
 import net.progruzovik.dissent.exception.InvalidUnitException;
-import net.progruzovik.dissent.model.entity.Gun;
-import net.progruzovik.dissent.model.entity.Hull;
-import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.entity.Texture;
+import net.progruzovik.dissent.model.entity.*;
 import net.progruzovik.dissent.model.util.Cell;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,9 +11,8 @@ public final class FieldTest {
 
     private Field field;
     private Unit unit;
-    private final Ship ship = new Ship(new Hull(0, 3, new Texture(0, "texture")),
-            new Gun(0, "gun", 3, 0, "shell", 1, 0),
-            null);
+    private final Ship ship = new Ship(new Hull(0, 3, new Texture()),
+            new Gun(3, 0, new GunType()), null);;
 
     @Before
     public void setUp() {

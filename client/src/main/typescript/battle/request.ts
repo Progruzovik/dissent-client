@@ -33,7 +33,7 @@ export function getField(callback: (actionsCount: number, ships: Hull[], guns: G
                                     side: Side, asteroids: Cell[], units: Unit[]) => void) {
     axios.all([
         axios.get(BATTLE_PREFIX + "/actions/count"),
-        axios.get(BATTLE_PREFIX + "/ships"),
+        axios.get(BATTLE_PREFIX + "/hulls"),
         axios.get(BATTLE_PREFIX + "/guns"),
         axios.get(BATTLE_PREFIX + "/size"),
         axios.get(BATTLE_PREFIX + "/side"),
@@ -104,7 +104,7 @@ export class Cell {
 
 export class Gun {
     constructor(readonly id: number, readonly name: string, readonly cooldown: number,
-                readonly projectileType: string, readonly shotsCount: number, readonly shotDelay: number) {}
+                readonly shotsCount: number, readonly shotDelay: number, readonly gunTypeName: string) {}
 }
 
 export class Hull {
