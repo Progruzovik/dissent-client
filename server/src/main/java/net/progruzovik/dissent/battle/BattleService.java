@@ -45,12 +45,12 @@ public final class BattleService implements Battle {
         field = new Field(new Cell(colsCount, colsCount));
         int i = 0;
         for (final Ship ship : leftPlayer.getShips()) {
-            registerUnit(new Unit(new Cell(0, i * UNIT_INDENT + BORDER_INDENT), ship, Side.LEFT));
+            registerUnit(new Unit(Side.LEFT, new Cell(0, i * UNIT_INDENT + BORDER_INDENT), ship));
             i++;
         }
         i = 0;
         for (final Ship ship : rightPlayer.getShips()) {
-            registerUnit(new Unit(new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT), ship, Side.RIGHT));
+            registerUnit(new Unit(Side.RIGHT, new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT), ship));
             i++;
         }
         onNextTurn();
@@ -99,15 +99,13 @@ public final class BattleService implements Battle {
 
     @Override
     public List<Cell> findReachableCellsForCurrentUnit() {
-        return field.findReachableCells(unitQueue.getCurrentUnit());
+        return field.findReachableCellsForActiveUnit();
     }
 
     @Override
     public boolean moveCurrentUnit(String playerId, Cell cell) {
-        if (isIdBelongsToCurrentPlayer(playerId) && cell.isInBorders(field.getSize())
-                && field.isCellInCurrentPaths(cell) && unitQueue.getCurrentUnit().move(cell)) {
-            moves.add(field.moveUnit(cell));
-            field.createPathsForUnit(unitQueue.getCurrentUnit());
+        if (isIdBelongsToCurrentPlayer(playerId)) {
+            moves.add(field.moveActiveUnit(cell));
             addAction(new Action(moves.size() - 1, ActionType.MOVE));
             return true;
         }
@@ -146,8 +144,8 @@ public final class BattleService implements Battle {
     public boolean endTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
             unitQueue.nextTurn();
-            addAction(new Action(ActionType.NEXT_TURN));
             onNextTurn();
+            addAction(new Action(ActionType.NEXT_TURN));
             return true;
         }
         return false;
@@ -170,8 +168,7 @@ public final class BattleService implements Battle {
     private void onNextTurn() {
         final Player player = getCurrentPlayer();
         if (player != null) {
-            unitQueue.getCurrentUnit().makeCurrent();
-            field.createPathsForUnit(unitQueue.getCurrentUnit());
+            field.activateUnit(unitQueue.getCurrentUnit());
             player.act();
         }
     }

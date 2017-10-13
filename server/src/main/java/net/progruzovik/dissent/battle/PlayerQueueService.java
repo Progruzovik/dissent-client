@@ -5,12 +5,12 @@ import net.progruzovik.dissent.model.player.Status;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class QueueService implements Queue {
+public final class PlayerQueueService implements PlayerQueue {
 
     private Player queuedPlayer;
     private final BattleFactory battleFactory;
 
-    public QueueService(BattleFactory battleFactory) {
+    public PlayerQueueService(BattleFactory battleFactory) {
         this.battleFactory = battleFactory;
     }
 

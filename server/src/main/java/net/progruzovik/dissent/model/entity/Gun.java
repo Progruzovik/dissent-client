@@ -29,6 +29,18 @@ public final class Gun {
     @Column(nullable = false)
     private int shotDelay;
 
+    public Gun() { }
+
+    public Gun(int id, String name, int radius, int cooldown, String projectileType, int shotsCount, int shotDelay) {
+        this.id = id;
+        this.name = name;
+        this.radius = radius;
+        this.cooldown = cooldown;
+        this.projectileType = projectileType;
+        this.shotsCount = shotsCount;
+        this.shotDelay = shotDelay;
+    }
+
     public int getId() {
         return id;
     }

@@ -2,12 +2,14 @@ package net.progruzovik.dissent.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class Ship {
+public final class Ship {
 
-    private final Hull hull;
+    private Hull hull;
 
-    private final Gun firstGun;
-    private final Gun secondGun;
+    private Gun firstGun;
+    private Gun secondGun;
+
+    public Ship() { }
 
     public Ship(Hull hull, Gun firstGun, Gun secondGun) {
         this.hull = hull;

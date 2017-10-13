@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.model.player;
 
 import net.progruzovik.dissent.battle.Battle;
-import net.progruzovik.dissent.battle.Queue;
+import net.progruzovik.dissent.battle.PlayerQueue;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.battle.action.Action;
@@ -27,11 +27,11 @@ public class SessionPlayer implements Session {
     private final List<Ship> ships = new ArrayList<>();
     private Status status = Status.IDLE;
 
-    private final Queue queue;
+    private final PlayerQueue queue;
     private DeferredResult<Status> deferredStatus;
     private BattleConnector battleConnector;
 
-    public SessionPlayer(HttpSession session, Queue queue, HullDao shipDao, GunDao gunDao) {
+    public SessionPlayer(HttpSession session, PlayerQueue queue, HullDao shipDao, GunDao gunDao) {
         id = session.getId();
         final Hull basicHull = shipDao.getHull(1);
         final Gun shrapnel = gunDao.getGun(1);

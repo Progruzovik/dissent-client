@@ -16,6 +16,14 @@ public final class Hull {
     @JoinColumn(name = "textureId", nullable = false)
     private Texture texture;
 
+    public Hull() { }
+
+    public Hull(int id, int speed, Texture texture) {
+        this.id = id;
+        this.speed = speed;
+        this.texture = texture;
+    }
+
     public int getId() {
         return id;
     }

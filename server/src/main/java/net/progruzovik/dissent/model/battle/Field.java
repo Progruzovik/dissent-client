@@ -1,5 +1,7 @@
 package net.progruzovik.dissent.model.battle;
 
+import net.progruzovik.dissent.exception.InvalidMoveException;
+import net.progruzovik.dissent.exception.InvalidUnitException;
 import net.progruzovik.dissent.model.battle.action.Move;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.util.Cell;
@@ -12,7 +14,7 @@ public final class Field {
 
     private final Cell size;
 
-    private Cell currentCell;
+    private Unit activeUnit;
     private final List<List<Cell>> currentPaths;
     private final List<Cell> currentTargets = new ArrayList<>();
 
@@ -54,17 +56,12 @@ public final class Field {
         return asteroids;
     }
 
-    public boolean isCellInCurrentPaths(Cell cell) {
-        return currentPaths.get(cell.getX()).get(cell.getY()) != null
-                && map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY;
-    }
-
     public boolean isCellInCurrentTargets(Cell cell) {
         return currentTargets.contains(cell);
     }
 
-    public List<Cell> findReachableCells(Unit unit) {
-        return findNeighborsInRadius(unit.getCell(), unit.getMovementPoints(), c -> !isCellInCurrentPaths(c));
+    public List<Cell> findReachableCellsForActiveUnit() {
+        return findNeighborsInRadius(activeUnit.getCell(), activeUnit.getMovementPoints(), c -> !isCellReachable(c));
     }
 
     public Map<String, List<Cell>> findShotAndTargetCells(int gunId, Unit unit) {
@@ -104,17 +101,34 @@ public final class Field {
                 unit.getSide() == Side.LEFT ? CellStatus.UNIT_LEFT : CellStatus.UNIT_RIGHT);
     }
 
-    public Move moveUnit(Cell cell) {
-        final CellStatus oldStatus = map.get(currentCell.getX()).get(currentCell.getY());
-        map.get(currentCell.getX()).set(currentCell.getY(), CellStatus.EMPTY);
+    public void activateUnit(Unit unit) {
+        final CellStatus unitCellStatus = map.get(unit.getCell().getX()).get(unit.getCell().getY());
+        if (activeUnit == unit || unit.getSide() == Side.NONE
+                || unit.getSide() == Side.LEFT && unitCellStatus != CellStatus.UNIT_LEFT
+                || unit.getSide() == Side.RIGHT && unitCellStatus != CellStatus.UNIT_RIGHT) {
+            throw new InvalidUnitException();
+        }
+        activeUnit = unit;
+        activeUnit.activate();
+        createPathsForActiveUnit();
+    }
+
+    public Move moveActiveUnit(Cell cell) {
+        if (!cell.isInBorders(size) || !isCellReachable(cell)) {
+            throw new InvalidMoveException(activeUnit.getMovementPoints(), activeUnit.getCell(), cell);
+        }
+        final CellStatus oldStatus = map.get(activeUnit.getCell().getX()).get(activeUnit.getCell().getY());
+        map.get(activeUnit.getCell().getX()).set(activeUnit.getCell().getY(), CellStatus.EMPTY);
         map.get(cell.getX()).set(cell.getY(), oldStatus);
 
         final Move result = new Move();
         Cell pathCell = cell;
-        while (!pathCell.equals(currentCell)) {
+        while (!pathCell.equals(activeUnit.getCell())) {
             result.add(pathCell);
             pathCell = currentPaths.get(pathCell.getX()).get(pathCell.getY());
         }
+        activeUnit.move(cell);
+        createPathsForActiveUnit();
         return result;
     }
 
@@ -122,37 +136,9 @@ public final class Field {
         map.get(cell.getX()).set(cell.getY(), CellStatus.UNIT_DESTROYED);
     }
 
-    public void createPathsForUnit(Unit unit) {
-        currentCell = unit.getCell();
-
-        final List<List<Integer>> distances = new ArrayList<>(size.getX());
-        for (int i = 0; i < size.getX(); i++) {
-            distances.add(new ArrayList<>(size.getY()));
-            for (int j = 0; j < size.getY(); j++) {
-                distances.get(i).add(Integer.MAX_VALUE);
-                currentPaths.get(i).set(j, null);
-            }
-        }
-        distances.get(currentCell.getX()).set(currentCell.getY(), 0);
-        currentPaths.get(currentCell.getX()).set(currentCell.getY(), currentCell);
-
-        final Queue<Cell> cellQueue = new LinkedList<>();
-        cellQueue.offer(currentCell);
-        while (!cellQueue.isEmpty()) {
-            final Cell cell = cellQueue.poll();
-            final int distanceToCell = distances.get(cell.getX()).get(cell.getY());
-            if (distanceToCell < unit.getMovementPoints()) {
-                for (final Cell neighborCell : findNeighborsForCell(cell)) {
-                    final CellStatus neighborStatus = map.get(neighborCell.getX()).get(neighborCell.getY());
-                    if (neighborStatus != CellStatus.OBSTACLE
-                            && distances.get(neighborCell.getX()).get(neighborCell.getY()) > distanceToCell + 1) {
-                        distances.get(neighborCell.getX()).set(neighborCell.getY(), distanceToCell + 1);
-                        currentPaths.get(neighborCell.getX()).set(neighborCell.getY(), cell);
-                        cellQueue.offer(neighborCell);
-                    }
-                }
-            }
-        }
+    private boolean isCellReachable(Cell cell) {
+        return currentPaths.get(cell.getX()).get(cell.getY()) != null
+                && map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY;
     }
 
     private List<Cell> findNeighborsForCell(Cell cell) {
@@ -222,5 +208,36 @@ public final class Field {
             nextCell = new Cell(nextCell);
         }
         return result;
+    }
+
+    private void createPathsForActiveUnit() {
+        final List<List<Integer>> distances = new ArrayList<>(size.getX());
+        for (int i = 0; i < size.getX(); i++) {
+            distances.add(new ArrayList<>(size.getY()));
+            for (int j = 0; j < size.getY(); j++) {
+                distances.get(i).add(Integer.MAX_VALUE);
+                currentPaths.get(i).set(j, null);
+            }
+        }
+        distances.get(activeUnit.getCell().getX()).set(activeUnit.getCell().getY(), 0);
+        currentPaths.get(activeUnit.getCell().getX()).set(activeUnit.getCell().getY(), activeUnit.getCell());
+
+        final Queue<Cell> cellQueue = new LinkedList<>();
+        cellQueue.offer(activeUnit.getCell());
+        while (!cellQueue.isEmpty()) {
+            final Cell cell = cellQueue.poll();
+            final int distanceToCell = distances.get(cell.getX()).get(cell.getY());
+            if (distanceToCell < activeUnit.getMovementPoints()) {
+                for (final Cell neighborCell : findNeighborsForCell(cell)) {
+                    final CellStatus neighborStatus = map.get(neighborCell.getX()).get(neighborCell.getY());
+                    if (neighborStatus != CellStatus.OBSTACLE
+                            && distances.get(neighborCell.getX()).get(neighborCell.getY()) > distanceToCell + 1) {
+                        distances.get(neighborCell.getX()).set(neighborCell.getY(), distanceToCell + 1);
+                        currentPaths.get(neighborCell.getX()).set(neighborCell.getY(), cell);
+                        cellQueue.offer(neighborCell);
+                    }
+                }
+            }
+        }
     }
 }
