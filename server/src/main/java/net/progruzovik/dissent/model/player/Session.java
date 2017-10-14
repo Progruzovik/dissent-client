@@ -14,4 +14,6 @@ public interface Session extends Player {
     boolean addToQueue();
 
     boolean removeFromQueue();
+
+    boolean startScenario();
 }

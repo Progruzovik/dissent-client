@@ -1,18 +1,18 @@
 {
-  "name": "dissent-client",
-  "version": "0.0.1",
-  "dependencies": {
-    "axios": "^0.16.2",
-    "pixi.js": "^4.5.4"
-  },
-  "devDependencies": {
-    "@types/pixi.js": "^4.5.4",
-    "ts-loader": "^2.3.2",
-    "typescript": "^2.4.2",
-    "webpack": "^3.4.1"
-  },
-  "scripts": {
-    "webpack": "./node_modules/.bin/webpack --config webpack.config.js",
-    "webpack-p": "NODE_ENV='production' ./node_modules/.bin/webpack --config webpack.config.js"
-  }
+    "name": "dissent-client",
+    "version": "0.0.1",
+    "dependencies": {
+        "axios": "^0.16.2",
+        "pixi.js": "^4.5.4"
+    },
+    "devDependencies": {
+        "@types/pixi.js": "^4.5.4",
+        "ts-loader": "^2.3.2",
+        "typescript": "^2.4.2",
+        "webpack": "^3.4.1"
+    },
+    "scripts": {
+        "webpack": "./node_modules/.bin/webpack --config webpack.config.js",
+        "webpack-p": "NODE_ENV='production' ./node_modules/.bin/webpack --config webpack.config.js"
+    }
 }

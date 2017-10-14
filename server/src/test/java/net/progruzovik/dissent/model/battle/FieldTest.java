@@ -7,11 +7,13 @@ import net.progruzovik.dissent.model.util.Cell;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public final class FieldTest {
 
     private Field field;
     private Unit unit;
-    private final Ship ship = new Ship(new Hull(0, 3, new Texture()),
+    private final Ship ship = new Ship(new Hull(0, 5, new Texture()),
             new Gun(3, 0, new GunType()), null);;
 
     @Before
@@ -23,13 +25,15 @@ public final class FieldTest {
     }
 
     @Test(expected = InvalidUnitException.class)
-    public void createPathsForNotExistingUnit() {
+    public void activateNotExistingUnit() {
         field.activateUnit(new Unit(Side.NONE, new Cell(0, 0), ship));
     }
 
     @Test
     public void moveUnit() {
-        field.moveActiveUnit(new Cell(unit.getCell().getX() + 1, unit.getCell().getY() + 1));
+        assertEquals(5, unit.getMovementPoints());
+        field.moveActiveUnit(new Cell(unit.getCell().getX() + 1, unit.getCell().getY() + 2));
+        assertEquals(2, unit.getMovementPoints());
     }
 
     @Test(expected = InvalidMoveException.class)

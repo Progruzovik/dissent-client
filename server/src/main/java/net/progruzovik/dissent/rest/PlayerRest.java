@@ -1,6 +1,5 @@
 package net.progruzovik.dissent.rest;
 
-import net.progruzovik.dissent.battle.Scenario;
 import net.progruzovik.dissent.model.player.Session;
 import net.progruzovik.dissent.model.player.Status;
 import org.springframework.http.HttpStatus;
@@ -13,11 +12,9 @@ import org.springframework.web.context.request.async.DeferredResult;
 public final class PlayerRest {
 
     private final Session session;
-    private final Scenario scenario;
 
-    public PlayerRest(Session session, Scenario scenario) {
+    public PlayerRest(Session session) {
         this.session = session;
-        this.scenario = scenario;
     }
 
     @GetMapping("/status")
@@ -44,8 +41,8 @@ public final class PlayerRest {
     }
 
     @PostMapping("/scenario")
-    public void postScenario() {
-        session.removeFromQueue();
-        scenario.start(session);
+    public ResponseEntity postScenario() {
+        return session.startScenario() ? new ResponseEntity(HttpStatus.OK)
+                : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }

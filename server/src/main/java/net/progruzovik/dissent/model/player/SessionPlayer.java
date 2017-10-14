@@ -2,6 +2,7 @@ package net.progruzovik.dissent.model.player;
 
 import net.progruzovik.dissent.battle.Battle;
 import net.progruzovik.dissent.battle.PlayerQueue;
+import net.progruzovik.dissent.battle.Scenario;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.battle.action.Action;
@@ -28,10 +29,11 @@ public final class SessionPlayer implements Session {
     private Status status = Status.IDLE;
 
     private final PlayerQueue queue;
+    private final Scenario scenario;
     private DeferredResult<Status> deferredStatus;
     private BattleConnector battleConnector;
 
-    public SessionPlayer(HttpSession session, PlayerQueue queue, HullDao shipDao, GunDao gunDao) {
+    public SessionPlayer(HttpSession session, PlayerQueue queue, Scenario scenario, HullDao shipDao, GunDao gunDao) {
         id = session.getId();
         final Hull basicHull = shipDao.getHull(1);
         final Gun shrapnel = gunDao.getGun(1);
@@ -39,6 +41,7 @@ public final class SessionPlayer implements Session {
         ships.add(new Ship(shipDao.getHull(2), shrapnel, gunDao.getGun(2)));
         ships.add(new Ship(basicHull, shrapnel, null));
         this.queue = queue;
+        this.scenario = scenario;
     }
 
     @Override
@@ -99,6 +102,13 @@ public final class SessionPlayer implements Session {
     @Override
     public boolean removeFromQueue() {
         return queue.remove(this);
+    }
+
+    @Override
+    public boolean startScenario() {
+        if (status == Status.QUEUED) return false;
+        scenario.start(this);
+        return true;
     }
 
     @Override
