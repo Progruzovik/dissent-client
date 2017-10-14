@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 const PLAYER_PREFIX = "/api/player";
 const BATTLE_PREFIX = "/api/battle";
@@ -9,12 +9,6 @@ export function getTextures(callback: (textures: Texture[]) => void) {
 
 export function getStatus(callback: (status: Status) => void) {
     axios.get(PLAYER_PREFIX + "/status").then(response => callback(response.data));
-}
-
-export function getNextStatus(_, callback: (status: Status) => void, onError: () => void) {
-    axios.get(PLAYER_PREFIX + "/status/next")
-        .then(response => callback(response.data))
-        .catch(onError);
 }
 
 export function postQueue() {
@@ -41,12 +35,6 @@ export function getField(callback: (actionsCount: number, ships: Hull[], guns: G
         axios.get(BATTLE_PREFIX + "/units"),
     ]).then(axios.spread((actionsCount, ships, guns, size, side, asteroids, units) =>
         callback(actionsCount.data, ships.data, guns.data, size.data, side.data, asteroids.data, units.data)));
-}
-
-export function getAction(number: number, callback: (action: Action) => void, onError: () => void) {
-    axios.get(BATTLE_PREFIX + "/action/" + number)
-        .then(response => callback(response.data))
-        .catch(onError);
 }
 
 export function getMove(number: number, callback: (move: Cell[]) => void) {
@@ -80,6 +68,26 @@ export function postCurrentUnitShot(gunId: number, cell: Cell) {
 
 export function postTurn() {
     axios.post(BATTLE_PREFIX + "/turn");
+}
+
+export function getNextStatus(_, callback: (status: Status) => void, onError: () => void) {
+    axios.get(PLAYER_PREFIX + "/status/next")
+        .then(response => callback(response.data))
+        .catch(error => {
+            if (error.response.status == 503) {
+                onError();
+            }
+        });
+}
+
+export function getAction(number: number, callback: (action: Action) => void, onError: () => void) {
+    axios.get(BATTLE_PREFIX + "/action/" + number)
+        .then(response => callback(response.data))
+        .catch(error => {
+            if (error.response.status == 503) {
+                onError();
+            }
+        });
 }
 
 export const enum ActionType {
