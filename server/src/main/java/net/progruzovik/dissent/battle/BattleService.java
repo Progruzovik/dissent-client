@@ -9,7 +9,7 @@ import net.progruzovik.dissent.model.battle.action.ActionType;
 import net.progruzovik.dissent.model.battle.action.Move;
 import net.progruzovik.dissent.model.battle.action.Shot;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.player.Player;
+import net.progruzovik.dissent.model.player.Captain;
 import net.progruzovik.dissent.model.player.Status;
 import net.progruzovik.dissent.model.util.Cell;
 
@@ -24,8 +24,8 @@ public final class BattleService implements Battle {
 
     private boolean isRunning = true;
 
-    private final Player leftPlayer;
-    private final Player rightPlayer;
+    private final Captain leftCaptain;
+    private final Captain rightCaptain;
 
     private final List<Move> moves = new ArrayList<>();
     private final List<Shot> shots = new ArrayList<>();
@@ -34,22 +34,22 @@ public final class BattleService implements Battle {
     private final UnitQueue unitQueue = new UnitQueue();
     private final Field field;
 
-    public BattleService(Player leftPlayer, Player rightPlayer) {
-        this.leftPlayer = leftPlayer;
-        leftPlayer.setBattle(this);
-        this.rightPlayer = rightPlayer;
-        rightPlayer.setBattle(this);
+    public BattleService(Captain leftCaptain, Captain rightCaptain) {
+        this.leftCaptain = leftCaptain;
+        leftCaptain.setBattle(this);
+        this.rightCaptain = rightCaptain;
+        rightCaptain.setBattle(this);
 
-        final int maxShipsCountOnSide = Math.max(leftPlayer.getShips().size(), rightPlayer.getShips().size());
+        final int maxShipsCountOnSide = Math.max(leftCaptain.getShips().size(), rightCaptain.getShips().size());
         final int colsCount = maxShipsCountOnSide * UNIT_INDENT + BORDER_INDENT * 2;
         field = new Field(new Cell(colsCount, colsCount));
         int i = 0;
-        for (final Ship ship : leftPlayer.getShips()) {
+        for (final Ship ship : leftCaptain.getShips()) {
             registerUnit(new Unit(Side.LEFT, new Cell(0, i * UNIT_INDENT + BORDER_INDENT), ship));
             i++;
         }
         i = 0;
-        for (final Ship ship : rightPlayer.getShips()) {
+        for (final Ship ship : rightCaptain.getShips()) {
             registerUnit(new Unit(Side.RIGHT, new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT), ship));
             i++;
         }
@@ -68,10 +68,10 @@ public final class BattleService implements Battle {
 
     @Override
     public Side getPlayerSide(String playerId) {
-        if (leftPlayer.getId().equals(playerId)) {
+        if (leftCaptain.getId().equals(playerId)) {
             return Side.LEFT;
         }
-        if (rightPlayer.getId().equals(playerId)) {
+        if (rightCaptain.getId().equals(playerId)) {
             return Side.RIGHT;
         }
         return Side.NONE;
@@ -129,8 +129,8 @@ public final class BattleService implements Battle {
                     field.destroyUnitOnCell(cell);
                     if (!unitQueue.hasUnitsOnBothSides()) {
                         isRunning = false;
-                        leftPlayer.setStatus(Status.IDLE);
-                        rightPlayer.setStatus(Status.IDLE);
+                        leftCaptain.setStatus(Status.IDLE);
+                        rightCaptain.setStatus(Status.IDLE);
                         addAction(new Action(ActionType.FINISH));
                     }
                 }
@@ -152,24 +152,24 @@ public final class BattleService implements Battle {
     }
 
     private boolean isIdBelongsToCurrentPlayer(String id) {
-        final Player currentPlayer = getCurrentPlayer();
-        return currentPlayer != null && currentPlayer.getId().equals(id);
+        final Captain currentCaptain = getCurrentPlayer();
+        return currentCaptain != null && currentCaptain.getId().equals(id);
     }
 
-    private Player getCurrentPlayer() {
+    private Captain getCurrentPlayer() {
         if (!isRunning) return null;
         switch (unitQueue.getCurrentUnit().getSide()) {
-            case LEFT: return leftPlayer;
-            case RIGHT: return rightPlayer;
+            case LEFT: return leftCaptain;
+            case RIGHT: return rightCaptain;
             default: return null;
         }
     }
 
     private void onNextTurn() {
-        final Player player = getCurrentPlayer();
-        if (player != null) {
+        final Captain captain = getCurrentPlayer();
+        if (captain != null) {
             field.activateUnit(unitQueue.getCurrentUnit());
-            player.act();
+            captain.act();
         }
     }
 
@@ -179,8 +179,8 @@ public final class BattleService implements Battle {
     }
 
     private void addAction(Action action) {
-        leftPlayer.newAction(actions.size(), action);
-        rightPlayer.newAction(actions.size(), action);
+        leftCaptain.newAction(actions.size(), action);
+        rightCaptain.newAction(actions.size(), action);
         actions.add(action);
     }
 }

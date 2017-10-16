@@ -1,24 +1,28 @@
 package net.progruzovik.dissent.model.player;
 
-import net.progruzovik.dissent.battle.Battle;
-import net.progruzovik.dissent.model.battle.action.Action;
-import net.progruzovik.dissent.model.entity.Ship;
+import net.progruzovik.dissent.model.battle.action.DeferredAction;
+import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.socket.WebSocketSession;
 
-import java.util.List;
+import javax.servlet.http.HttpSession;
 
-public interface Player {
+public interface Player extends Captain {
 
-    String getId();
+    String NAME = "player";
 
-    List<Ship> getShips();
+    static Player retrieveFromWebSocketSession(WebSocketSession session) {
+        return (Player) session.getAttributes().get(NAME);
+    }
 
-    void setStatus(Status status);
+    Status getStatus();
 
-    Battle getBattle();
+    void setDeferredStatus(DeferredResult<Status> deferredStatus);
 
-    void setBattle(Battle battle);
+    void setDeferredAction(DeferredAction deferredAction);
 
-    void newAction(int number, Action action);
+    boolean addToQueue();
 
-    void act();
+    boolean removeFromQueue();
+
+    boolean startScenario();
 }

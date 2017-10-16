@@ -1,9 +1,10 @@
 package net.progruzovik.dissent.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.battle.Battle;
 import net.progruzovik.dissent.battle.BattleFactory;
 import net.progruzovik.dissent.battle.BattleService;
-import net.progruzovik.dissent.model.player.Player;
+import net.progruzovik.dissent.model.player.Captain;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -28,8 +29,8 @@ public class AppConfig {
 
     @Bean
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-    Battle battle(@Qualifier("sessionPlayer") Player leftPlayer, @Qualifier("aiPlayer") Player rightPlayer) {
-        return new BattleService(leftPlayer, rightPlayer);
+    Battle battle(@Qualifier("sessionPlayer") Captain leftCaptain, @Qualifier("aiCaptain") Captain rightCaptain) {
+        return new BattleService(leftCaptain, rightCaptain);
     }
 
     @Bean
@@ -47,5 +48,10 @@ public class AppConfig {
         entityManagerFactory.setDataSource(dataSource);
         entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         return entityManagerFactory;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }

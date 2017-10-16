@@ -2,7 +2,7 @@ package net.progruzovik.dissent.model.player;
 
 import net.progruzovik.dissent.battle.Battle;
 import net.progruzovik.dissent.battle.PlayerQueue;
-import net.progruzovik.dissent.battle.Scenario;
+import net.progruzovik.dissent.battle.ScenarioDigest;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.battle.action.Action;
@@ -22,18 +22,19 @@ import java.util.List;
 
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
-public final class SessionPlayer implements Session {
+public final class SessionPlayer implements Player {
 
     private final String id;
     private final List<Ship> ships = new ArrayList<>();
     private Status status = Status.IDLE;
 
     private final PlayerQueue queue;
-    private final Scenario scenario;
+    private final ScenarioDigest scenarioDigest;
     private DeferredResult<Status> deferredStatus;
     private BattleConnector battleConnector;
 
-    public SessionPlayer(HttpSession session, PlayerQueue queue, Scenario scenario, HullDao shipDao, GunDao gunDao) {
+    public SessionPlayer(HttpSession session, PlayerQueue queue,
+                         ScenarioDigest scenarioDigest, HullDao shipDao, GunDao gunDao) {
         id = session.getId();
         final Hull basicHull = shipDao.getHull(1);
         final Gun shrapnel = gunDao.getGun(1);
@@ -41,7 +42,9 @@ public final class SessionPlayer implements Session {
         ships.add(new Ship(shipDao.getHull(2), shrapnel, gunDao.getGun(2)));
         ships.add(new Ship(basicHull, shrapnel, null));
         this.queue = queue;
-        this.scenario = scenario;
+        this.scenarioDigest = scenarioDigest;
+
+        session.setAttribute(Player.NAME, this);
     }
 
     @Override
@@ -96,18 +99,22 @@ public final class SessionPlayer implements Session {
 
     @Override
     public boolean addToQueue() {
-        return queue.add(this);
+        if (status != Status.IDLE) return false;
+        queue.add(this);
+        return true;
     }
 
     @Override
     public boolean removeFromQueue() {
-        return queue.remove(this);
+        if (status != Status.QUEUED) return false;
+        queue.remove(this);
+        return true;
     }
 
     @Override
     public boolean startScenario() {
-        if (status == Status.QUEUED) return false;
-        scenario.start(this);
+        if (status != Status.IDLE) return false;
+        scenarioDigest.start(this);
         return true;
     }
 

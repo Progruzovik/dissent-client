@@ -18,12 +18,12 @@ import java.util.List;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public final class AiPlayer implements Player {
+public final class AiCaptain implements Captain {
 
     private final List<Ship> ships = new ArrayList<>();
     private Battle battle;
 
-    public AiPlayer(HullDao hullDao, GunDao gunDao) {
+    public AiCaptain(HullDao hullDao, GunDao gunDao) {
         final Hull aiHull = hullDao.getHull(3);
         final Gun shrapnel = gunDao.getGun(1);
         ships.add(new Ship(aiHull, shrapnel, null));

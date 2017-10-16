@@ -6,7 +6,7 @@ import net.progruzovik.dissent.model.battle.action.Move;
 import net.progruzovik.dissent.model.battle.action.Shot;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
-import net.progruzovik.dissent.model.player.Session;
+import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
 import net.progruzovik.dissent.model.battle.action.DeferredAction;
 import org.springframework.http.HttpStatus;
@@ -21,97 +21,97 @@ import java.util.Map;
 @RequestMapping("/api/battle")
 public final class BattleRest {
 
-    private final Session session;
+    private final Player player;
 
-    public BattleRest(Session session) {
-        this.session = session;
+    public BattleRest(Player player) {
+        this.player = player;
     }
 
     @GetMapping("/size")
     public Cell getSize() {
-        return session.getBattle().getField().getSize();
+        return player.getBattle().getField().getSize();
     }
 
     @GetMapping("/asteroids")
     public Collection<Cell> getAsteroids() {
-        return session.getBattle().getField().getAsteroids();
+        return player.getBattle().getField().getAsteroids();
     }
 
     @GetMapping("/units")
     public Collection<Unit> getUnits() {
-        return session.getBattle().getUnitQueue().getQueue();
+        return player.getBattle().getUnitQueue().getQueue();
     }
 
     @GetMapping("/hulls")
     public Collection<Hull> getHulls() {
-        return session.getBattle().getUnitQueue().getUniqueHulls();
+        return player.getBattle().getUnitQueue().getUniqueHulls();
     }
 
     @GetMapping("/guns")
     public Collection<Gun> getGuns() {
-        return session.getBattle().getUnitQueue().getUniqueGuns();
+        return player.getBattle().getUnitQueue().getUniqueGuns();
     }
 
     @GetMapping("/side")
     public Side getSide() {
-        return session.getBattle().getPlayerSide(session.getId());
+        return player.getBattle().getPlayerSide(player.getId());
     }
 
     @GetMapping("/action/{number}")
     public DeferredAction getActions(@PathVariable int number) {
         final DeferredAction result = new DeferredAction(number);
-        if (session.getBattle().getActionsCount() > number) {
-            result.setResult(session.getBattle().getAction(number));
+        if (player.getBattle().getActionsCount() > number) {
+            result.setResult(player.getBattle().getAction(number));
         } else {
-            session.setDeferredAction(result);
+            player.setDeferredAction(result);
         }
         return result;
     }
 
     @GetMapping("/actions/count")
     public int getActionsCount() {
-        return session.getBattle().getActionsCount();
+        return player.getBattle().getActionsCount();
     }
 
     @GetMapping("/move/{number}")
     public Move getMove(@PathVariable int number) {
-        return session.getBattle().getMove(number);
+        return player.getBattle().getMove(number);
     }
 
     @GetMapping("/shot/{number}")
     public Shot getShot(@PathVariable int number) {
-        return session.getBattle().getShot(number);
+        return player.getBattle().getShot(number);
     }
 
     @GetMapping("/unit")
     public Unit getCurrentUnit() {
-        return session.getBattle().getUnitQueue().getCurrentUnit();
+        return player.getBattle().getUnitQueue().getCurrentUnit();
     }
 
     @GetMapping("/unit/paths")
     public List<List<Cell>> getCurrentPaths() {
-        return session.getBattle().getField().getCurrentPaths();
+        return player.getBattle().getField().getCurrentPaths();
     }
 
     @GetMapping("/unit/cells")
     public Collection<Cell> getCurrentReachableCells() {
-        return session.getBattle().findReachableCellsForCurrentUnit();
+        return player.getBattle().findReachableCellsForCurrentUnit();
     }
 
     @PostMapping("/unit/cell")
     public ResponseEntity postCurrentUnitCell(@RequestBody Cell cell) {
-        return session.getBattle().moveCurrentUnit(session.getId(), cell) ? new ResponseEntity(HttpStatus.OK)
+        return player.getBattle().moveCurrentUnit(player.getId(), cell) ? new ResponseEntity(HttpStatus.OK)
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/unit/shot")
     public Map<String, List<Cell>> getCellsForCurrentUnitShot(@RequestParam int gunId) {
-        return session.getBattle().findCellsForCurrentUnitShot(gunId);
+        return player.getBattle().findCellsForCurrentUnitShot(gunId);
     }
 
     @PostMapping("/unit/shot")
     public ResponseEntity postCurrentUnitShot(@RequestParam int gunId, @RequestBody Cell cell) {
-        if (session.getBattle().shootWithCurrentUnit(session.getId(), gunId, cell)) {
+        if (player.getBattle().shootWithCurrentUnit(player.getId(), gunId, cell)) {
             return new ResponseEntity(HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -119,7 +119,7 @@ public final class BattleRest {
 
     @PostMapping("/turn")
     public ResponseEntity postTurn() {
-        return session.getBattle().endTurn(session.getId()) ? new ResponseEntity(HttpStatus.OK)
+        return player.getBattle().endTurn(player.getId()) ? new ResponseEntity(HttpStatus.OK)
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }

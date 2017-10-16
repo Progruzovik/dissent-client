@@ -11,16 +11,15 @@ import org.springframework.web.servlet.DispatcherServlet;
 public final class Application {
 
     public static void main(String[] args) throws Exception {
+        final ServletContextHandler servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        servletContext.setResourceBase(new ClassPathResource("/static").getURI().toString());
+
         final AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.register(AppConfig.class);
-
-        final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        contextHandler.setResourceBase(new ClassPathResource("/static").getURI().toString());
-        contextHandler.addServlet(new ServletHolder(new DispatcherServlet(context)), "/*");
+        servletContext.addServlet(new ServletHolder(new DispatcherServlet(context)), "/*");
 
         final Server server = new Server(8080);
-        server.setHandler(contextHandler);
+        server.setHandler(servletContext);
         server.start();
-        server.join();
     }
 }
