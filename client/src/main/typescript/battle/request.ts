@@ -70,16 +70,6 @@ export function postTurn() {
     axios.post(BATTLE_PREFIX + "/turn");
 }
 
-export function getNextStatus(_, callback: (status: Status) => void, onError: () => void) {
-    axios.get(PLAYER_PREFIX + "/status/next")
-        .then(response => callback(response.data))
-        .catch(error => {
-            if (error.response.status == 503) {
-                onError();
-            }
-        });
-}
-
 export function getAction(number: number, callback: (action: Action) => void, onError: () => void) {
     axios.get(BATTLE_PREFIX + "/action/" + number)
         .then(response => callback(response.data))

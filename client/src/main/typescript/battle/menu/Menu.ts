@@ -1,9 +1,9 @@
-import { deleteQueue, getNextStatus, postQueue, postScenario, Status } from "../request";
+import { deleteQueue, postQueue, postScenario, Status } from "../request";
 import * as game from "../../game";
 
 export default class Menu extends game.UiElement {
 
-    private readonly longPoller = new game.LongPoller<Status>(getNextStatus, true);
+    private readonly webSocket = new WebSocket(document.baseURI.toString().replace("http", "ws") + "/app");
 
     private readonly txtDissent = new PIXI.Text("Dissent", { fill: 0xffffff, fontSize: 48, fontWeight: "bold" });
     private readonly txtStatus = new PIXI.Text("", { fill: 0xffffff });
@@ -30,15 +30,17 @@ export default class Menu extends game.UiElement {
             }
         });
         this.btnScenario.on(game.Event.BUTTON_CLICK, postScenario);
-        this.longPoller.on(game.LongPoller.NEXT_RESPONSE, (status: Status) => {
-            this.status = status;
-            if (status == Status.InBattle) {
-                this.emit(game.Event.DONE);
-            } else {
-                this.updateInterface();
+        this.webSocket.onmessage = (e: MessageEvent) => {
+            const data = JSON.parse(e.data);
+            if (data.title == "status") {
+                this.status = data.payload;
+                if (status == Status.InBattle) {
+                    this.emit(game.Event.DONE);
+                } else {
+                    this.updateInterface();
+                }
             }
-            this.longPoller.finishCurrentResponseProcessing();
-        });
+        };
     }
 
     resize(width: number, height: number) {

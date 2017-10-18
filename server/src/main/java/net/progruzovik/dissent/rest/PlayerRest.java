@@ -5,7 +5,6 @@ import net.progruzovik.dissent.model.player.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
 
 @RestController
 @RequestMapping("/api/player")
@@ -20,13 +19,6 @@ public final class PlayerRest {
     @GetMapping("/status")
     public Status getStatus() {
         return player.getStatus();
-    }
-
-    @GetMapping("/status/next")
-    public DeferredResult<Status> getNextStatus() {
-        final DeferredResult<Status> result = new DeferredResult<>();
-        player.setDeferredStatus(result);
-        return result;
     }
 
     @PostMapping("/queue")

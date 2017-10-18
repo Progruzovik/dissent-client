@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.model.player;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.battle.Battle;
 import net.progruzovik.dissent.battle.PlayerQueue;
 import net.progruzovik.dissent.battle.ScenarioDigest;
@@ -11,10 +12,10 @@ import net.progruzovik.dissent.model.battle.action.DeferredAction;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
+import net.progruzovik.dissent.model.socket.WebSocketSessionSender;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -30,10 +31,10 @@ public final class SessionPlayer implements Player {
 
     private final PlayerQueue queue;
     private final ScenarioDigest scenarioDigest;
-    private DeferredResult<Status> deferredStatus;
+    private final WebSocketSessionSender webSocketSessionSender;
     private BattleConnector battleConnector;
 
-    public SessionPlayer(HttpSession session, PlayerQueue queue,
+    public SessionPlayer(HttpSession session, ObjectMapper mapper, PlayerQueue queue,
                          ScenarioDigest scenarioDigest, HullDao shipDao, GunDao gunDao) {
         id = session.getId();
         final Hull basicHull = shipDao.getHull(1);
@@ -43,6 +44,7 @@ public final class SessionPlayer implements Player {
         ships.add(new Ship(basicHull, shrapnel, null));
         this.queue = queue;
         this.scenarioDigest = scenarioDigest;
+        webSocketSessionSender = new WebSocketSessionSender(mapper);
 
         session.setAttribute(Player.NAME, this);
     }
@@ -65,10 +67,7 @@ public final class SessionPlayer implements Player {
     @Override
     public void setStatus(Status status) {
         this.status = status;
-        if (deferredStatus != null) {
-            deferredStatus.setResult(status);
-            deferredStatus = null;
-        }
+        webSocketSessionSender.sendStatusMessage(status);
     }
 
     @Override
@@ -88,8 +87,8 @@ public final class SessionPlayer implements Player {
     }
 
     @Override
-    public void setDeferredStatus(DeferredResult<Status> deferredStatus) {
-        this.deferredStatus = deferredStatus;
+    public WebSocketSessionSender getWebSocketSessionSender() {
+        return webSocketSessionSender;
     }
 
     @Override
