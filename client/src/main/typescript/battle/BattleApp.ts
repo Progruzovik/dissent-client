@@ -2,7 +2,7 @@ import BattlefieldScreen from "./battlefield/BattlefieldScreen";
 import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import MenuScreen from "./menu/MenuScreen";
-import { getField, getTextures } from "./request";
+import {getField, getTextures} from "./request";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 

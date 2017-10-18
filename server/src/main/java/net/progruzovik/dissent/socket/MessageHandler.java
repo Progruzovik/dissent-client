@@ -2,6 +2,7 @@ package net.progruzovik.dissent.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.model.player.Player;
+import net.progruzovik.dissent.model.player.SessionPlayer;
 import net.progruzovik.dissent.model.socket.Message;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -22,18 +23,17 @@ public final class MessageHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        final Player player = (Player) session.getAttributes().get(Player.NAME);
+    public void afterConnectionEstablished(WebSocketSession session) {
+        final Player player = (Player) session.getAttributes().get(SessionPlayer.NAME);
         player.getWebSocketSessionSender().setSession(session);
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws IOException {
-        final Player player = (Player) session.getAttributes().get(Player.NAME);
+        final Player player = (Player) session.getAttributes().get(SessionPlayer.NAME);
         final Message requestMessage = mapper.readValue(textMessage.getPayload(), Message.class);
         if (requestMessage.getTitle().equals(STATUS)) {
-            final Message responseMessage = new Message(STATUS, player.getStatus().toString());
-            session.sendMessage(new TextMessage(mapper.writeValueAsString(responseMessage)));
+            player.getWebSocketSessionSender().sendStatusMessage(player.getStatus());
         }
     }
 }

@@ -1,16 +1,15 @@
-import { deleteQueue, postQueue, postScenario, Status } from "../request";
+import WebSocketConnection from "../WebSocketConnection";
+import {deleteQueue, postQueue, postScenario, Status} from "../request";
 import * as game from "../../game";
 
 export default class Menu extends game.UiElement {
-
-    private readonly webSocket = new WebSocket(document.baseURI.toString().replace("http", "ws") + "/app");
 
     private readonly txtDissent = new PIXI.Text("Dissent", { fill: 0xffffff, fontSize: 48, fontWeight: "bold" });
     private readonly txtStatus = new PIXI.Text("", { fill: 0xffffff });
     private readonly btnQueue = new game.Button();
     private readonly btnScenario = new game.Button("PVE");
 
-    constructor(private status: Status) {
+    constructor(private status: Status, private readonly webSocketConnection: WebSocketConnection) {
         super();
         this.txtDissent.anchor.x = game.CENTER;
         this.addChild(this.txtDissent);
@@ -21,6 +20,7 @@ export default class Menu extends game.UiElement {
         this.btnScenario.pivot.x = this.btnScenario.width / 2;
         this.addChild(this.btnScenario);
         this.updateInterface();
+        this.webSocketConnection.requestStatus();
 
         this.btnQueue.on(game.Event.BUTTON_CLICK, () => {
             if (this.status == Status.Queued) {
@@ -30,17 +30,14 @@ export default class Menu extends game.UiElement {
             }
         });
         this.btnScenario.on(game.Event.BUTTON_CLICK, postScenario);
-        this.webSocket.onmessage = (e: MessageEvent) => {
-            const data = JSON.parse(e.data);
-            if (data.title == "status") {
-                this.status = data.payload;
-                if (status == Status.InBattle) {
-                    this.emit(game.Event.DONE);
-                } else {
-                    this.updateInterface();
-                }
+        this.webSocketConnection.on(WebSocketConnection.STATUS, (status: Status) => {
+            this.status = status;
+            if (status == Status.InBattle) {
+                this.emit(game.Event.DONE);
+            } else {
+                this.updateInterface();
             }
-        };
+        });
     }
 
     resize(width: number, height: number) {

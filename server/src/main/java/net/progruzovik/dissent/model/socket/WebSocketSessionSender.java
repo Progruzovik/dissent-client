@@ -26,12 +26,12 @@ public final class WebSocketSessionSender {
     }
 
     private void sendMessage(Message message)  {
-        try {
-            if (session != null) {
+        if (session != null) {
+            try {
                 session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

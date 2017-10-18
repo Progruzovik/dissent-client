@@ -5,8 +5,6 @@ import net.progruzovik.dissent.model.socket.WebSocketSessionSender;
 
 public interface Player extends Captain {
 
-    String NAME = "player";
-
     Status getStatus();
 
     WebSocketSessionSender getWebSocketSessionSender();

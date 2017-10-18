@@ -25,6 +25,8 @@ import java.util.List;
 @Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
 public final class SessionPlayer implements Player {
 
+    public static String NAME = "scopedTarget.sessionPlayer";
+
     private final String id;
     private final List<Ship> ships = new ArrayList<>();
     private Status status = Status.IDLE;
@@ -45,8 +47,6 @@ public final class SessionPlayer implements Player {
         this.queue = queue;
         this.scenarioDigest = scenarioDigest;
         webSocketSessionSender = new WebSocketSessionSender(mapper);
-
-        session.setAttribute(Player.NAME, this);
     }
 
     @Override
