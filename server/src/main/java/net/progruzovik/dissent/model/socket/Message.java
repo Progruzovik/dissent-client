@@ -1,22 +1,30 @@
 package net.progruzovik.dissent.model.socket;
 
-public final class Message {
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-    private String title;
-    private Object payload;
+public final class Message<T> {
 
-    public Message(String title, Object payload) {
-        this.title = title;
+    private Method method;
+    private Subject subject;
+    private T payload;
+
+    public Message(Subject subject, T payload) {
+        this.subject = subject;
         this.payload = payload;
     }
 
     public Message() { }
 
-    public String getTitle() {
-        return title;
+    @JsonIgnore
+    public Method getMethod() {
+        return method;
     }
 
-    public Object getPayload() {
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public T getPayload() {
         return payload;
     }
 }

@@ -6,7 +6,7 @@ import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import { Cell, Side } from "../request";
-import { FINISH, NEXT_TURN } from "../util";
+import { ActionType } from "../util";
 import * as game from "../../game";
 import WebSocketConnection from "../WebSocketConnection";
 
@@ -24,7 +24,7 @@ export default class BattlefieldScreen extends game.Screen {
         this.bottomUi = controls;
 
         const actionService = new ActionService(actionsCount, webSocketConnection, field, controls, unitService);
-        unitService.emit(NEXT_TURN, true);
-        actionService.once(FINISH, () => this.emit(game.Event.DONE));
+        unitService.emit(ActionType[ActionType.NextTurn], true);
+        actionService.once(ActionType[ActionType.Finish], () => this.emit(game.Event.DONE));
     }
 }

@@ -3,7 +3,7 @@ import Field from "./Field";
 import UnitService from "./unit/UnitService";
 import WebSocketConnection from "../WebSocketConnection";
 import { getMove, getShot } from "../request";
-import { Action, ActionType, FINISH, MOVE, NEXT_TURN, SHOT } from "../util";
+import { Action, ActionType, Subject } from "../util";
 import * as PIXI from "pixi.js";
 
 export default class ActionReceiver extends PIXI.utils.EventEmitter {
@@ -15,16 +15,17 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
                 private readonly field: Field, private readonly controls: Controls,
                 private readonly unitService: UnitService) {
         super();
-        webSocketConnection.on(WebSocketConnection.ACTION, (action: Action) => {
+        webSocketConnection.requestActions(actionsCount);
+        webSocketConnection.on(Subject[Subject.Action], (action: Action) => {
             if (this.isProcessingAction) {
                 this.remainingActions.push(action);
             } else {
                 this.processAction(action);
             }
         });
-        unitService.on(MOVE, () => this.finishActionProcessing());
-        unitService.on(SHOT, () => this.finishActionProcessing());
-        unitService.on(NEXT_TURN, () => this.finishActionProcessing());
+        unitService.on(ActionType[ActionType.Move], () => this.finishActionProcessing());
+        unitService.on(ActionType[ActionType.Shot], () => this.finishActionProcessing());
+        unitService.on(ActionType[ActionType.NextTurn], () => this.finishActionProcessing());
     }
 
     private processAction(action: Action) {
@@ -41,7 +42,7 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
         } else if (action.type == ActionType.NextTurn) {
             this.unitService.nextTurn();
         } else if (action.type == ActionType.Finish) {
-            this.emit(FINISH);
+            this.emit(ActionType[ActionType.Finish]);
         }
     }
 

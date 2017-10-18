@@ -3,7 +3,6 @@ package net.progruzovik.dissent.model.socket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.player.Status;
-import net.progruzovik.dissent.socket.MessageHandler;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -23,11 +22,11 @@ public final class MessageSender {
     }
 
     public void sendStatus(Status status) {
-        send(new Message(MessageHandler.STATUS, status));
+        send(new Message<>(Subject.STATUS, status));
     }
 
     public void sendAction(Action action) {
-        send(new Message(MessageHandler.ACTION, action));
+        send(new Message<>(Subject.ACTION, action));
     }
 
     private void send(Message message)  {

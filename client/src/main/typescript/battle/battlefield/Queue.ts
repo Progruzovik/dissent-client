@@ -1,7 +1,7 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import { Side } from "../request";
-import { NEXT_TURN } from "../util";
+import { ActionType } from "../util";
 import * as game from "../../game";
 
 export default class Queue extends game.UiElement {
@@ -24,7 +24,7 @@ export default class Queue extends game.UiElement {
             });
         });
 
-        unitService.on(NEXT_TURN, (isFirst: boolean) => {
+        unitService.on(ActionType[ActionType.NextTurn], (isFirst: boolean) => {
             if (!isFirst) {
                 this.bg.setChildIndex(this.bg.getChildAt(0), this.bg.children.length - 1);
                 this.updateChildrenPositions();

@@ -2,7 +2,7 @@ import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import { Cell, getCurrentReachableCells, getCurrentPaths, postCurrentUnitCell } from "../request";
-import { MOVE, NEXT_TURN, SHOT } from "../util";
+import { ActionType } from "../util";
 import * as game from "../../game";
 
 export default class Field extends game.UiElement {
@@ -49,15 +49,16 @@ export default class Field extends game.UiElement {
             this.addChild(unit);
         }
 
-        this.unitService.on(MOVE, () => this.updatePathsAndMarks());
+        this.unitService.on(ActionType[ActionType.Move], () => this.updatePathsAndMarks());
         this.unitService.on(Unit.PREPARED_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
         this.unitService.on(UnitService.SHOT_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xFFFFFF, cell)));
         this.unitService.on(UnitService.TARGET_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xFF0000, cell)));
         this.unitService.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
-        this.unitService.on(NEXT_TURN, () => this.updatePathsAndMarks());
-        this.projectileService.on(SHOT, (projectile: game.Actor) => this.addChild(projectile));
+        this.unitService.on(ActionType[ActionType.NextTurn], () => this.updatePathsAndMarks());
+        this.projectileService.on(ActionType[ActionType.Shot],
+            (projectile: game.Actor) => this.addChild(projectile));
     }
 
     removePathsAndMarksExceptCurrent() {

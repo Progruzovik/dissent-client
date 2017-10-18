@@ -1,7 +1,7 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import { postTurn } from "../request";
-import { MOVE, NEXT_TURN, SHOT } from "../util";
+import { ActionType } from "../util";
 import * as game from "../../game";
 
 export default class Controls extends game.UiElement {
@@ -29,9 +29,9 @@ export default class Controls extends game.UiElement {
         this.addChild(this.bgModule);
         this.addChild(this.btnNextTurn);
 
-        this.unitService.on(MOVE, () => this.updateInterface());
-        this.unitService.on(SHOT, () => this.updateInterface());
-        this.unitService.on(NEXT_TURN, () => this.updateInterface());
+        this.unitService.on(ActionType[ActionType.Move], () => this.updateInterface());
+        this.unitService.on(ActionType[ActionType.Shot], () => this.updateInterface());
+        this.unitService.on(ActionType[ActionType.NextTurn], () => this.updateInterface());
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
             if (unitService.currentUnit.preparedGunId == unitService.currentUnit.firstGun.id) {
                 unitService.currentUnit.preparedGunId = -1;

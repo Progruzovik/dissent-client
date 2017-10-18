@@ -1,7 +1,7 @@
 import Field from "../Field";
 import ProjectileService from "../projectile/ProjectileService";
 import { Cell, Gun, Hull, Side } from "../../request";
-import { MOVE, SHOT } from "../../util";
+import { ActionType } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 
@@ -108,7 +108,7 @@ export default class Unit extends game.Actor {
         this.projectileService.once(game.Event.DONE, () => {
             this.preparedGunId = -1;
             target.destroyUnit();
-            this.emit(SHOT);
+            this.emit(ActionType[ActionType.Shot]);
         });
     }
 
@@ -125,7 +125,7 @@ export default class Unit extends game.Actor {
                 this.updatePosition();
             } else {
                 this.path = null;
-                this.emit(MOVE);
+                this.emit(ActionType[ActionType.Move]);
             }
         }
     }

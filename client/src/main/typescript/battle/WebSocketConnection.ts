@@ -1,45 +1,51 @@
+import { Subject } from "./util";
 import * as PIXI from "pixi.js";
 
 export default class WebSocketConnection extends PIXI.utils.EventEmitter {
 
-    static readonly STATUS = "status";
-    static readonly ACTION = "action";
-
     private readonly messageQueue = new Array<Message>(0);
-    private readonly webSocket = new WebSocket(document.baseURI.toString()
-        .replace("http", "ws") + "/app");
+    private webSocket: WebSocket;
 
-    constructor() {
-        super();
+    init() {
+        this.webSocket = new WebSocket(document.baseURI.toString()
+            .replace("http", "ws") + "/app");
         this.webSocket.onopen = () => {
             for (const message of this.messageQueue) {
-                this.webSocket.send(JSON.stringify(message));
+                this.sendMessage(message);
             }
             this.messageQueue.length = 0;
         };
         this.webSocket.onmessage = (e: MessageEvent) => {
             const message: Message = JSON.parse(e.data);
-            this.emit(message.title, message.payload)
+            this.emit(Subject[message.subject], message.payload);
         };
     }
 
     requestStatus() {
-        this.makeRequest(new Message(WebSocketConnection.STATUS));
+        this.makeRequest(new Message(Method.Get, Subject.Status));
     }
 
     requestActions(fromNumber: number) {
-        this.makeRequest(new Message(WebSocketConnection.ACTION, fromNumber));
+        this.makeRequest(new Message(Method.Get, Subject.Action, fromNumber));
     }
 
     private makeRequest(message: Message) {
         if (this.webSocket.readyState == WebSocket.OPEN) {
-            this.webSocket.send(JSON.stringify(message));
+            this.sendMessage(message);
         } else {
             this.messageQueue.push(message);
         }
     }
+
+    private sendMessage(message: Message) {
+        this.webSocket.send(JSON.stringify(message));
+    }
+}
+
+const enum Method {
+    Get, Post
 }
 
 class Message {
-    constructor(readonly title: string, readonly payload: any = 0) {}
+    constructor(readonly method: Method, readonly subject: Subject, readonly payload: any = 0) {}
 }
