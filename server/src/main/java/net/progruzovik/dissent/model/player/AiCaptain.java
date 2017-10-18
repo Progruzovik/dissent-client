@@ -54,7 +54,7 @@ public final class AiCaptain implements Captain {
     }
 
     @Override
-    public void newAction(int number, Action action) { }
+    public void newAction(Action action) { }
 
     @Override
     public void act() {

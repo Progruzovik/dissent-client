@@ -78,8 +78,8 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public Action getAction(int number) {
-        return actions.get(number);
+    public List<Action> getActions(int fromNumber) {
+        return actions.subList(fromNumber, actions.size());
     }
 
     @Override
@@ -144,8 +144,8 @@ public final class BattleService implements Battle {
     public boolean endTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
             unitQueue.nextTurn();
-            onNextTurn();
             addAction(new Action(ActionType.NEXT_TURN));
+            onNextTurn();
             return true;
         }
         return false;
@@ -179,8 +179,8 @@ public final class BattleService implements Battle {
     }
 
     private void addAction(Action action) {
-        leftCaptain.newAction(actions.size(), action);
-        rightCaptain.newAction(actions.size(), action);
+        leftCaptain.newAction(action);
+        rightCaptain.newAction(action);
         actions.add(action);
     }
 }

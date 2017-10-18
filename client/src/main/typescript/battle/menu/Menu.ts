@@ -1,5 +1,5 @@
 import WebSocketConnection from "../WebSocketConnection";
-import {deleteQueue, postQueue, postScenario, Status} from "../request";
+import { deleteQueue, postQueue, postScenario, Status } from "../request";
 import * as game from "../../game";
 
 export default class Menu extends game.UiElement {
@@ -20,7 +20,6 @@ export default class Menu extends game.UiElement {
         this.btnScenario.pivot.x = this.btnScenario.width / 2;
         this.addChild(this.btnScenario);
         this.updateInterface();
-        this.webSocketConnection.requestStatus();
 
         this.btnQueue.on(game.Event.BUTTON_CLICK, () => {
             if (this.status == Status.Queued) {

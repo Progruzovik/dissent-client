@@ -8,14 +8,14 @@ import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.battle.action.ActionType;
-import net.progruzovik.dissent.model.battle.action.DeferredAction;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.socket.WebSocketSessionSender;
+import net.progruzovik.dissent.model.socket.MessageSender;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.WebSocketSession;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -33,8 +33,8 @@ public final class SessionPlayer implements Player {
 
     private final PlayerQueue queue;
     private final ScenarioDigest scenarioDigest;
-    private final WebSocketSessionSender webSocketSessionSender;
-    private BattleConnector battleConnector;
+    private final MessageSender messageSender;
+    private Battle battle;
 
     public SessionPlayer(HttpSession session, ObjectMapper mapper, PlayerQueue queue,
                          ScenarioDigest scenarioDigest, HullDao shipDao, GunDao gunDao) {
@@ -46,7 +46,7 @@ public final class SessionPlayer implements Player {
         ships.add(new Ship(basicHull, shrapnel, null));
         this.queue = queue;
         this.scenarioDigest = scenarioDigest;
-        webSocketSessionSender = new WebSocketSessionSender(mapper);
+        messageSender = new MessageSender(mapper);
     }
 
     @Override
@@ -67,38 +67,33 @@ public final class SessionPlayer implements Player {
     @Override
     public void setStatus(Status status) {
         this.status = status;
-        webSocketSessionSender.sendStatusMessage(status);
+        messageSender.sendStatus(status);
     }
 
     @Override
     public Battle getBattle() {
-        return battleConnector.getBattle();
+        return battle;
     }
 
     @Override
     public void setBattle(Battle battle) {
         if (battle != null) {
-            setStatus(Status.IN_BATTLE);
-            if (battleConnector != null && battleConnector.getDeferredAction() != null) {
-                battleConnector.getDeferredAction().setResult(new Action(ActionType.FINISH));
+            if (this.battle != null) {
+                messageSender.sendAction(new Action(ActionType.FINISH));
             }
-            battleConnector = new BattleConnector(battle);
+            this.battle = battle;
+            setStatus(Status.IN_BATTLE);
         }
     }
 
     @Override
-    public WebSocketSessionSender getWebSocketSessionSender() {
-        return webSocketSessionSender;
-    }
-
-    @Override
-    public void setDeferredAction(DeferredAction deferredAction) {
-        battleConnector.setDeferredAction(deferredAction);
+    public void setWebSocketSession(WebSocketSession webSocketSession) {
+        messageSender.setSession(webSocketSession);
     }
 
     @Override
     public boolean addToQueue() {
-        if (status != Status.IDLE) return false;
+        if (status == Status.QUEUED) return false;
         queue.add(this);
         return true;
     }
@@ -112,16 +107,25 @@ public final class SessionPlayer implements Player {
 
     @Override
     public boolean startScenario() {
-        if (status != Status.IDLE) return false;
+        if (status == Status.QUEUED) return false;
         scenarioDigest.start(this);
         return true;
     }
 
     @Override
-    public void newAction(int number, Action action) {
-        if (battleConnector.getDeferredAction() != null && battleConnector.getDeferredAction().getNumber() == number) {
-            battleConnector.getDeferredAction().setResult(action);
-            battleConnector.setDeferredAction(null);
+    public void newAction(Action action) {
+        messageSender.sendAction(action);
+    }
+
+    @Override
+    public void sendStatus() {
+        messageSender.sendStatus(status);
+    }
+
+    @Override
+    public void sendActions(int fromNumber) {
+        for (final Action action : battle.getActions(fromNumber)) {
+            messageSender.sendAction(action);
         }
     }
 

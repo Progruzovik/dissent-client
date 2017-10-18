@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.model.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.player.Status;
 import net.progruzovik.dissent.socket.MessageHandler;
 import org.springframework.web.socket.TextMessage;
@@ -8,12 +9,12 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 
-public final class WebSocketSessionSender {
+public final class MessageSender {
 
     private WebSocketSession session;
     private final ObjectMapper mapper;
 
-    public WebSocketSessionSender(ObjectMapper mapper) {
+    public MessageSender(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -21,11 +22,15 @@ public final class WebSocketSessionSender {
         this.session = session;
     }
 
-    public void sendStatusMessage(Status status) {
-        sendMessage(new Message(MessageHandler.STATUS, String.valueOf(status.ordinal())));
+    public void sendStatus(Status status) {
+        send(new Message(MessageHandler.STATUS, status));
     }
 
-    private void sendMessage(Message message)  {
+    public void sendAction(Action action) {
+        send(new Message(MessageHandler.ACTION, action));
+    }
+
+    private void send(Message message)  {
         if (session != null) {
             try {
                 session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));

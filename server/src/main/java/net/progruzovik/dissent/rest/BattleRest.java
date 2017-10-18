@@ -8,7 +8,6 @@ import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.util.Cell;
-import net.progruzovik.dissent.model.battle.action.DeferredAction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,17 +54,6 @@ public final class BattleRest {
     @GetMapping("/side")
     public Side getSide() {
         return player.getBattle().getPlayerSide(player.getId());
-    }
-
-    @GetMapping("/action/{number}")
-    public DeferredAction getActions(@PathVariable int number) {
-        final DeferredAction result = new DeferredAction(number);
-        if (player.getBattle().getActionsCount() > number) {
-            result.setResult(player.getBattle().getAction(number));
-        } else {
-            player.setDeferredAction(result);
-        }
-        return result;
     }
 
     @GetMapping("/actions/count")

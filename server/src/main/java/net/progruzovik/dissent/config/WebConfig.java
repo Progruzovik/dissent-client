@@ -1,9 +1,6 @@
 package net.progruzovik.dissent.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
-import net.progruzovik.dissent.config.json.NullValueSerializer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -14,6 +11,12 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
+
+    private final ObjectMapper mapper;
+
+    public WebConfig(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -26,25 +29,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Override
-    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
-        configurer.setDefaultTimeout(1000000);
-        super.configureAsyncSupport(configurer);
-    }
-
-    @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(createMappingJackson2HttpMessageConverter());
+        converters.add(new MappingJackson2HttpMessageConverter(mapper));
         super.configureMessageConverters(converters);
-    }
-
-    private MappingJackson2HttpMessageConverter createMappingJackson2HttpMessageConverter() {
-        final ObjectMapper objectMapper = new ObjectMapper();
-
-        DefaultSerializerProvider serializerProvider = new DefaultSerializerProvider.Impl();
-        serializerProvider.setNullValueSerializer(new NullValueSerializer());
-        objectMapper.setSerializerProvider(serializerProvider);
-
-        objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_INDEX);
-        return new MappingJackson2HttpMessageConverter(objectMapper);
     }
 }

@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 export default class WebSocketConnection extends PIXI.utils.EventEmitter {
 
     static readonly STATUS = "status";
+    static readonly ACTION = "action";
 
     private readonly messageQueue = new Array<Message>(0);
     private readonly webSocket = new WebSocket(document.baseURI.toString()
@@ -26,6 +27,10 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
         this.makeRequest(new Message(WebSocketConnection.STATUS));
     }
 
+    requestActions(fromNumber: number) {
+        this.makeRequest(new Message(WebSocketConnection.ACTION, fromNumber));
+    }
+
     private makeRequest(message: Message) {
         if (this.webSocket.readyState == WebSocket.OPEN) {
             this.webSocket.send(JSON.stringify(message));
@@ -36,5 +41,5 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
 }
 
 class Message {
-    constructor(readonly title: string, readonly payload: string = "") {}
+    constructor(readonly title: string, readonly payload: any = 0) {}
 }

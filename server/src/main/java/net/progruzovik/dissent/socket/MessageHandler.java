@@ -15,6 +15,7 @@ import java.io.IOException;
 public final class MessageHandler extends TextWebSocketHandler {
 
     public static String STATUS = "status";
+    public static String ACTION = "action";
 
     private final ObjectMapper mapper;
 
@@ -25,7 +26,7 @@ public final class MessageHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         final Player player = (Player) session.getAttributes().get(SessionPlayer.NAME);
-        player.getWebSocketSessionSender().setSession(session);
+        player.setWebSocketSession(session);
     }
 
     @Override
@@ -33,7 +34,7 @@ public final class MessageHandler extends TextWebSocketHandler {
         final Player player = (Player) session.getAttributes().get(SessionPlayer.NAME);
         final Message requestMessage = mapper.readValue(textMessage.getPayload(), Message.class);
         if (requestMessage.getTitle().equals(STATUS)) {
-            player.getWebSocketSessionSender().sendStatusMessage(player.getStatus());
+            player.sendStatus();
         }
     }
 }

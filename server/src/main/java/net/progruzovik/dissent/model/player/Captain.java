@@ -18,7 +18,7 @@ public interface Captain {
 
     void setBattle(Battle battle);
 
-    void newAction(int number, Action action);
+    void newAction(Action action);
 
     void act();
 }

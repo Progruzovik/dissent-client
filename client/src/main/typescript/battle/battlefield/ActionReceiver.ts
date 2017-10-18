@@ -1,39 +1,55 @@
 import Controls from "./Controls";
 import Field from "./Field";
 import UnitService from "./unit/UnitService";
-import { Action, getAction, ActionType, getMove, getShot } from "../request";
-import { FINISH, MOVE, NEXT_TURN, SHOT } from "../util";
-import * as game from "../../game";
+import WebSocketConnection from "../WebSocketConnection";
+import { getMove, getShot } from "../request";
+import { Action, ActionType, FINISH, MOVE, NEXT_TURN, SHOT } from "../util";
 import * as PIXI from "pixi.js";
 
-export default class ActionService extends PIXI.utils.EventEmitter {
+export default class ActionReceiver extends PIXI.utils.EventEmitter {
 
-    private readonly longPoller;
+    private isProcessingAction = false;
+    private readonly remainingActions = new Array<Action>(0);
 
-    constructor(nextActionNumber: number, private readonly field: Field,
-                private readonly controls: Controls, private readonly unitService: UnitService) {
+    constructor(actionsCount: number, private readonly webSocketConnection: WebSocketConnection,
+                private readonly field: Field, private readonly controls: Controls,
+                private readonly unitService: UnitService) {
         super();
-        this.longPoller = new game.LongPoller<Action>(getAction, true, nextActionNumber);
-
-        this.longPoller.on(game.LongPoller.NEXT_RESPONSE, (action: Action) => {
-            this.field.removePathsAndMarksExceptCurrent();
-            this.controls.lockInterface();
-            if (action.type == ActionType.Move) {
-                getMove(action.number, move => this.unitService.currentUnit.path = move);
-            } else if (action.type == ActionType.Shot) {
-                getShot(action.number, shot => {
-                    this.unitService.currentUnit.shoot(this.unitService.units.filter(unit =>
-                        unit.cell.x == shot.cell.x && unit.cell.y == shot.cell.y)[0], shot.gunId);
-                });
-            } else if (action.type == ActionType.NextTurn) {
-                this.unitService.nextTurn();
-            } else if (action.type == ActionType.Finish) {
-                this.longPoller.isRunning = false;
-                this.emit(FINISH);
+        webSocketConnection.on(WebSocketConnection.ACTION, (action: Action) => {
+            if (this.isProcessingAction) {
+                this.remainingActions.push(action);
+            } else {
+                this.processAction(action);
             }
         });
-        this.unitService.on(MOVE, () => this.longPoller.finishCurrentResponseProcessing());
-        this.unitService.on(SHOT, () => this.longPoller.finishCurrentResponseProcessing());
-        this.unitService.on(NEXT_TURN, () => this.longPoller.finishCurrentResponseProcessing());
+        unitService.on(MOVE, () => this.finishActionProcessing());
+        unitService.on(SHOT, () => this.finishActionProcessing());
+        unitService.on(NEXT_TURN, () => this.finishActionProcessing());
+    }
+
+    private processAction(action: Action) {
+        this.isProcessingAction = true;
+        this.field.removePathsAndMarksExceptCurrent();
+        this.controls.lockInterface();
+        if (action.type == ActionType.Move) {
+            getMove(action.number, move => this.unitService.currentUnit.path = move);
+        } else if (action.type == ActionType.Shot) {
+            getShot(action.number, shot => {
+                this.unitService.currentUnit.shoot(this.unitService.units.filter(unit =>
+                    unit.cell.x == shot.cell.x && unit.cell.y == shot.cell.y)[0], shot.gunId);
+            });
+        } else if (action.type == ActionType.NextTurn) {
+            this.unitService.nextTurn();
+        } else if (action.type == ActionType.Finish) {
+            this.emit(FINISH);
+        }
+    }
+
+    private finishActionProcessing() {
+        if (this.remainingActions.length == 0) {
+            this.isProcessingAction = false;
+        } else {
+            this.processAction(this.remainingActions.shift())
+        }
     }
 }
