@@ -22,17 +22,18 @@ export default class BattleApp extends game.Application {
                     const menuScreen = new MenuScreen(webSocketConnection);
                     this.currentScreen = menuScreen;
                     menuScreen.on(MenuScreen.BATTLE, () => {
-                        getField((actionsCount, hulls, guns, size, side, asteroids, units) => {
+                        getField((actionsCount, hulls, guns, size, side, asteroids, clouds, units) => {
                             const projectileService = new ProjectileService();
                             const unitsArray = new Array<Unit>(0);
                             for (const unit of units) {
                                 unitsArray.push(new Unit(unit.side, unit.cell,
                                     hulls.filter(hull => hull.id == unit.ship.hullId)[0],
                                     guns.filter(gun => gun.id == unit.ship.firstGunId)[0],
-                                    guns.filter(gun => gun.id == unit.ship.secondGunId)[0], projectileService));
+                                    guns.filter(gun =>
+                                        gun.id == unit.ship.secondGunId)[0], projectileService));
                             }
                             this.currentScreen = new BattlefieldScreen(actionsCount, size, side,
-                                asteroids, unitsArray, webSocketConnection, projectileService);
+                                asteroids, clouds, unitsArray, webSocketConnection, projectileService);
                             this.currentScreen.once(game.Event.DONE, () => this.currentScreen = menuScreen);
                         });
                     });

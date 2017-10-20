@@ -12,12 +12,12 @@ import WebSocketConnection from "../WebSocketConnection";
 
 export default class BattlefieldScreen extends game.Screen {
 
-    constructor(actionsCount: number, fieldSize: Cell, currentPlayerSide: Side, asteroids: Cell[],
+    constructor(actionsCount: number, fieldSize: Cell, currentPlayerSide: Side, asteroids: Cell[], clouds: Cell[],
                 units: Unit[], webSocketConnection: WebSocketConnection, projectileService: ProjectileService) {
         super();
         const unitService = new UnitService(currentPlayerSide, units);
 
-        const field = new Field(fieldSize, asteroids, unitService, projectileService);
+        const field = new Field(fieldSize, asteroids, clouds, unitService, projectileService);
         this.content = field;
         this.leftUi = new Queue(currentPlayerSide, unitService);
         const controls = new Controls(unitService);

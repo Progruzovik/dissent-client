@@ -36,6 +36,11 @@ public final class BattleRest {
         return player.getBattle().getField().getAsteroids();
     }
 
+    @GetMapping("/clouds")
+    public Collection<Cell> getClouds() {
+        return player.getBattle().getField().getClouds();
+    }
+
     @GetMapping("/units")
     public Collection<Unit> getUnits() {
         return player.getBattle().getUnitQueue().getQueue();

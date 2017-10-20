@@ -19,7 +19,8 @@ public final class Field {
     private final List<Cell> currentTargets = new ArrayList<>();
 
     private final List<Cell> asteroids = new ArrayList<>();
-    private final List<List<CellStatus>> map;
+    private final List<Cell> clouds = new ArrayList<>();
+    private final List<List<Location>> map;
 
     public Field(Cell size) {
         this.size = size;
@@ -30,17 +31,25 @@ public final class Field {
             map.add(new ArrayList<>(size.getY()));
             for (int j = 0; j < size.getY(); j++) {
                 currentPaths.get(i).add(null);
-                map.get(i).add(CellStatus.EMPTY);
+                map.get(i).add(new Location());
             }
         }
 
-        asteroids.add(new Cell(3, 2));
-        asteroids.add(new Cell(3, 3));
-        asteroids.add(new Cell(3, 4));
-        asteroids.add(new Cell(4, 3));
-        asteroids.add(new Cell(4, 4));
+        asteroids.add(new Cell(5, 3));
+        asteroids.add(new Cell(5, 4));
+        asteroids.add(new Cell(5, 5));
+        asteroids.add(new Cell(6, 4));
+        asteroids.add(new Cell(6, 5));
         for (final Cell asteroid : asteroids) {
-            map.get(asteroid.getX()).set(asteroid.getY(), CellStatus.OBSTACLE);
+            map.get(asteroid.getX()).set(asteroid.getY(), new Location(LocationStatus.ASTEROID));
+        }
+        clouds.add(new Cell(getSize().getX() - 5, 3));
+        clouds.add(new Cell(getSize().getX() - 5, 4));
+        clouds.add(new Cell(getSize().getX() - 5, 5));
+        clouds.add(new Cell(getSize().getX() - 6, 4));
+        clouds.add(new Cell(getSize().getX() - 6, 5));
+        for (final Cell cloud : clouds) {
+            map.get(cloud.getX()).set(cloud.getY(), new Location(LocationStatus.CLOUD));
         }
     }
 
@@ -54,6 +63,10 @@ public final class Field {
 
     public List<Cell> getAsteroids() {
         return asteroids;
+    }
+
+    public List<Cell> getClouds() {
+        return clouds;
     }
 
     public boolean isCellInCurrentTargets(Cell cell) {
@@ -74,18 +87,21 @@ public final class Field {
             final List<Cell> availableCells = findNeighborsInRadius(unit.getCell(), gun.getRadius(), c -> {
                 final List<Cell> cellsInBetween = findCellsInBetween(unit.getCell(), c);
                 for (int i = 1; i < cellsInBetween.size() - 1; i++) {
-                    if (map.get(cellsInBetween.get(i).getX()).get(cellsInBetween.get(i).getY()) != CellStatus.EMPTY) {
+                    if (map.get(cellsInBetween.get(i).getX())
+                            .get(cellsInBetween.get(i).getY()).getCurrentStatus() != LocationStatus.EMPTY) {
                         return true;
                     }
                 }
                 return false;
             });
 
-            final CellStatus targetStatus = unit.getSide() == Side.LEFT ? CellStatus.UNIT_RIGHT : CellStatus.UNIT_LEFT;
+            final LocationStatus targetStatus = unit.getCellStatus() == LocationStatus.UNIT_LEFT
+                    ? LocationStatus.UNIT_RIGHT : LocationStatus.UNIT_LEFT;
             for (final Cell cell : availableCells) {
-                if (map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY) {
+                final LocationStatus locationStatus = map.get(cell.getX()).get(cell.getY()).getCurrentStatus();
+                if (locationStatus == LocationStatus.EMPTY) {
                     shotCells.add(cell);
-                }  else if (map.get(cell.getX()).get(cell.getY()) == targetStatus) {
+                }  else if (locationStatus == targetStatus) {
                     currentTargets.add(cell);
                 }
             }
@@ -97,15 +113,13 @@ public final class Field {
     }
 
     public void addUnit(Unit unit) {
-        map.get(unit.getCell().getX()).set(unit.getCell().getY(),
-                unit.getSide() == Side.LEFT ? CellStatus.UNIT_LEFT : CellStatus.UNIT_RIGHT);
+        map.get(unit.getCell().getX()).get(unit.getCell().getY()).setCurrentStatus(unit.getCellStatus());
     }
 
     public void activateUnit(Unit unit) {
-        final CellStatus unitCellStatus = map.get(unit.getCell().getX()).get(unit.getCell().getY());
         if (activeUnit == unit || unit.getSide() == Side.NONE
-                || unit.getSide() == Side.LEFT && unitCellStatus != CellStatus.UNIT_LEFT
-                || unit.getSide() == Side.RIGHT && unitCellStatus != CellStatus.UNIT_RIGHT) {
+                || map.get(unit.getCell().getX()).get(unit.getCell().getY())
+                .getCurrentStatus() != unit.getCellStatus()) {
             throw new InvalidUnitException();
         }
         activeUnit = unit;
@@ -117,9 +131,8 @@ public final class Field {
         if (!cell.isInBorders(size) || !isCellReachable(cell)) {
             throw new InvalidMoveException(activeUnit.getMovementPoints(), activeUnit.getCell(), cell);
         }
-        final CellStatus oldStatus = map.get(activeUnit.getCell().getX()).get(activeUnit.getCell().getY());
-        map.get(activeUnit.getCell().getX()).set(activeUnit.getCell().getY(), CellStatus.EMPTY);
-        map.get(cell.getX()).set(cell.getY(), oldStatus);
+        map.get(activeUnit.getCell().getX()).get(activeUnit.getCell().getY()).resetStatusToDefault();
+        map.get(cell.getX()).get(cell.getY()).setCurrentStatus(activeUnit.getCellStatus());
 
         final Move result = new Move();
         Cell pathCell = cell;
@@ -133,12 +146,13 @@ public final class Field {
     }
 
     public void destroyUnitOnCell(Cell cell) {
-        map.get(cell.getX()).set(cell.getY(), CellStatus.UNIT_DESTROYED);
+        map.get(cell.getX()).get(cell.getY()).setCurrentStatus(LocationStatus.UNIT_DESTROYED);
     }
 
     private boolean isCellReachable(Cell cell) {
+        final LocationStatus locationStatus = map.get(cell.getX()).get(cell.getY()).getCurrentStatus();
         return currentPaths.get(cell.getX()).get(cell.getY()) != null
-                && map.get(cell.getX()).get(cell.getY()) == CellStatus.EMPTY;
+                && locationStatus == LocationStatus.EMPTY || locationStatus == LocationStatus.CLOUD;
     }
 
     private List<Cell> findNeighborsForCell(Cell cell) {
@@ -229,8 +243,7 @@ public final class Field {
             final int distanceToCell = distances.get(cell.getX()).get(cell.getY());
             if (distanceToCell < activeUnit.getMovementPoints()) {
                 for (final Cell neighborCell : findNeighborsForCell(cell)) {
-                    final CellStatus neighborStatus = map.get(neighborCell.getX()).get(neighborCell.getY());
-                    if (neighborStatus != CellStatus.OBSTACLE
+                    if (map.get(neighborCell.getX()).get(neighborCell.getY()).getCurrentStatus() != LocationStatus.ASTEROID
                             && distances.get(neighborCell.getX()).get(neighborCell.getY()) > distanceToCell + 1) {
                         distances.get(neighborCell.getX()).set(neighborCell.getY(), distanceToCell + 1);
                         currentPaths.get(neighborCell.getX()).set(neighborCell.getY(), cell);

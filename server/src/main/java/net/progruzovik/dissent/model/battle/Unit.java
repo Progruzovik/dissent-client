@@ -41,6 +41,14 @@ public final class Unit {
         return cell;
     }
 
+    public LocationStatus getCellStatus() {
+        switch (side) {
+            case LEFT: return LocationStatus.UNIT_LEFT;
+            case RIGHT: return LocationStatus.UNIT_RIGHT;
+            case NONE: default: return LocationStatus.EMPTY;
+        }
+    }
+
     public Ship getShip() {
         return ship;
     }

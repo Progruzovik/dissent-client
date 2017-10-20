@@ -16,8 +16,8 @@ export default class Field extends game.UiElement {
     private readonly pathLayer = new PIXI.Container();
     private readonly markLayer = new PIXI.Container();
 
-    constructor(private readonly size: Cell, fieldObjects: Cell[], private readonly unitService: UnitService,
-                private readonly projectileService: ProjectileService) {
+    constructor(private readonly size: Cell, asteroids: Cell[], clouds: Cell[],
+                private readonly unitService: UnitService, private readonly projectileService: ProjectileService) {
         super();
 
         const bg = new game.Rectangle();
@@ -33,11 +33,17 @@ export default class Field extends game.UiElement {
             line.x = i * Unit.WIDTH;
             this.addChild(line);
         }
-        for (const object of fieldObjects) {
+        for (const asteroid of asteroids) {
             const spriteAsteroid = new PIXI.Sprite(PIXI.loader.resources["asteroid"].texture);
-            spriteAsteroid.x = object.x * Unit.WIDTH;
-            spriteAsteroid.y = object.y * Unit.HEIGHT;
+            spriteAsteroid.x = asteroid.x * Unit.WIDTH;
+            spriteAsteroid.y = asteroid.y * Unit.HEIGHT;
             this.addChild(spriteAsteroid);
+        }
+        for (const cloud of clouds) {
+            const spriteCloud = new PIXI.Sprite(PIXI.loader.resources["cloud"].texture);
+            spriteCloud.x = cloud.x * Unit.WIDTH;
+            spriteCloud.y = cloud.y * Unit.HEIGHT;
+            this.addChild(spriteCloud);
         }
         bg.width = this.width;
         bg.height = this.height;

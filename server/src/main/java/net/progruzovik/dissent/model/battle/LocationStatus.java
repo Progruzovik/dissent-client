@@ -1,9 +1,10 @@
 package net.progruzovik.dissent.model.battle;
 
-public enum CellStatus {
+public enum LocationStatus {
     EMPTY,
     UNIT_LEFT,
     UNIT_RIGHT,
     UNIT_DESTROYED,
-    OBSTACLE
+    ASTEROID,
+    CLOUD
 }

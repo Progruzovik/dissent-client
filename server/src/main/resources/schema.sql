@@ -11,7 +11,8 @@ INSERT INTO texture VALUES
   (1, 'hull-2-2'),
   (2, 'hull-3-1'),
   (3, 'hull-4-2'),
-  (4, 'asteroid');
+  (4, 'asteroid'),
+  (5, 'cloud');
 
 INSERT INTO hull VALUES
   (1, 3, 1),

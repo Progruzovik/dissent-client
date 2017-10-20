@@ -32,4 +32,11 @@ public class Point<T> {
     public void setY(T y) {
         this.y = y;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass()) return false;
+        final Cell cell = (Cell) obj;
+        return getX().equals(cell.getX()) && getY().equals(cell.getY());
+    }
 }

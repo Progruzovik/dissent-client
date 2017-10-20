@@ -24,13 +24,4 @@ public final class Cell extends Point<Integer> {
     public int findDistanceToCell(Cell cell) {
         return Math.abs(cell.getX() - getX()) + Math.abs(cell.getY() - getY());
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (getClass() == obj.getClass()) {
-            Cell cell = (Cell) obj;
-            return getX().equals(cell.getX()) && getY().equals(cell.getY());
-        }
-        return false;
-    }
 }

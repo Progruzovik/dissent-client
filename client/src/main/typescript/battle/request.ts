@@ -25,7 +25,7 @@ export function postScenario() {
 }
 
 export function getField(callback: (actionsCount: number, ships: Hull[], guns: Gun[], size: Cell,
-                                    side: Side, asteroids: Cell[], units: Unit[]) => void) {
+                                    side: Side, asteroids: Cell[], clouds: Cell[], units: Unit[]) => void) {
     axios.all([
         axios.get(BATTLE_PREFIX + "/actions/count"),
         axios.get(BATTLE_PREFIX + "/hulls"),
@@ -33,9 +33,11 @@ export function getField(callback: (actionsCount: number, ships: Hull[], guns: G
         axios.get(BATTLE_PREFIX + "/size"),
         axios.get(BATTLE_PREFIX + "/side"),
         axios.get(BATTLE_PREFIX + "/asteroids"),
+        axios.get(BATTLE_PREFIX + "/clouds"),
         axios.get(BATTLE_PREFIX + "/units"),
-    ]).then(axios.spread((actionsCount, ships, guns, size, side, asteroids, units) =>
-        callback(actionsCount.data, ships.data, guns.data, size.data, side.data, asteroids.data, units.data)));
+    ]).then(axios.spread((actionsCount, ships, guns, size, side, asteroids, clouds, units) =>
+        callback(actionsCount.data, ships.data, guns.data, size.data,
+            side.data, asteroids.data, clouds.data, units.data)));
 }
 
 export function getMove(number: number, callback: (move: Cell[]) => void) {
