@@ -60,11 +60,6 @@ public final class SessionPlayer implements Player {
     }
 
     @Override
-    public Status getStatus() {
-        return status;
-    }
-
-    @Override
     public void setStatus(Status status) {
         this.status = status;
         messageSender.sendStatus(status);
@@ -92,24 +87,18 @@ public final class SessionPlayer implements Player {
     }
 
     @Override
-    public boolean addToQueue() {
-        if (status == Status.QUEUED) return false;
+    public void addToQueue() {
         queue.add(this);
-        return true;
     }
 
     @Override
-    public boolean removeFromQueue() {
-        if (status != Status.QUEUED) return false;
+    public void removeFromQueue() {
         queue.remove(this);
-        return true;
     }
 
     @Override
-    public boolean startScenario() {
-        if (status == Status.QUEUED) return false;
+    public void startScenario() {
         scenarioDigest.start(this);
-        return true;
     }
 
     @Override
@@ -118,15 +107,8 @@ public final class SessionPlayer implements Player {
     }
 
     @Override
-    public void sendStatus() {
+    public void requestStatus() {
         messageSender.sendStatus(status);
-    }
-
-    @Override
-    public void sendActions(int fromNumber) {
-        for (final Action action : battle.getActions(fromNumber)) {
-            messageSender.sendAction(action);
-        }
     }
 
     @Override

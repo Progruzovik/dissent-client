@@ -11,19 +11,6 @@ export function getId(callback: (id: string) => void) {
     axios.get(PLAYER_PREFIX + "/id").then(response => callback(response.data));
 }
 
-
-export function postQueue() {
-    axios.post(PLAYER_PREFIX + "/queue");
-}
-
-export function deleteQueue() {
-    axios.delete(PLAYER_PREFIX + "/queue");
-}
-
-export function postScenario() {
-    axios.post(PLAYER_PREFIX + "/scenario");
-}
-
 export function getField(callback: (actionsCount: number, ships: Hull[], guns: Gun[], size: Cell,
                                     side: Side, asteroids: Cell[], clouds: Cell[], units: Unit[]) => void) {
     axios.all([

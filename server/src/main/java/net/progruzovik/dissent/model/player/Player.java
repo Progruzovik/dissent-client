@@ -4,17 +4,13 @@ import org.springframework.web.socket.WebSocketSession;
 
 public interface Player extends Captain {
 
-    Status getStatus();
-
     void setWebSocketSession(WebSocketSession webSocketSession);
 
-    boolean addToQueue();
+    void addToQueue();
 
-    boolean removeFromQueue();
+    void removeFromQueue();
 
-    boolean startScenario();
+    void startScenario();
 
-    void sendStatus();
-
-    void sendActions(int fromNumber);
+    void requestStatus();
 }

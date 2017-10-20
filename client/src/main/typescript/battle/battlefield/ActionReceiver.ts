@@ -15,7 +15,6 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
                 private readonly field: Field, private readonly controls: Controls,
                 private readonly unitService: UnitService) {
         super();
-        webSocketConnection.requestActions(actionsCount);
         webSocketConnection.on(WebSocketConnection.ACTION, (action: Action) => {
             if (this.isProcessingAction) {
                 this.remainingActions.push(action);
