@@ -1,7 +1,6 @@
 package net.progruzovik.dissent.rest;
 
 import net.progruzovik.dissent.model.player.Player;
-import net.progruzovik.dissent.model.player.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +15,9 @@ public final class PlayerRest {
         this.player = player;
     }
 
-    @GetMapping("/status")
-    public Status getStatus() {
-        return player.getStatus();
+    @GetMapping("/id")
+    public String getId() {
+        return player.getId();
     }
 
     @PostMapping("/queue")

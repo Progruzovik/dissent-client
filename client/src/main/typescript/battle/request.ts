@@ -7,9 +7,10 @@ export function getTextures(callback: (textures: Texture[]) => void) {
     axios.get("/api/textures").then(response => callback(response.data));
 }
 
-export function getStatus(callback: (status: Status) => void) {
-    axios.get(PLAYER_PREFIX + "/status").then(response => callback(response.data));
+export function getId(callback: (id: string) => void) {
+    axios.get(PLAYER_PREFIX + "/id").then(response => callback(response.data));
 }
+
 
 export function postQueue() {
     axios.post(PLAYER_PREFIX + "/queue");
@@ -72,10 +73,6 @@ export function postTurn() {
 
 export const enum Side {
     None, Left, Right
-}
-
-export enum Status {
-    Idle, Queued, InBattle
 }
 
 export class Cell {

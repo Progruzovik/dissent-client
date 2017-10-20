@@ -1,16 +1,18 @@
 import WebSocketConnection from "../WebSocketConnection";
-import { deleteQueue, postQueue, postScenario, Status } from "../request";
-import { Subject } from "../util";
+import { deleteQueue, postQueue, postScenario } from "../request";
+import { Status, Subject } from "../util";
 import * as game from "../../game";
 
 export default class Menu extends game.UiElement {
+
+    private status: Status;
 
     private readonly txtDissent = new PIXI.Text("Dissent", { fill: 0xffffff, fontSize: 48, fontWeight: "bold" });
     private readonly txtStatus = new PIXI.Text("", { fill: 0xffffff });
     private readonly btnQueue = new game.Button();
     private readonly btnScenario = new game.Button("PVE");
 
-    constructor(private status: Status, private readonly webSocketConnection: WebSocketConnection) {
+    constructor(private readonly webSocketConnection: WebSocketConnection) {
         super();
         this.txtDissent.anchor.x = game.CENTER;
         this.addChild(this.txtDissent);
@@ -38,6 +40,7 @@ export default class Menu extends game.UiElement {
                 this.updateInterface();
             }
         });
+        webSocketConnection.requestStatus();
     }
 
     resize(width: number, height: number) {

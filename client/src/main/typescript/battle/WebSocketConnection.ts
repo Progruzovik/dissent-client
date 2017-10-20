@@ -6,7 +6,8 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
     private readonly messageQueue = new Array<Message>(0);
     private webSocket: WebSocket;
 
-    init() {
+    constructor() {
+        super();
         this.webSocket = new WebSocket(document.baseURI.toString()
             .replace("http", "ws") + "/app");
         this.webSocket.onopen = () => {
