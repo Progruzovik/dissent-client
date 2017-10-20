@@ -1,6 +1,6 @@
 import WebSocketConnection from "../WebSocketConnection";
 import { deleteQueue, postQueue, postScenario } from "../request";
-import { Status, Subject } from "../util";
+import { Status } from "../util";
 import * as game from "../../game";
 
 export default class Menu extends game.UiElement {
@@ -32,7 +32,7 @@ export default class Menu extends game.UiElement {
             }
         });
         this.btnScenario.on(game.Event.BUTTON_CLICK, postScenario);
-        this.webSocketConnection.on(Subject[Subject.Status], (status: Status) => {
+        this.webSocketConnection.on(WebSocketConnection.STATUS, (status: Status) => {
             this.status = status;
             if (status == Status.InBattle) {
                 this.emit(game.Event.DONE);

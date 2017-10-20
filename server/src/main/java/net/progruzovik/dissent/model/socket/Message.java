@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public final class Message<T> {
 
     private Method method;
-    private Subject subject;
+    private String subject;
     private T payload;
 
-    public Message(Subject subject, T payload) {
+    public Message(String subject, T payload) {
         this.subject = subject;
         this.payload = payload;
     }
@@ -20,7 +20,7 @@ public final class Message<T> {
         return method;
     }
 
-    public Subject getSubject() {
+    public String getSubject() {
         return subject;
     }
 

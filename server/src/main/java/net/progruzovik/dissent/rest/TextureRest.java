@@ -10,11 +10,11 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/textures")
-public final class TexturesRest {
+public final class TextureRest {
 
     private final TextureDao textureDao;
 
-    public TexturesRest(TextureDao textureDao) {
+    public TextureRest(TextureDao textureDao) {
         this.textureDao = textureDao;
     }
 

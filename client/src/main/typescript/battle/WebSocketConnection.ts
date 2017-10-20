@@ -1,7 +1,9 @@
-import { Subject } from "./util";
 import * as PIXI from "pixi.js";
 
 export default class WebSocketConnection extends PIXI.utils.EventEmitter {
+
+    static readonly STATUS = "status";
+    static readonly ACTION = "action";
 
     private readonly messageQueue = new Array<Message>(0);
     private webSocket: WebSocket;
@@ -18,16 +20,16 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
         };
         this.webSocket.onmessage = (e: MessageEvent) => {
             const message: Message = JSON.parse(e.data);
-            this.emit(Subject[message.subject], message.payload);
+            this.emit(message.subject, message.payload);
         };
     }
 
     requestStatus() {
-        this.makeRequest(new Message(Method.Get, Subject.Status));
+        this.makeRequest(new Message(Method.Get, WebSocketConnection.STATUS));
     }
 
     requestActions(fromNumber: number) {
-        this.makeRequest(new Message(Method.Get, Subject.Action, fromNumber));
+        this.makeRequest(new Message(Method.Get, WebSocketConnection.ACTION, fromNumber));
     }
 
     private makeRequest(message: Message) {
@@ -44,9 +46,9 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
 }
 
 const enum Method {
-    Get, Post
+    Get, Post, Delete
 }
 
 class Message {
-    constructor(readonly method: Method, readonly subject: Subject, readonly payload: any = 0) {}
+    constructor(readonly method: Method, readonly subject: string, readonly payload: any = 0) {}
 }

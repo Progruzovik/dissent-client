@@ -243,7 +243,8 @@ public final class Field {
             final int distanceToCell = distances.get(cell.getX()).get(cell.getY());
             if (distanceToCell < activeUnit.getMovementPoints()) {
                 for (final Cell neighborCell : findNeighborsForCell(cell)) {
-                    if (map.get(neighborCell.getX()).get(neighborCell.getY()).getCurrentStatus() != LocationStatus.ASTEROID
+                    if (map.get(neighborCell.getX()).get(neighborCell.getY())
+                            .getCurrentStatus() != LocationStatus.ASTEROID
                             && distances.get(neighborCell.getX()).get(neighborCell.getY()) > distanceToCell + 1) {
                         distances.get(neighborCell.getX()).set(neighborCell.getY(), distanceToCell + 1);
                         currentPaths.get(neighborCell.getX()).set(neighborCell.getY(), cell);

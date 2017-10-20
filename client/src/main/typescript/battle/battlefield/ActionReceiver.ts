@@ -3,7 +3,7 @@ import Field from "./Field";
 import UnitService from "./unit/UnitService";
 import WebSocketConnection from "../WebSocketConnection";
 import { getMove, getShot } from "../request";
-import { Action, ActionType, Subject } from "../util";
+import { Action, ActionType } from "../util";
 import * as PIXI from "pixi.js";
 
 export default class ActionReceiver extends PIXI.utils.EventEmitter {
@@ -16,7 +16,7 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
                 private readonly unitService: UnitService) {
         super();
         webSocketConnection.requestActions(actionsCount);
-        webSocketConnection.on(Subject[Subject.Action], (action: Action) => {
+        webSocketConnection.on(WebSocketConnection.ACTION, (action: Action) => {
             if (this.isProcessingAction) {
                 this.remainingActions.push(action);
             } else {

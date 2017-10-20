@@ -32,8 +32,10 @@ public final class FieldTest {
     @Test
     public void moveUnit() {
         assertEquals(5, unit.getMovementPoints());
-        field.moveActiveUnit(new Cell(unit.getCell().getX() + 1, unit.getCell().getY() + 2));
+        final Cell cell = new Cell(unit.getCell().getX() + 1, unit.getCell().getY() + 2);
+        field.moveActiveUnit(cell);
         assertEquals(2, unit.getMovementPoints());
+        assertEquals(cell, unit.getCell());
     }
 
     @Test(expected = InvalidMoveException.class)

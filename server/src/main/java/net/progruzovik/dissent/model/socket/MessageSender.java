@@ -22,11 +22,11 @@ public final class MessageSender {
     }
 
     public void sendStatus(Status status) {
-        send(new Message<>(Subject.STATUS, status));
+        send(new Message<>("status", status));
     }
 
     public void sendAction(Action action) {
-        send(new Message<>(Subject.ACTION, action));
+        send(new Message<>("action", action));
     }
 
     private void send(Message message)  {
