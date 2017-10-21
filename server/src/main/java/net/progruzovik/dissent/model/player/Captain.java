@@ -1,8 +1,8 @@
 package net.progruzovik.dissent.model.player;
 
 import net.progruzovik.dissent.battle.Battle;
-import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.entity.Ship;
+import net.progruzovik.dissent.model.socket.ServerMessage;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface Captain {
 
     void setBattle(Battle battle);
 
-    void newAction(Action action);
-
     void act();
+
+    void send(ServerMessage message);
 }

@@ -1,11 +1,18 @@
-export enum ActionType {
-    Move, Shot, NextTurn, Finish
+export const enum ActionType {
+    Move = "move",
+    Shot = "shot",
+    NextTurn = "nextTurn",
+    BattleFinish = "battleFinish"
 }
 
 export enum Status {
     Idle, Queued, InBattle
 }
 
-export class Action {
-    constructor(readonly number: number, readonly type: ActionType) {}
+export class Cell {
+    constructor(readonly x: number, readonly y: number) {}
+}
+
+export class Shot {
+    constructor(readonly gunId: number, readonly cell: Cell) {}
 }

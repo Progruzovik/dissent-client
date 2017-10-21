@@ -2,46 +2,56 @@ import Controls from "./Controls";
 import Field from "./Field";
 import UnitService from "./unit/UnitService";
 import WebSocketConnection from "../WebSocketConnection";
-import { getMove, getShot } from "../request";
-import { Action, ActionType } from "../util";
+import { ActionType, Cell, Shot } from "../util";
 import * as PIXI from "pixi.js";
 
 export default class ActionReceiver extends PIXI.utils.EventEmitter {
 
     private isProcessingAction = false;
-    private readonly remainingActions = new Array<Action>(0);
+    private readonly remainingMoves = new Array<Cell[]>(0);
+    private readonly remainingShots = new Array<Shot>(0);
+    private readonly remainingActions = new Array<ActionType>(0);
 
-    constructor(actionsCount: number, private readonly webSocketConnection: WebSocketConnection,
-                private readonly field: Field, private readonly controls: Controls,
-                private readonly unitService: UnitService) {
+    constructor(private readonly webSocketConnection: WebSocketConnection, private readonly field: Field,
+                private readonly controls: Controls, private readonly unitService: UnitService) {
         super();
-        webSocketConnection.on(WebSocketConnection.ACTION, (action: Action) => {
-            if (this.isProcessingAction) {
-                this.remainingActions.push(action);
-            } else {
-                this.processAction(action);
-            }
+        webSocketConnection.on(ActionType.Move, (move: Cell[]) => {
+            this.remainingMoves.push(move);
+            this.addAction(ActionType.Move);
         });
-        unitService.on(ActionType[ActionType.Move], () => this.finishActionProcessing());
-        unitService.on(ActionType[ActionType.Shot], () => this.finishActionProcessing());
-        unitService.on(ActionType[ActionType.NextTurn], () => this.finishActionProcessing());
+        webSocketConnection.on(ActionType.Shot, (shot: Shot) => {
+            this.remainingShots.push(shot);
+            this.addAction(ActionType.Shot);
+        });
+        webSocketConnection.on(ActionType.NextTurn, () => this.addAction(ActionType.NextTurn));
+        webSocketConnection.on(ActionType.BattleFinish, () => this.addAction(ActionType.BattleFinish));
+        unitService.on(ActionType.Move, () => this.finishActionProcessing());
+        unitService.on(ActionType.Shot, () => this.finishActionProcessing());
+        unitService.on(ActionType.NextTurn, () => this.finishActionProcessing());
     }
 
-    private processAction(action: Action) {
+    private addAction(actionType: ActionType) {
+        if (this.isProcessingAction) {
+            this.remainingActions.push(actionType);
+        } else {
+            this.processAction(actionType);
+        }
+    }
+
+    private processAction(actionType: ActionType) {
         this.isProcessingAction = true;
         this.field.removePathsAndMarksExceptCurrent();
         this.controls.lockInterface();
-        if (action.type == ActionType.Move) {
-            getMove(action.number, move => this.unitService.currentUnit.path = move);
-        } else if (action.type == ActionType.Shot) {
-            getShot(action.number, shot => {
-                this.unitService.currentUnit.shoot(this.unitService.units.filter(unit =>
-                    unit.cell.x == shot.cell.x && unit.cell.y == shot.cell.y)[0], shot.gunId);
-            });
-        } else if (action.type == ActionType.NextTurn) {
+        if (actionType == ActionType.Move) {
+            this.unitService.currentUnit.path = this.remainingMoves.shift();
+        } else if (actionType == ActionType.Shot) {
+            const shot: Shot = this.remainingShots.shift();
+            this.unitService.currentUnit.shoot(this.unitService.units.filter(u =>
+                u.cell.x == shot.cell.x && u.cell.y == shot.cell.y)[0], shot.gunId);
+        } else if (actionType == ActionType.NextTurn) {
             this.unitService.nextTurn();
-        } else if (action.type == ActionType.Finish) {
-            this.emit(ActionType[ActionType.Finish]);
+        } else if (actionType == ActionType.BattleFinish) {
+            this.emit(ActionType.BattleFinish);
         }
     }
 

@@ -20,12 +20,6 @@ public final class Gun {
     @Column(nullable = false)
     private int cooldown;
 
-    @Column
-    private int shotsCount;
-
-    @Column
-    private int shotDelay;
-
     @ManyToOne
     @JoinColumn(name = "gunTypeId", nullable = false)
     private GunType gunType;
@@ -53,14 +47,6 @@ public final class Gun {
 
     public int getCooldown() {
         return cooldown;
-    }
-
-    public int getShotsCount() {
-        return shotsCount;
-    }
-
-    public int getShotDelay() {
-        return shotDelay;
     }
 
     @JsonIgnore

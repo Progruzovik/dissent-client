@@ -24,7 +24,7 @@ export default class Queue extends game.UiElement {
             });
         });
 
-        unitService.on(ActionType[ActionType.NextTurn], (isFirst: boolean) => {
+        unitService.on(ActionType.NextTurn, (isFirst: boolean) => {
             if (!isFirst) {
                 this.bg.setChildIndex(this.bg.getChildAt(0), this.bg.children.length - 1);
                 this.updateChildrenPositions();

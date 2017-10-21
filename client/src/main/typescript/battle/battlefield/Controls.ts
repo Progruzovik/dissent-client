@@ -1,6 +1,6 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { postTurn } from "../request";
+import WebSocketConnection from "../WebSocketConnection";
 import { ActionType } from "../util";
 import * as game from "../../game";
 
@@ -18,7 +18,7 @@ export default class Controls extends game.UiElement {
     private readonly bgModule = new game.Rectangle();
     private readonly btnNextTurn = new game.Button("Конец хода");
 
-    constructor(private readonly unitService: UnitService) {
+    constructor(webSocketConnection: WebSocketConnection, private readonly unitService: UnitService) {
         super();
         this.spriteHull.anchor.set(game.CENTER, game.CENTER);
         this.bgHull.addChild(this.spriteHull);
@@ -29,9 +29,9 @@ export default class Controls extends game.UiElement {
         this.addChild(this.bgModule);
         this.addChild(this.btnNextTurn);
 
-        this.unitService.on(ActionType[ActionType.Move], () => this.updateInterface());
-        this.unitService.on(ActionType[ActionType.Shot], () => this.updateInterface());
-        this.unitService.on(ActionType[ActionType.NextTurn], () => this.updateInterface());
+        this.unitService.on(ActionType.Move, () => this.updateInterface());
+        this.unitService.on(ActionType.Shot, () => this.updateInterface());
+        this.unitService.on(ActionType.NextTurn, () => this.updateInterface());
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
             if (unitService.currentUnit.preparedGunId == unitService.currentUnit.firstGun.id) {
                 unitService.currentUnit.preparedGunId = -1;
@@ -46,7 +46,7 @@ export default class Controls extends game.UiElement {
                 unitService.currentUnit.preparedGunId = unitService.currentUnit.secondGun.id;
             }
         });
-        this.btnNextTurn.on(game.Event.BUTTON_CLICK, postTurn);
+        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketConnection.endTurn());
     }
 
     resize(width: number, height: number) {

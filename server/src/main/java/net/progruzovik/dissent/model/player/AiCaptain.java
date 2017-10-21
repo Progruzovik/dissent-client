@@ -4,10 +4,10 @@ import net.progruzovik.dissent.battle.Battle;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.battle.Unit;
-import net.progruzovik.dissent.model.battle.action.Action;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
+import net.progruzovik.dissent.model.socket.ServerMessage;
 import net.progruzovik.dissent.model.util.Cell;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -54,9 +54,6 @@ public final class AiCaptain implements Captain {
     }
 
     @Override
-    public void newAction(Action action) { }
-
-    @Override
     public void act() {
         final Unit currentUnit = getBattle().getUnitQueue().getCurrentUnit();
         if (currentUnit.getShip().getFirstGun() != null) {
@@ -68,4 +65,7 @@ public final class AiCaptain implements Captain {
         }
         getBattle().endTurn(getId());
     }
+
+    @Override
+    public void send(ServerMessage message) { }
 }

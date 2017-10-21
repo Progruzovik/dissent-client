@@ -6,12 +6,11 @@ import net.progruzovik.dissent.battle.PlayerQueue;
 import net.progruzovik.dissent.battle.ScenarioDigest;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
-import net.progruzovik.dissent.model.battle.action.Action;
-import net.progruzovik.dissent.model.battle.action.ActionType;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.socket.MessageSender;
+import net.progruzovik.dissent.model.socket.ServerMessage;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
@@ -60,9 +59,14 @@ public final class SessionPlayer implements Player {
     }
 
     @Override
+    public Status getStatus() {
+        return status;
+    }
+
+    @Override
     public void setStatus(Status status) {
         this.status = status;
-        messageSender.sendStatus(status);
+        send(new ServerMessage<>("status", status));
     }
 
     @Override
@@ -74,7 +78,7 @@ public final class SessionPlayer implements Player {
     public void setBattle(Battle battle) {
         if (battle != null) {
             if (this.battle != null) {
-                messageSender.sendAction(new Action(ActionType.FINISH));
+                send(new ServerMessage<>("battleFinish", null));
             }
             this.battle = battle;
             setStatus(Status.IN_BATTLE);
@@ -102,15 +106,10 @@ public final class SessionPlayer implements Player {
     }
 
     @Override
-    public void newAction(Action action) {
-        messageSender.sendAction(action);
-    }
-
-    @Override
-    public void requestStatus() {
-        messageSender.sendStatus(status);
-    }
-
-    @Override
     public void act() { }
+
+    @Override
+    public void send(ServerMessage message) {
+        messageSender.send(message);
+    }
 }

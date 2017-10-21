@@ -1,8 +1,6 @@
 package net.progruzovik.dissent.model.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.progruzovik.dissent.model.battle.action.Action;
-import net.progruzovik.dissent.model.player.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.TextMessage;
@@ -25,15 +23,7 @@ public final class MessageSender {
         this.session = session;
     }
 
-    public void sendStatus(Status status) {
-        send(new ServerMessage<>("status", status));
-    }
-
-    public void sendAction(Action action) {
-        send(new ServerMessage<>("action", action));
-    }
-
-    private void send(ServerMessage message)  {
+    public void send(ServerMessage message)  {
         if (session != null) {
             try {
                 session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));

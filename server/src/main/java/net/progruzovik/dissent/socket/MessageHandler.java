@@ -5,6 +5,7 @@ import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.player.SessionPlayer;
 import net.progruzovik.dissent.model.socket.ClientMessage;
 import net.progruzovik.dissent.model.socket.MessageReader;
+import net.progruzovik.dissent.model.socket.ServerMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -22,10 +23,11 @@ public final class MessageHandler extends TextWebSocketHandler {
 
     public MessageHandler(ObjectMapper mapper) {
         this.mapper = mapper;
-        readers.put("requestStatus", (p, m) -> p.requestStatus());
-        readers.put("addToQueue", (p, m) -> p.addToQueue());
-        readers.put("removeFromQueue", (p, m) -> p.removeFromQueue());
-        readers.put("startScenario", (p, m) -> p.startScenario());
+        readers.put("requestStatus", p -> p.send(new ServerMessage<>("status", p.getStatus())));
+        readers.put("addToQueue", Player::addToQueue);
+        readers.put("removeFromQueue", Player::removeFromQueue);
+        readers.put("startScenario", Player::startScenario);
+        readers.put("endTurn", p -> p.getBattle().endTurn(p.getId()));
     }
 
     @Override
@@ -38,6 +40,6 @@ public final class MessageHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws IOException {
         final Player player = (Player) session.getAttributes().get(SessionPlayer.NAME);
         final ClientMessage message = mapper.readValue(textMessage.getPayload(), ClientMessage.class);
-        readers.get(message.getSubject()).read(player, message);
+        readers.get(message.getSubject()).read(player);
     }
 }

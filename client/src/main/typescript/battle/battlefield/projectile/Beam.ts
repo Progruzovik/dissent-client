@@ -1,12 +1,13 @@
-import { Cell } from "../../request";
+import Projectile from "./Projectile";
+import { Cell } from "../../util";
 import * as game from "../../../game";
 
-export default class Beam extends game.Actor {
+export default class Beam extends Projectile {
 
     private remainingFrames = 12;
 
     constructor(to: Cell, from: Cell) {
-        super();
+        super(1);
         const dx: number = to.x - from.x, dy: number = to.y - from.y;
         this.addChild(new game.Rectangle(0xFF0000, Math.sqrt(dx * dx + dy * dy), 2));
         this.rotation = Math.atan2(dy, dx);

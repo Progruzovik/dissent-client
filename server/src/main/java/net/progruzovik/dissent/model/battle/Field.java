@@ -2,7 +2,6 @@ package net.progruzovik.dissent.model.battle;
 
 import net.progruzovik.dissent.exception.InvalidMoveException;
 import net.progruzovik.dissent.exception.InvalidUnitException;
-import net.progruzovik.dissent.model.battle.action.Move;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.util.Cell;
 import net.progruzovik.dissent.model.util.Point;
@@ -18,8 +17,9 @@ public final class Field {
     private final List<List<Cell>> currentPaths;
     private final List<Cell> currentTargets = new ArrayList<>();
 
-    private final List<Cell> asteroids = new ArrayList<>();
-    private final List<Cell> clouds = new ArrayList<>();
+    private final List<Cell> asteroids = new LinkedList<>();
+    private final List<Cell> clouds = new LinkedList<>();
+    private final List<Unit> destroyedUnits = new LinkedList<>();
     private final List<List<Location>> map;
 
     public Field(Cell size) {
@@ -67,6 +67,10 @@ public final class Field {
 
     public List<Cell> getClouds() {
         return clouds;
+    }
+
+    public List<Unit> getDestroyedUnits() {
+        return destroyedUnits;
     }
 
     public boolean isCellInCurrentTargets(Cell cell) {
@@ -145,8 +149,9 @@ public final class Field {
         return result;
     }
 
-    public void destroyUnitOnCell(Cell cell) {
-        map.get(cell.getX()).get(cell.getY()).setCurrentStatus(LocationStatus.UNIT_DESTROYED);
+    public void destroyUnit(Unit unit) {
+        destroyedUnits.add(unit);
+        map.get(unit.getCell().getX()).get(unit.getCell().getY()).setCurrentStatus(LocationStatus.UNIT_DESTROYED);
     }
 
     private boolean isCellReachable(Cell cell) {

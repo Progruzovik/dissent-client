@@ -5,5 +5,5 @@ import net.progruzovik.dissent.model.player.Player;
 @FunctionalInterface
 public interface MessageReader {
 
-    void read(Player p, ClientMessage m);
+    void read(Player p);
 }

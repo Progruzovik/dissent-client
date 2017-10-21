@@ -1,8 +1,8 @@
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { Cell, getCurrentReachableCells, getCurrentPaths, postCurrentUnitCell } from "../request";
-import { ActionType } from "../util";
+import { getCurrentReachableCells, getCurrentPaths, postCurrentUnitCell } from "../request";
+import { ActionType, Cell } from "../util";
 import * as game from "../../game";
 
 export default class Field extends game.UiElement {
@@ -16,7 +16,7 @@ export default class Field extends game.UiElement {
     private readonly pathLayer = new PIXI.Container();
     private readonly markLayer = new PIXI.Container();
 
-    constructor(private readonly size: Cell, asteroids: Cell[], clouds: Cell[],
+    constructor(private readonly size: Cell, asteroids: Cell[], clouds: Cell[], destroyedUnits: PIXI.Sprite[],
                 private readonly unitService: UnitService, private readonly projectileService: ProjectileService) {
         super();
 
@@ -33,6 +33,9 @@ export default class Field extends game.UiElement {
             line.x = i * Unit.WIDTH;
             this.addChild(line);
         }
+        bg.width = this.width;
+        bg.height = this.height;
+
         for (const asteroid of asteroids) {
             const spriteAsteroid = new PIXI.Sprite(PIXI.loader.resources["asteroid"].texture);
             spriteAsteroid.x = asteroid.x * Unit.WIDTH;
@@ -45,26 +48,25 @@ export default class Field extends game.UiElement {
             spriteCloud.y = cloud.y * Unit.HEIGHT;
             this.addChild(spriteCloud);
         }
-        bg.width = this.width;
-        bg.height = this.height;
-
         this.markLayer.addChild(this.currentMark);
         this.addChild(this.markLayer);
         this.addChild(this.pathLayer);
+        for (const destroyedUnit of destroyedUnits) {
+            this.addChild(destroyedUnit);
+        }
         for (const unit of unitService.units) {
             this.addChild(unit);
         }
 
-        this.unitService.on(ActionType[ActionType.Move], () => this.updatePathsAndMarks());
+        this.unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
         this.unitService.on(Unit.PREPARED_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
         this.unitService.on(UnitService.SHOT_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xFFFFFF, cell)));
         this.unitService.on(UnitService.TARGET_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xFF0000, cell)));
         this.unitService.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
-        this.unitService.on(ActionType[ActionType.NextTurn], () => this.updatePathsAndMarks());
-        this.projectileService.on(ActionType[ActionType.Shot],
-            (projectile: game.Actor) => this.addChild(projectile));
+        this.unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
+        this.projectileService.on(ActionType.Shot, (projectile: game.Actor) => this.addChild(projectile));
     }
 
     removePathsAndMarksExceptCurrent() {

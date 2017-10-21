@@ -1,15 +1,17 @@
-import { Cell } from "../../request";
-import { ActionType } from "../../util";
+import Projectile from "./Projectile";
+import { ActionType, Cell } from "../../util";
 import * as game from "../../../game";
 
-export default class Shell extends game.Actor {
+export default class Shell extends Projectile {
+
+    private static readonly SHOT_DELAY = 15;
 
     private isNextShotReady = false;
     private frameNumber = 0;
     private readonly multiplier: Cell;
 
-    constructor(private readonly delay: number, private readonly target: Cell, from: Cell) {
-        super();
+    constructor(private readonly target: Cell, from: Cell) {
+        super(3);
         this.multiplier = new Cell(this.target.x < from.x ? -1 : 1, this.target.y < from.y ? -1 : 1);
 
         this.addChild(new game.Rectangle(0xFFFF00, 20, 4));
@@ -22,7 +24,7 @@ export default class Shell extends game.Actor {
     protected update() {
         if (!this.isNextShotReady) {
             this.frameNumber++;
-            if (this.frameNumber == this.delay) {
+            if (this.frameNumber == Shell.SHOT_DELAY) {
                 this.emitNextShot();
             }
         }
@@ -39,6 +41,6 @@ export default class Shell extends game.Actor {
 
     private emitNextShot() {
         this.isNextShotReady = true;
-        this.emit(ActionType[ActionType.Shot]);
+        this.emit(ActionType.Shot);
     }
 }
