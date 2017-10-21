@@ -9,6 +9,7 @@ export default class Unit extends game.Actor {
 
     static readonly WIDTH = 64;
     static readonly HEIGHT = 32;
+    static readonly ALPHA_DESTROYED = 0.5;
 
     static readonly PREPARED_TO_SHOT = "preparedToShot";
     static readonly NOT_PREPARED_TO_SHOT = "notPreparedToShot";
@@ -114,7 +115,7 @@ export default class Unit extends game.Actor {
 
     destroyUnit() {
         this._isDestroyed = true;
-        this.alpha = 0.5;
+        this.alpha = Unit.ALPHA_DESTROYED;
         this.emit(Unit.DESTROY);
     }
 

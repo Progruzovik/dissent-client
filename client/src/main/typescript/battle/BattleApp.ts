@@ -28,6 +28,7 @@ export default class BattleApp extends game.Application {
                             for (const unit of destroyedUnits) {
                                 const sprite = new PIXI.Sprite(PIXI.loader.resources[hulls.filter(h =>
                                     h.id == unit.ship.hullId)[0].texture.name].texture);
+                                sprite.alpha = Unit.ALPHA_DESTROYED;
                                 if (unit.side == Side.Right) {
                                     sprite.scale.x = -1;
                                     sprite.anchor.x = 1;

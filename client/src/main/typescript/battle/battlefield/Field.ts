@@ -28,8 +28,7 @@ export default class Field extends game.UiElement {
             this.addChild(line);
         }
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Rectangle(0x777777,
-                Field.LINE_WIDTH, size.y * Unit.HEIGHT + Field.LINE_WIDTH);
+            const line = new game.Rectangle(0x777777, Field.LINE_WIDTH, size.y * Unit.HEIGHT + Field.LINE_WIDTH);
             line.x = i * Unit.WIDTH;
             this.addChild(line);
         }
