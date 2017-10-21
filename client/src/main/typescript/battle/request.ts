@@ -11,8 +11,8 @@ export function getId(callback: (id: string) => void) {
     axios.get("/api/player/id").then(response => callback(response.data));
 }
 
-export function getField(callback: (ships: Hull[], guns: Gun[], size: Cell, side: Side, asteroids: Cell[],
-                                    clouds: Cell[], destroyedUnits: Unit[], units: Unit[]) => void) {
+export function getBattle(callback: (ships: Hull[], guns: Gun[], size: Cell, side: Side, asteroids: Cell[],
+                                     clouds: Cell[], destroyedUnits: Unit[], units: Unit[]) => void) {
     axios.all([
         axios.get(BATTLE_PREFIX + "/hulls"),
         axios.get(BATTLE_PREFIX + "/guns"),
@@ -25,14 +25,6 @@ export function getField(callback: (ships: Hull[], guns: Gun[], size: Cell, side
     ]).then(axios.spread((ships, guns, size, side, asteroids, clouds, destroyedUnits, units) =>
         callback(ships.data, guns.data, size.data, side.data,
             asteroids.data, clouds.data, destroyedUnits.data, units.data)));
-}
-
-export function getCurrentPaths(callback: (paths: Cell[][]) => void) {
-    axios.get(BATTLE_PREFIX + "/unit/paths").then(response => callback(response.data));
-}
-
-export function getCurrentReachableCells(callback: (reachableCells: Cell[]) => void) {
-    axios.get(BATTLE_PREFIX + "/unit/cells").then(response => callback(response.data));
 }
 
 export function postCurrentUnitCell(cell: Cell) {

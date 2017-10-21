@@ -57,10 +57,6 @@ public final class Field {
         return size;
     }
 
-    public List<List<Cell>> getCurrentPaths() {
-        return currentPaths;
-    }
-
     public List<Cell> getAsteroids() {
         return asteroids;
     }
@@ -77,8 +73,12 @@ public final class Field {
         return currentTargets.contains(cell);
     }
 
-    public List<Cell> findReachableCellsForActiveUnit() {
-        return findNeighborsInRadius(activeUnit.getCell(), activeUnit.getMovementPoints(), c -> !isCellReachable(c));
+    public Map<String, Object> findReachableCellsAndPathsForActiveUnit() {
+        final Map<String, Object> result = new HashMap<>(2);
+        result.put("reachableCells", findNeighborsInRadius(activeUnit.getCell(),
+                activeUnit.getMovementPoints(), c -> !isCellReachable(c)));
+        result.put("paths", currentPaths);
+        return result;
     }
 
     public Map<String, List<Cell>> findShotAndTargetCells(int gunId, Unit unit) {

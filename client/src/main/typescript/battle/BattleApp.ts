@@ -3,7 +3,7 @@ import BattlefieldScreen from "./battlefield/BattlefieldScreen";
 import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import MenuScreen from "./menu/MenuScreen";
-import { getField, getId, getTextures, Side } from "./request";
+import { getBattle, getId, getTextures, Side } from "./request";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
@@ -22,7 +22,7 @@ export default class BattleApp extends game.Application {
                     const menuScreen = new MenuScreen(webSocketConnection);
                     this.currentScreen = menuScreen;
                     menuScreen.on(MenuScreen.BATTLE, () => {
-                        getField((hulls, guns, size, side, asteroids, clouds, destroyedUnits, units) => {
+                        getBattle((hulls, guns, size, side, asteroids, clouds, destroyedUnits, units) => {
                             const projectileService = new ProjectileService();
                             const destroyedUnitSprites = new Array<PIXI.Sprite>(0);
                             for (const unit of destroyedUnits) {
@@ -45,7 +45,7 @@ export default class BattleApp extends game.Application {
                                     guns.filter(g => g.id == unit.ship.secondGunId)[0], projectileService));
                             }
                             this.currentScreen = new BattlefieldScreen(size, side, asteroids, clouds,
-                                destroyedUnitSprites, unitsArray, webSocketConnection, projectileService);
+                                destroyedUnitSprites, unitsArray, projectileService, webSocketConnection);
                             this.currentScreen.once(game.Event.DONE, () => this.currentScreen = menuScreen);
                         });
                     });

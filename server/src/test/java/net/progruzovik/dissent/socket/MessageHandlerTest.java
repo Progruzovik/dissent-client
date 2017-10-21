@@ -3,8 +3,7 @@ package net.progruzovik.dissent.socket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.player.SessionPlayer;
-import net.progruzovik.dissent.model.socket.ClientMessage;
-import net.progruzovik.dissent.model.socket.ServerMessage;
+import net.progruzovik.dissent.model.socket.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.socket.TextMessage;
@@ -36,8 +35,8 @@ public final class MessageHandlerTest {
 
     @Test
     public void handleStatusMessage() throws Exception {
-        final ClientMessage message = new ClientMessage("requestStatus");
+        final Message message = new Message<>("requestStatus", null);
         messageHandler.handleTextMessage(session, new TextMessage(objectMapper.writeValueAsString(message)));
-        verify(player).send(any(ServerMessage.class));
+        verify(player).send(any(Message.class));
     }
 }

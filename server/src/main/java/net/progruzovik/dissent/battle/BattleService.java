@@ -4,7 +4,7 @@ import net.progruzovik.dissent.model.battle.*;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.player.Captain;
 import net.progruzovik.dissent.model.player.Status;
-import net.progruzovik.dissent.model.socket.ServerMessage;
+import net.progruzovik.dissent.model.socket.Message;
 import net.progruzovik.dissent.model.util.Cell;
 
 import java.util.List;
@@ -67,14 +67,9 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public List<Cell> findCellsForCurrentUnitMove() {
-        return field.findReachableCellsForActiveUnit();
-    }
-
-    @Override
     public boolean moveCurrentUnit(String playerId, Cell cell) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
-            createMessage(new ServerMessage<>("move", field.moveActiveUnit(cell)));
+            createMessage(new Message<>("move", field.moveActiveUnit(cell)));
             return true;
         }
         return false;
@@ -90,7 +85,7 @@ public final class BattleService implements Battle {
         if (isIdBelongsToCurrentPlayer(playerId) && field.isCellInCurrentTargets(cell)) {
             final Unit target = unitQueue.getUnitOnCell(cell);
             if (target != null && unitQueue.getCurrentUnit().shoot(gunId, target)) {
-                createMessage(new ServerMessage<>("shot", new Shot(gunId, cell)));
+                createMessage(new Message<>("shot", new Shot(gunId, cell)));
                 if (target.isDestroyed()) {
                     unitQueue.getQueue().remove(target);
                     field.destroyUnit(target);
@@ -98,7 +93,7 @@ public final class BattleService implements Battle {
                         isRunning = false;
                         leftCaptain.setStatus(Status.IDLE);
                         rightCaptain.setStatus(Status.IDLE);
-                        createMessage(new ServerMessage<>("battleFinish", null));
+                        createMessage(new Message<>("battleFinish", null));
                     }
                 }
                 return true;
@@ -111,7 +106,7 @@ public final class BattleService implements Battle {
     public boolean endTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
             unitQueue.nextTurn();
-            createMessage(new ServerMessage<>("nextTurn", null));
+            createMessage(new Message<>("nextTurn", null));
             onNextTurn();
             return true;
         }
@@ -145,8 +140,8 @@ public final class BattleService implements Battle {
         unitQueue.addUnit(unit);
     }
 
-    private void createMessage(ServerMessage serverMessage) {
-        leftCaptain.send(serverMessage);
-        rightCaptain.send(serverMessage);
+    private void createMessage(Message message) {
+        leftCaptain.send(message);
+        rightCaptain.send(message);
     }
 }

@@ -7,7 +7,7 @@ import net.progruzovik.dissent.model.battle.Unit;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.socket.ServerMessage;
+import net.progruzovik.dissent.model.socket.Message;
 import net.progruzovik.dissent.model.util.Cell;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -67,5 +67,5 @@ public final class AiCaptain implements Captain {
     }
 
     @Override
-    public void send(ServerMessage message) { }
+    public void send(Message message) { }
 }

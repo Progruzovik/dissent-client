@@ -16,8 +16,6 @@ public interface Battle {
 
     Side getPlayerSide(String playerId);
 
-    List<Cell> findCellsForCurrentUnitMove();
-
     boolean moveCurrentUnit(String playerId, Cell cell);
 
     Map<String, List<Cell>> findCellsForCurrentUnitShot(int gunId);

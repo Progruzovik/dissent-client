@@ -9,8 +9,8 @@ import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
+import net.progruzovik.dissent.model.socket.Message;
 import net.progruzovik.dissent.model.socket.MessageSender;
-import net.progruzovik.dissent.model.socket.ServerMessage;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
@@ -66,7 +66,7 @@ public final class SessionPlayer implements Player {
     @Override
     public void setStatus(Status status) {
         this.status = status;
-        send(new ServerMessage<>("status", status));
+        send(new Message<>("status", status));
     }
 
     @Override
@@ -78,7 +78,7 @@ public final class SessionPlayer implements Player {
     public void setBattle(Battle battle) {
         if (battle != null) {
             if (this.battle != null) {
-                send(new ServerMessage<>("battleFinish", null));
+                send(new Message<>("battleFinish", null));
             }
             this.battle = battle;
             setStatus(Status.IN_BATTLE);
@@ -109,7 +109,7 @@ public final class SessionPlayer implements Player {
     public void act() { }
 
     @Override
-    public void send(ServerMessage message) {
+    public void send(Message message) {
         messageSender.send(message);
     }
 }

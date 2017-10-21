@@ -3,8 +3,9 @@ import * as PIXI from "pixi.js";
 export default class WebSocketConnection extends PIXI.utils.EventEmitter {
 
     static readonly STATUS = "status";
+    static readonly CURRENT_CELLS_AND_PATHS = "currentCellsAndPaths";
 
-    private readonly messagesToSend = new Array<ClientMessage>(0);
+    private readonly messagesToSend = new Array<Message>(0);
     private webSocket: WebSocket;
 
     constructor() {
@@ -18,7 +19,7 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
             this.messagesToSend.length = 0;
         };
         this.webSocket.onmessage = (e: MessageEvent) => {
-            const message: ServerMessage = JSON.parse(e.data);
+            const message: Message = JSON.parse(e.data);
             this.emit(message.subject, message.payload);
         };
     }
@@ -39,12 +40,16 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
         this.prepareMessage("startScenario");
     }
 
+    requestCurrentCellsAndPaths() {
+        this.prepareMessage("requestCurrentCellsAndPaths");
+    }
+
     endTurn() {
         this.prepareMessage("endTurn");
     }
 
     private prepareMessage(subject: string) {
-        const message = new ClientMessage(subject);
+        const message = new Message(subject);
         if (this.webSocket.readyState == WebSocket.OPEN) {
             this.sendMessage(message);
         } else {
@@ -52,15 +57,11 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
         }
     }
 
-    private sendMessage(message: ClientMessage) {
+    private sendMessage(message: Message) {
         this.webSocket.send(JSON.stringify(message));
     }
 }
 
-class ClientMessage {
-    constructor(readonly subject: string) {}
-}
-
-class ServerMessage {
-    constructor(readonly subject: string, readonly payload: any) {}
+class Message {
+    constructor(readonly subject: string, readonly payload?: any) {}
 }

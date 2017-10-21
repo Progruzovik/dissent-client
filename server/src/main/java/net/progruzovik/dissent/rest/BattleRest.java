@@ -59,20 +59,10 @@ public final class BattleRest {
         return player.getBattle().getUnitQueue().getCurrentUnit();
     }
 
-    @GetMapping("/unit/paths")
-    public List<List<Cell>> getCurrentPaths() {
-        return player.getBattle().getField().getCurrentPaths();
-    }
-
     @PostMapping("/unit/cell")
     public ResponseEntity postCurrentUnitCell(@RequestBody Cell cell) {
         return player.getBattle().moveCurrentUnit(player.getId(), cell) ? new ResponseEntity(HttpStatus.OK)
                 : new ResponseEntity(HttpStatus.BAD_REQUEST);
-    }
-
-    @GetMapping("/unit/cells")
-    public Collection<Cell> getCellsForCurrentUnitMove() {
-        return player.getBattle().findCellsForCurrentUnitMove();
     }
 
     @GetMapping("/unit/shot")

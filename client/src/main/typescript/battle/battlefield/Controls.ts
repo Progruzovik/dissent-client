@@ -18,7 +18,7 @@ export default class Controls extends game.UiElement {
     private readonly bgModule = new game.Rectangle();
     private readonly btnNextTurn = new game.Button("Конец хода");
 
-    constructor(webSocketConnection: WebSocketConnection, private readonly unitService: UnitService) {
+    constructor(private readonly unitService: UnitService, webSocketConnection: WebSocketConnection) {
         super();
         this.spriteHull.anchor.set(game.CENTER, game.CENTER);
         this.bgHull.addChild(this.spriteHull);
