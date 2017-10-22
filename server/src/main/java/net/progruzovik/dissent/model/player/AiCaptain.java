@@ -57,8 +57,8 @@ public final class AiCaptain implements Captain {
     public void act() {
         final Unit currentUnit = getBattle().getUnitQueue().getCurrentUnit();
         if (currentUnit.getShip().getFirstGun() != null) {
-            final List<Cell> targetCells =  getBattle().getField()
-                    .findShotAndTargetCells(currentUnit.getShip().getFirstGunId(), currentUnit).get("targetCells");
+            getBattle().getField().prepareGunForActiveUnit(currentUnit.getShip().getFirstGunId());
+            final List<Cell> targetCells =  getBattle().getField().getTargetCells();
             if (!targetCells.isEmpty()) {
                 getBattle().shootWithCurrentUnit(getId(), currentUnit.getShip().getFirstGunId(), targetCells.get(0));
             }

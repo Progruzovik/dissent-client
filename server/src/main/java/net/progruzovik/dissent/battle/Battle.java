@@ -5,9 +5,6 @@ import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.battle.UnitQueue;
 import net.progruzovik.dissent.model.util.Cell;
 
-import java.util.List;
-import java.util.Map;
-
 public interface Battle {
 
     UnitQueue getUnitQueue();
@@ -17,8 +14,6 @@ public interface Battle {
     Side getPlayerSide(String playerId);
 
     boolean moveCurrentUnit(String playerId, Cell cell);
-
-    Map<String, List<Cell>> findShotAndTargetCells(int gunId);
 
     boolean shootWithCurrentUnit(String playerId, int gunId, Cell cell);
 

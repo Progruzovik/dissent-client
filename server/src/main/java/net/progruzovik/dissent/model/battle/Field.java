@@ -15,11 +15,13 @@ public final class Field {
 
     private Unit activeUnit;
     private final List<List<Cell>> currentPaths;
-    private final List<Cell> currentTargets = new ArrayList<>();
+    private int preparedGunId;
+    private final List<Cell> shotCells = new ArrayList<>();
+    private final List<Cell> targetCells = new ArrayList<>();
 
-    private final List<Cell> asteroids = new LinkedList<>();
-    private final List<Cell> clouds = new LinkedList<>();
-    private final List<Unit> destroyedUnits = new LinkedList<>();
+    private final List<Cell> asteroids = new ArrayList<>();
+    private final List<Cell> clouds = new ArrayList<>();
+    private final List<Unit> destroyedUnits = new ArrayList<>();
     private final List<List<Location>> map;
 
     public Field(Cell size) {
@@ -57,8 +59,25 @@ public final class Field {
         return size;
     }
 
+    public void setActiveUnit(Unit activeUnit) {
+        if (activeUnit.getSide() == Side.NONE || map.get(activeUnit.getCell().getX())
+                .get(activeUnit.getCell().getY()).getCurrentStatus() != activeUnit.getCellStatus()) {
+            throw new InvalidUnitException();
+        }
+        this.activeUnit = activeUnit;
+        createPathsForActiveUnit();
+    }
+
     public List<List<Cell>> getCurrentPaths() {
         return currentPaths;
+    }
+
+    public List<Cell> getTargetCells() {
+        return targetCells;
+    }
+
+    public List<Cell> getShotCells() {
+        return shotCells;
     }
 
     public List<Cell> getAsteroids() {
@@ -73,63 +92,19 @@ public final class Field {
         return destroyedUnits;
     }
 
-    public boolean isCellInCurrentTargets(Cell cell) {
-        return currentTargets.contains(cell);
+    public boolean canActiveUnitHitCell(int gunId, Cell cell) {
+        if (preparedGunId != gunId) {
+            prepareGunForActiveUnit(gunId);
+        }
+        return targetCells.contains(cell);
     }
 
     public List<Cell> findReachableCellsForActiveUnit() {
-        return findNeighborsInRadius(activeUnit.getCell(),
-                activeUnit.getMovementPoints(), c -> !isCellReachable(c));
-    }
-
-    public Map<String, List<Cell>> findShotAndTargetCells(int gunId, Unit unit) {
-        currentTargets.clear();
-
-        final Map<String, List<Cell>> result = new HashMap<>(2);
-        final List<Cell> shotCells = new ArrayList<>();
-        final Gun gun = unit.getShip().getGun(gunId);
-        if (gun != null) {
-            final List<Cell> availableCells = findNeighborsInRadius(unit.getCell(), gun.getRadius(), c -> {
-                final List<Cell> cellsInBetween = findCellsInBetween(unit.getCell(), c);
-                for (int i = 1; i < cellsInBetween.size() - 1; i++) {
-                    if (map.get(cellsInBetween.get(i).getX())
-                            .get(cellsInBetween.get(i).getY()).getCurrentStatus() != LocationStatus.EMPTY) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-
-            final LocationStatus targetStatus = unit.getCellStatus() == LocationStatus.UNIT_LEFT
-                    ? LocationStatus.UNIT_RIGHT : LocationStatus.UNIT_LEFT;
-            for (final Cell cell : availableCells) {
-                final LocationStatus locationStatus = map.get(cell.getX()).get(cell.getY()).getCurrentStatus();
-                if (locationStatus == LocationStatus.EMPTY) {
-                    shotCells.add(cell);
-                }  else if (locationStatus == targetStatus) {
-                    currentTargets.add(cell);
-                }
-            }
-        }
-
-        result.put("shotCells", shotCells);
-        result.put("targetCells", currentTargets);
-        return result;
+        return findNeighborsInRadius(activeUnit.getCell(), activeUnit.getMovementPoints(), c -> !isCellReachable(c));
     }
 
     public void addUnit(Unit unit) {
         map.get(unit.getCell().getX()).get(unit.getCell().getY()).setCurrentStatus(unit.getCellStatus());
-    }
-
-    public void activateUnit(Unit unit) {
-        if (activeUnit == unit || unit.getSide() == Side.NONE
-                || map.get(unit.getCell().getX()).get(unit.getCell().getY())
-                .getCurrentStatus() != unit.getCellStatus()) {
-            throw new InvalidUnitException();
-        }
-        activeUnit = unit;
-        activeUnit.activate();
-        createPathsForActiveUnit();
     }
 
     public Move moveActiveUnit(Cell cell) {
@@ -148,6 +123,36 @@ public final class Field {
         activeUnit.move(cell);
         createPathsForActiveUnit();
         return result;
+    }
+
+    public void prepareGunForActiveUnit(int gunId) {
+        preparedGunId = gunId;
+        shotCells.clear();
+        targetCells.clear();
+
+        final Gun gun = activeUnit.getShip().getGun(gunId);
+        if (gun != null) {
+            final List<Cell> availableCells = findNeighborsInRadius(activeUnit.getCell(), gun.getRadius(), c -> {
+                final List<Cell> cellsInBetween = findCellsInBetween(activeUnit.getCell(), c);
+                for (int i = 1; i < cellsInBetween.size() - 1; i++) {
+                    if (map.get(cellsInBetween.get(i).getX())
+                            .get(cellsInBetween.get(i).getY()).getCurrentStatus() != LocationStatus.EMPTY) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+            final LocationStatus targetStatus = activeUnit.getCellStatus() == LocationStatus.UNIT_LEFT
+                    ? LocationStatus.UNIT_RIGHT : LocationStatus.UNIT_LEFT;
+            for (final Cell cell : availableCells) {
+                final LocationStatus locationStatus = map.get(cell.getX()).get(cell.getY()).getCurrentStatus();
+                if (locationStatus == LocationStatus.EMPTY) {
+                    shotCells.add(cell);
+                }  else if (locationStatus == targetStatus) {
+                    targetCells.add(cell);
+                }
+            }
+        }
     }
 
     public void destroyUnit(Unit unit) {

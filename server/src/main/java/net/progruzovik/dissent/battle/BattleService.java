@@ -7,9 +7,6 @@ import net.progruzovik.dissent.model.player.Status;
 import net.progruzovik.dissent.model.socket.Message;
 import net.progruzovik.dissent.model.util.Cell;
 
-import java.util.List;
-import java.util.Map;
-
 public final class BattleService implements Battle {
 
     private static final int UNIT_INDENT = 3;
@@ -76,13 +73,8 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public Map<String, List<Cell>> findShotAndTargetCells(int gunId) {
-        return field.findShotAndTargetCells(gunId, unitQueue.getCurrentUnit());
-    }
-
-    @Override
     public boolean shootWithCurrentUnit(String playerId, int gunId, Cell cell) {
-        if (isIdBelongsToCurrentPlayer(playerId) && field.isCellInCurrentTargets(cell)) {
+        if (isIdBelongsToCurrentPlayer(playerId) && field.canActiveUnitHitCell(gunId, cell)) {
             final Unit target = unitQueue.getUnitOnCell(cell);
             if (target != null && unitQueue.getCurrentUnit().shoot(gunId, target)) {
                 createMessage(new Message<>("shot", new Shot(gunId, cell)));
@@ -130,7 +122,8 @@ public final class BattleService implements Battle {
     private void onNextTurn() {
         final Captain captain = getCurrentPlayer();
         if (captain != null) {
-            field.activateUnit(unitQueue.getCurrentUnit());
+            unitQueue.getCurrentUnit().activate();
+            field.setActiveUnit(unitQueue.getCurrentUnit());
             captain.act();
         }
     }

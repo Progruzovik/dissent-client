@@ -15,6 +15,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -38,10 +39,15 @@ public final class MessageHandler extends TextWebSocketHandler {
             reachableCellsAndPaths.put("paths", p.getBattle().getField().getCurrentPaths());
             p.send(new Message<>("reachableCellsAndPaths", reachableCellsAndPaths));
         });
-        readers.put("requestShotAndTargetCells", (p, d) ->
-            p.send(new Message<>("shotAndTargetCells", p.getBattle().findShotAndTargetCells(d.get("gunId")))));
         readers.put("moveCurrentUnit", (p, d) ->
                 p.getBattle().moveCurrentUnit(p.getId(), new Cell(d.get("x"), d.get("y"))));
+        readers.put("requestShotAndTargetCells", (p, d) -> {
+            p.getBattle().getField().prepareGunForActiveUnit(d.get("gunId"));
+            final Map<String, List<Cell>> shotAndTargetCells = new HashMap<>(2);
+            shotAndTargetCells.put("shotCells", p.getBattle().getField().getShotCells());
+            shotAndTargetCells.put("targetCells", p.getBattle().getField().getTargetCells());
+            p.send(new Message<>("shotAndTargetCells", shotAndTargetCells));
+        });
         readers.put("shootWithCurrentUnit", ((p, d) ->
                 p.getBattle().shootWithCurrentUnit(p.getId(), d.get("gunId"), new Cell(d.get("x"), d.get("y")))));
         readers.put("endTurn", (p, d) -> p.getBattle().endTurn(p.getId()));
