@@ -3,7 +3,7 @@ import BattlefieldScreen from "./battlefield/BattlefieldScreen";
 import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import MenuScreen from "./menu/MenuScreen";
-import { getBattle, getId, getTextures, Side } from "./request";
+import { getBattle, getId, Side } from "./request";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
@@ -11,14 +11,14 @@ export default class BattleApp extends game.Application {
 
     constructor() {
         super();
-        getTextures(textures => {
-            for (const texture of textures) {
-                PIXI.loader.add(texture.name, "img/" + texture.name + ".png", (resource: PIXI.loaders.Resource) =>
-                    resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST);
-            }
-            PIXI.loader.load(() => {
-                getId(() => {
-                    const webSocketConnection = new WebSocketConnection();
+        getId(() => {
+            const webSocketConnection = new WebSocketConnection();
+            webSocketConnection.requestTextures(textures => {
+                for (const texture of textures) {
+                    PIXI.loader.add(texture.name, "img/" + texture.name + ".png", (resource: PIXI.loaders.Resource) =>
+                        resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST);
+                }
+                PIXI.loader.load(() => {
                     const menuScreen = new MenuScreen(webSocketConnection);
                     this.currentScreen = menuScreen;
                     menuScreen.on(MenuScreen.BATTLE, () => {

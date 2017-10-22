@@ -1,5 +1,6 @@
 import Unit from "./Unit";
-import { getCellsForCurrentUnitShot, postCurrentUnitShot, Side } from "../../request";
+import WebSocketConnection from "../../WebSocketConnection";
+import { Side } from "../../request";
 import { ActionType } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
@@ -11,7 +12,8 @@ export default class UnitService extends PIXI.utils.EventEmitter {
 
     private readonly currentTargets = new Array<Unit>(0);
 
-    constructor(private readonly currentPlayerSide: Side, readonly units: Unit[]) {
+    constructor(private readonly currentPlayerSide: Side, readonly units: Unit[],
+                private readonly webSocketConnection: WebSocketConnection) {
         super();
         this.currentUnit.makeCurrent();
 
@@ -23,7 +25,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
             });
             unit.on(game.Event.CLICK, () => {
                 if (this.currentTargets.indexOf(unit) != -1) {
-                    postCurrentUnitShot(this.currentUnit.preparedGunId, unit.cell);
+                    webSocketConnection.shootWithCurrentUnit(this.currentUnit.preparedGunId, unit.cell);
                 }
             });
             unit.on(game.Event.MOUSE_OUT, () => {
@@ -34,14 +36,14 @@ export default class UnitService extends PIXI.utils.EventEmitter {
 
             unit.on(ActionType.Move, () => this.emit(ActionType.Move));
             unit.on(Unit.PREPARED_TO_SHOT, () => {
-                getCellsForCurrentUnitShot(unit.preparedGunId, (shotCells, targetCells) => {
+                webSocketConnection.requestShotAndTargetCells(unit.preparedGunId, d => {
                     this.emit(Unit.PREPARED_TO_SHOT);
-                    for (const cell of shotCells) {
+                    for (const cell of d.shotCells) {
                         this.emit(UnitService.SHOT_CELL, cell);
                     }
-                    for (const cell of targetCells) {
-                        this.currentTargets.push(this.units.filter(unit =>
-                            unit.cell.x == cell.x && unit.cell.y == cell.y)[0]);
+                    for (const cell of d.targetCells) {
+                        this.currentTargets.push(this.units
+                            .filter(u => u.cell.x == cell.x && u.cell.y == cell.y)[0]);
                         this.emit(UnitService.TARGET_CELL, cell);
                     }
                 });

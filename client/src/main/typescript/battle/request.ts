@@ -1,11 +1,7 @@
-import { Cell } from "./util";
+import { Cell, Texture } from "./util";
 import axios from "axios";
 
 const BATTLE_PREFIX = "/api/battle";
-
-export function getTextures(callback: (textures: Texture[]) => void) {
-    axios.get("/api/textures").then(response => callback(response.data));
-}
 
 export function getId(callback: (id: string) => void) {
     axios.get("/api/player/id").then(response => callback(response.data));
@@ -27,19 +23,6 @@ export function getBattle(callback: (ships: Hull[], guns: Gun[], size: Cell, sid
             asteroids.data, clouds.data, destroyedUnits.data, units.data)));
 }
 
-export function postCurrentUnitCell(cell: Cell) {
-    axios.post(BATTLE_PREFIX + "/unit/cell", cell);
-}
-
-export function getCellsForCurrentUnitShot(gunId: number, callback: (shotCells: Cell[], targetCells: Cell[]) => void) {
-    axios.get(BATTLE_PREFIX + "/unit/shot", { params: { gunId: gunId } })
-        .then(response => callback(response.data.shotCells, response.data.targetCells));
-}
-
-export function postCurrentUnitShot(gunId: number, cell: Cell) {
-    axios.post(BATTLE_PREFIX + "/unit/shot", cell, { params: { gunId: gunId } });
-}
-
 export const enum Side {
     None, Left, Right
 }
@@ -50,10 +33,6 @@ export class Gun {
 
 export class Hull {
     constructor(readonly id: number, readonly speed: number, readonly texture: Texture) {}
-}
-
-class Texture {
-    constructor(readonly id: number, readonly name: string) {}
 }
 
 class Unit {

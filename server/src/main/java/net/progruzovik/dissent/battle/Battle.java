@@ -18,7 +18,7 @@ public interface Battle {
 
     boolean moveCurrentUnit(String playerId, Cell cell);
 
-    Map<String, List<Cell>> findCellsForCurrentUnitShot(int gunId);
+    Map<String, List<Cell>> findShotAndTargetCells(int gunId);
 
     boolean shootWithCurrentUnit(String playerId, int gunId, Cell cell);
 

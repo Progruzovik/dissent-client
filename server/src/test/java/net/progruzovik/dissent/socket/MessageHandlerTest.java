@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.progruzovik.dissent.dao.TextureDao;
 import net.progruzovik.dissent.model.player.Player;
 import net.progruzovik.dissent.model.player.SessionPlayer;
 import net.progruzovik.dissent.model.socket.Message;
@@ -21,7 +22,7 @@ public final class MessageHandlerTest {
 
     private final Player player = mock(Player.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final MessageHandler messageHandler = new MessageHandler(objectMapper);
+    private final MessageHandler messageHandler = new MessageHandler(objectMapper, mock(TextureDao.class));
 
     public MessageHandlerTest() {
         sessionAttributes.put(SessionPlayer.NAME, player);

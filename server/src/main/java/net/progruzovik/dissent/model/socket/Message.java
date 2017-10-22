@@ -3,11 +3,11 @@ package net.progruzovik.dissent.model.socket;
 public class Message<T> {
 
     private String subject;
-    private T payload;
+    private T data;
 
-    public Message(String subject, T payload) {
+    public Message(String subject, T data) {
         this.subject = subject;
-        this.payload = payload;
+        this.data = data;
     }
 
     public Message() { }
@@ -16,7 +16,7 @@ public class Message<T> {
         return subject;
     }
 
-    public T getPayload() {
-        return payload;
+    public T getData() {
+        return data;
     }
 }

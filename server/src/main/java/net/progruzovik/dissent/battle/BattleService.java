@@ -76,7 +76,7 @@ public final class BattleService implements Battle {
     }
 
     @Override
-    public Map<String, List<Cell>> findCellsForCurrentUnitShot(int gunId) {
+    public Map<String, List<Cell>> findShotAndTargetCells(int gunId) {
         return field.findShotAndTargetCells(gunId, unitQueue.getCurrentUnit());
     }
 

@@ -16,3 +16,7 @@ export class Cell {
 export class Shot {
     constructor(readonly gunId: number, readonly cell: Cell) {}
 }
+
+export class Texture {
+    constructor(readonly id: number, readonly name: string) {}
+}

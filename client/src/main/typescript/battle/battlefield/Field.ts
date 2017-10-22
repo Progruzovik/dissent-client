@@ -2,7 +2,6 @@ import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketConnection from "../WebSocketConnection";
-import { postCurrentUnitCell } from "../request";
 import { ActionType, Cell } from "../util";
 import * as game from "../../game";
 
@@ -68,27 +67,6 @@ export default class Field extends game.UiElement {
         this.unitService.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
         this.unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
         this.projectileService.on(ActionType.Shot, (projectile: game.Actor) => this.addChild(projectile));
-        this.webSocketConnection.on(WebSocketConnection.CURRENT_CELLS_AND_PATHS,
-            (c: { reachableCells: Cell[], paths: Cell[][] }) => {
-            this.paths = c.paths;
-            this.pathMarks.length = 0;
-            for (const cell of c.reachableCells) {
-                const pathMark = new Mark(0xFFFF00, cell);
-                this.pathMarks.push(pathMark);
-
-                pathMark.on(game.Event.MOUSE_OVER, () => {
-                    this.preparePath(cell, this.unitService.currentUnit.cell);
-                    const pathEnd = new game.Rectangle(0x00FF00, 15, 15);
-                    pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
-                    pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
-                    pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
-                    this.pathLayer.addChild(pathEnd);
-                });
-                pathMark.on(game.Event.CLICK, () => postCurrentUnitCell(cell));
-                pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
-            }
-            this.addCurrentPathMarks();
-        });
     }
 
     removePathsAndMarksExceptCurrent() {
@@ -100,7 +78,26 @@ export default class Field extends game.UiElement {
     private updatePathsAndMarks() {
         this.currentMark.cell = this.unitService.currentUnit.cell;
         if (this.unitService.isCurrentPlayerTurn) {
-            this.webSocketConnection.requestCurrentCellsAndPaths();
+            this.webSocketConnection.requestReachableCellsAndPaths(data => {
+                this.paths = data.paths;
+                this.pathMarks.length = 0;
+                for (const cell of data.reachableCells) {
+                    const pathMark = new Mark(0xFFFF00, cell);
+                    this.pathMarks.push(pathMark);
+
+                    pathMark.on(game.Event.MOUSE_OVER, () => {
+                        this.preparePath(cell, this.unitService.currentUnit.cell);
+                        const pathEnd = new game.Rectangle(0x00FF00, 15, 15);
+                        pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
+                        pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
+                        pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
+                        this.pathLayer.addChild(pathEnd);
+                    });
+                    pathMark.on(game.Event.CLICK, () => this.webSocketConnection.moveCurrentUnit(cell));
+                    pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
+                }
+                this.addCurrentPathMarks();
+            });
         }
     }
 

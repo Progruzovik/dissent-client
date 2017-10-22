@@ -16,7 +16,7 @@ export default class BattlefieldScreen extends game.Screen {
                 clouds: Cell[], destroyedUnits: PIXI.Sprite[], units: Unit[],
                 projectileService: ProjectileService, webSocketConnection: WebSocketConnection) {
         super();
-        const unitService = new UnitService(currentPlayerSide, units);
+        const unitService = new UnitService(currentPlayerSide, units, webSocketConnection);
 
         const field = new Field(fieldSize, asteroids, clouds,
             destroyedUnits, unitService, projectileService, webSocketConnection);
