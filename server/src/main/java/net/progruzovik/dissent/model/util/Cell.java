@@ -20,8 +20,4 @@ public final class Cell extends Point<Integer> {
         return new Point<>(getX().floatValue() + (destination.getX().floatValue() - getX().floatValue()) / 2,
                 getY().floatValue() + (destination.getY().floatValue() - getY().floatValue()) / 2);
     }
-
-    public int findDistanceToCell(Cell cell) {
-        return Math.abs(cell.getX() - getX()) + Math.abs(cell.getY() - getY());
-    }
 }

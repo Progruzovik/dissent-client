@@ -26,8 +26,8 @@ public final class AiCaptain implements Captain {
     public AiCaptain(HullDao hullDao, GunDao gunDao) {
         final Hull aiHull = hullDao.getHull(3);
         final Gun shrapnel = gunDao.getGun(1);
-        ships.add(new Ship(aiHull, shrapnel, null));
-        ships.add(new Ship(aiHull, shrapnel, null));
+        ships.add(new Ship(1, aiHull, shrapnel, null));
+        ships.add(new Ship(1, aiHull, shrapnel, null));
     }
 
     @Override

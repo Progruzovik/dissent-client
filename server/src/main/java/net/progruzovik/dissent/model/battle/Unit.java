@@ -1,13 +1,10 @@
 package net.progruzovik.dissent.model.battle;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.progruzovik.dissent.exception.InvalidMoveException;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.util.Cell;
 
 public final class Unit {
-
-    private boolean isDestroyed = false;
 
     private int actionPoints = 0;
     private int firstGunCooldown = 0;
@@ -21,11 +18,6 @@ public final class Unit {
         this.side = side;
         this.cell = cell;
         this.ship = ship;
-    }
-
-    @JsonIgnore
-    public boolean isDestroyed() {
-        return isDestroyed;
     }
 
     public int getActionPoints() {
@@ -62,17 +54,15 @@ public final class Unit {
         }
     }
 
-    public void move(Cell toCell) {
-        final int distance = cell.findDistanceToCell(toCell);
-        if (distance > actionPoints) throw new InvalidMoveException(actionPoints, cell, toCell);
-
+    public void move(Cell toCell, int movementCost) {
+        if (movementCost > actionPoints) throw new InvalidMoveException(actionPoints, movementCost, cell, toCell);
         cell = toCell;
-        actionPoints -= distance;
+        actionPoints -= movementCost;
     }
 
     public boolean shoot(int gunId, Unit target) {
         if (dischargeGun(gunId)) {
-            target.isDestroyed = true;
+            target.getShip().setStrength(0);
             return true;
         }
         return false;

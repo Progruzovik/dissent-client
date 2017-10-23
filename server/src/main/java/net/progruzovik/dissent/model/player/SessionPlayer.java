@@ -40,9 +40,9 @@ public final class SessionPlayer implements Player {
         id = session.getId();
         final Hull basicHull = shipDao.getHull(1);
         final Gun shrapnel = gunDao.getGun(1);
-        ships.add(new Ship(basicHull, shrapnel, null));
-        ships.add(new Ship(shipDao.getHull(2), shrapnel, gunDao.getGun(2)));
-        ships.add(new Ship(basicHull, shrapnel, null));
+        ships.add(new Ship(1, basicHull, shrapnel, null));
+        ships.add(new Ship(1, shipDao.getHull(2), shrapnel, gunDao.getGun(2)));
+        ships.add(new Ship(1, basicHull, shrapnel, null));
         this.queue = queue;
         this.scenarioDigest = scenarioDigest;
         messageSender = new MessageSender(mapper);

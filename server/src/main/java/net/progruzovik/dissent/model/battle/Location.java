@@ -14,6 +14,14 @@ final class Location {
         this(LocationStatus.EMPTY);
     }
 
+    int getMovementCost() {
+        switch (defaultStatus) {
+            case ASTEROID: return 1048576;
+            case CLOUD: return 2;
+            default: return 1;
+        }
+    }
+
     LocationStatus getCurrentStatus() {
         return currentStatus;
     }

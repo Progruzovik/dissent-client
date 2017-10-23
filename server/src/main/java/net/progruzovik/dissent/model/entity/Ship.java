@@ -4,17 +4,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public final class Ship {
 
-    private Hull hull;
+    private int strength;
 
+    private Hull hull;
     private Gun firstGun;
     private Gun secondGun;
 
-    public Ship() { }
-
-    public Ship(Hull hull, Gun firstGun, Gun secondGun) {
+    public Ship(int strength, Hull hull, Gun firstGun, Gun secondGun) {
+        this.strength = strength;
         this.hull = hull;
         this.firstGun = firstGun;
         this.secondGun = secondGun;
+    }
+
+    public Ship() { }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public void setStrength(int strength) {
+        this.strength = strength;
     }
 
     @JsonIgnore

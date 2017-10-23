@@ -78,10 +78,11 @@ export default class Field extends game.UiElement {
     private updatePathsAndMarks() {
         this.currentMark.cell = this.unitService.currentUnit.cell;
         if (this.unitService.isCurrentPlayerTurn) {
-            this.webSocketConnection.requestReachableCellsAndPaths(data => {
-                this.paths = data.paths;
+            this.webSocketConnection.requestReachableCellsAndPaths(d => {
+                console.log(d.paths);
+                this.paths = d.paths;
                 this.pathMarks.length = 0;
-                for (const cell of data.reachableCells) {
+                for (const cell of d.reachableCells) {
                     const pathMark = new Mark(0xffff00, cell);
                     this.pathMarks.push(pathMark);
 
