@@ -9,7 +9,7 @@ export default class Beam extends Projectile {
     constructor(to: Cell, from: Cell) {
         super(1);
         const dx: number = to.x - from.x, dy: number = to.y - from.y;
-        this.addChild(new game.Rectangle(0xFF0000, Math.sqrt(dx * dx + dy * dy), 2));
+        this.addChild(new game.Rectangle(0xff0000, Math.sqrt(dx * dx + dy * dy), 2));
         this.rotation = Math.atan2(dy, dx);
         this.pivot.y = this.height / 2;
         this.position.set(from.x, from.y);

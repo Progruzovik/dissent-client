@@ -1,7 +1,7 @@
 import ActionReceiver from "./ActionReceiver"
 import Controls from "./Controls";
 import Field from "./Field";
-import Queue from "./Queue";
+import LeftUi from "./LeftUi";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
@@ -20,8 +20,7 @@ export default class BattlefieldScreen extends game.Screen {
         const field = new Field(fieldSize, asteroids, clouds,
             destroyedUnits, unitService, projectileService, webSocketConnection);
         this.content = field;
-        this.leftUi = new game.UiElement();
-        this.leftUi.addChild(new Queue(currentPlayerSide, unitService));
+        this.leftUi = new LeftUi(currentPlayerSide, unitService);
         const controls = new Controls(unitService, webSocketConnection);
         this.bottomUi = controls;
 

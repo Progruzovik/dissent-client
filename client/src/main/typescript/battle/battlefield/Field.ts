@@ -11,7 +11,7 @@ export default class Field extends game.UiElement {
 
     private paths: Cell[][];
 
-    private readonly currentMark = new Mark(0x00FF00);
+    private readonly currentMark = new Mark(0x00ff00);
     private readonly pathMarks = new Array<Mark>(0);
     private readonly pathLayer = new PIXI.Container();
     private readonly markLayer = new PIXI.Container();
@@ -61,9 +61,9 @@ export default class Field extends game.UiElement {
         this.unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
         this.unitService.on(Unit.PREPARED_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
         this.unitService.on(UnitService.SHOT_CELL, (cell: Cell) =>
-            this.markLayer.addChild(new Mark(0xFFFFFF, cell)));
+            this.markLayer.addChild(new Mark(0xffffff, cell)));
         this.unitService.on(UnitService.TARGET_CELL, (cell: Cell) =>
-            this.markLayer.addChild(new Mark(0xFF0000, cell)));
+            this.markLayer.addChild(new Mark(0xff0000, cell)));
         this.unitService.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
         this.unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
         this.projectileService.on(ActionType.Shot, (projectile: game.Actor) => this.addChild(projectile));
@@ -82,12 +82,12 @@ export default class Field extends game.UiElement {
                 this.paths = data.paths;
                 this.pathMarks.length = 0;
                 for (const cell of data.reachableCells) {
-                    const pathMark = new Mark(0xFFFF00, cell);
+                    const pathMark = new Mark(0xffff00, cell);
                     this.pathMarks.push(pathMark);
 
                     pathMark.on(game.Event.MOUSE_OVER, () => {
                         this.preparePath(cell, this.unitService.currentUnit.cell);
-                        const pathEnd = new game.Rectangle(0x00FF00, 15, 15);
+                        const pathEnd = new game.Rectangle(0x00ff00, 15, 15);
                         pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
                         pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
                         pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
@@ -117,7 +117,7 @@ export default class Field extends game.UiElement {
                     direction = Direction.Down;
                 }
 
-                const pathLine = new game.Rectangle(0x00FF00, 5, 5);
+                const pathLine = new game.Rectangle(0x00ff00, 5, 5);
                 pathLine.x = cell.x * Unit.WIDTH;
                 pathLine.y = cell.y * Unit.HEIGHT;
                 let k = 0;

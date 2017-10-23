@@ -40,7 +40,7 @@ export default class BattleApp extends game.Application {
                             }
                             const unitsArray = new Array<Unit>(0);
                             for (const unit of d.units) {
-                                unitsArray.push(new Unit(unit.side, unit.cell,
+                                unitsArray.push(new Unit(unit.actionPoints, unit.side, unit.cell,
                                     d.hulls.filter(h => h.id == unit.ship.hullId)[0],
                                     d.guns.filter(g => g.id == unit.ship.firstGunId)[0],
                                     d.guns.filter(g =>

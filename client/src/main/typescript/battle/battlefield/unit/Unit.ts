@@ -14,15 +14,15 @@ export default class Unit extends game.Actor {
     static readonly NOT_PREPARED_TO_SHOT = "notPreparedToShot";
     static readonly DESTROY = "destroy";
 
-    private _actionPoints = 0;
+    private _isDestroyed = false;
     private _preparedGunId = -1;
     private _firstGunCooldown = 0;
     private _secondGunCooldown = 0;
-    private _isDestroyed = false;
 
     private _path: Cell[];
 
-    constructor(readonly side: Side, private _cell: Cell, readonly hull: Hull, readonly firstGun: Gun,
+    constructor(private _actionPoints: number, readonly side: Side,
+                private _cell: Cell, readonly hull: Hull, readonly firstGun: Gun,
                 readonly secondGun: Gun, private readonly projectileService: ProjectileService) {
         super();
         this.interactive = true;
@@ -35,8 +35,12 @@ export default class Unit extends game.Actor {
         this.updatePosition();
     }
 
-    get cell(): Cell {
-        return this._cell;
+    get isDestroyed(): boolean {
+        return this._isDestroyed;
+    }
+
+    get actionPoints(): number {
+        return this._actionPoints;
     }
 
     get firstGunCooldown(): number {
@@ -47,12 +51,8 @@ export default class Unit extends game.Actor {
         return this._secondGunCooldown;
     }
 
-    get actionPoints(): number {
-        return this._actionPoints;
-    }
-
-    get isDestroyed(): boolean {
-        return this._isDestroyed;
+    get cell(): Cell {
+        return this._cell;
     }
 
     get path(): Cell[] {

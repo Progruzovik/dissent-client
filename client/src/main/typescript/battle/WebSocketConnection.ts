@@ -96,5 +96,5 @@ class Ship {
 }
 
 class Unit {
-    constructor(readonly side: Side, readonly cell: Cell, readonly ship: Ship) {}
+    constructor(readonly actionPoints: number, readonly side: Side, readonly cell: Cell, readonly ship: Ship) {}
 }

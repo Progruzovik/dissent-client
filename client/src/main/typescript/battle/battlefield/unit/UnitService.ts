@@ -14,8 +14,6 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     constructor(private readonly currentPlayerSide: Side, readonly units: Unit[],
                 private readonly webSocketConnection: WebSocketConnection) {
         super();
-        this.currentUnit.makeCurrent();
-
         for (const unit of this.units) {
             unit.on(game.Event.MOUSE_OVER, () => {
                 if (this.currentUnit.preparedGunId != -1 && this.currentUnit.side != unit.side && !unit.isDestroyed) {

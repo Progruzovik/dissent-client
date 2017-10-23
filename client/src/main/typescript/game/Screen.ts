@@ -170,16 +170,6 @@ export class Screen extends UiElement {
         this.freeWidth = width;
         this.freeHeight = height;
 
-        if (this.leftUi) {
-            this.leftUi.resize(width, height);
-            this.freeWidth -= this.leftUi.width;
-            this.bottomLayer.x = this.leftUi.width;
-        }
-        if (this.rightUi) {
-            this.rightUi.resize(width, height);
-            this.rightUi.x = width - this.rightUi.width;
-            this.freeWidth -= this.rightUi.width;
-        }
         if (this.topUi) {
             this.topUi.resize(width, height);
             this.freeHeight -= this.topUi.height;
@@ -189,6 +179,16 @@ export class Screen extends UiElement {
             this.bottomUi.resize(width, height);
             this.bottomUi.y = height - this.bottomUi.height;
             this.freeHeight -= this.bottomUi.height;
+        }
+        if (this.leftUi) {
+            this.leftUi.resize(width, this.freeHeight);
+            this.freeWidth -= this.leftUi.width;
+            this.bottomLayer.x = this.leftUi.width;
+        }
+        if (this.rightUi) {
+            this.rightUi.resize(width, this.freeHeight);
+            this.rightUi.x = width - this.rightUi.width;
+            this.freeWidth -= this.rightUi.width;
         }
         if (this.content) {
             this.content.resize(this.freeWidth, this.freeHeight);

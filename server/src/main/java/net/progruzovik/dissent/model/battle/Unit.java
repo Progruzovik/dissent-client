@@ -28,7 +28,6 @@ public final class Unit {
         return isDestroyed;
     }
 
-    @JsonIgnore
     public int getActionPoints() {
         return actionPoints;
     }
