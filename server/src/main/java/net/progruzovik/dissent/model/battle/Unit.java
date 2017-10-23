@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.model.battle;
 
 import net.progruzovik.dissent.exception.InvalidMoveException;
+import net.progruzovik.dissent.model.battle.field.LocationStatus;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.util.Cell;
 

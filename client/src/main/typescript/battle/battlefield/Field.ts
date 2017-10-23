@@ -2,14 +2,14 @@ import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketConnection from "../WebSocketConnection";
-import { ActionType, Cell } from "../util";
+import { ActionType, Cell, PathNode } from "../util";
 import * as game from "../../game";
 
 export default class Field extends game.UiElement {
 
     static readonly LINE_WIDTH = 1.5;
 
-    private paths: Cell[][];
+    private paths: PathNode[][];
 
     private readonly currentMark = new Mark(0x00ff00);
     private readonly pathMarks = new Array<Mark>(0);
@@ -79,7 +79,6 @@ export default class Field extends game.UiElement {
         this.currentMark.cell = this.unitService.currentUnit.cell;
         if (this.unitService.isCurrentPlayerTurn) {
             this.webSocketConnection.requestReachableCellsAndPaths(d => {
-                console.log(d.paths);
                 this.paths = d.paths;
                 this.pathMarks.length = 0;
                 for (const cell of d.reachableCells) {
@@ -106,7 +105,7 @@ export default class Field extends game.UiElement {
         if (this.paths[markCell.x][markCell.y]) {
             let cell: Cell = markCell;
             while (!(cell.x == unitCell.x && cell.y == unitCell.y)) {
-                const previousCell: Cell = this.paths[cell.x][cell.y];
+                const previousCell: Cell = this.paths[cell.x][cell.y].cell;
                 let direction: Direction;
                 if (cell.x == previousCell.x - 1) {
                     direction = Direction.Left;

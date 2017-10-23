@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.model.battle;
+package net.progruzovik.dissent.model.battle.field;
 
 public enum LocationStatus {
     EMPTY,

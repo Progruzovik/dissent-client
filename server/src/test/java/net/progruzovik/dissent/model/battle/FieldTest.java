@@ -2,6 +2,7 @@ package net.progruzovik.dissent.model.battle;
 
 import net.progruzovik.dissent.exception.InvalidMoveException;
 import net.progruzovik.dissent.exception.InvalidUnitException;
+import net.progruzovik.dissent.model.battle.field.Field;
 import net.progruzovik.dissent.model.entity.*;
 import net.progruzovik.dissent.model.util.Cell;
 import org.junit.Before;

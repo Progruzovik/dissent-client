@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.battle;
 
 import net.progruzovik.dissent.model.battle.*;
+import net.progruzovik.dissent.model.battle.field.Field;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.player.Captain;
 import net.progruzovik.dissent.model.player.Status;

@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import {Cell, Gun, Hull, Side, Status, Texture} from "./util";
+import { Cell, Gun, Hull, PathNode, Side, Status, Texture } from "./util";
 import Point = PIXI.Point;
 
 export default class WebSocketConnection extends PIXI.utils.EventEmitter {
@@ -52,7 +52,7 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
         this.once("battleData", callback);
     }
 
-    requestReachableCellsAndPaths(callback: (data: { reachableCells: Cell[], paths: Cell[][] }) => void) {
+    requestReachableCellsAndPaths(callback: (data: { reachableCells: Cell[], paths: PathNode[][] }) => void) {
         this.prepareMessage(new Message("requestReachableCellsAndPaths"));
         this.once("reachableCellsAndPaths", callback);
     }
