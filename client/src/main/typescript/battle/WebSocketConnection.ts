@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Cell, Texture } from "./util";
+import {Cell, Gun, Hull, Side, Status, Texture} from "./util";
+import Point = PIXI.Point;
 
 export default class WebSocketConnection extends PIXI.utils.EventEmitter {
 
@@ -45,6 +46,12 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
         this.prepareMessage(new Message("startScenario"));
     }
 
+    requestBattleData(callback: (data: { side: Side, hulls: Hull[], guns: Gun[], units: Unit[],
+        fieldSize: Point, asteroids: Point[], clouds: Point[], destroyedUnits: Unit[] }) => void) {
+        this.prepareMessage(new Message("requestBattleData"));
+        this.once("battleData", callback);
+    }
+
     requestReachableCellsAndPaths(callback: (data: { reachableCells: Cell[], paths: Cell[][] }) => void) {
         this.prepareMessage(new Message("requestReachableCellsAndPaths"));
         this.once("reachableCellsAndPaths", callback);
@@ -82,4 +89,12 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
 
 class Message {
     constructor(readonly subject: string, readonly data?: any) {}
+}
+
+class Ship {
+    constructor(readonly hullId: number, readonly firstGunId: number, readonly secondGunId: number) {}
+}
+
+class Unit {
+    constructor(readonly side: Side, readonly cell: Cell, readonly ship: Ship) {}
 }

@@ -32,16 +32,16 @@ public final class FieldTest {
 
     @Test
     public void moveUnit() {
-        assertEquals(5, unit.getMovementPoints());
+        assertEquals(5, unit.getActionPoints());
         final Cell cell = new Cell(unit.getCell().getX() + 1, unit.getCell().getY() + 2);
         field.moveActiveUnit(cell);
-        assertEquals(2, unit.getMovementPoints());
+        assertEquals(2, unit.getActionPoints());
         assertEquals(cell, unit.getCell());
     }
 
     @Test(expected = InvalidMoveException.class)
     public void moveUnitToUnreachableCell() {
-        field.moveActiveUnit(new Cell(unit.getCell().getX() + unit.getMovementPoints(),
-                unit.getCell().getY() + unit.getMovementPoints()));
+        field.moveActiveUnit(new Cell(unit.getCell().getX() + unit.getActionPoints(),
+                unit.getCell().getY() + unit.getActionPoints()));
     }
 }

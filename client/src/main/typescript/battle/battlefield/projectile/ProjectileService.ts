@@ -1,8 +1,7 @@
 import Beam from "./Beam";
 import Projectile from "./Projectile";
 import Shell from "./Shell";
-import { Gun } from "../../request";
-import { ActionType, Cell } from "../../util";
+import { ActionType, Cell, Gun } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 
@@ -13,10 +12,8 @@ export default class ProjectileService extends PIXI.utils.EventEmitter {
 
     private static createProjectile(gun: Gun, to: Cell, from: Cell): Projectile {
         switch (gun.gunTypeName) {
-            case ProjectileService.BEAM:
-                return new Beam(to, from);
-            case ProjectileService.SHELL:
-                return new Shell(to, from);
+            case ProjectileService.BEAM: return new Beam(to, from);
+            case ProjectileService.SHELL: return new Shell(to, from);
         }
     }
 

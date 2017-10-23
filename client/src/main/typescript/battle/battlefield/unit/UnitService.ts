@@ -1,7 +1,6 @@
 import Unit from "./Unit";
 import WebSocketConnection from "../../WebSocketConnection";
-import { Side } from "../../request";
-import { ActionType } from "../../util";
+import { ActionType, Side } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 

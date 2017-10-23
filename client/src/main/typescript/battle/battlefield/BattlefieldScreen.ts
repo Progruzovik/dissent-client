@@ -6,8 +6,7 @@ import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketConnection from "../WebSocketConnection";
-import { Side } from "../request";
-import { ActionType, Cell } from "../util";
+import { ActionType, Cell, Side } from "../util";
 import * as game from "../../game";
 
 export default class BattlefieldScreen extends game.Screen {
@@ -21,7 +20,8 @@ export default class BattlefieldScreen extends game.Screen {
         const field = new Field(fieldSize, asteroids, clouds,
             destroyedUnits, unitService, projectileService, webSocketConnection);
         this.content = field;
-        this.leftUi = new Queue(currentPlayerSide, unitService);
+        this.leftUi = new game.UiElement();
+        this.leftUi.addChild(new Queue(currentPlayerSide, unitService));
         const controls = new Controls(unitService, webSocketConnection);
         this.bottomUi = controls;
 

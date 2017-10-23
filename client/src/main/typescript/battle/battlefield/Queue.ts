@@ -1,7 +1,6 @@
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import { Side } from "../request";
-import { ActionType } from "../util";
+import { ActionType, Side } from "../util";
 import * as game from "../../game";
 
 export default class Queue extends game.UiElement {

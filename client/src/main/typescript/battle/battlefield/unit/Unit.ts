@@ -1,7 +1,6 @@
 import Field from "../Field";
 import ProjectileService from "../projectile/ProjectileService";
-import { Gun, Hull, Side } from "../../request";
-import { ActionType, Cell } from "../../util";
+import { ActionType, Cell, Gun, Hull, Side } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 
@@ -15,7 +14,7 @@ export default class Unit extends game.Actor {
     static readonly NOT_PREPARED_TO_SHOT = "notPreparedToShot";
     static readonly DESTROY = "destroy";
 
-    private _movementPoints = 0;
+    private _actionPoints = 0;
     private _preparedGunId = -1;
     private _firstGunCooldown = 0;
     private _secondGunCooldown = 0;
@@ -48,8 +47,8 @@ export default class Unit extends game.Actor {
         return this._secondGunCooldown;
     }
 
-    get movementPoints(): number {
-        return this._movementPoints;
+    get actionPoints(): number {
+        return this._actionPoints;
     }
 
     get isDestroyed(): boolean {
@@ -63,7 +62,7 @@ export default class Unit extends game.Actor {
     set path(value: Cell[]) {
         this._path = value;
         if (value) {
-            this._movementPoints -= value.length;
+            this._actionPoints -= value.length;
         }
     }
 
@@ -88,7 +87,7 @@ export default class Unit extends game.Actor {
     }
 
     makeCurrent() {
-        this._movementPoints = this.hull.speed;
+        this._actionPoints = this.hull.speed;
         if (this.firstGunCooldown > 0) {
             this._firstGunCooldown--;
         }

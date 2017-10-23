@@ -9,7 +9,7 @@ public final class Unit {
 
     private boolean isDestroyed = false;
 
-    private int movementPoints = 0;
+    private int actionPoints = 0;
     private int firstGunCooldown = 0;
     private int secondGunCooldown = 0;
 
@@ -29,8 +29,8 @@ public final class Unit {
     }
 
     @JsonIgnore
-    public int getMovementPoints() {
-        return movementPoints;
+    public int getActionPoints() {
+        return actionPoints;
     }
 
     public Side getSide() {
@@ -54,7 +54,7 @@ public final class Unit {
     }
 
     public void activate() {
-        movementPoints = ship.getHull().getSpeed();
+        actionPoints = ship.getHull().getSpeed();
         if (firstGunCooldown > 0) {
             firstGunCooldown--;
         }
@@ -65,10 +65,10 @@ public final class Unit {
 
     public void move(Cell toCell) {
         final int distance = cell.findDistanceToCell(toCell);
-        if (distance > movementPoints) throw new InvalidMoveException(movementPoints, cell, toCell);
+        if (distance > actionPoints) throw new InvalidMoveException(actionPoints, cell, toCell);
 
         cell = toCell;
-        movementPoints -= distance;
+        actionPoints -= distance;
     }
 
     public boolean shoot(int gunId, Unit target) {

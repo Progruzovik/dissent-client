@@ -3,7 +3,8 @@ import BattlefieldScreen from "./battlefield/BattlefieldScreen";
 import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import MenuScreen from "./menu/MenuScreen";
-import { getBattle, getId, Side } from "./request";
+import { getId } from "./request";
+import { Side } from "./util";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
@@ -22,11 +23,11 @@ export default class BattleApp extends game.Application {
                     const menuScreen = new MenuScreen(webSocketConnection);
                     this.currentScreen = menuScreen;
                     menuScreen.on(MenuScreen.BATTLE, () => {
-                        getBattle((hulls, guns, size, side, asteroids, clouds, destroyedUnits, units) => {
+                        webSocketConnection.requestBattleData(d => {
                             const projectileService = new ProjectileService();
                             const destroyedUnitSprites = new Array<PIXI.Sprite>(0);
-                            for (const unit of destroyedUnits) {
-                                const sprite = new PIXI.Sprite(PIXI.loader.resources[hulls.filter(h =>
+                            for (const unit of d.destroyedUnits) {
+                                const sprite = new PIXI.Sprite(PIXI.loader.resources[d.hulls.filter(h =>
                                     h.id == unit.ship.hullId)[0].texture.name].texture);
                                 sprite.alpha = Unit.ALPHA_DESTROYED;
                                 if (unit.side == Side.Right) {
@@ -38,14 +39,15 @@ export default class BattleApp extends game.Application {
                                 destroyedUnitSprites.push(sprite);
                             }
                             const unitsArray = new Array<Unit>(0);
-                            for (const unit of units) {
+                            for (const unit of d.units) {
                                 unitsArray.push(new Unit(unit.side, unit.cell,
-                                    hulls.filter(h => h.id == unit.ship.hullId)[0],
-                                    guns.filter(g => g.id == unit.ship.firstGunId)[0],
-                                    guns.filter(g => g.id == unit.ship.secondGunId)[0], projectileService));
+                                    d.hulls.filter(h => h.id == unit.ship.hullId)[0],
+                                    d.guns.filter(g => g.id == unit.ship.firstGunId)[0],
+                                    d.guns.filter(g =>
+                                        g.id == unit.ship.secondGunId)[0], projectileService));
                             }
-                            this.currentScreen = new BattlefieldScreen(size, side, asteroids, clouds,
-                                destroyedUnitSprites, unitsArray, projectileService, webSocketConnection);
+                            this.currentScreen = new BattlefieldScreen(d.fieldSize, d.side, d.asteroids,
+                                d.clouds, destroyedUnitSprites, unitsArray, projectileService, webSocketConnection);
                             this.currentScreen.once(game.Event.DONE, () => this.currentScreen = menuScreen);
                         });
                     });

@@ -9,8 +9,20 @@ export enum Status {
     Idle, Queued, InBattle
 }
 
+export const enum Side {
+    None, Left, Right
+}
+
 export class Cell {
     constructor(readonly x: number, readonly y: number) {}
+}
+
+export class Gun {
+    constructor(readonly id: number, readonly name: string, readonly cooldown: number, readonly gunTypeName: string) {}
+}
+
+export class Hull {
+    constructor(readonly id: number, readonly speed: number, readonly texture: Texture) {}
 }
 
 export class Shot {

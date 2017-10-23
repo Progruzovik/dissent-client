@@ -100,7 +100,7 @@ public final class Field {
     }
 
     public List<Cell> findReachableCellsForActiveUnit() {
-        return findNeighborsInRadius(activeUnit.getCell(), activeUnit.getMovementPoints(), c -> !isCellReachable(c));
+        return findNeighborsInRadius(activeUnit.getCell(), activeUnit.getActionPoints(), c -> !isCellReachable(c));
     }
 
     public void addUnit(Unit unit) {
@@ -109,7 +109,7 @@ public final class Field {
 
     public Move moveActiveUnit(Cell cell) {
         if (!cell.isInBorders(size) || !isCellReachable(cell)) {
-            throw new InvalidMoveException(activeUnit.getMovementPoints(), activeUnit.getCell(), cell);
+            throw new InvalidMoveException(activeUnit.getActionPoints(), activeUnit.getCell(), cell);
         }
         map.get(activeUnit.getCell().getX()).get(activeUnit.getCell().getY()).resetStatusToDefault();
         map.get(cell.getX()).get(cell.getY()).setCurrentStatus(activeUnit.getCellStatus());
@@ -252,7 +252,7 @@ public final class Field {
         while (!cellQueue.isEmpty()) {
             final Cell cell = cellQueue.poll();
             final int distanceToCell = distances.get(cell.getX()).get(cell.getY());
-            if (distanceToCell < activeUnit.getMovementPoints()) {
+            if (distanceToCell < activeUnit.getActionPoints()) {
                 for (final Cell neighborCell : findNeighborsForCell(cell)) {
                     if (map.get(neighborCell.getX()).get(neighborCell.getY())
                             .getCurrentStatus() != LocationStatus.ASTEROID
