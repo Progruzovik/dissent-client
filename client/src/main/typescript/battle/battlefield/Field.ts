@@ -92,6 +92,7 @@ export default class Field extends game.UiElement {
                     pathMark.on(game.Event.CLICK, () => this.webSocketConnection.moveCurrentUnit(cell));
                     pathMark.on(game.Event.MOUSE_OUT, () => {
                         if (this.selectedCell == cell) {
+                            this.selectedCell = null;
                             this.pathLayer.removeChildren();
                         }
                     });
@@ -119,31 +120,33 @@ export default class Field extends game.UiElement {
                     direction = Direction.Down;
                 }
 
-                const pathLine = new game.Rectangle(0x00ff00, 5, 5);
-                pathLine.x = cell.x * Unit.WIDTH;
-                pathLine.y = cell.y * Unit.HEIGHT;
+                const rectLine = new game.Rectangle(0x00ff00, 5, 5);
+                rectLine.position.set(cell.x * Unit.WIDTH, cell.y * Unit.HEIGHT);
                 let k = 0;
                 if (direction == Direction.Left || direction == Direction.Right) {
-                    pathLine.width = Unit.WIDTH;
-                    pathLine.pivot.y = pathLine.height / 2;
+                    rectLine.width = Unit.WIDTH;
+                    rectLine.pivot.y = rectLine.height / 2;
                     k = direction == Direction.Left ? 1 : -1;
-                    pathLine.x += pathLine.width / 2 * k;
-                    pathLine.y += Unit.HEIGHT / 2;
+                    rectLine.x += rectLine.width / 2 * k;
+                    rectLine.y += Unit.HEIGHT / 2;
                 } else if (direction == Direction.Up || direction == Direction.Down) {
-                    pathLine.height = Unit.HEIGHT;
-                    pathLine.pivot.x = pathLine.width / 2;
-                    pathLine.x += Unit.WIDTH / 2;
+                    rectLine.height = Unit.HEIGHT;
+                    rectLine.pivot.x = rectLine.width / 2;
+                    rectLine.x += Unit.WIDTH / 2;
                     k = direction == Direction.Up ? 1 : -1;
-                    pathLine.y += pathLine.height / 2 * k;
+                    rectLine.y += rectLine.height / 2 * k;
                 }
-                this.pathLayer.addChild(pathLine);
+                this.pathLayer.addChild(rectLine);
                 cell = previousCell;
             }
-            const pathEnd = new game.Rectangle(0x00ff00, 15, 15);
-            pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
-            pathEnd.x = (markCell.x + game.CENTER) * Unit.WIDTH;
-            pathEnd.y = (markCell.y + game.CENTER) * Unit.HEIGHT;
-            this.pathLayer.addChild(pathEnd);
+            const rectEnd = new game.Rectangle(0x00ff00, 14, 14);
+            rectEnd.pivot.set(rectEnd.width / 2, rectEnd.height / 2);
+            rectEnd.position.set((markCell.x + game.CENTER) * Unit.WIDTH, (markCell.y + game.CENTER) * Unit.HEIGHT);
+            this.pathLayer.addChild(rectEnd);
+            const txtCost = new PIXI.Text(String(this.paths[markCell.x][markCell.y].movementCost),
+                { fill: 0xffffff, fontSize: 12 });
+            txtCost.position.set(rectEnd.x + game.INDENT / 2, rectEnd.y - game.INDENT);
+            this.pathLayer.addChild(txtCost);
         }
     }
 
