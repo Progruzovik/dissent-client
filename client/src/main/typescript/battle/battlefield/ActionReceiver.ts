@@ -2,13 +2,13 @@ import Controls from "./Controls";
 import Field from "./Field";
 import UnitService from "./unit/UnitService";
 import WebSocketConnection from "../WebSocketConnection";
-import { ActionType, Cell, Shot } from "../util";
+import { ActionType, Cell, Move, Shot } from "../util";
 import * as PIXI from "pixi.js";
 
 export default class ActionReceiver extends PIXI.utils.EventEmitter {
 
     private isProcessingAction = false;
-    private readonly remainingMoves = new Array<Cell[]>(0);
+    private readonly remainingMoves = new Array<Move>(0);
     private readonly remainingShots = new Array<Shot>(0);
     private readonly remainingActions = new Array<ActionType>(0);
 
@@ -18,7 +18,7 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
         unitService.on(ActionType.Move, () => this.finishActionProcessing());
         unitService.on(ActionType.Shot, () => this.finishActionProcessing());
         unitService.on(ActionType.NextTurn, () => this.finishActionProcessing());
-        webSocketConnection.on(ActionType.Move, (move: Cell[]) => {
+        webSocketConnection.on(ActionType.Move, (move: Move) => {
             this.remainingMoves.push(move);
             this.addAction(ActionType.Move);
         });
@@ -43,7 +43,7 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
         this.field.removePathsAndMarksExceptCurrent();
         this.controls.lockInterface();
         if (actionType == ActionType.Move) {
-            this.unitService.currentUnit.path = this.remainingMoves.shift();
+            this.unitService.currentUnit.currentMove = this.remainingMoves.shift();
         } else if (actionType == ActionType.Shot) {
             const shot: Shot = this.remainingShots.shift();
             this.unitService.currentUnit.shoot(this.unitService.units.filter(u =>

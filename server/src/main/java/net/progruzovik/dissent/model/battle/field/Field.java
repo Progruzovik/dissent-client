@@ -109,7 +109,7 @@ public final class Field {
         map.get(unit.getCell().getX()).get(unit.getCell().getY()).setCurrentStatus(unit.getCellStatus());
     }
 
-    public List<Cell> moveActiveUnit(Cell cell) {
+    public Move moveActiveUnit(Cell cell) {
         final int movementCost = currentPaths.get(cell.getX()).get(cell.getY()).getMovementCost();
         if (!cell.isInBorders(size) || !isCellReachable(cell)) {
             throw new InvalidMoveException(activeUnit.getActionPoints(), movementCost, activeUnit.getCell(), cell);
@@ -117,15 +117,15 @@ public final class Field {
         map.get(activeUnit.getCell().getX()).get(activeUnit.getCell().getY()).resetStatusToDefault();
         map.get(cell.getX()).get(cell.getY()).setCurrentStatus(activeUnit.getCellStatus());
 
-        final List<Cell> result = new ArrayList<>();
+        final List<Cell> cells = new ArrayList<>();
         Cell pathCell = cell;
         while (!pathCell.equals(activeUnit.getCell())) {
-            result.add(pathCell);
+            cells.add(pathCell);
             pathCell = currentPaths.get(pathCell.getX()).get(pathCell.getY()).getCell();
         }
         activeUnit.move(cell, movementCost);
         createPathsForActiveUnit();
-        return result;
+        return new Move(movementCost, cells);
     }
 
     public void prepareGunForActiveUnit(int gunId) {

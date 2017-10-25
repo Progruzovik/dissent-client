@@ -7,7 +7,7 @@ import * as PIXI from "pixi.js";
 export default class LeftUi extends game.UiElement {
 
     private readonly bgQueue = new game.Rectangle(0x000000, Unit.WIDTH);
-    private readonly txtActionPoints = new PIXI.Text("", { fill: 0xffffff, fontSize: 26 });
+    private readonly txtActionPoints = new PIXI.Text("", { align: "center", fill: 0xffffff, fontSize: 26 });
 
     constructor(currentPlayerSide: Side, private readonly unitService: UnitService) {
         super();
@@ -49,7 +49,7 @@ export default class LeftUi extends game.UiElement {
     }
 
     private updateActionPointsValue() {
-        this.txtActionPoints.text = "AP\n" + this.unitService.currentUnit.actionPoints
+        this.txtActionPoints.text = "ОД\n" + this.unitService.currentUnit.actionPoints
             + "/" + this.unitService.currentUnit.hull.speed;
     }
 }

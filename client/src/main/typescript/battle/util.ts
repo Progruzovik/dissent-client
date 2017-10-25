@@ -25,6 +25,10 @@ export class Hull {
     constructor(readonly id: number, readonly speed: number, readonly texture: Texture) {}
 }
 
+export class Move {
+    constructor(readonly cost: number, readonly cells: Cell[]) {}
+}
+
 export class PathNode {
     constructor(readonly movementCost: number, readonly cell: Cell) {}
 }

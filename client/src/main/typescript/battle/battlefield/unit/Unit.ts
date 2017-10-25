@@ -1,6 +1,6 @@
 import Field from "../Field";
 import ProjectileService from "../projectile/ProjectileService";
-import { ActionType, Cell, Gun, Hull, Side } from "../../util";
+import { ActionType, Cell, Gun, Hull, Move, Side } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 
@@ -19,7 +19,7 @@ export default class Unit extends game.Actor {
     private _firstGunCooldown = 0;
     private _secondGunCooldown = 0;
 
-    private _path: Cell[];
+    private _currentMove: Move;
 
     constructor(private _actionPoints: number, readonly side: Side,
                 private _cell: Cell, readonly hull: Hull, readonly firstGun: Gun,
@@ -55,14 +55,14 @@ export default class Unit extends game.Actor {
         return this._cell;
     }
 
-    get path(): Cell[] {
-        return this._path;
+    get currentMove(): Move {
+        return this._currentMove;
     }
 
-    set path(value: Cell[]) {
-        this._path = value;
+    set currentMove(value: Move) {
+        this._currentMove = value;
         if (value) {
-            this._actionPoints -= value.length;
+            this._actionPoints -= value.cost;
         }
     }
 
@@ -119,12 +119,12 @@ export default class Unit extends game.Actor {
     }
 
     protected update() {
-        if (this.path) {
-            if (this.path.length > 0) {
-                this._cell = this.path.pop();
+        if (this.currentMove) {
+            if (this.currentMove.cells.length > 0) {
+                this._cell = this.currentMove.cells.pop();
                 this.updatePosition();
             } else {
-                this.path = null;
+                this.currentMove = null;
                 this.emit(ActionType.Move);
             }
         }
