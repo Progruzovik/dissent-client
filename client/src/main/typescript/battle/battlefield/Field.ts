@@ -11,6 +11,8 @@ export default class Field extends game.UiElement {
 
     private paths: PathNode[][];
 
+    private selectedCell: Cell;
+
     private readonly currentMark = new Mark(0x00ff00);
     private readonly pathMarks = new Array<Mark>(0);
     private readonly pathLayer = new PIXI.Container();
@@ -85,24 +87,24 @@ export default class Field extends game.UiElement {
                     const pathMark = new Mark(0xffff00, cell);
                     this.pathMarks.push(pathMark);
 
-                    pathMark.on(game.Event.MOUSE_OVER, () => {
-                        this.preparePath(cell, this.unitService.currentUnit.cell);
-                        const pathEnd = new game.Rectangle(0x00ff00, 15, 15);
-                        pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
-                        pathEnd.x = (cell.x + game.CENTER) * Unit.WIDTH;
-                        pathEnd.y = (cell.y + game.CENTER) * Unit.HEIGHT;
-                        this.pathLayer.addChild(pathEnd);
-                    });
+                    pathMark.on(game.Event.MOUSE_OVER, () =>
+                        this.showPath(cell, this.unitService.currentUnit.cell));
                     pathMark.on(game.Event.CLICK, () => this.webSocketConnection.moveCurrentUnit(cell));
-                    pathMark.on(game.Event.MOUSE_OUT, () => this.pathLayer.removeChildren());
+                    pathMark.on(game.Event.MOUSE_OUT, () => {
+                        if (this.selectedCell == cell) {
+                            this.pathLayer.removeChildren();
+                        }
+                    });
                 }
                 this.addCurrentPathMarks();
             });
         }
     }
 
-    private preparePath(markCell: Cell, unitCell: Cell) {
+    private showPath(markCell: Cell, unitCell: Cell) {
         if (this.paths[markCell.x][markCell.y]) {
+            this.selectedCell = markCell;
+            this.pathLayer.removeChildren();
             let cell: Cell = markCell;
             while (!(cell.x == unitCell.x && cell.y == unitCell.y)) {
                 const previousCell: Cell = this.paths[cell.x][cell.y].cell;
@@ -135,9 +137,13 @@ export default class Field extends game.UiElement {
                     pathLine.y += pathLine.height / 2 * k;
                 }
                 this.pathLayer.addChild(pathLine);
-
                 cell = previousCell;
             }
+            const pathEnd = new game.Rectangle(0x00ff00, 15, 15);
+            pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
+            pathEnd.x = (markCell.x + game.CENTER) * Unit.WIDTH;
+            pathEnd.y = (markCell.y + game.CENTER) * Unit.HEIGHT;
+            this.pathLayer.addChild(pathEnd);
         }
     }
 

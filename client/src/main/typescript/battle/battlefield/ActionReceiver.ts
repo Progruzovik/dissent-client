@@ -2,7 +2,7 @@ import Controls from "./Controls";
 import Field from "./Field";
 import UnitService from "./unit/UnitService";
 import WebSocketConnection from "../WebSocketConnection";
-import { ActionType, Cell, Move, Shot } from "../util";
+import { ActionType, Move, Shot } from "../util";
 import * as PIXI from "pixi.js";
 
 export default class ActionReceiver extends PIXI.utils.EventEmitter {
