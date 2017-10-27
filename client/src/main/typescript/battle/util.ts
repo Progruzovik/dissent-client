@@ -18,7 +18,7 @@ export class Cell {
 }
 
 export class Gun {
-    constructor(readonly id: number, readonly name: string, readonly cooldown: number, readonly gunTypeName: string) {}
+    constructor(readonly id: number, readonly name: string, readonly shotCost: number, readonly gunTypeName: string) {}
 }
 
 export class Hull {

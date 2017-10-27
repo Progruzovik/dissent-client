@@ -13,9 +13,9 @@ public interface Battle {
 
     Side getPlayerSide(String playerId);
 
-    boolean moveCurrentUnit(String playerId, Cell cell);
+    void moveCurrentUnit(String playerId, Cell cell);
 
-    boolean shootWithCurrentUnit(String playerId, int gunId, Cell cell);
+    void shootWithCurrentUnit(String playerId, int gunId, Cell cell);
 
-    boolean endTurn(String playerId);
+    void endTurn(String playerId);
 }

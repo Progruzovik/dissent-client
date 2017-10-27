@@ -15,22 +15,22 @@ public final class Gun {
     private String name;
 
     @Column(nullable = false)
-    private int radius;
+    private int shotCost;
 
     @Column(nullable = false)
-    private int cooldown;
+    private int radius;
 
     @ManyToOne
     @JoinColumn(name = "gunTypeId", nullable = false)
     private GunType gunType;
 
-    public Gun() { }
-
-    public Gun(int radius, int cooldown, GunType gunType) {
+    public Gun(int shotCost, int radius, GunType gunType) {
+        this.shotCost = shotCost;
         this.radius = radius;
-        this.cooldown = cooldown;
         this.gunType = gunType;
     }
+
+    public Gun() { }
 
     public int getId() {
         return id;
@@ -40,13 +40,13 @@ public final class Gun {
         return name;
     }
 
+    public int getShotCost() {
+        return shotCost;
+    }
+
     @JsonIgnore
     public int getRadius() {
         return radius;
-    }
-
-    public int getCooldown() {
-        return cooldown;
     }
 
     @JsonIgnore

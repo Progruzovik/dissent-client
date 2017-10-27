@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.battle;
 
+import net.progruzovik.dissent.exception.InvalidShotException;
 import net.progruzovik.dissent.model.battle.*;
 import net.progruzovik.dissent.model.battle.field.Field;
 import net.progruzovik.dissent.model.entity.Ship;
@@ -55,55 +56,46 @@ public final class BattleService implements Battle {
 
     @Override
     public Side getPlayerSide(String playerId) {
-        if (leftCaptain.getId().equals(playerId)) {
-            return Side.LEFT;
-        }
-        if (rightCaptain.getId().equals(playerId)) {
-            return Side.RIGHT;
-        }
+        if (leftCaptain.getId().equals(playerId)) return Side.LEFT;
+        if (rightCaptain.getId().equals(playerId)) return Side.RIGHT;
         return Side.NONE;
     }
 
     @Override
-    public boolean moveCurrentUnit(String playerId, Cell cell) {
+    public void moveCurrentUnit(String playerId, Cell cell) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
             createMessage(new Message<>("move", field.moveActiveUnit(cell)));
-            return true;
         }
-        return false;
     }
 
     @Override
-    public boolean shootWithCurrentUnit(String playerId, int gunId, Cell cell) {
+    public void shootWithCurrentUnit(String playerId, int gunId, Cell cell) {
         if (isIdBelongsToCurrentPlayer(playerId) && field.canActiveUnitHitCell(gunId, cell)) {
             final Unit target = unitQueue.getUnitOnCell(cell);
-            if (target != null && unitQueue.getCurrentUnit().shoot(gunId, target)) {
-                createMessage(new Message<>("shot", new Shot(gunId, cell)));
-                if (target.getShip().getStrength() == 0) {
-                    unitQueue.getQueue().remove(target);
-                    field.destroyUnit(target);
-                    if (!unitQueue.hasUnitsOnBothSides()) {
-                        isRunning = false;
-                        leftCaptain.setStatus(Status.IDLE);
-                        rightCaptain.setStatus(Status.IDLE);
-                        createMessage(new Message<>("battleFinish", null));
-                    }
+            if (target == null) throw new InvalidShotException();
+
+            unitQueue.getCurrentUnit().shoot(gunId, target);
+            createMessage(new Message<>("shot", new Shot(gunId, cell)));
+            if (target.getShip().getStrength() == 0) {
+                unitQueue.getQueue().remove(target);
+                field.destroyUnit(target);
+                if (!unitQueue.hasUnitsOnBothSides()) {
+                    isRunning = false;
+                    leftCaptain.setStatus(Status.IDLE);
+                    rightCaptain.setStatus(Status.IDLE);
+                    createMessage(new Message<>("battleFinish", null));
                 }
-                return true;
             }
         }
-        return false;
     }
 
     @Override
-    public boolean endTurn(String playerId) {
+    public void endTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
             unitQueue.nextTurn();
             createMessage(new Message<>("nextTurn", null));
             onNextTurn();
-            return true;
         }
-        return false;
     }
 
     private boolean isIdBelongsToCurrentPlayer(String id) {

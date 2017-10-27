@@ -15,7 +15,7 @@ public final class FieldTest {
     private Field field;
     private Unit unit;
     private final Ship ship = new Ship(1, new Hull(0, 5, new Texture()),
-            new Gun(3, 0, new GunType()), null);
+            new Gun(0, 3, new GunType()), null);
 
     @Before
     public void setUp() {

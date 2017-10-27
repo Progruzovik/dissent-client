@@ -86,24 +86,14 @@ export default class Controls extends game.UiElement {
         this.spriteHull.texture = PIXI.loader.resources[currentUnit.hull.texture.name].texture;
         if (currentUnit.firstGun) {
             this.btnFirstGun.text = currentUnit.firstGun.name;
-            if (currentUnit.firstGunCooldown > 0) {
-                this.btnFirstGun.text += " (" + currentUnit.firstGunCooldown + ")";
-                this.btnFirstGun.isEnabled = false;
-            } else {
-                this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn;
-            }
+            this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn;
         } else {
             this.btnFirstGun.text = Controls.EMPTY_SLOT;
             this.btnFirstGun.isEnabled = false;
         }
         if (currentUnit.secondGun) {
             this.btnSecondGun.text = currentUnit.secondGun.name;
-            if (currentUnit.secondGunCooldown > 0) {
-                this.btnSecondGun.text += " (" + currentUnit.secondGunCooldown + ")";
-                this.btnSecondGun.isEnabled = false;
-            } else {
-                this.btnSecondGun.isEnabled = this.unitService.isCurrentPlayerTurn;
-            }
+            this.btnSecondGun.isEnabled = this.unitService.isCurrentPlayerTurn;
         } else {
             this.btnSecondGun.text = Controls.EMPTY_SLOT;
             this.btnSecondGun.isEnabled = false;

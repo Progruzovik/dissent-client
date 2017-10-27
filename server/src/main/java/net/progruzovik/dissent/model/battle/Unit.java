@@ -1,15 +1,15 @@
 package net.progruzovik.dissent.model.battle;
 
 import net.progruzovik.dissent.exception.InvalidMoveException;
+import net.progruzovik.dissent.exception.InvalidShotException;
 import net.progruzovik.dissent.model.battle.field.LocationStatus;
+import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.util.Cell;
 
 public final class Unit {
 
     private int actionPoints = 0;
-    private int firstGunCooldown = 0;
-    private int secondGunCooldown = 0;
 
     private final Side side;
     private Cell cell;
@@ -47,12 +47,6 @@ public final class Unit {
 
     public void activate() {
         actionPoints = ship.getHull().getSpeed();
-        if (firstGunCooldown > 0) {
-            firstGunCooldown--;
-        }
-        if (secondGunCooldown > 0) {
-            secondGunCooldown--;
-        }
     }
 
     public void move(Cell toCell, int movementCost) {
@@ -61,23 +55,17 @@ public final class Unit {
         actionPoints -= movementCost;
     }
 
-    public boolean shoot(int gunId, Unit target) {
-        if (dischargeGun(gunId)) {
-            target.getShip().setStrength(0);
-            return true;
-        }
-        return false;
+    public void shoot(int gunId, Unit target) {
+        final Gun gun = findGunById(gunId);
+        if (gun == null || gun.getShotCost() <= actionPoints) throw new InvalidShotException();
+
+        actionPoints -= gun.getShotCost();
+        target.getShip().setStrength(0);
     }
 
-    private boolean dischargeGun(int gunId) {
-        if (ship.getFirstGun() != null && gunId == ship.getFirstGun().getId() && firstGunCooldown == 0) {
-            firstGunCooldown = ship.getFirstGun().getCooldown();
-            return true;
-        }
-        if (ship.getSecondGun() != null && gunId == ship.getSecondGun().getId() && secondGunCooldown == 0) {
-            secondGunCooldown = ship.getSecondGun().getCooldown();
-            return true;
-        }
-        return false;
+    private Gun findGunById(int gunId) {
+        if (gunId == ship.getFirstGunId()) return ship.getFirstGun();
+        if (gunId == ship.getSecondGunId()) return ship.getSecondGun();
+        return null;
     }
 }

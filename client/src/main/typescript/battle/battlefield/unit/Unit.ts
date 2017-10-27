@@ -16,8 +16,6 @@ export default class Unit extends game.Actor {
 
     private _isDestroyed = false;
     private _preparedGunId = -1;
-    private _firstGunCooldown = 0;
-    private _secondGunCooldown = 0;
 
     private _currentMove: Move;
 
@@ -41,14 +39,6 @@ export default class Unit extends game.Actor {
 
     get actionPoints(): number {
         return this._actionPoints;
-    }
-
-    get firstGunCooldown(): number {
-        return this._firstGunCooldown;
-    }
-
-    get secondGunCooldown(): number {
-        return this._secondGunCooldown;
     }
 
     get cell(): Cell {
@@ -88,20 +78,14 @@ export default class Unit extends game.Actor {
 
     makeCurrent() {
         this._actionPoints = this.hull.speed;
-        if (this.firstGunCooldown > 0) {
-            this._firstGunCooldown--;
-        }
-        if (this.secondGunCooldown > 0) {
-            this._secondGunCooldown--;
-        }
     }
 
     shoot(target: Unit, gunId: number) {
         if (gunId == this.firstGun.id) {
-            this._firstGunCooldown = this.firstGun.cooldown;
+            this._actionPoints -= this.firstGun.shotCost;
             this.projectileService.shoot(this.firstGun, target.center, this.center);
         } else if (gunId == this.secondGun.id) {
-            this._secondGunCooldown = this.secondGun.cooldown;
+            this._actionPoints -= this.secondGun.shotCost;
             this.projectileService.shoot(this.secondGun, target.center, this.center);
         }
 
