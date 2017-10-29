@@ -50,6 +50,6 @@ export default class LeftUi extends game.UiElement {
 
     private updateActionPointsValue() {
         this.txtActionPoints.text = "ОД\n" + this.unitService.currentUnit.actionPoints
-            + "/" + this.unitService.currentUnit.hull.speed;
+            + "/" + this.unitService.currentUnit.hull.actionPoints;
     }
 }

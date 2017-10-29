@@ -10,7 +10,7 @@ public final class Hull {
     private int id;
 
     @Column(nullable = false)
-    private int speed;
+    private int actionPoints;
 
     @ManyToOne
     @JoinColumn(name = "textureId", nullable = false)
@@ -18,9 +18,9 @@ public final class Hull {
 
     public Hull() { }
 
-    public Hull(int id, int speed, Texture texture) {
+    public Hull(int id, int actionPoints, Texture texture) {
         this.id = id;
-        this.speed = speed;
+        this.actionPoints = actionPoints;
         this.texture = texture;
     }
 
@@ -28,8 +28,8 @@ public final class Hull {
         return id;
     }
 
-    public int getSpeed() {
-        return speed;
+    public int getActionPoints() {
+        return actionPoints;
     }
 
     public Texture getTexture() {

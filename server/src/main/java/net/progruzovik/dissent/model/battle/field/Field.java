@@ -14,6 +14,10 @@ import java.util.function.Predicate;
 public final class Field {
 
     private final Cell size;
+    private final List<List<Location>> map;
+    private final List<Cell> asteroids = new ArrayList<>();
+    private final List<Cell> clouds = new ArrayList<>();
+    private final List<Unit> destroyedUnits = new ArrayList<>();
 
     private Unit activeUnit;
     private final List<List<PathNode>> currentPaths;
@@ -21,21 +25,16 @@ public final class Field {
     private final List<Cell> shotCells = new ArrayList<>();
     private final List<Cell> targetCells = new ArrayList<>();
 
-    private final List<Cell> asteroids = new ArrayList<>();
-    private final List<Cell> clouds = new ArrayList<>();
-    private final List<Unit> destroyedUnits = new ArrayList<>();
-    private final List<List<Location>> map;
-
     public Field(Cell size) {
         this.size = size;
-        currentPaths = new ArrayList<>(size.getX());
         map = new ArrayList<>(size.getX());
+        currentPaths = new ArrayList<>(size.getX());
         for (int i = 0; i < size.getX(); i++) {
-            currentPaths.add(new ArrayList<>(size.getY()));
             map.add(new ArrayList<>(size.getY()));
+            currentPaths.add(new ArrayList<>(size.getY()));
             for (int j = 0; j < size.getY(); j++) {
-                currentPaths.get(i).add(null);
                 map.get(i).add(new Location());
+                currentPaths.get(i).add(null);
             }
         }
 
@@ -74,20 +73,20 @@ public final class Field {
         return currentPaths;
     }
 
-    public List<Cell> getTargetCells() {
-        return targetCells;
-    }
-
-    public List<Cell> getShotCells() {
-        return shotCells;
-    }
-
     public List<Cell> getAsteroids() {
         return asteroids;
     }
 
     public List<Cell> getClouds() {
         return clouds;
+    }
+
+    public List<Cell> getShotCells() {
+        return shotCells;
+    }
+
+    public List<Cell> getTargetCells() {
+        return targetCells;
     }
 
     public List<Unit> getDestroyedUnits() {
@@ -110,10 +109,10 @@ public final class Field {
     }
 
     public Move moveActiveUnit(Cell cell) {
-        final int movementCost = currentPaths.get(cell.getX()).get(cell.getY()).getMovementCost();
         if (!cell.isInBorders(size) || !isCellReachable(cell)) {
-            throw new InvalidMoveException(activeUnit.getActionPoints(), movementCost, activeUnit.getCell(), cell);
+            throw new InvalidMoveException(activeUnit.getActionPoints(), activeUnit.getCell(), cell);
         }
+        final int movementCost = currentPaths.get(cell.getX()).get(cell.getY()).getMovementCost();
         map.get(activeUnit.getCell().getX()).get(activeUnit.getCell().getY()).resetStatusToDefault();
         map.get(cell.getX()).get(cell.getY()).setCurrentStatus(activeUnit.getCellStatus());
 
@@ -161,6 +160,7 @@ public final class Field {
     public void destroyUnit(Unit unit) {
         destroyedUnits.add(unit);
         map.get(unit.getCell().getX()).get(unit.getCell().getY()).setCurrentStatus(LocationStatus.UNIT_DESTROYED);
+        targetCells.remove(unit.getCell());
     }
 
     private boolean isCellReachable(Cell cell) {

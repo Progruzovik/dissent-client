@@ -77,7 +77,7 @@ export default class Unit extends game.Actor {
     }
 
     makeCurrent() {
-        this._actionPoints = this.hull.speed;
+        this._actionPoints = this.hull.actionPoints;
     }
 
     shoot(target: Unit, gunId: number) {
@@ -90,7 +90,7 @@ export default class Unit extends game.Actor {
         }
 
         this.projectileService.once(game.Event.DONE, () => {
-            this.preparedGunId = -1;
+            this._preparedGunId = -1;
             target.destroyUnit();
             this.emit(ActionType.Shot);
         });

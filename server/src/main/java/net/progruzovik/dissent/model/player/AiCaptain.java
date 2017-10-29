@@ -59,7 +59,8 @@ public final class AiCaptain implements Captain {
         if (currentUnit.getShip().getFirstGun() != null) {
             getBattle().getField().prepareGunForActiveUnit(currentUnit.getShip().getFirstGunId());
             final List<Cell> targetCells =  getBattle().getField().getTargetCells();
-            if (!targetCells.isEmpty()) {
+            while (currentUnit.getActionPoints() >= currentUnit.getShip().getFirstGun().getShotCost()
+                    && !targetCells.isEmpty()) {
                 getBattle().shootWithCurrentUnit(getId(), currentUnit.getShip().getFirstGunId(), targetCells.get(0));
             }
         }

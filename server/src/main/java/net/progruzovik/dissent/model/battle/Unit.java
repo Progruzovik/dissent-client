@@ -10,14 +10,14 @@ import net.progruzovik.dissent.model.util.Cell;
 public final class Unit {
 
     private int actionPoints = 0;
+    private Cell cell;
 
     private final Side side;
-    private Cell cell;
     private final Ship ship;
 
-    public Unit(Side side, Cell cell, Ship ship) {
-        this.side = side;
+    public Unit(Cell cell, Side side, Ship ship) {
         this.cell = cell;
+        this.side = side;
         this.ship = ship;
     }
 
@@ -46,18 +46,18 @@ public final class Unit {
     }
 
     public void activate() {
-        actionPoints = ship.getHull().getSpeed();
+        actionPoints = ship.getHull().getActionPoints();
     }
 
     public void move(Cell toCell, int movementCost) {
-        if (movementCost > actionPoints) throw new InvalidMoveException(actionPoints, movementCost, cell, toCell);
+        if (movementCost > actionPoints) throw new InvalidMoveException(actionPoints, cell, toCell);
         cell = toCell;
         actionPoints -= movementCost;
     }
 
     public void shoot(int gunId, Unit target) {
         final Gun gun = findGunById(gunId);
-        if (gun == null || gun.getShotCost() <= actionPoints) throw new InvalidShotException();
+        if (gun == null || gun.getShotCost() > actionPoints) throw new InvalidShotException();
 
         actionPoints -= gun.getShotCost();
         target.getShip().setStrength(0);

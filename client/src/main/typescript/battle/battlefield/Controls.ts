@@ -8,7 +8,7 @@ export default class Controls extends game.UiElement {
 
     private static readonly SECTIONS_COUNT = 6;
     private static readonly SECTION_RATIO = 3;
-    private static readonly EMPTY_SLOT = "(пусто)";
+    private static readonly EMPTY_SLOT = "[пусто]";
 
     private readonly spriteHull = new PIXI.Sprite();
     private readonly bgHull = new game.Rectangle(0x333333);
@@ -85,15 +85,17 @@ export default class Controls extends game.UiElement {
         const currentUnit: Unit = this.unitService.currentUnit;
         this.spriteHull.texture = PIXI.loader.resources[currentUnit.hull.texture.name].texture;
         if (currentUnit.firstGun) {
-            this.btnFirstGun.text = currentUnit.firstGun.name;
-            this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn;
+            this.btnFirstGun.text = currentUnit.firstGun.name + "\n(" + currentUnit.firstGun.shotCost + " ОД)";
+            this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn
+                && currentUnit.actionPoints >= currentUnit.firstGun.shotCost;
         } else {
             this.btnFirstGun.text = Controls.EMPTY_SLOT;
             this.btnFirstGun.isEnabled = false;
         }
         if (currentUnit.secondGun) {
-            this.btnSecondGun.text = currentUnit.secondGun.name;
-            this.btnSecondGun.isEnabled = this.unitService.isCurrentPlayerTurn;
+            this.btnSecondGun.text = currentUnit.secondGun.name + "\n(" + currentUnit.secondGun.shotCost + " ОД)";
+            this.btnSecondGun.isEnabled = this.unitService.isCurrentPlayerTurn
+                && currentUnit.actionPoints >= currentUnit.secondGun.shotCost;
         } else {
             this.btnSecondGun.text = Controls.EMPTY_SLOT;
             this.btnSecondGun.isEnabled = false;

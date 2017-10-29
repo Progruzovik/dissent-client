@@ -33,12 +33,12 @@ public final class BattleService implements Battle {
         field = new Field(new Cell(colsCount, colsCount));
         int i = 0;
         for (final Ship ship : leftCaptain.getShips()) {
-            registerUnit(new Unit(Side.LEFT, new Cell(0, i * UNIT_INDENT + BORDER_INDENT), ship));
+            registerUnit(new Unit(new Cell(0, i * UNIT_INDENT + BORDER_INDENT), Side.LEFT, ship));
             i++;
         }
         i = 0;
         for (final Ship ship : rightCaptain.getShips()) {
-            registerUnit(new Unit(Side.RIGHT, new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT), ship));
+            registerUnit(new Unit(new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT), Side.RIGHT, ship));
             i++;
         }
         onNextTurn();

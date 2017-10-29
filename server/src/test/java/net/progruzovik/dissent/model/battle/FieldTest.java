@@ -20,7 +20,7 @@ public final class FieldTest {
     @Before
     public void setUp() {
         field = new Field(new Cell(50, 50));
-        unit = new Unit(Side.LEFT, new Cell(0, 0), ship);
+        unit = new Unit(new Cell(0, 0), Side.LEFT, ship);
         unit.activate();
         field.addUnit(unit);
         field.setActiveUnit(unit);
@@ -28,7 +28,7 @@ public final class FieldTest {
 
     @Test(expected = InvalidUnitException.class)
     public void setNotExistingActiveUnit() {
-        field.setActiveUnit(new Unit(Side.NONE, new Cell(0, 0), ship));
+        field.setActiveUnit(new Unit(new Cell(0, 0), Side.NONE, ship));
     }
 
     @Test
