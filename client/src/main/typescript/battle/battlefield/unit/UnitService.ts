@@ -31,7 +31,14 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 }
             });
 
-            unit.on(ActionType.Move, () => this.emit(ActionType.Move));
+            unit.on(ActionType.Move, () => {
+                this.emit(ActionType.Move);
+                this.checkCurrentUnitActionPoints();
+            });
+            unit.on(ActionType.Shot, () => {
+                this.emit(ActionType.Shot);
+                this.checkCurrentUnitActionPoints();
+            });
             unit.on(Unit.PREPARED_TO_SHOT, () => {
                 webSocketConnection.requestShotAndTargetCells(unit.preparedGunId, d => {
                     this.emit(Unit.PREPARED_TO_SHOT);
@@ -45,7 +52,6 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                     }
                 });
             });
-            unit.on(ActionType.Shot, () => this.emit(ActionType.Shot));
             unit.on(Unit.NOT_PREPARED_TO_SHOT, () => {
                 this.currentTargets.length = 0;
                 this.emit(Unit.NOT_PREPARED_TO_SHOT)
@@ -67,5 +73,11 @@ export default class UnitService extends PIXI.utils.EventEmitter {
         this.units.push(this.units.shift());
         this.currentUnit.makeCurrent();
         this.emit(ActionType.NextTurn, false);
+    }
+
+    private checkCurrentUnitActionPoints() {
+        if (this.currentUnit.actionPoints == 0) {
+            this.webSocketConnection.endTurn();
+        }
     }
 }
