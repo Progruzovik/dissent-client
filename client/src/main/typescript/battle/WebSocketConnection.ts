@@ -92,7 +92,8 @@ class Message {
 }
 
 class Ship {
-    constructor(readonly hullId: number, readonly firstGunId: number, readonly secondGunId: number) {}
+    constructor(readonly strength: number, readonly hullId: number,
+                readonly firstGunId: number, readonly secondGunId: number) {}
 }
 
 class Unit {

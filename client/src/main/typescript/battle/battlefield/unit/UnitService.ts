@@ -16,7 +16,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
         super();
         for (const unit of this.units) {
             unit.on(game.Event.MOUSE_OVER, () => {
-                if (this.currentUnit.preparedGunId != -1 && this.currentUnit.side != unit.side && !unit.isDestroyed) {
+                if (this.currentUnit.preparedGunId != -1 && this.currentUnit.side != unit.side && unit.strength > 0) {
                     unit.alpha = 0.75;
                 }
             });
@@ -26,7 +26,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 }
             });
             unit.on(game.Event.MOUSE_OUT, () => {
-                if (!unit.isDestroyed) {
+                if (unit.strength > 0) {
                     unit.alpha = 1;
                 }
             });

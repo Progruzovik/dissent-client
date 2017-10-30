@@ -60,7 +60,7 @@ public final class Unit {
         if (gun == null || gun.getShotCost() > actionPoints) throw new InvalidShotException();
 
         actionPoints -= gun.getShotCost();
-        target.getShip().setStrength(0);
+        target.getShip().setStrength(target.getShip().getStrength() - 1);
     }
 
     private Gun findGunById(int gunId) {

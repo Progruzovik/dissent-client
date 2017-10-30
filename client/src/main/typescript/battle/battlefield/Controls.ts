@@ -12,7 +12,10 @@ export default class Controls extends game.UiElement {
 
     private readonly spriteHull = new PIXI.Sprite();
     private readonly bgHull = new game.Rectangle(0x333333);
+
+    private readonly barStrength = new game.ProgressBar(0xff0000, 0, 15);
     private readonly bgStats = new game.Rectangle();
+
     private readonly btnFirstGun = new game.Button();
     private readonly btnSecondGun = new game.Button();
     private readonly bgModule = new game.Rectangle();
@@ -23,7 +26,11 @@ export default class Controls extends game.UiElement {
         this.spriteHull.anchor.set(game.CENTER, game.CENTER);
         this.bgHull.addChild(this.spriteHull);
         this.addChild(this.bgHull);
+
+        this.barStrength.pivot.y = this.barStrength.height / 2;
+        this.bgStats.addChild(this.barStrength);
         this.addChild(this.bgStats);
+
         this.addChild(this.btnFirstGun);
         this.addChild(this.btnSecondGun);
         this.addChild(this.bgModule);
@@ -50,28 +57,32 @@ export default class Controls extends game.UiElement {
     }
 
     resize(width: number, height: number) {
-        const lengthPerSection: number = width / Controls.SECTIONS_COUNT;
+        const widthPerSection: number = width / Controls.SECTIONS_COUNT;
+        const heightPerSection: number = widthPerSection / Controls.SECTION_RATIO;
 
-        this.bgHull.width = lengthPerSection;
-        this.bgHull.height = this.bgHull.width / Controls.SECTION_RATIO;
+        this.bgHull.width = widthPerSection;
+        this.bgHull.height = heightPerSection;
         const shipRatio: number = this.bgHull.height / Unit.HEIGHT;
         this.spriteHull.scale.set(shipRatio, shipRatio);
         this.spriteHull.position.set(this.bgHull.width / 2, this.bgHull.height / 2);
 
-        this.bgStats.width = lengthPerSection;
-        this.bgStats.height = this.bgStats.width / Controls.SECTION_RATIO;
+        this.barStrength.width = widthPerSection;
+        this.barStrength.y = heightPerSection / 2;
+        this.bgStats.width = widthPerSection;
+        this.bgStats.height = heightPerSection;
         this.bgStats.x = this.bgHull.width;
-        this.btnFirstGun.width = lengthPerSection;
-        this.btnFirstGun.height = this.btnFirstGun.width / Controls.SECTION_RATIO;
+
+        this.btnFirstGun.width = widthPerSection;
+        this.btnFirstGun.height = heightPerSection;
         this.btnFirstGun.x = this.bgStats.x + this.bgStats.width;
-        this.btnSecondGun.width = lengthPerSection;
-        this.btnSecondGun.height = this.btnSecondGun.width / Controls.SECTION_RATIO;
+        this.btnSecondGun.width = widthPerSection;
+        this.btnSecondGun.height = heightPerSection;
         this.btnSecondGun.x = this.btnFirstGun.x + this.btnFirstGun.width;
-        this.bgModule.width = lengthPerSection;
-        this.bgModule.height = this.bgModule.width / Controls.SECTION_RATIO;
+        this.bgModule.width = widthPerSection;
+        this.bgModule.height = heightPerSection;
         this.bgModule.x = this.btnSecondGun.x + this.btnSecondGun.width;
-        this.btnNextTurn.width = lengthPerSection;
-        this.btnNextTurn.height = this.btnNextTurn.width / Controls.SECTION_RATIO;
+        this.btnNextTurn.width = widthPerSection;
+        this.btnNextTurn.height = heightPerSection;
         this.btnNextTurn.x = this.bgModule.x + this.bgModule.width;
     }
 
@@ -84,6 +95,8 @@ export default class Controls extends game.UiElement {
     private updateInterface() {
         const currentUnit: Unit = this.unitService.currentUnit;
         this.spriteHull.texture = PIXI.loader.resources[currentUnit.hull.texture.name].texture;
+        this.barStrength.maximum = currentUnit.hull.strength;
+        this.barStrength.value = currentUnit.strength;
         if (currentUnit.firstGun) {
             this.btnFirstGun.text = currentUnit.firstGun.name + "\n(" + currentUnit.firstGun.shotCost + " ОД)";
             this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn

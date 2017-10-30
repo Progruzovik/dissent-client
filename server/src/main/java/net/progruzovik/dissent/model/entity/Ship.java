@@ -10,8 +10,8 @@ public final class Ship {
     private Gun firstGun;
     private Gun secondGun;
 
-    public Ship(int strength, Hull hull, Gun firstGun, Gun secondGun) {
-        this.strength = strength;
+    public Ship(Hull hull, Gun firstGun, Gun secondGun) {
+        this.strength = hull.getStrength();
         this.hull = hull;
         this.firstGun = firstGun;
         this.secondGun = secondGun;

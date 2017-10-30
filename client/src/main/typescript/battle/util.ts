@@ -22,7 +22,8 @@ export class Gun {
 }
 
 export class Hull {
-    constructor(readonly id: number, readonly actionPoints: number, readonly texture: Texture) {}
+    constructor(readonly id: number, readonly actionPoints: number,
+                readonly strength: number, readonly texture: Texture) {}
 }
 
 export class Move {

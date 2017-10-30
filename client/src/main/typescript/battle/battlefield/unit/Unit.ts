@@ -14,13 +14,11 @@ export default class Unit extends game.Actor {
     static readonly NOT_PREPARED_TO_SHOT = "notPreparedToShot";
     static readonly DESTROY = "destroy";
 
-    private _isDestroyed = false;
     private _preparedGunId = -1;
-
     private _currentMove: Move;
 
-    constructor(private _actionPoints: number, readonly side: Side,
-                private _cell: Cell, readonly hull: Hull, readonly firstGun: Gun,
+    constructor(private _actionPoints: number, private _strength: number,
+                readonly side: Side, private _cell: Cell, readonly hull: Hull, readonly firstGun: Gun,
                 readonly secondGun: Gun, private readonly projectileService: ProjectileService) {
         super();
         this.interactive = true;
@@ -33,12 +31,20 @@ export default class Unit extends game.Actor {
         this.updatePosition();
     }
 
-    get isDestroyed(): boolean {
-        return this._isDestroyed;
-    }
-
     get actionPoints(): number {
         return this._actionPoints;
+    }
+
+    get strength(): number {
+        return this._strength;
+    }
+
+    set strength(value: number) {
+        this._strength = value;
+        if (this._strength == 0) {
+            this.alpha = Unit.ALPHA_DESTROYED;
+            this.emit(Unit.DESTROY);
+        }
     }
 
     get cell(): Cell {
@@ -91,15 +97,9 @@ export default class Unit extends game.Actor {
 
         this.projectileService.once(game.Event.DONE, () => {
             this._preparedGunId = -1;
-            target.destroyUnit();
+            target.strength--;
             this.emit(ActionType.Shot);
         });
-    }
-
-    destroyUnit() {
-        this._isDestroyed = true;
-        this.alpha = Unit.ALPHA_DESTROYED;
-        this.emit(Unit.DESTROY);
     }
 
     protected update() {
