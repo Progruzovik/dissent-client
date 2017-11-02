@@ -16,12 +16,9 @@ module.exports = {
         filename: "./target/classes/static/js/" + (isProduction ? "app.min.js" : "app.js")
     },
     plugins: isProduction ? [
-        new webpack.optimize.UglifyJsPlugin({
-            comments: false
-        })
+        new webpack.optimize.UglifyJsPlugin({ comments: false })
     ] : [],
     resolve: {
-        extensions: [".ts", ".js"],
-        modules: ["./src/", "./node_modules/"]
+        extensions: [".js", ".ts"]
     }
 };

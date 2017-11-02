@@ -144,7 +144,7 @@ export default class Field extends game.UiElement {
             rectEnd.pivot.set(rectEnd.width / 2, rectEnd.height / 2);
             rectEnd.position.set((markCell.x + game.CENTER) * Unit.WIDTH, (markCell.y + game.CENTER) * Unit.HEIGHT);
             this.pathLayer.addChild(rectEnd);
-            const txtCost = new PIXI.Text(String(this.paths[markCell.x][markCell.y].movementCost),
+            const txtCost = new PIXI.Text(this.paths[markCell.x][markCell.y].movementCost.toLocaleString(),
                 { fill: 0xffffff, fontSize: 12 });
             txtCost.position.set(rectEnd.x + game.INDENT / 2, rectEnd.y - game.INDENT);
             this.pathLayer.addChild(txtCost);
