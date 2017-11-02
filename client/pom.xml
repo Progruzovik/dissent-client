@@ -32,7 +32,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>npm run webpack</id>
+                        <id>npm run webpack-p</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>exec</goal>
@@ -41,7 +41,7 @@
                             <executable>npm</executable>
                             <arguments>
                                 <argument>run</argument>
-                                <argument>webpack</argument>
+                                <argument>webpack-p</argument>
                             </arguments>
                         </configuration>
                     </execution>
