@@ -12,7 +12,7 @@
     "webpack": "^3.8.1"
   },
   "scripts": {
-    "webpack": "./node_modules/.bin/webpack --config webpack.config.js",
-    "webpack-p": "NODE_ENV='production' ./node_modules/.bin/webpack --config webpack.config.js"
+    "start": "./node_modules/.bin/webpack --config webpack.config.js --env.production",
+    "webpack": "./node_modules/.bin/webpack --config webpack.config.js --env.production=0"
   }
 }

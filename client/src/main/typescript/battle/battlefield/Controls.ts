@@ -98,7 +98,7 @@ export default class Controls extends game.UiElement {
         this.barStrength.maximum = currentUnit.hull.strength;
         this.barStrength.value = currentUnit.strength;
         if (currentUnit.firstGun) {
-            this.btnFirstGun.text = currentUnit.firstGun.name + "\n(" + currentUnit.firstGun.shotCost + " ОД)";
+            this.btnFirstGun.text = `${currentUnit.firstGun.name}\n(${currentUnit.firstGun.shotCost} ОД)`;
             this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn
                 && currentUnit.actionPoints >= currentUnit.firstGun.shotCost;
         } else {
@@ -106,7 +106,7 @@ export default class Controls extends game.UiElement {
             this.btnFirstGun.isEnabled = false;
         }
         if (currentUnit.secondGun) {
-            this.btnSecondGun.text = currentUnit.secondGun.name + "\n(" + currentUnit.secondGun.shotCost + " ОД)";
+            this.btnSecondGun.text = `${currentUnit.secondGun.name}\n(${currentUnit.secondGun.shotCost} ОД)`;
             this.btnSecondGun.isEnabled = this.unitService.isCurrentPlayerTurn
                 && currentUnit.actionPoints >= currentUnit.secondGun.shotCost;
         } else {

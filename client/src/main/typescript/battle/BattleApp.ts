@@ -16,7 +16,7 @@ export default class BattleApp extends game.Application {
             const webSocketConnection = new WebSocketConnection();
             webSocketConnection.requestTextures(textures => {
                 for (const texture of textures) {
-                    PIXI.loader.add(texture.name, "img/" + texture.name + ".png", (resource: PIXI.loaders.Resource) =>
+                    PIXI.loader.add(texture.name, `img/${texture.name}.png`, (resource: PIXI.loaders.Resource) =>
                         resource.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST);
                 }
                 PIXI.loader.load(() => {

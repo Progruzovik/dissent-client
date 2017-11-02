@@ -50,7 +50,7 @@ export default class Menu extends game.UiElement {
     }
 
     private updateInterface() {
-        this.txtStatus.text = "Current status: " + Status[this.status];
+        this.txtStatus.text = `Current status: ${Status[this.status]}`;
         if (this.status == Status.Queued) {
             this.btnQueue.text = "Out of queue";
         } else {
