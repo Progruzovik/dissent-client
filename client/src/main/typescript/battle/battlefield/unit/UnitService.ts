@@ -6,6 +6,8 @@ import * as PIXI from "pixi.js";
 
 export default class UnitService extends PIXI.utils.EventEmitter {
 
+    static readonly UNIT_MOUSE_OVER = "unitMouseOver";
+    static readonly UNIT_MOUSE_OUT = "unitMouseOut";
     static readonly SHOT_CELL = "shotCell";
     static readonly TARGET_CELL = "targetCell";
 
@@ -19,6 +21,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 if (this.currentUnit.preparedGunId != -1 && this.currentUnit.side != unit.side && unit.strength > 0) {
                     unit.alpha = 0.75;
                 }
+                this.emit(UnitService.UNIT_MOUSE_OVER, unit);
             });
             unit.on(game.Event.CLICK, () => {
                 if (this.currentTargets.indexOf(unit) != -1) {
@@ -29,6 +32,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 if (unit.strength > 0) {
                     unit.alpha = 1;
                 }
+                this.emit(UnitService.UNIT_MOUSE_OUT);
             });
 
             unit.on(ActionType.Move, () => {
