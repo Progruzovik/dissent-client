@@ -76,6 +76,9 @@ public final class SessionPlayer implements Player {
 
     @Override
     public void setBattle(Battle battle) {
+        for (final Ship ship : ships) {
+            ship.setStrength(ship.getHull().getStrength());
+        }
         if (battle != null) {
             if (this.battle != null) {
                 send(new Message<>("battleFinish", null));
