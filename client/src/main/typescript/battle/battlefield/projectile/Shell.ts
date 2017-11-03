@@ -14,7 +14,7 @@ export default class Shell extends Projectile {
         super(3);
         this.multiplier = new Cell(this.target.x < from.x ? -1 : 1, this.target.y < from.y ? -1 : 1);
 
-        this.addChild(new game.Rectangle(0xffff00, 20, 4));
+        this.addChild(new game.Rectangle(10, 4, 0xffff00));
         this.rotation = Math.atan2(this.target.y - from.y, this.target.x - from.x);
         this.pivot.x = this.width / 2;
         this.pivot.y = this.height / 2;

@@ -11,14 +11,14 @@ export default class Controls extends game.UiElement {
     private static readonly EMPTY_SLOT = "[пусто]";
 
     private readonly spriteHull = new PIXI.Sprite();
-    private readonly bgHull = new game.Rectangle(0x333333);
+    private readonly bgHull = new game.Rectangle(0, 0, 0x333333);
 
-    private readonly barStrength = new game.ProgressBar(0xff0000, 0, 15);
-    private readonly bgStats = new game.Rectangle();
+    private readonly barStrength = new game.ProgressBar(0, 15, 0xff0000);
+    private readonly bgStats = new game.Rectangle(0, 0);
 
     private readonly btnFirstGun = new game.Button();
     private readonly btnSecondGun = new game.Button();
-    private readonly bgModule = new game.Rectangle();
+    private readonly bgModule = new game.Rectangle(0, 0);
     private readonly btnNextTurn = new game.Button("Конец хода");
 
     constructor(private readonly unitService: UnitService, webSocketConnection: WebSocketConnection) {

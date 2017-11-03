@@ -6,10 +6,10 @@ export class ProgressBar extends PIXI.Container {
     private _value: number;
     private readonly bar: Rectangle;
 
-    constructor(color: number = 0xffffff, private _width: number, height: number,
-                private _minimum: number = 0, private _maximum: number = 100) {
+    constructor(private _width: number, height: number, color: number = 0x000000,
+                private _maximum: number = 100, private _minimum: number = 0) {
         super();
-        this.bar = new Rectangle(color, 0, height);
+        this.bar = new Rectangle(0, height, color);
         this.value = this.minimum;
         this.addChild(this.bar);
     }

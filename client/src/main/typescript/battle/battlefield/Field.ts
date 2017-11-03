@@ -23,15 +23,15 @@ export default class Field extends game.UiElement {
                 private readonly webSocketConnection: WebSocketConnection) {
         super();
 
-        const bg = new game.Rectangle();
+        const bg = new game.Rectangle(0, 0);
         this.addChild(bg);
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Rectangle(0x777777, size.x * Unit.WIDTH + Field.LINE_WIDTH, Field.LINE_WIDTH);
+            const line = new game.Rectangle(size.x * Unit.WIDTH + Field.LINE_WIDTH, Field.LINE_WIDTH, 0x777777);
             line.y = i * Unit.HEIGHT;
             this.addChild(line);
         }
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Rectangle(0x777777, Field.LINE_WIDTH, size.y * Unit.HEIGHT + Field.LINE_WIDTH);
+            const line = new game.Rectangle(Field.LINE_WIDTH, size.y * Unit.HEIGHT + Field.LINE_WIDTH, 0x777777);
             line.x = i * Unit.WIDTH;
             this.addChild(line);
         }
@@ -121,7 +121,7 @@ export default class Field extends game.UiElement {
                     direction = Direction.Down;
                 }
 
-                const rectLine = new game.Rectangle(0x00ff00, 5, 5);
+                const rectLine = new game.Rectangle(5, 5, 0x00ff00);
                 rectLine.position.set(cell.x * Unit.WIDTH, cell.y * Unit.HEIGHT);
                 let k = 0;
                 if (direction == Direction.Left || direction == Direction.Right) {
@@ -140,7 +140,7 @@ export default class Field extends game.UiElement {
                 this.pathLayer.addChild(rectLine);
                 cell = previousCell;
             }
-            const rectEnd = new game.Rectangle(0x00ff00, 14, 14);
+            const rectEnd = new game.Rectangle(14, 14, 0x00ff00);
             rectEnd.pivot.set(rectEnd.width / 2, rectEnd.height / 2);
             rectEnd.position.set((markCell.x + game.CENTER) * Unit.WIDTH, (markCell.y + game.CENTER) * Unit.HEIGHT);
             this.pathLayer.addChild(rectEnd);
@@ -166,7 +166,7 @@ const enum Direction {
 class Mark extends game.Rectangle {
 
     constructor(color: number, cell: Cell = null) {
-        super(color, Unit.WIDTH - Field.LINE_WIDTH, Unit.HEIGHT - Field.LINE_WIDTH);
+        super(Unit.WIDTH - Field.LINE_WIDTH, Unit.HEIGHT - Field.LINE_WIDTH, color);
         this.interactive = true;
         this.alpha = 0.4;
         if (cell) {

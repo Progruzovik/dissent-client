@@ -9,9 +9,9 @@ export class Button extends PIXI.Container {
     private readonly txtMain: PIXI.Text;
 
     constructor(text = "", width: number = 165, height: number = 40,
-                private readonly bgMouseOut: PIXI.Container = new Rectangle(0x333333),
-                private readonly bgMouseOver: PIXI.Container = new Rectangle(0x555555),
-                private readonly bgMouseDown: PIXI.Container = new Rectangle(0x222222),
+                private readonly bgMouseOut: PIXI.Container = new Rectangle(0, 0, 0x333333),
+                private readonly bgMouseOver: PIXI.Container = new Rectangle(0, 0, 0x555555),
+                private readonly bgMouseDown: PIXI.Container = new Rectangle(0, 0, 0x222222),
                 private readonly bgDisabled: PIXI.Container = bgMouseOver) {
         super();
         this.interactive = true;
