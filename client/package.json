@@ -13,6 +13,6 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/webpack --config webpack.config.js --env.production",
-    "webpack": "./node_modules/.bin/webpack --config webpack.config.js --env.production=0"
+    "webpack": "./node_modules/.bin/webpack --config webpack.config.js"
   }
 }
