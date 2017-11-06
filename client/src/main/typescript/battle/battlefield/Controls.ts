@@ -57,12 +57,12 @@ export default class Controls extends game.UiElement {
     }
 
     resize(width: number, height: number) {
-        const widthPerSection: number = width / Controls.SECTIONS_COUNT;
-        const heightPerSection: number = widthPerSection / Controls.SECTION_RATIO;
+        const widthPerSection = width / Controls.SECTIONS_COUNT;
+        const heightPerSection = widthPerSection / Controls.SECTION_RATIO;
 
         this.bgHull.width = widthPerSection;
         this.bgHull.height = heightPerSection;
-        const shipRatio: number = this.bgHull.height / Unit.HEIGHT;
+        const shipRatio = this.bgHull.height / Unit.HEIGHT;
         this.spriteHull.scale.set(shipRatio, shipRatio);
         this.spriteHull.position.set(this.bgHull.width / 2, this.bgHull.height / 2);
 

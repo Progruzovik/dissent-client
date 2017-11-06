@@ -5,6 +5,7 @@ import LeftUi from "./LeftUi";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
+import Window from "./unit/Window";
 import WebSocketConnection from "../WebSocketConnection";
 import { ActionType, Cell, Side } from "../util";
 import * as game from "../../game";
@@ -28,20 +29,11 @@ export default class BattlefieldScreen extends game.Screen {
         unitService.emit(ActionType.NextTurn, true);
         const actionReceiver = new ActionReceiver(field, controls, unitService, webSocketConnection);
 
-        unitService.on(UnitService.UNIT_MOUSE_OVER, (unit: Unit) => {
-            const window = new game.Rectangle(200, 0, 0x333333);
-            window.pivot.x = window.width;
-            window.x = this.width;
-            const txtUnit = new PIXI.Text(unit.hull.texture.name, { fill: 0xffffff });
-            txtUnit.anchor.x = game.CENTER;
-            txtUnit.x = window.width / 2;
-            window.addChild(txtUnit);
-            const barStrength = new game.ProgressBar(window.width, 15, 0xff0000, unit.hull.strength);
-            barStrength.value = unit.strength;
-            barStrength.text = `${barStrength.value}/${barStrength.maximum}`;
-            barStrength.y = txtUnit.height;
-            window.addChild(barStrength);
-            window.height = barStrength.y + barStrength.height;
+        unitService.on(UnitService.UNIT_MOUSE_OVER, (mousePos: PIXI.Point, unit: Unit) => {
+            const window = new Window(unit);
+            const rightWindowX = this.width - window.width;
+            window.x = mousePos.x > rightWindowX - Unit.WIDTH && mousePos.y < window.height + Unit.HEIGHT ? 0
+                : rightWindowX;
             this.frontUi.addChild(window);
         });
         unitService.on(UnitService.UNIT_MOUSE_OUT, () => this.frontUi.removeChildren());

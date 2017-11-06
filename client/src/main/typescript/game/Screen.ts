@@ -41,7 +41,7 @@ export class Screen extends UiElement {
                 if (this.content.x > 0) {
                     this.content.x = 0;
                 } else {
-                    const leftBorder: number = this.freeWidth - this.content.width;
+                    const leftBorder = this.freeWidth - this.content.width;
                     if (leftBorder > 0) {
                         this.content.x = 0;
                     } else if (this.content.x < leftBorder) {
@@ -52,7 +52,7 @@ export class Screen extends UiElement {
                 if (this.content.y > 0) {
                     this.content.y = 0;
                 } else {
-                    const topBorder: number = this.freeHeight - this.content.height;
+                    const topBorder = this.freeHeight - this.content.height;
                     if (topBorder > 0) {
                         this.content.y = 0;
                     } else if (this.content.y < topBorder) {

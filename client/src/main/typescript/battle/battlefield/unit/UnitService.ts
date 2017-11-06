@@ -17,11 +17,11 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 private readonly webSocketConnection: WebSocketConnection) {
         super();
         for (const unit of this.units) {
-            unit.on(game.Event.MOUSE_OVER, () => {
+            unit.on(game.Event.MOUSE_OVER, (e: PIXI.interaction.InteractionEvent) => {
                 if (this.currentUnit.preparedGunId != -1 && this.currentUnit.side != unit.side && unit.strength > 0) {
                     unit.alpha = 0.75;
                 }
-                this.emit(UnitService.UNIT_MOUSE_OVER, unit);
+                this.emit(UnitService.UNIT_MOUSE_OVER, e.data.global, unit);
             });
             unit.on(game.Event.CLICK, () => {
                 if (this.currentTargets.indexOf(unit) != -1) {
