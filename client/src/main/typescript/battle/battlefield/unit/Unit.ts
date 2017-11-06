@@ -10,8 +10,9 @@ export default class Unit extends game.Actor {
     static readonly HEIGHT = 32;
     static readonly ALPHA_DESTROYED = 0.5;
 
-    static readonly PREPARED_TO_SHOT = "preparedToShot";
-    static readonly NOT_PREPARED_TO_SHOT = "notPreparedToShot";
+    static readonly UPDATE_STATS = "updateStats";
+    static readonly PREPARE_TO_SHOT = "prepareToShot";
+    static readonly NOT_PREPARE_TO_SHOT = "notPrepareToShot";
     static readonly DESTROY = "destroy";
 
     private _preparedGunId = -1;
@@ -70,10 +71,10 @@ export default class Unit extends game.Actor {
         if (this.preparedGunId != value) {
             if (value == -1) {
                 this._preparedGunId = -1;
-                this.emit(Unit.NOT_PREPARED_TO_SHOT);
+                this.emit(Unit.NOT_PREPARE_TO_SHOT);
             } else if (value == this.firstGun.id || value == this.secondGun.id) {
                 this._preparedGunId = value;
-                this.emit(Unit.PREPARED_TO_SHOT);
+                this.emit(Unit.PREPARE_TO_SHOT);
             }
         }
     }
@@ -98,6 +99,7 @@ export default class Unit extends game.Actor {
         this.projectileService.once(game.Event.DONE, () => {
             this._preparedGunId = -1;
             target.strength--;
+            target.emit(Unit.UPDATE_STATS);
             this.emit(ActionType.Shot);
         });
     }

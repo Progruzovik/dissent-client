@@ -66,8 +66,8 @@ export default class Field extends game.UiElement {
             this.markLayer.addChild(new Mark(0xffffff, cell)));
         this.unitService.on(UnitService.TARGET_CELL, (cell: Cell) =>
             this.markLayer.addChild(new Mark(0xff0000, cell)));
-        this.unitService.on(Unit.PREPARED_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
-        this.unitService.on(Unit.NOT_PREPARED_TO_SHOT, () => this.addCurrentPathMarks());
+        this.unitService.on(Unit.PREPARE_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
+        this.unitService.on(Unit.NOT_PREPARE_TO_SHOT, () => this.addCurrentPathMarks());
         this.unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
         this.projectileService.on(ActionType.Shot, (projectile: game.Actor) => this.addChild(projectile));
     }
