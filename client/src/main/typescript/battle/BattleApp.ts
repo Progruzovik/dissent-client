@@ -43,8 +43,8 @@ export default class BattleApp extends game.Application {
                                 unitsArray.push(new Unit(unit.actionPoints, unit.ship.strength, unit.side, unit.cell,
                                     d.hulls.filter(h => h.id == unit.ship.hullId)[0],
                                     d.guns.filter(g => g.id == unit.ship.firstGunId)[0],
-                                    d.guns.filter(g =>
-                                        g.id == unit.ship.secondGunId)[0], projectileService));
+                                    d.guns.filter(g => g.id == unit.ship.secondGunId)[0],
+                                    projectileService));
                             }
                             this.currentScreen = new BattlefieldScreen(d.fieldSize, d.side, d.asteroids,
                                 d.clouds, destroyedUnitSprites, unitsArray, projectileService, webSocketConnection);

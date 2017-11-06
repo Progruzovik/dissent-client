@@ -97,6 +97,7 @@ export default class Controls extends game.UiElement {
         this.spriteHull.texture = PIXI.loader.resources[currentUnit.hull.texture.name].texture;
         this.barStrength.maximum = currentUnit.hull.strength;
         this.barStrength.value = currentUnit.strength;
+        this.barStrength.text = `${this.barStrength.value}/${this.barStrength.maximum}`;
         if (currentUnit.firstGun) {
             this.btnFirstGun.text = `${currentUnit.firstGun.name}\n(${currentUnit.firstGun.shotCost} ОД)`;
             this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn

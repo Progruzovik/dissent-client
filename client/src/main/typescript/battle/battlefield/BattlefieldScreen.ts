@@ -36,11 +36,12 @@ export default class BattlefieldScreen extends game.Screen {
             txtUnit.anchor.x = game.CENTER;
             txtUnit.x = window.width / 2;
             window.addChild(txtUnit);
-            const barHealth = new game.ProgressBar(window.width, 15, 0xff0000, unit.hull.strength);
-            barHealth.value = unit.strength;
-            barHealth.y = txtUnit.height;
-            window.addChild(barHealth);
-            window.height = barHealth.y + barHealth.height + game.INDENT;
+            const barStrength = new game.ProgressBar(window.width, 15, 0xff0000, unit.hull.strength);
+            barStrength.value = unit.strength;
+            barStrength.text = `${barStrength.value}/${barStrength.maximum}`;
+            barStrength.y = txtUnit.height;
+            window.addChild(barStrength);
+            window.height = barStrength.y + barStrength.height;
             this.frontUi.addChild(window);
         });
         unitService.on(UnitService.UNIT_MOUSE_OUT, () => this.frontUi.removeChildren());
