@@ -35,7 +35,7 @@ export class PathNode {
 }
 
 export class Shot {
-    constructor(readonly gunId: number, readonly cell: Cell) {}
+    constructor(readonly gunId: number, readonly damage: number, readonly cell: Cell) {}
 }
 
 export class Texture {

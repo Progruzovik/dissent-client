@@ -24,7 +24,13 @@ public final class Ship {
     }
 
     public void setStrength(int strength) {
-        this.strength = strength;
+        if (strength <= 0) {
+            this.strength = 0;
+        } else if (strength >= hull.getStrength()) {
+            this.strength = hull.getStrength();
+        } else {
+            this.strength = strength;
+        }
     }
 
     @JsonIgnore

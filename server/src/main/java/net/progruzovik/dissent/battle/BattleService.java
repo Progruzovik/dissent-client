@@ -74,8 +74,8 @@ public final class BattleService implements Battle {
             final Unit target = unitQueue.getUnitOnCell(cell);
             if (target == null) throw new InvalidShotException();
 
-            unitQueue.getCurrentUnit().shoot(gunId, target);
-            createMessage(new Message<>("shot", new Shot(gunId, cell)));
+            final int damage = unitQueue.getCurrentUnit().shoot(gunId, target);
+            createMessage(new Message<>("shot", new Shot(gunId, damage, cell)));
             if (target.getShip().getStrength() == 0) {
                 unitQueue.getQueue().remove(target);
                 field.destroyUnit(target);

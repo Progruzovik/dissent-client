@@ -55,12 +55,14 @@ public final class Unit {
         actionPoints -= movementCost;
     }
 
-    public void shoot(int gunId, Unit target) {
+    public int shoot(int gunId, Unit target) {
         final Gun gun = findGunById(gunId);
         if (gun == null || gun.getShotCost() > actionPoints) throw new InvalidShotException();
 
         actionPoints -= gun.getShotCost();
-        target.getShip().setStrength(target.getShip().getStrength() - 1);
+        final int damage = gun.getDamage();
+        target.getShip().setStrength(target.getShip().getStrength() - damage);
+        return damage;
     }
 
     private Gun findGunById(int gunId) {

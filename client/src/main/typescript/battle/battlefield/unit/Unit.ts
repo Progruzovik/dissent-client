@@ -1,6 +1,6 @@
 import Field from "../Field";
 import ProjectileService from "../projectile/ProjectileService";
-import { ActionType, Cell, Gun, Hull, Move, Side } from "../../util";
+import { ActionType, Cell, Gun, Hull, Move, Shot, Side } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 
@@ -41,10 +41,14 @@ export default class Unit extends game.Actor {
     }
 
     set strength(value: number) {
-        this._strength = value;
-        if (this._strength == 0) {
+        if (value <= 0) {
+            this._strength = 0;
             this.alpha = Unit.ALPHA_DESTROYED;
             this.emit(Unit.DESTROY);
+        } else if (value >= this.hull.strength) {
+            this._strength = this.hull.strength;
+        } else {
+            this._strength = value;
         }
     }
 
@@ -87,18 +91,18 @@ export default class Unit extends game.Actor {
         this._actionPoints = this.hull.actionPoints;
     }
 
-    shoot(target: Unit, gunId: number) {
-        if (gunId == this.firstGun.id) {
+    shoot(target: Unit, shot: Shot) {
+        if (shot.gunId == this.firstGun.id) {
             this._actionPoints -= this.firstGun.shotCost;
             this.projectileService.shoot(this.firstGun, target.center, this.center);
-        } else if (gunId == this.secondGun.id) {
+        } else if (shot.gunId == this.secondGun.id) {
             this._actionPoints -= this.secondGun.shotCost;
             this.projectileService.shoot(this.secondGun, target.center, this.center);
         }
 
         this.projectileService.once(game.Event.DONE, () => {
             this._preparedGunId = -1;
-            target.strength--;
+            target.strength -= shot.damage;
             target.emit(Unit.UPDATE_STATS);
             this.emit(ActionType.Shot);
         });

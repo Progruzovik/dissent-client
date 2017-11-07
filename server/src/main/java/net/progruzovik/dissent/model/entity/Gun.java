@@ -18,6 +18,9 @@ public final class Gun {
     private int shotCost;
 
     @Column(nullable = false)
+    private int damage;
+
+    @Column(nullable = false)
     private int radius;
 
     @ManyToOne
@@ -42,6 +45,11 @@ public final class Gun {
 
     public int getShotCost() {
         return shotCost;
+    }
+
+    @JsonIgnore
+    public int getDamage() {
+        return damage;
     }
 
     @JsonIgnore
