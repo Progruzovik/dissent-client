@@ -4,7 +4,7 @@ import WebSocketConnection from "../WebSocketConnection";
 import { ActionType } from "../util";
 import * as game from "../../game";
 
-export default class Controls extends game.UiElement {
+export default class Controls extends game.UiLayer {
 
     private static readonly SECTIONS_COUNT = 6;
     private static readonly SECTION_RATIO = 3;

@@ -2,7 +2,7 @@ import WebSocketConnection from "../WebSocketConnection";
 import { Status } from "../util";
 import * as game from "../../game";
 
-export default class Menu extends game.UiElement {
+export default class Menu extends game.UiLayer {
 
     private status: Status;
 

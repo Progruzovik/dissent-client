@@ -14,9 +14,9 @@ INSERT INTO texture VALUES
   (5, 'cloud');
 
 INSERT INTO hull VALUES
-  (1, 4, 2, 1),
-  (2, 5, 4, 2),
-  (3, 1, 7, 3);
+  (1, 4, 4, 1),
+  (2, 5, 6, 2),
+  (3, 2, 9, 3);
 
 INSERT INTO gunType VALUES
   (1, 'shell'),

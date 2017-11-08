@@ -25,18 +25,18 @@ export default class BattlefieldScreen extends game.Screen {
         this.leftUi = new LeftUi(currentPlayerSide, unitService);
         const controls = new Controls(unitService, webSocketConnection);
         this.bottomUi = controls;
-        this.frontUi = new game.UiElement();
         unitService.emit(ActionType.NextTurn, true);
         const actionReceiver = new ActionReceiver(field, controls, unitService, webSocketConnection);
 
         unitService.on(UnitService.UNIT_MOUSE_OVER, (mousePos: PIXI.Point, unit: Unit) => {
-            const window = new Window(unit);
-            const rightWindowX = this.width - window.width;
-            window.x = mousePos.x > rightWindowX - Unit.WIDTH && mousePos.y < window.height + Unit.HEIGHT ? 0
-                : rightWindowX;
-            this.frontUi.addChild(window);
+            const isLeft = mousePos.x > this.width - Window.WIDTH - Unit.WIDTH
+                && mousePos.y < Window.HEIGHT + Unit.HEIGHT;
+            this.frontUi = new Window(isLeft, unit);
         });
-        unitService.on(UnitService.UNIT_MOUSE_OUT, () => this.frontUi.removeChildren());
+        unitService.on(UnitService.UNIT_MOUSE_OUT, () => {
+            this.frontUi.destroy({ children: true });
+            this.frontUi = null;
+        });
         actionReceiver.once(ActionType.BattleFinish, () => this.emit(game.Event.DONE));
     }
 }

@@ -1,23 +1,33 @@
 import Unit from "./Unit";
 import * as game from "../../../game";
 
-export default class Window extends game.Rectangle {
+export default class Window extends game.UiLayer {
 
-    private readonly barStrength = new game.ProgressBar(this.width, 15, 0xff0000);
+    static readonly WIDTH = 200;
+    static readonly HEIGHT = 55;
 
-    constructor(private readonly unit: Unit) {
-        super(200, 0, 0x333333);
+    private readonly bgWindow = new game.Rectangle(Window.WIDTH, Window.HEIGHT, 0x333333);
+    private readonly barStrength = new game.ProgressBar(this.bgWindow.width, 15, 0xff0000);
+
+    constructor(private readonly isLeft: boolean, private readonly unit: Unit) {
+        super();
         const txtUnit = new PIXI.Text(unit.hull.texture.name, { fill: 0xffffff });
         txtUnit.anchor.x = game.CENTER;
-        txtUnit.x = this.width / 2;
-        this.addChild(txtUnit);
+        txtUnit.x = this.bgWindow.width / 2;
+        this.bgWindow.addChild(txtUnit);
         this.barStrength.maximum = unit.hull.strength;
         this.barStrength.y = txtUnit.height;
-        this.addChild(this.barStrength);
+        this.bgWindow.addChild(this.barStrength);
+        this.addChild(this.bgWindow);
         this.updateStats();
-        this.height = this.barStrength.y + this.barStrength.height;
 
         this.unit.on(Unit.UPDATE_STATS, () => this.updateStats());
+    }
+
+    resize(width: number, height: number) {
+        if (!this.isLeft) {
+            this.bgWindow.x = width - this.bgWindow.width;
+        }
     }
 
     private updateStats() {

@@ -5,7 +5,7 @@ import WebSocketConnection from "../WebSocketConnection";
 import { ActionType, Cell, PathNode } from "../util";
 import * as game from "../../game";
 
-export default class Field extends game.UiElement {
+export default class Field extends game.UiLayer {
 
     static readonly LINE_WIDTH = 1.5;
 

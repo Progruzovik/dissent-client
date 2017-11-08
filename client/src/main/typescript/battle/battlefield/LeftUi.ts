@@ -4,7 +4,7 @@ import { ActionType, Side } from "../util";
 import * as game from "../../game";
 import * as PIXI from "pixi.js";
 
-export default class LeftUi extends game.UiElement {
+export default class LeftUi extends game.UiLayer {
 
     private readonly bgQueue = new game.Rectangle(Unit.WIDTH, 0);
     private readonly txtActionPoints = new PIXI.Text("", { align: "center", fill: 0xffffff, fontSize: 26 });

@@ -1,8 +1,8 @@
-import { UiElement } from "./UiElement";
+import { UiLayer } from "./UiLayer";
 import { Event } from "./util";
 import * as PIXI from "pixi.js";
 
-export class Screen extends UiElement {
+export class Screen extends UiLayer {
 
     private isLeftMouseButtonDown = false;
     private _width = 0;
@@ -11,12 +11,12 @@ export class Screen extends UiElement {
     private freeHeight = 0;
     private readonly savedMousePosition = new PIXI.Point();
 
-    private _content: UiElement;
-    private _leftUi: UiElement;
-    private _rightUi: UiElement;
-    private _topUi: UiElement;
-    private _bottomUi: UiElement;
-    private _frontUi: UiElement;
+    private _content: UiLayer;
+    private _leftUi: UiLayer;
+    private _rightUi: UiLayer;
+    private _topUi: UiLayer;
+    private _bottomUi: UiLayer;
+    private _frontUi: UiLayer;
 
     private readonly bottomLayer = new PIXI.Container();
     private readonly middleLayer = new PIXI.Container();
@@ -74,11 +74,11 @@ export class Screen extends UiElement {
         return this._height;
     }
 
-    get content(): UiElement {
+    get content(): UiLayer {
         return this._content;
     }
 
-    set content(value: UiElement) {
+    set content(value: UiLayer) {
         if (this.content) {
             this.bottomLayer.removeChild(this.content);
         }
@@ -89,11 +89,11 @@ export class Screen extends UiElement {
         this.resize();
     }
 
-    get leftUi(): UiElement {
+    get leftUi(): UiLayer {
         return this._leftUi;
     }
 
-    set leftUi(value: UiElement) {
+    set leftUi(value: UiLayer) {
         if (this.leftUi) {
             this.middleLayer.removeChild(this.leftUi);
         }
@@ -104,11 +104,11 @@ export class Screen extends UiElement {
         this.resize();
     }
 
-    get rightUi(): UiElement {
+    get rightUi(): UiLayer {
         return this._rightUi;
     }
 
-    set rightUi(value: UiElement) {
+    set rightUi(value: UiLayer) {
         if (this.rightUi) {
             this.middleLayer.removeChild(this.rightUi);
         }
@@ -119,11 +119,11 @@ export class Screen extends UiElement {
         this.resize();
     }
 
-    get topUi(): UiElement {
+    get topUi(): UiLayer {
         return this._topUi;
     }
 
-    set topUi(value: UiElement) {
+    set topUi(value: UiLayer) {
         if (this.topUi) {
             this.middleLayer.removeChild(this.topUi);
         }
@@ -134,11 +134,11 @@ export class Screen extends UiElement {
         this.resize();
     }
 
-    get bottomUi(): UiElement {
+    get bottomUi(): UiLayer {
         return this._bottomUi;
     }
 
-    set bottomUi(value: UiElement) {
+    set bottomUi(value: UiLayer) {
         if (this.bottomUi) {
             this.middleLayer.removeChild(this.bottomUi);
         }
@@ -149,11 +149,11 @@ export class Screen extends UiElement {
         this.resize();
     }
 
-    get frontUi(): UiElement {
+    get frontUi(): UiLayer {
         return this._frontUi;
     }
 
-    set frontUi(value: UiElement) {
+    set frontUi(value: UiLayer) {
         if (this.frontUi) {
             this.frontLayer.removeChild(this.frontUi);
         }
