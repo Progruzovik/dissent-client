@@ -1,18 +1,14 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.model.player.Captain;
-import net.progruzovik.dissent.model.player.Status;
+import net.progruzovik.dissent.battle.player.Captain;
+import net.progruzovik.dissent.battle.player.Status;
+import net.progruzovik.dissent.model.battle.Battle;
 import org.springframework.stereotype.Service;
 
 @Service
 public final class PlayerQueueService implements PlayerQueue {
 
     private Captain queuedCaptain;
-    private final BattleFactory battleFactory;
-
-    public PlayerQueueService(BattleFactory battleFactory) {
-        this.battleFactory = battleFactory;
-    }
 
     @Override
     public void add(Captain captain) {
@@ -20,7 +16,7 @@ public final class PlayerQueueService implements PlayerQueue {
             queuedCaptain = captain;
             captain.setStatus(Status.QUEUED);
         } else if (queuedCaptain != captain) {
-            battleFactory.create(queuedCaptain, captain);
+            new Battle(queuedCaptain, captain);
             queuedCaptain = null;
         }
     }

@@ -1,15 +1,14 @@
-package net.progruzovik.dissent.battle;
+package net.progruzovik.dissent.model.battle;
 
+import net.progruzovik.dissent.battle.player.Captain;
+import net.progruzovik.dissent.battle.player.Status;
 import net.progruzovik.dissent.exception.InvalidShotException;
-import net.progruzovik.dissent.model.battle.*;
 import net.progruzovik.dissent.model.battle.field.Field;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.player.Captain;
-import net.progruzovik.dissent.model.player.Status;
 import net.progruzovik.dissent.model.socket.Message;
 import net.progruzovik.dissent.model.util.Cell;
 
-public final class BattleService implements Battle {
+public final class Battle {
 
     private static final int UNIT_INDENT = 3;
     private static final int BORDER_INDENT = 4;
@@ -22,7 +21,7 @@ public final class BattleService implements Battle {
     private final UnitQueue unitQueue = new UnitQueue();
     private final Field field;
 
-    public BattleService(Captain leftCaptain, Captain rightCaptain) {
+    public Battle(Captain leftCaptain, Captain rightCaptain) {
         this.leftCaptain = leftCaptain;
         leftCaptain.setBattle(this);
         this.rightCaptain = rightCaptain;
@@ -44,37 +43,33 @@ public final class BattleService implements Battle {
         onNextTurn();
     }
 
-    @Override
     public UnitQueue getUnitQueue() {
         return unitQueue;
     }
 
-    @Override
     public Field getField() {
         return field;
     }
 
-    @Override
     public Side getPlayerSide(String playerId) {
         if (leftCaptain.getId().equals(playerId)) return Side.LEFT;
         if (rightCaptain.getId().equals(playerId)) return Side.RIGHT;
         return Side.NONE;
     }
 
-    @Override
     public void moveCurrentUnit(String playerId, Cell cell) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
             createMessage(new Message<>("move", field.moveActiveUnit(cell)));
         }
     }
 
-    @Override
     public void shootWithCurrentUnit(String playerId, int gunId, Cell cell) {
         if (isIdBelongsToCurrentPlayer(playerId) && field.canActiveUnitHitCell(gunId, cell)) {
             final Unit target = unitQueue.getUnitOnCell(cell);
             if (target == null) throw new InvalidShotException();
 
             final int damage = unitQueue.getCurrentUnit().shoot(gunId, target);
+            field.createPathsForActiveUnit();
             createMessage(new Message<>("shot", new Shot(gunId, damage, cell)));
             if (target.getShip().getStrength() == 0) {
                 unitQueue.getQueue().remove(target);
@@ -89,7 +84,6 @@ public final class BattleService implements Battle {
         }
     }
 
-    @Override
     public void endTurn(String playerId) {
         if (isIdBelongsToCurrentPlayer(playerId)) {
             unitQueue.nextTurn();

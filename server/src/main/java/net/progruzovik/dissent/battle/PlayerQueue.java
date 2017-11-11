@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.model.player.Captain;
+import net.progruzovik.dissent.battle.player.Captain;
 
 public interface PlayerQueue {
 

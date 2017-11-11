@@ -2,8 +2,8 @@ package net.progruzovik.dissent.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.dao.TextureDao;
-import net.progruzovik.dissent.model.player.Player;
-import net.progruzovik.dissent.model.player.SessionPlayer;
+import net.progruzovik.dissent.battle.player.Player;
+import net.progruzovik.dissent.battle.player.SessionPlayer;
 import net.progruzovik.dissent.model.socket.Message;
 import org.junit.Before;
 import org.junit.Test;

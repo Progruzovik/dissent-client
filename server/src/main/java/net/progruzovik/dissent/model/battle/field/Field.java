@@ -108,6 +108,34 @@ public final class Field {
         map.get(unit.getCell().getX()).get(unit.getCell().getY()).setCurrentStatus(unit.getCellStatus());
     }
 
+    public void createPathsForActiveUnit() {
+        for (final List<PathNode> currentPath : currentPaths) {
+            for (int j = 0; j < currentPath.size(); j++) {
+                currentPath.set(j, null);
+            }
+        }
+        currentPaths.get(activeUnit.getCell().getX())
+                .set(activeUnit.getCell().getY(), new PathNode(0, activeUnit.getCell()));
+
+        final Queue<Cell> cellQueue = new LinkedList<>();
+        cellQueue.offer(activeUnit.getCell());
+        while (!cellQueue.isEmpty()) {
+            final Cell cell = cellQueue.poll();
+            final int distanceToCell = currentPaths.get(cell.getX()).get(cell.getY()).getMovementCost();
+            for (final Cell neighborCell : findNeighborsForCell(cell)) {
+                final Location neighborLocation = map.get(neighborCell.getX()).get(neighborCell.getY());
+                final int distanceToNeighbor = distanceToCell + neighborLocation.getMovementCost();
+                final PathNode pathFromNeighbor = currentPaths.get(neighborCell.getX()).get(neighborCell.getY());
+                if (distanceToNeighbor <= activeUnit.getActionPoints()
+                        && (pathFromNeighbor == null || pathFromNeighbor.getMovementCost() > distanceToNeighbor)) {
+                    currentPaths.get(neighborCell.getX())
+                            .set(neighborCell.getY(), new PathNode(distanceToNeighbor, cell));
+                    cellQueue.offer(neighborCell);
+                }
+            }
+        }
+    }
+
     public Move moveActiveUnit(Cell cell) {
         if (!cell.isInBorders(size) || !isCellReachable(cell)) {
             throw new InvalidMoveException(activeUnit.getActionPoints(), activeUnit.getCell(), cell);
@@ -236,33 +264,5 @@ public final class Field {
             nextCell = new Cell(nextCell);
         }
         return result;
-    }
-
-    private void createPathsForActiveUnit() {
-        for (final List<PathNode> currentPath : currentPaths) {
-            for (int j = 0; j < currentPath.size(); j++) {
-                currentPath.set(j, null);
-            }
-        }
-        currentPaths.get(activeUnit.getCell().getX())
-                .set(activeUnit.getCell().getY(), new PathNode(0, activeUnit.getCell()));
-
-        final Queue<Cell> cellQueue = new LinkedList<>();
-        cellQueue.offer(activeUnit.getCell());
-        while (!cellQueue.isEmpty()) {
-            final Cell cell = cellQueue.poll();
-            final int distanceToCell = currentPaths.get(cell.getX()).get(cell.getY()).getMovementCost();
-            for (final Cell neighborCell : findNeighborsForCell(cell)) {
-                final Location neighborLocation = map.get(neighborCell.getX()).get(neighborCell.getY());
-                final int distanceToNeighbor = distanceToCell + neighborLocation.getMovementCost();
-                final PathNode pathFromNeighbor = currentPaths.get(neighborCell.getX()).get(neighborCell.getY());
-                if (distanceToNeighbor <= activeUnit.getActionPoints()
-                        && (pathFromNeighbor == null || pathFromNeighbor.getMovementCost() > distanceToNeighbor)) {
-                    currentPaths.get(neighborCell.getX())
-                            .set(neighborCell.getY(), new PathNode(distanceToNeighbor, cell));
-                    cellQueue.offer(neighborCell);
-                }
-            }
-        }
     }
 }

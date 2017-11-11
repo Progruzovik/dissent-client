@@ -1,7 +1,7 @@
-package net.progruzovik.dissent.model.player;
+package net.progruzovik.dissent.battle.player;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.progruzovik.dissent.battle.Battle;
+import net.progruzovik.dissent.model.battle.Battle;
 import net.progruzovik.dissent.battle.PlayerQueue;
 import net.progruzovik.dissent.battle.ScenarioDigest;
 import net.progruzovik.dissent.dao.GunDao;

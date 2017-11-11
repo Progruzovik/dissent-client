@@ -1,6 +1,6 @@
-package net.progruzovik.dissent.model.player;
+package net.progruzovik.dissent.battle.player;
 
-import net.progruzovik.dissent.battle.Battle;
+import net.progruzovik.dissent.model.battle.Battle;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.socket.Message;
 
