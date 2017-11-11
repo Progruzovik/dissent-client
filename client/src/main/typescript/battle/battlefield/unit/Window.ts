@@ -30,6 +30,11 @@ export default class Window extends game.UiLayer {
         }
     }
 
+    destroy(options?: PIXI.DestroyOptions | boolean ) {
+        this.unit.off(Unit.UPDATE_STATS);
+        super.destroy(options);
+    }
+
     private updateStats() {
         this.barStrength.value = this.unit.strength;
         this.barStrength.text = `${this.barStrength.value}/${this.barStrength.maximum}`;
