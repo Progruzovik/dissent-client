@@ -33,31 +33,21 @@ public final class MessageHandler extends TextWebSocketHandler {
         readers.put("removeFromQueue", (p, d) -> p.removeFromQueue());
         readers.put("startScenario", (p, d) -> p.startScenario());
 
-        readers.put("requestBattleData", (p, d) -> {
-            final Map<String, Object> battleData = new HashMap<>(8);
-            battleData.put("side", p.getBattle().getPlayerSide(p.getId()));
-            battleData.put("hulls", p.getBattle().getUnitQueue().getUniqueHulls());
-            battleData.put("guns", p.getBattle().getUnitQueue().getUniqueGuns());
-            battleData.put("units", p.getBattle().getUnitQueue().getQueue());
-            battleData.put("fieldSize", p.getBattle().getField().getSize());
-            battleData.put("asteroids", p.getBattle().getField().getAsteroids());
-            battleData.put("clouds", p.getBattle().getField().getClouds());
-            battleData.put("destroyedUnits", p.getBattle().getField().getDestroyedUnits());
-            p.send(new Message<>("battleData", battleData));
-        });
+        readers.put("requestBattleData", (p, d) ->
+                p.send(new Message<>("battleData", p.getBattle().getBattleData(p.getId()))));
         readers.put("requestReachableCellsAndPaths", (p, d) -> {
             final Map<String, Object> reachableCellsAndPaths = new HashMap<>(2);
-            reachableCellsAndPaths.put("reachableCells", p.getBattle().getField().findReachableCellsForActiveUnit());
-            reachableCellsAndPaths.put("paths", p.getBattle().getField().getCurrentPaths());
+            reachableCellsAndPaths.put("reachableCells", p.getBattle().findReachableCellsForActiveUnit());
+            reachableCellsAndPaths.put("paths", p.getBattle().getCurrentPaths());
             p.send(new Message<>("reachableCellsAndPaths", reachableCellsAndPaths));
         });
         readers.put("moveCurrentUnit", (p, d) ->
                 p.getBattle().moveCurrentUnit(p.getId(), new Cell(d.get("x"), d.get("y"))));
         readers.put("requestShotAndTargetCells", (p, d) -> {
-            p.getBattle().getField().prepareGunForActiveUnit(d.get("gunId"));
+            p.getBattle().prepareGunForActiveUnit(d.get("gunId"));
             final Map<String, List<Cell>> shotAndTargetCells = new HashMap<>(2);
-            shotAndTargetCells.put("shotCells", p.getBattle().getField().getShotCells());
-            shotAndTargetCells.put("targetCells", p.getBattle().getField().getTargetCells());
+            shotAndTargetCells.put("shotCells", p.getBattle().getShotCells());
+            shotAndTargetCells.put("targetCells", p.getBattle().getTargetCells());
             p.send(new Message<>("shotAndTargetCells", shotAndTargetCells));
         });
         readers.put("shootWithCurrentUnit", ((p, d) ->

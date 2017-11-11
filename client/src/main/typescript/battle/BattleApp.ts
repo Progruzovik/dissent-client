@@ -46,7 +46,7 @@ export default class BattleApp extends game.Application {
                                     d.guns.filter(g => g.id == unit.ship.secondGunId)[0],
                                     projectileService));
                             }
-                            this.currentScreen = new BattlefieldScreen(d.fieldSize, d.side, d.asteroids,
+                            this.currentScreen = new BattlefieldScreen(d.fieldSize, d.playerSide, d.asteroids,
                                 d.clouds, destroyedUnitSprites, unitsArray, projectileService, webSocketConnection);
                             this.currentScreen.once(game.Event.DONE, () => this.currentScreen = menuScreen);
                         });

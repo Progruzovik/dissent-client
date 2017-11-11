@@ -21,7 +21,7 @@ public final class UnitQueue {
         return queue.element();
     }
 
-    public Queue<Unit> getQueue() {
+    public List<Unit> getUnits() {
         return queue;
     }
 

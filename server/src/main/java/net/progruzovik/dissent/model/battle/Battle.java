@@ -4,9 +4,12 @@ import net.progruzovik.dissent.battle.player.Captain;
 import net.progruzovik.dissent.battle.player.Status;
 import net.progruzovik.dissent.exception.InvalidShotException;
 import net.progruzovik.dissent.model.battle.field.Field;
+import net.progruzovik.dissent.model.battle.field.PathNode;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.socket.Message;
 import net.progruzovik.dissent.model.util.Cell;
+
+import java.util.List;
 
 public final class Battle {
 
@@ -43,24 +46,36 @@ public final class Battle {
         onNextTurn();
     }
 
-    public UnitQueue getUnitQueue() {
-        return unitQueue;
+    public BattleData getBattleData(String playerId) {
+        return new BattleData(getPlayerSide(playerId), field.getSize(),
+                unitQueue.getUniqueHulls(), unitQueue.getUniqueGuns(), field.getAsteroids(),
+                field.getClouds(), unitQueue.getUnits(), field.getDestroyedUnits());
     }
 
-    public Field getField() {
-        return field;
+    public List<List<PathNode>> getCurrentPaths() {
+        return field.getCurrentPaths();
     }
 
-    public Side getPlayerSide(String playerId) {
-        if (leftCaptain.getId().equals(playerId)) return Side.LEFT;
-        if (rightCaptain.getId().equals(playerId)) return Side.RIGHT;
-        return Side.NONE;
+    public List<Cell> getShotCells() {
+        return field.getShotCells();
+    }
+
+    public List<Cell> getTargetCells() {
+        return field.getTargetCells();
+    }
+
+    public List<Cell> findReachableCellsForActiveUnit() {
+        return field.findReachableCellsForActiveUnit();
     }
 
     public void moveCurrentUnit(String playerId, Cell cell) {
         if (isIdBelongsToCurrentCaptain(playerId)) {
             createMessage(new Message<>("move", field.moveActiveUnit(cell)));
         }
+    }
+
+    public void prepareGunForActiveUnit(int gunId) {
+        field.prepareGunForActiveUnit(gunId);
     }
 
     public void shootWithCurrentUnit(String playerId, int gunId, Cell cell) {
@@ -72,7 +87,7 @@ public final class Battle {
             field.createPathsForActiveUnit();
             createMessage(new Message<>("shot", new Shot(gunId, damage, cell)));
             if (target.getShip().getStrength() == 0) {
-                unitQueue.getQueue().remove(target);
+                unitQueue.getUnits().remove(target);
                 field.destroyUnit(target);
                 if (!unitQueue.hasUnitsOnBothSides()) {
                     isRunning = false;
@@ -94,6 +109,12 @@ public final class Battle {
 
     private boolean isIdBelongsToCurrentCaptain(String id) {
         return getCurrentCaptain() != null && getCurrentCaptain().getId().equals(id);
+    }
+
+    private Side getPlayerSide(String playerId) {
+        if (leftCaptain.getId().equals(playerId)) return Side.LEFT;
+        if (rightCaptain.getId().equals(playerId)) return Side.RIGHT;
+        return Side.NONE;
     }
 
     private Captain getCurrentCaptain() {

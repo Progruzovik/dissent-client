@@ -69,10 +69,6 @@ public final class Field {
         createPathsForActiveUnit();
     }
 
-    public List<List<PathNode>> getCurrentPaths() {
-        return currentPaths;
-    }
-
     public List<Cell> getAsteroids() {
         return asteroids;
     }
@@ -81,16 +77,20 @@ public final class Field {
         return clouds;
     }
 
+    public List<Unit> getDestroyedUnits() {
+        return destroyedUnits;
+    }
+
+    public List<List<PathNode>> getCurrentPaths() {
+        return currentPaths;
+    }
+
     public List<Cell> getShotCells() {
         return shotCells;
     }
 
     public List<Cell> getTargetCells() {
         return targetCells;
-    }
-
-    public List<Unit> getDestroyedUnits() {
-        return destroyedUnits;
     }
 
     public boolean canActiveUnitHitCell(int gunId, Cell cell) {

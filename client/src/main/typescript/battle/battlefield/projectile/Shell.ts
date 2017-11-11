@@ -1,5 +1,5 @@
 import Projectile from "./Projectile";
-import { ActionType, Cell } from "../../util";
+import { Cell } from "../../util";
 import * as game from "../../../game";
 
 export default class Shell extends Projectile {
@@ -41,6 +41,6 @@ export default class Shell extends Projectile {
 
     private emitNextShot() {
         this.isNextShotReady = true;
-        this.emit(ActionType.Shot);
+        this.emit(Projectile.NEW_SHOT);
     }
 }

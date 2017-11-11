@@ -46,8 +46,8 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
         this.prepareMessage(new Message("startScenario"));
     }
 
-    requestBattleData(callback: (data: { side: Side, hulls: Hull[], guns: Gun[], units: Unit[],
-        fieldSize: Point, asteroids: Point[], clouds: Point[], destroyedUnits: Unit[] }) => void) {
+    requestBattleData(callback: (data: { playerSide: Side, fieldSize: Point, hulls: Hull[], guns: Gun[],
+        asteroids: Point[], clouds: Point[], units: Unit[], destroyedUnits: Unit[] }) => void) {
         this.prepareMessage(new Message("requestBattleData"));
         this.once("battleData", callback);
     }

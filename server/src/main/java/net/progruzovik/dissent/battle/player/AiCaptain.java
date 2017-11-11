@@ -56,15 +56,14 @@ public final class AiCaptain implements Captain {
 
     @Override
     public void act(Unit unit) {
-        getBattle().getField().setActiveUnit(unit);
         if (unit.getShip().getFirstGun() != null) {
             boolean canCurrentUnitMove = true;
             while (unit.getActionPoints() >= unit.getShip().getFirstGun().getShotCost()
                     && canCurrentUnitMove) {
-                getBattle().getField().prepareGunForActiveUnit(unit.getShip().getFirstGunId());
-                final List<Cell> targetCells = getBattle().getField().getTargetCells();
+                getBattle().prepareGunForActiveUnit(unit.getShip().getFirstGunId());
+                final List<Cell> targetCells = getBattle().getTargetCells();
                 if (targetCells.isEmpty()) {
-                    final List<Cell> reachableCells = getBattle().getField().findReachableCellsForActiveUnit();
+                    final List<Cell> reachableCells = getBattle().findReachableCellsForActiveUnit();
                     if (reachableCells.isEmpty()) {
                         canCurrentUnitMove = false;
                     } else {

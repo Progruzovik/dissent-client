@@ -1,3 +1,4 @@
+import Projectile from "./projectile/Projectile";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
@@ -69,7 +70,7 @@ export default class Field extends game.UiLayer {
         this.unitService.on(Unit.PREPARE_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
         this.unitService.on(Unit.NOT_PREPARE_TO_SHOT, () => this.addCurrentPathMarks());
         this.unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
-        this.projectileService.on(ActionType.Shot, (projectile: game.Actor) => this.addChild(projectile));
+        this.projectileService.on(Projectile.NEW_SHOT, (projectile: Projectile) => this.addChild(projectile));
     }
 
     removePathsAndMarksExceptCurrent() {
