@@ -1,8 +1,8 @@
 package net.progruzovik.dissent.battle.player;
 
-import net.progruzovik.dissent.model.battle.Battle;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
+import net.progruzovik.dissent.model.battle.Battle;
 import net.progruzovik.dissent.model.battle.Unit;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -54,14 +55,27 @@ public final class AiCaptain implements Captain {
     }
 
     @Override
-    public void act() {
-        final Unit currentUnit = getBattle().getUnitQueue().getCurrentUnit();
-        if (currentUnit.getShip().getFirstGun() != null) {
-            getBattle().getField().prepareGunForActiveUnit(currentUnit.getShip().getFirstGunId());
-            final List<Cell> targetCells =  getBattle().getField().getTargetCells();
-            while (currentUnit.getActionPoints() >= currentUnit.getShip().getFirstGun().getShotCost()
-                    && !targetCells.isEmpty()) {
-                getBattle().shootWithCurrentUnit(getId(), currentUnit.getShip().getFirstGunId(), targetCells.get(0));
+    public void act(Unit unit) {
+        getBattle().getField().setActiveUnit(unit);
+        if (unit.getShip().getFirstGun() != null) {
+            boolean canCurrentUnitMove = true;
+            while (unit.getActionPoints() >= unit.getShip().getFirstGun().getShotCost()
+                    && canCurrentUnitMove) {
+                getBattle().getField().prepareGunForActiveUnit(unit.getShip().getFirstGunId());
+                final List<Cell> targetCells = getBattle().getField().getTargetCells();
+                if (targetCells.isEmpty()) {
+                    final List<Cell> reachableCells = getBattle().getField().findReachableCellsForActiveUnit();
+                    if (reachableCells.isEmpty()) {
+                        canCurrentUnitMove = false;
+                    } else {
+                        final Random random = new Random();
+                        getBattle().moveCurrentUnit(getId(),
+                                reachableCells.get(random.nextInt(reachableCells.size())));
+                    }
+                } else {
+                    getBattle().shootWithCurrentUnit(getId(),
+                            unit.getShip().getFirstGunId(), targetCells.get(0));
+                }
             }
         }
         getBattle().endTurn(getId());

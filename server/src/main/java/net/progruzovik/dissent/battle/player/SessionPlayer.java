@@ -1,11 +1,12 @@
 package net.progruzovik.dissent.battle.player;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.progruzovik.dissent.model.battle.Battle;
 import net.progruzovik.dissent.battle.PlayerQueue;
 import net.progruzovik.dissent.battle.ScenarioDigest;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
+import net.progruzovik.dissent.model.battle.Battle;
+import net.progruzovik.dissent.model.battle.Unit;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
@@ -109,7 +110,7 @@ public final class SessionPlayer implements Player {
     }
 
     @Override
-    public void act() { }
+    public void act(Unit unit) { }
 
     @Override
     public void send(Message message) {

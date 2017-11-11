@@ -58,13 +58,13 @@ public final class Battle {
     }
 
     public void moveCurrentUnit(String playerId, Cell cell) {
-        if (isIdBelongsToCurrentPlayer(playerId)) {
+        if (isIdBelongsToCurrentCaptain(playerId)) {
             createMessage(new Message<>("move", field.moveActiveUnit(cell)));
         }
     }
 
     public void shootWithCurrentUnit(String playerId, int gunId, Cell cell) {
-        if (isIdBelongsToCurrentPlayer(playerId) && field.canActiveUnitHitCell(gunId, cell)) {
+        if (isIdBelongsToCurrentCaptain(playerId) && field.canActiveUnitHitCell(gunId, cell)) {
             final Unit target = unitQueue.getUnitOnCell(cell);
             if (target == null) throw new InvalidShotException();
 
@@ -84,20 +84,19 @@ public final class Battle {
         }
     }
 
-    public void endTurn(String playerId) {
-        if (isIdBelongsToCurrentPlayer(playerId)) {
+    public void endTurn(String captainId) {
+        if (isIdBelongsToCurrentCaptain(captainId)) {
             unitQueue.nextTurn();
             createMessage(new Message<>("nextTurn", null));
             onNextTurn();
         }
     }
 
-    private boolean isIdBelongsToCurrentPlayer(String id) {
-        final Captain currentCaptain = getCurrentPlayer();
-        return currentCaptain != null && currentCaptain.getId().equals(id);
+    private boolean isIdBelongsToCurrentCaptain(String id) {
+        return getCurrentCaptain() != null && getCurrentCaptain().getId().equals(id);
     }
 
-    private Captain getCurrentPlayer() {
+    private Captain getCurrentCaptain() {
         if (!isRunning) return null;
         switch (unitQueue.getCurrentUnit().getSide()) {
             case LEFT: return leftCaptain;
@@ -107,11 +106,11 @@ public final class Battle {
     }
 
     private void onNextTurn() {
-        final Captain captain = getCurrentPlayer();
+        final Captain captain = getCurrentCaptain();
         if (captain != null) {
             unitQueue.getCurrentUnit().activate();
             field.setActiveUnit(unitQueue.getCurrentUnit());
-            captain.act();
+            captain.act(unitQueue.getCurrentUnit());
         }
     }
 

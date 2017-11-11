@@ -80,7 +80,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     }
 
     private checkCurrentUnitActionPoints() {
-        if (this.currentUnit.actionPoints == 0) {
+        if (this.isCurrentPlayerTurn && this.currentUnit.actionPoints == 0) {
             this.webSocketConnection.endTurn();
         }
     }
