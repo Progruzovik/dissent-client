@@ -32,9 +32,6 @@ public final class AiCaptain extends AbstractCaptain {
     }
 
     @Override
-    public void setStatus(Status status) { }
-
-    @Override
     public void act(Unit unit) {
         if (unit.getShip().getFirstGun() != null) {
             boolean canCurrentUnitMove = true;

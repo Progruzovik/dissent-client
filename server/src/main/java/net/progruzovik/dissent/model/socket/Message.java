@@ -10,6 +10,10 @@ public class Message<T> {
         this.data = data;
     }
 
+    public Message(String subject) {
+        this.subject = subject;
+    }
+
     public Message() { }
 
     public String getSubject() {

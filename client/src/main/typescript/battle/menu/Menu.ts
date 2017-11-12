@@ -21,7 +21,6 @@ export default class Menu extends game.UiLayer {
         this.addChild(this.btnQueue);
         this.btnScenario.pivot.x = this.btnScenario.width / 2;
         this.addChild(this.btnScenario);
-        this.updateInterface();
 
         this.btnQueue.on(game.Event.BUTTON_CLICK, () => {
             if (this.status == Status.Queued) {

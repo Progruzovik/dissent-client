@@ -27,7 +27,6 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     public static String NAME = "scopedTarget.sessionPlayer";
 
     private final String id;
-    private Status status = Status.IDLE;
 
     private final PlayerQueue queue;
     private final ScenarioDigest scenarioDigest;
@@ -53,24 +52,18 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
 
     @Override
     public Status getStatus() {
-        return status;
-    }
-
-    @Override
-    public void setStatus(Status status) {
-        this.status = status;
-        sendMessage(new Message<>("status", status));
+        if (getBattle() != null && getBattle().isRunning()) return Status.IN_BATTLE;
+        if (queue.isQueued(this)) return Status.QUEUED;
+        return Status.IDLE;
     }
 
     @Override
     public void registerBattle(Side side, Battle battle) {
-        if (getBattle() != null) {
-            sendMessage(new Message<>("battleFinish", null));
+        if (getStatus() == Status.IN_BATTLE) {
+            sendMessage(new Message("battleFinish"));
         }
         super.registerBattle(side, battle);
-        if (battle != null) {
-            setStatus(Status.IN_BATTLE);
-        }
+        sendCurrentStatus();
     }
 
     @Override
@@ -81,11 +74,13 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     @Override
     public void addToQueue() {
         queue.add(this);
+        sendCurrentStatus();
     }
 
     @Override
     public void removeFromQueue() {
         queue.remove(this);
+        sendCurrentStatus();
     }
 
     @Override
@@ -99,5 +94,9 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     @Override
     public void sendMessage(Message message) {
         messageSender.send(message);
+    }
+
+    private void sendCurrentStatus() {
+        sendMessage(new Message<>("status", getStatus()));
     }
 }

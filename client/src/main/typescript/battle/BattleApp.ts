@@ -48,7 +48,10 @@ export default class BattleApp extends game.Application {
                             }
                             this.currentScreen = new BattlefieldScreen(d.fieldSize, d.playerSide, d.asteroids,
                                 d.clouds, destroyedUnitSprites, unitsArray, projectileService, webSocketConnection);
-                            this.currentScreen.once(game.Event.DONE, () => this.currentScreen = menuScreen);
+                            this.currentScreen.once(game.Event.DONE, () => {
+                                webSocketConnection.requestStatus();
+                                this.currentScreen = menuScreen
+                            });
                         });
                     });
                 });

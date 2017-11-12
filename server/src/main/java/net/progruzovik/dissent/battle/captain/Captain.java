@@ -14,8 +14,6 @@ public interface Captain {
 
     List<Ship> getShips();
 
-    void setStatus(Status status);
-
     Battle getBattle();
 
     void registerBattle(Side side, Battle battle);

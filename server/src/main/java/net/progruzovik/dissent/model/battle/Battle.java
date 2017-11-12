@@ -1,7 +1,6 @@
 package net.progruzovik.dissent.model.battle;
 
 import net.progruzovik.dissent.battle.captain.Captain;
-import net.progruzovik.dissent.battle.captain.Status;
 import net.progruzovik.dissent.exception.InvalidShotException;
 import net.progruzovik.dissent.model.battle.field.Field;
 import net.progruzovik.dissent.model.battle.field.PathNode;
@@ -31,10 +30,14 @@ public final class Battle {
         this.field = field;
     }
 
-    public BattleData getBattleData(String playerId) {
-        return new BattleData(getPlayerSide(playerId), field.getSize(),
+    public BattleData getBattleData(String captainId) {
+        return new BattleData(getCaptainSide(captainId), field.getSize(),
                 unitQueue.getUniqueHulls(), unitQueue.getUniqueGuns(), field.getAsteroids(),
                 field.getClouds(), unitQueue.getUnits(), field.getDestroyedUnits());
+    }
+
+    public boolean isRunning() {
+        return isRunning;
     }
 
     public List<List<PathNode>> getCurrentPaths() {
@@ -64,8 +67,8 @@ public final class Battle {
         return field.findReachableCellsForActiveUnit();
     }
 
-    public void moveCurrentUnit(String playerId, Cell cell) {
-        if (isIdBelongsToCurrentCaptain(playerId)) {
+    public void moveCurrentUnit(String captainId, Cell cell) {
+        if (isIdBelongsToCurrentCaptain(captainId)) {
             createMessage(new Message<>("move", field.moveActiveUnit(cell)));
         }
     }
@@ -74,8 +77,8 @@ public final class Battle {
         field.prepareGunForActiveUnit(gunId);
     }
 
-    public void shootWithCurrentUnit(String playerId, int gunId, Cell cell) {
-        if (isIdBelongsToCurrentCaptain(playerId) && field.canActiveUnitHitCell(gunId, cell)) {
+    public void shootWithCurrentUnit(String captainId, int gunId, Cell cell) {
+        if (isIdBelongsToCurrentCaptain(captainId) && field.canActiveUnitHitCell(gunId, cell)) {
             final Unit target = unitQueue.getUnitOnCell(cell);
             if (target == null) throw new InvalidShotException();
 
@@ -87,9 +90,7 @@ public final class Battle {
                 field.destroyUnit(target);
                 if (!unitQueue.hasUnitsOnBothSides()) {
                     isRunning = false;
-                    leftCaptain.setStatus(Status.IDLE);
-                    rightCaptain.setStatus(Status.IDLE);
-                    createMessage(new Message<>("battleFinish", null));
+                    createMessage(new Message("battleFinish"));
                 }
             }
         }
@@ -98,7 +99,7 @@ public final class Battle {
     public void endTurn(String captainId) {
         if (isIdBelongsToCurrentCaptain(captainId)) {
             unitQueue.nextTurn();
-            createMessage(new Message<>("nextTurn", null));
+            createMessage(new Message("nextTurn"));
             onNextTurn();
         }
     }
@@ -107,9 +108,9 @@ public final class Battle {
         return getCurrentCaptain() != null && getCurrentCaptain().getId().equals(id);
     }
 
-    private Side getPlayerSide(String playerId) {
-        if (leftCaptain.getId().equals(playerId)) return Side.LEFT;
-        if (rightCaptain.getId().equals(playerId)) return Side.RIGHT;
+    private Side getCaptainSide(String captainId) {
+        if (leftCaptain.getId().equals(captainId)) return Side.LEFT;
+        if (rightCaptain.getId().equals(captainId)) return Side.RIGHT;
         return Side.NONE;
     }
 

@@ -1,10 +1,12 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.battle.captain.Captain;
+import net.progruzovik.dissent.battle.captain.Player;
 
 public interface PlayerQueue {
 
-    void add(Captain captain);
+    boolean isQueued(Player player);
 
-    void remove(Captain captain);
+    void add(Player player);
+
+    void remove(Player player);
 }
