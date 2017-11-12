@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.player;
+package net.progruzovik.dissent.battle.captain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.battle.PlayerQueue;
@@ -6,6 +6,7 @@ import net.progruzovik.dissent.battle.ScenarioDigest;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.battle.Battle;
+import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.battle.Unit;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
@@ -18,32 +19,28 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
-public final class SessionPlayer implements Player {
+public final class SessionPlayer extends AbstractCaptain implements Player {
 
     public static String NAME = "scopedTarget.sessionPlayer";
 
     private final String id;
-    private final List<Ship> ships = new ArrayList<>();
     private Status status = Status.IDLE;
 
     private final PlayerQueue queue;
     private final ScenarioDigest scenarioDigest;
     private final MessageSender messageSender;
-    private Battle battle;
 
     public SessionPlayer(HttpSession session, ObjectMapper mapper, PlayerQueue queue,
                          ScenarioDigest scenarioDigest, HullDao shipDao, GunDao gunDao) {
         id = session.getId();
         final Hull basicHull = shipDao.getHull(1);
         final Gun shrapnel = gunDao.getGun(1);
-        ships.add(new Ship(basicHull, shrapnel, null));
-        ships.add(new Ship(shipDao.getHull(2), shrapnel, gunDao.getGun(2)));
-        ships.add(new Ship(basicHull, shrapnel, null));
+        getShips().add(new Ship(basicHull, shrapnel, null));
+        getShips().add(new Ship(shipDao.getHull(2), shrapnel, gunDao.getGun(2)));
+        getShips().add(new Ship(basicHull, shrapnel, null));
         this.queue = queue;
         this.scenarioDigest = scenarioDigest;
         messageSender = new MessageSender(mapper);
@@ -55,11 +52,6 @@ public final class SessionPlayer implements Player {
     }
 
     @Override
-    public List<Ship> getShips() {
-        return ships;
-    }
-
-    @Override
     public Status getStatus() {
         return status;
     }
@@ -67,24 +59,16 @@ public final class SessionPlayer implements Player {
     @Override
     public void setStatus(Status status) {
         this.status = status;
-        send(new Message<>("status", status));
+        sendMessage(new Message<>("status", status));
     }
 
     @Override
-    public Battle getBattle() {
-        return battle;
-    }
-
-    @Override
-    public void setBattle(Battle battle) {
-        for (final Ship ship : ships) {
-            ship.setStrength(ship.getHull().getStrength());
+    public void registerBattle(Side side, Battle battle) {
+        if (getBattle() != null) {
+            sendMessage(new Message<>("battleFinish", null));
         }
+        super.registerBattle(side, battle);
         if (battle != null) {
-            if (this.battle != null) {
-                send(new Message<>("battleFinish", null));
-            }
-            this.battle = battle;
             setStatus(Status.IN_BATTLE);
         }
     }
@@ -113,7 +97,7 @@ public final class SessionPlayer implements Player {
     public void act(Unit unit) { }
 
     @Override
-    public void send(Message message) {
+    public void sendMessage(Message message) {
         messageSender.send(message);
     }
 }

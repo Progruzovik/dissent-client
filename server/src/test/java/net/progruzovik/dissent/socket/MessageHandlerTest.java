@@ -2,8 +2,8 @@ package net.progruzovik.dissent.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.dao.TextureDao;
-import net.progruzovik.dissent.battle.player.Player;
-import net.progruzovik.dissent.battle.player.SessionPlayer;
+import net.progruzovik.dissent.battle.captain.Player;
+import net.progruzovik.dissent.battle.captain.SessionPlayer;
 import net.progruzovik.dissent.model.socket.Message;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +38,6 @@ public final class MessageHandlerTest {
     public void handleStatusMessage() throws Exception {
         final Message message = new Message<>("requestStatus", null);
         messageHandler.handleTextMessage(session, new TextMessage(objectMapper.writeValueAsString(message)));
-        verify(player).send(any(Message.class));
+        verify(player).sendMessage(any(Message.class));
     }
 }

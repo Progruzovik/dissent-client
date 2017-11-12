@@ -13,6 +13,9 @@ import java.util.function.Predicate;
 
 public final class Field {
 
+    public static final int UNIT_INDENT = 3;
+    public static final int BORDER_INDENT = 4;
+
     private final Cell size;
     private final List<List<Location>> map;
     private final List<Cell> asteroids = new ArrayList<>();

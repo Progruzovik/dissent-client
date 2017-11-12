@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.player;
+package net.progruzovik.dissent.battle.captain;
 
 public enum Status {
     IDLE,

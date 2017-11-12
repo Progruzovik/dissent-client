@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.model.battle;
 
-import net.progruzovik.dissent.battle.player.Captain;
-import net.progruzovik.dissent.battle.player.Status;
+import net.progruzovik.dissent.battle.captain.Captain;
+import net.progruzovik.dissent.battle.captain.Status;
 import net.progruzovik.dissent.exception.InvalidShotException;
 import net.progruzovik.dissent.model.battle.field.Field;
 import net.progruzovik.dissent.model.battle.field.PathNode;
@@ -11,39 +11,24 @@ import net.progruzovik.dissent.model.util.Cell;
 
 import java.util.List;
 
-public final class Battle {
+import static net.progruzovik.dissent.model.battle.field.Field.BORDER_INDENT;
+import static net.progruzovik.dissent.model.battle.field.Field.UNIT_INDENT;
 
-    private static final int UNIT_INDENT = 3;
-    private static final int BORDER_INDENT = 4;
+public final class Battle {
 
     private boolean isRunning = true;
 
     private final Captain leftCaptain;
     private final Captain rightCaptain;
 
-    private final UnitQueue unitQueue = new UnitQueue();
+    private final UnitQueue unitQueue;
     private final Field field;
 
-    public Battle(Captain leftCaptain, Captain rightCaptain) {
+    public Battle(Captain leftCaptain, Captain rightCaptain, UnitQueue unitQueue, Field field) {
         this.leftCaptain = leftCaptain;
-        leftCaptain.setBattle(this);
         this.rightCaptain = rightCaptain;
-        rightCaptain.setBattle(this);
-
-        final int maxShipsCountOnSide = Math.max(leftCaptain.getShips().size(), rightCaptain.getShips().size());
-        final int colsCount = maxShipsCountOnSide * UNIT_INDENT + BORDER_INDENT * 2;
-        field = new Field(new Cell(colsCount, colsCount));
-        int i = 0;
-        for (final Ship ship : leftCaptain.getShips()) {
-            registerUnit(new Unit(new Cell(0, i * UNIT_INDENT + BORDER_INDENT), Side.LEFT, ship));
-            i++;
-        }
-        i = 0;
-        for (final Ship ship : rightCaptain.getShips()) {
-            registerUnit(new Unit(new Cell(colsCount - 1, i * UNIT_INDENT + BORDER_INDENT), Side.RIGHT, ship));
-            i++;
-        }
-        onNextTurn();
+        this.unitQueue = unitQueue;
+        this.field = field;
     }
 
     public BattleData getBattleData(String playerId) {
@@ -62,6 +47,17 @@ public final class Battle {
 
     public List<Cell> getTargetCells() {
         return field.getTargetCells();
+    }
+
+    public void registerShip(int number, Side side, Ship ship) {
+        final int unitCol = side == Side.RIGHT ? field.getSize().getX() - 1 : 0;
+        final Unit unit = new Unit(new Cell(unitCol, number * UNIT_INDENT + BORDER_INDENT), side, ship);
+        field.addUnit(unit);
+        unitQueue.addUnit(unit);
+    }
+
+    public void startBattle() {
+        onNextTurn();
     }
 
     public List<Cell> findReachableCellsForActiveUnit() {
@@ -135,13 +131,8 @@ public final class Battle {
         }
     }
 
-    private void registerUnit(Unit unit) {
-        field.addUnit(unit);
-        unitQueue.addUnit(unit);
-    }
-
     private void createMessage(Message message) {
-        leftCaptain.send(message);
-        rightCaptain.send(message);
+        leftCaptain.sendMessage(message);
+        rightCaptain.sendMessage(message);
     }
 }

@@ -1,8 +1,7 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.battle.player.AiCaptain;
-import net.progruzovik.dissent.battle.player.Captain;
-import net.progruzovik.dissent.model.battle.Battle;
+import net.progruzovik.dissent.battle.captain.AiCaptain;
+import net.progruzovik.dissent.battle.captain.Captain;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +9,15 @@ import org.springframework.stereotype.Service;
 public final class ScenarioDigestService implements ScenarioDigest {
 
     private final ObjectFactory<AiCaptain> aiCaptainFactory;
+    private final BattleFactory battleFactory;
 
-    public ScenarioDigestService(ObjectFactory<AiCaptain> aiCaptainFactory) {
+    public ScenarioDigestService(ObjectFactory<AiCaptain> aiCaptainFactory, BattleFactory battleFactory) {
         this.aiCaptainFactory = aiCaptainFactory;
+        this.battleFactory = battleFactory;
     }
 
     @Override
     public void start(Captain captain) {
-        new Battle(captain, aiCaptainFactory.getObject());
+        battleFactory.createBattle(captain, aiCaptainFactory.getObject());
     }
 }

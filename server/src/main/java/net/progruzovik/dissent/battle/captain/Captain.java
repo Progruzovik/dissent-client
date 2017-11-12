@@ -1,6 +1,7 @@
-package net.progruzovik.dissent.battle.player;
+package net.progruzovik.dissent.battle.captain;
 
 import net.progruzovik.dissent.model.battle.Battle;
+import net.progruzovik.dissent.model.battle.Side;
 import net.progruzovik.dissent.model.battle.Unit;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.socket.Message;
@@ -17,9 +18,9 @@ public interface Captain {
 
     Battle getBattle();
 
-    void setBattle(Battle battle);
+    void registerBattle(Side side, Battle battle);
 
     void act(Unit unit);
 
-    void send(Message message);
+    void sendMessage(Message message);
 }

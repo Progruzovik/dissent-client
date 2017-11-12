@@ -2,8 +2,8 @@ package net.progruzovik.dissent.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.dao.TextureDao;
-import net.progruzovik.dissent.battle.player.Player;
-import net.progruzovik.dissent.battle.player.SessionPlayer;
+import net.progruzovik.dissent.battle.captain.Player;
+import net.progruzovik.dissent.battle.captain.SessionPlayer;
 import net.progruzovik.dissent.model.socket.IncomingMessage;
 import net.progruzovik.dissent.model.socket.Message;
 import net.progruzovik.dissent.model.socket.MessageReader;
@@ -26,20 +26,20 @@ public final class MessageHandler extends TextWebSocketHandler {
 
     public MessageHandler(ObjectMapper mapper, TextureDao textureDao) {
         this.mapper = mapper;
-        readers.put("requestTextures", (p, d) -> p.send(new Message<>("textures", textureDao.getTextures())));
+        readers.put("requestTextures", (p, d) -> p.sendMessage(new Message<>("textures", textureDao.getTextures())));
 
-        readers.put("requestStatus", (p, d) -> p.send(new Message<>("status", p.getStatus())));
+        readers.put("requestStatus", (p, d) -> p.sendMessage(new Message<>("status", p.getStatus())));
         readers.put("addToQueue", (p, d) -> p.addToQueue());
         readers.put("removeFromQueue", (p, d) -> p.removeFromQueue());
         readers.put("startScenario", (p, d) -> p.startScenario());
 
         readers.put("requestBattleData", (p, d) ->
-                p.send(new Message<>("battleData", p.getBattle().getBattleData(p.getId()))));
+                p.sendMessage(new Message<>("battleData", p.getBattle().getBattleData(p.getId()))));
         readers.put("requestReachableCellsAndPaths", (p, d) -> {
             final Map<String, Object> reachableCellsAndPaths = new HashMap<>(2);
             reachableCellsAndPaths.put("reachableCells", p.getBattle().findReachableCellsForActiveUnit());
             reachableCellsAndPaths.put("paths", p.getBattle().getCurrentPaths());
-            p.send(new Message<>("reachableCellsAndPaths", reachableCellsAndPaths));
+            p.sendMessage(new Message<>("reachableCellsAndPaths", reachableCellsAndPaths));
         });
         readers.put("moveCurrentUnit", (p, d) ->
                 p.getBattle().moveCurrentUnit(p.getId(), new Cell(d.get("x"), d.get("y"))));
@@ -48,7 +48,7 @@ public final class MessageHandler extends TextWebSocketHandler {
             final Map<String, List<Cell>> shotAndTargetCells = new HashMap<>(2);
             shotAndTargetCells.put("shotCells", p.getBattle().getShotCells());
             shotAndTargetCells.put("targetCells", p.getBattle().getTargetCells());
-            p.send(new Message<>("shotAndTargetCells", shotAndTargetCells));
+            p.sendMessage(new Message<>("shotAndTargetCells", shotAndTargetCells));
         });
         readers.put("shootWithCurrentUnit", ((p, d) ->
                 p.getBattle().shootWithCurrentUnit(p.getId(), d.get("gunId"), new Cell(d.get("x"), d.get("y")))));
