@@ -35,11 +35,11 @@ public final class MessageHandler extends TextWebSocketHandler {
 
         readers.put("requestBattleData", (p, d) ->
                 p.sendMessage(new Message<>("battleData", p.getBattle().getBattleData(p.getId()))));
-        readers.put("requestReachableCellsAndPaths", (p, d) -> {
-            final Map<String, Object> reachableCellsAndPaths = new HashMap<>(2);
-            reachableCellsAndPaths.put("reachableCells", p.getBattle().findReachableCellsForActiveUnit());
-            reachableCellsAndPaths.put("paths", p.getBattle().getCurrentPaths());
-            p.sendMessage(new Message<>("reachableCellsAndPaths", reachableCellsAndPaths));
+        readers.put("requestPathsAndReachableCells", (p, d) -> {
+            final Map<String, Object> pathsAndReachableCells = new HashMap<>(2);
+            pathsAndReachableCells.put("reachableCells", p.getBattle().getReachableCells());
+            pathsAndReachableCells.put("paths", p.getBattle().getPaths());
+            p.sendMessage(new Message<>("pathsAndReachableCells", pathsAndReachableCells));
         });
         readers.put("moveCurrentUnit", (p, d) ->
                 p.getBattle().moveCurrentUnit(p.getId(), new Cell(d.get("x"), d.get("y"))));

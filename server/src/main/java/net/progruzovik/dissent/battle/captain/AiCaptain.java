@@ -40,7 +40,7 @@ public final class AiCaptain extends AbstractCaptain {
                 getBattle().prepareGunForActiveUnit(unit.getShip().getFirstGunId());
                 final List<Cell> targetCells = getBattle().getTargetCells();
                 if (targetCells.isEmpty()) {
-                    final List<Cell> reachableCells = getBattle().findReachableCellsForActiveUnit();
+                    final List<Cell> reachableCells = getBattle().getReachableCells();
                     if (reachableCells.isEmpty()) {
                         canCurrentUnitMove = false;
                     } else {

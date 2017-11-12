@@ -52,9 +52,9 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
         this.once("battleData", callback);
     }
 
-    requestReachableCellsAndPaths(callback: (data: { reachableCells: Cell[], paths: PathNode[][] }) => void) {
-        this.prepareMessage(new Message("requestReachableCellsAndPaths"));
-        this.once("reachableCellsAndPaths", callback);
+    requestPathsAndReachableCells(callback: (data: { paths: PathNode[][], reachableCells: Cell[] }) => void) {
+        this.prepareMessage(new Message("requestPathsAndReachableCells"));
+        this.once("pathsAndReachableCells", callback);
     }
 
     requestShotAndTargetCells(gunId: number, callback: (data: { shotCells: Cell[], targetCells: Cell[] }) => void) {

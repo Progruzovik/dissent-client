@@ -6,9 +6,9 @@ module.exports = env => {
         devtool: "source-map",
         entry: "./src/main/typescript/main.ts",
         module: {
-            rules: [
+            loaders: [
                 {
-                    use: "ts-loader",
+                    loader: "ts-loader",
                     exclude: /node_modules/
                 }
             ]

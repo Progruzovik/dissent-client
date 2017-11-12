@@ -40,8 +40,12 @@ public final class Battle {
         return isRunning;
     }
 
-    public List<List<PathNode>> getCurrentPaths() {
-        return field.getCurrentPaths();
+    public List<List<PathNode>> getPaths() {
+        return field.getPaths();
+    }
+
+    public List<Cell> getReachableCells() {
+        return field.getReachableCells();
     }
 
     public List<Cell> getShotCells() {
@@ -63,10 +67,6 @@ public final class Battle {
         onNextTurn();
     }
 
-    public List<Cell> findReachableCellsForActiveUnit() {
-        return field.findReachableCellsForActiveUnit();
-    }
-
     public void moveCurrentUnit(String captainId, Cell cell) {
         if (isIdBelongsToCurrentCaptain(captainId)) {
             createMessage(new Message<>("move", field.moveActiveUnit(cell)));
@@ -83,7 +83,7 @@ public final class Battle {
             if (target == null) throw new InvalidShotException();
 
             final int damage = unitQueue.getCurrentUnit().shoot(gunId, target);
-            field.createPathsForActiveUnit();
+            field.updateActiveUnit();
             createMessage(new Message<>("shot", new Shot(gunId, damage, cell)));
             if (target.getShip().getStrength() == 0) {
                 unitQueue.getUnits().remove(target);

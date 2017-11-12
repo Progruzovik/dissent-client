@@ -82,7 +82,7 @@ export default class Field extends game.UiLayer {
     private updatePathsAndMarks() {
         this.currentMark.cell = this.unitService.currentUnit.cell;
         if (this.unitService.isCurrentPlayerTurn) {
-            this.webSocketConnection.requestReachableCellsAndPaths(d => {
+            this.webSocketConnection.requestPathsAndReachableCells(d => {
                 this.paths = d.paths;
                 this.pathMarks.length = 0;
                 for (const cell of d.reachableCells) {
