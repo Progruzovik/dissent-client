@@ -69,7 +69,6 @@ public final class Field {
             throw new InvalidUnitException();
         }
         this.activeUnit = activeUnit;
-        preparedGunId = -1;
         updateActiveUnit();
     }
 
@@ -102,6 +101,7 @@ public final class Field {
     }
 
     public void updateActiveUnit() {
+        preparedGunId = -1;
         for (final List<PathNode> currentPath : paths) {
             for (int j = 0; j < currentPath.size(); j++) {
                 currentPath.set(j, null);
