@@ -1,0 +1,27 @@
+package net.progruzovik.dissent.model.battle.field;
+
+import net.progruzovik.dissent.model.util.Cell;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public final class GunCells {
+
+    private final List<Cell> shotCells = new ArrayList<>();
+    private final List<Cell> targetCells = new ArrayList<>();
+
+    GunCells() { }
+
+    public List<Cell> getShotCells() {
+        return shotCells;
+    }
+
+    public List<Cell> getTargetCells() {
+        return targetCells;
+    }
+
+    void clear() {
+        shotCells.clear();
+        targetCells.clear();
+    }
+}

@@ -3,6 +3,7 @@ package net.progruzovik.dissent.model.battle;
 import net.progruzovik.dissent.battle.captain.Captain;
 import net.progruzovik.dissent.exception.InvalidShotException;
 import net.progruzovik.dissent.model.battle.field.Field;
+import net.progruzovik.dissent.model.battle.field.GunCells;
 import net.progruzovik.dissent.model.battle.field.PathNode;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.socket.Message;
@@ -48,14 +49,6 @@ public final class Battle {
         return field.getReachableCells();
     }
 
-    public List<Cell> getShotCells() {
-        return field.getShotCells();
-    }
-
-    public List<Cell> getTargetCells() {
-        return field.getTargetCells();
-    }
-
     public void registerShip(int number, Side side, Ship ship) {
         final int unitCol = side == Side.RIGHT ? field.getSize().getX() - 1 : 0;
         final Unit unit = new Unit(new Cell(unitCol, number * UNIT_INDENT + BORDER_INDENT), side, ship);
@@ -73,8 +66,8 @@ public final class Battle {
         }
     }
 
-    public void prepareGunForActiveUnit(int gunId) {
-        field.prepareGunForActiveUnit(gunId);
+    public GunCells getGunCells(int gunId) {
+        return field.getGunCells(gunId);
     }
 
     public void shootWithCurrentUnit(String captainId, int gunId, Cell cell) {

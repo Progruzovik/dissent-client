@@ -44,12 +44,12 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 this.checkCurrentUnitActionPoints();
             });
             unit.on(Unit.PREPARE_TO_SHOT, () => {
-                webSocketConnection.requestShotAndTargetCells(unit.preparedGunId, c => {
+                webSocketConnection.requestGunCells(unit.preparedGunId, g => {
                     this.emit(Unit.PREPARE_TO_SHOT);
-                    for (const cell of c.shotCells) {
+                    for (const cell of g.shotCells) {
                         this.emit(UnitService.SHOT_CELL, cell);
                     }
-                    for (const cell of c.targetCells) {
+                    for (const cell of g.targetCells) {
                         this.currentTargets.push(this.units
                             .filter(u => u.cell.x == cell.x && u.cell.y == cell.y)[0]);
                         this.emit(UnitService.TARGET_CELL, cell);

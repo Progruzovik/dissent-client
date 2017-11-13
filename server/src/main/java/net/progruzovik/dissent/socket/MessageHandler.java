@@ -1,9 +1,9 @@
 package net.progruzovik.dissent.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.progruzovik.dissent.dao.TextureDao;
 import net.progruzovik.dissent.battle.captain.Player;
 import net.progruzovik.dissent.battle.captain.SessionPlayer;
+import net.progruzovik.dissent.dao.TextureDao;
 import net.progruzovik.dissent.model.socket.IncomingMessage;
 import net.progruzovik.dissent.model.socket.Message;
 import net.progruzovik.dissent.model.socket.MessageReader;
@@ -15,7 +15,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -43,13 +42,8 @@ public final class MessageHandler extends TextWebSocketHandler {
         });
         readers.put("moveCurrentUnit", (p, d) ->
                 p.getBattle().moveCurrentUnit(p.getId(), new Cell(d.get("x"), d.get("y"))));
-        readers.put("requestShotAndTargetCells", (p, d) -> {
-            p.getBattle().prepareGunForActiveUnit(d.get("gunId"));
-            final Map<String, List<Cell>> shotAndTargetCells = new HashMap<>(2);
-            shotAndTargetCells.put("shotCells", p.getBattle().getShotCells());
-            shotAndTargetCells.put("targetCells", p.getBattle().getTargetCells());
-            p.sendMessage(new Message<>("shotAndTargetCells", shotAndTargetCells));
-        });
+        readers.put("requestGunCells", (p, d) ->
+                p.sendMessage(new Message<>("gunCells", p.getBattle().getGunCells(d.get("gunId")))));
         readers.put("shootWithCurrentUnit", ((p, d) ->
                 p.getBattle().shootWithCurrentUnit(p.getId(), d.get("gunId"), new Cell(d.get("x"), d.get("y")))));
         readers.put("endTurn", (p, d) -> p.getBattle().endTurn(p.getId()));

@@ -3,6 +3,7 @@ package net.progruzovik.dissent.battle.captain;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.battle.Unit;
+import net.progruzovik.dissent.model.battle.field.GunCells;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
@@ -37,9 +38,8 @@ public final class AiCaptain extends AbstractCaptain {
             boolean canCurrentUnitMove = true;
             while (unit.getActionPoints() >= unit.getShip().getFirstGun().getShotCost()
                     && canCurrentUnitMove) {
-                getBattle().prepareGunForActiveUnit(unit.getShip().getFirstGunId());
-                final List<Cell> targetCells = getBattle().getTargetCells();
-                if (targetCells.isEmpty()) {
+                final GunCells gunCells = getBattle().getGunCells(unit.getShip().getFirstGunId());
+                if (gunCells.getTargetCells().isEmpty()) {
                     final List<Cell> reachableCells = getBattle().getReachableCells();
                     if (reachableCells.isEmpty()) {
                         canCurrentUnitMove = false;
@@ -50,7 +50,7 @@ public final class AiCaptain extends AbstractCaptain {
                     }
                 } else {
                     getBattle().shootWithCurrentUnit(getId(),
-                            unit.getShip().getFirstGunId(), targetCells.get(0));
+                            unit.getShip().getFirstGunId(), gunCells.getTargetCells().get(0));
                 }
             }
         }
