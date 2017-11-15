@@ -10,9 +10,6 @@ export default class Controls extends game.UiLayer {
     private static readonly SECTION_RATIO = 3;
     private static readonly EMPTY_SLOT = "[пусто]";
 
-    private isBtnFirstGunToggled = false;
-    private isBtnSecondGunToggled = false;
-
     private readonly spriteHull = new PIXI.Sprite();
     private readonly bgHull = new game.Rectangle(0, 0, 0x333333);
 
@@ -42,36 +39,18 @@ export default class Controls extends game.UiLayer {
         this.unitService.on(ActionType.Move, () => this.updateInterface());
         this.unitService.on(ActionType.Shot, () => this.updateInterface());
         this.unitService.on(ActionType.NextTurn, () => this.updateInterface());
-        this.btnFirstGun.on(game.Event.MOUSE_OVER, () => {
-            if (!this.isBtnFirstGunToggled && !this.isBtnSecondGunToggled) {
+        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
+            if (unitService.currentUnit.preparedGunId == unitService.currentUnit.firstGun.id) {
+                unitService.currentUnit.preparedGunId = -1;
+            } else {
                 unitService.currentUnit.preparedGunId = unitService.currentUnit.firstGun.id;
             }
         });
-        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
-            this.isBtnFirstGunToggled = !this.isBtnFirstGunToggled;
-            this.isBtnSecondGunToggled = false;
-            unitService.currentUnit.preparedGunId = unitService.currentUnit.firstGun.id;
-        });
-        this.btnFirstGun.on(game.Event.MOUSE_OUT, () => {
-            if (!this.isBtnFirstGunToggled
-                && unitService.currentUnit.preparedGunId == unitService.currentUnit.firstGun.id) {
-                unitService.currentUnit.preparedGunId = -1;
-            }
-        });
-        this.btnSecondGun.on(game.Event.MOUSE_OVER, () => {
-            if (!this.isBtnFirstGunToggled && !this.isBtnSecondGunToggled) {
-                unitService.currentUnit.preparedGunId = unitService.currentUnit.secondGun.id;
-            }
-        });
         this.btnSecondGun.on(game.Event.BUTTON_CLICK, () => {
-            this.isBtnFirstGunToggled = false;
-            this.isBtnSecondGunToggled = !this.isBtnSecondGunToggled;
-            unitService.currentUnit.preparedGunId = unitService.currentUnit.secondGun.id;
-        });
-        this.btnSecondGun.on(game.Event.MOUSE_OUT, () => {
-            if (!this.isBtnSecondGunToggled
-                && unitService.currentUnit.preparedGunId == unitService.currentUnit.secondGun.id) {
+            if (unitService.currentUnit.preparedGunId == unitService.currentUnit.secondGun.id) {
                 unitService.currentUnit.preparedGunId = -1;
+            } else {
+                unitService.currentUnit.preparedGunId = unitService.currentUnit.secondGun.id;
             }
         });
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketConnection.endTurn());
