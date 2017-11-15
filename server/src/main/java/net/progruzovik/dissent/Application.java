@@ -18,7 +18,7 @@ public final class Application {
         context.register(AppConfig.class);
         servletContext.addServlet(new ServletHolder(new DispatcherServlet(context)), "/*");
 
-        final Server server = new Server(8080);
+        final Server server = new Server(Integer.parseInt(System.getProperty("server.port")));
         server.setHandler(servletContext);
         server.start();
     }
