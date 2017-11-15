@@ -13,6 +13,8 @@ import * as PIXI from "pixi.js";
 
 export default class BattlefieldScreen extends game.Screen {
 
+    private currentWindow: Window;
+
     constructor(fieldSize: Cell, currentPlayerSide: Side, asteroids: Cell[],
                 clouds: Cell[], destroyedUnits: PIXI.Sprite[], units: Unit[],
                 projectileService: ProjectileService, webSocketConnection: WebSocketConnection) {
@@ -29,13 +31,20 @@ export default class BattlefieldScreen extends game.Screen {
         const actionReceiver = new ActionReceiver(field, controls, unitService, webSocketConnection);
 
         unitService.on(UnitService.UNIT_MOUSE_OVER, (mousePos: PIXI.Point, unit: Unit) => {
+            if (this.currentWindow) {
+                this.currentWindow.destroy({ children: true });
+            }
             const isLeft = mousePos.x > this.width - Window.WIDTH - Unit.WIDTH
                 && mousePos.y < Window.HEIGHT + Unit.HEIGHT;
-            this.frontUi = new Window(isLeft, unit);
+            this.currentWindow = new Window(isLeft, unit);
+            this.frontUi = this.currentWindow;
         });
-        unitService.on(UnitService.UNIT_MOUSE_OUT, () => {
-            this.frontUi.destroy({ children: true });
-            this.frontUi = null;
+        unitService.on(UnitService.UNIT_MOUSE_OUT, (unit: Unit) => {
+            if (this.currentWindow.unit == unit) {
+                this.currentWindow.destroy({ children: true });
+                this.currentWindow = null;
+                this.frontUi = null;
+            }
         });
         actionReceiver.once(ActionType.BattleFinish, () => this.emit(game.Event.DONE));
     }

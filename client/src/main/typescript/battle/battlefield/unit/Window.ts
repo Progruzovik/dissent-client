@@ -9,7 +9,7 @@ export default class Window extends game.UiLayer {
     private readonly bgWindow = new game.Rectangle(Window.WIDTH, Window.HEIGHT, 0x333333);
     private readonly barStrength = new game.ProgressBar(this.bgWindow.width, 15, 0xff0000);
 
-    constructor(private readonly isLeft: boolean, private readonly unit: Unit) {
+    constructor(private readonly isLeft: boolean, readonly unit: Unit) {
         super();
         const txtUnit = new PIXI.Text(unit.hull.texture.name, { fill: 0xffffff });
         txtUnit.anchor.x = game.CENTER;

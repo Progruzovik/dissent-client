@@ -32,7 +32,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 if (unit.strength > 0) {
                     unit.alpha = 1;
                 }
-                this.emit(UnitService.UNIT_MOUSE_OUT);
+                this.emit(UnitService.UNIT_MOUSE_OUT, unit);
             });
 
             unit.on(ActionType.Move, () => {
