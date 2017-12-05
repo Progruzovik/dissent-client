@@ -4,7 +4,7 @@ module.exports = env => {
     const isProduction = env && env.production;
     return {
         devtool: "source-map",
-        entry: "./src/main/typescript/main.ts",
+        entry: "./src/main/ts/main.ts",
         module: {
             loaders: [
                 {
