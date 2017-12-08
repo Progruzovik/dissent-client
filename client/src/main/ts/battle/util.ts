@@ -23,7 +23,8 @@ export class Cell {
 }
 
 export class Gun {
-    constructor(readonly id: number, readonly name: string, readonly shotCost: number, readonly typeName: GunType) {}
+    constructor(readonly id: number, readonly name: string, readonly shotCost: number,
+                readonly powerCoefficient: number, readonly typeName: GunType) {}
 }
 
 export class Hull {

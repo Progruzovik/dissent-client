@@ -3,8 +3,9 @@ CREATE TABLE texture(id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(30) NOT NUL
 CREATE TABLE hull(id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(30) NOT NULL,
   actionPoints INT NOT NULL, strength INT NOT NULL, textureId INT NOT NULL REFERENCES texture(id));
 CREATE TABLE gunType(id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(30) NOT NULL);
-CREATE TABLE gun(id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(30) NOT NULL, shotCost INT NOT NULL,
-  damage INT NOT NULL, radius INT NOT NULL, gunTypeId INT NOT NULL REFERENCES gunType(id));
+CREATE TABLE gun(id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(30) NOT NULL,
+  shotCost INT NOT NULL, damage INT NOT NULL, radius INT NOT NULL,
+  powerCoefficient INT NOT NULL, gunTypeId INT NOT NULL REFERENCES gunType(id));
 
 INSERT INTO texture(id, name) VALUES
   (1, 'hull-2-2'),
@@ -22,7 +23,7 @@ INSERT INTO gunType(id, name) VALUES
   (1, 'beam'),
   (2, 'shell');
 
-INSERT INTO gun(id, name, shotCost, damage, radius, gunTypeId) VALUES
-  (1, 'shrapnel', 1, 2, 6, 2),
-  (2, 'artillery', 2, 3, 12, 2),
-  (3, 'laser', 2, 3, 9, 1);
+INSERT INTO gun(id, name, shotCost, damage, radius, powerCoefficient, gunTypeId) VALUES
+  (1, 'shrapnel', 1, 2, 6, 1, 2),
+  (2, 'artillery', 2, 3, 12, 3, 2),
+  (3, 'laser', 2, 3, 9, 1, 1);

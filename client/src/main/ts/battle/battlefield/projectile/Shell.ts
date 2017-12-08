@@ -4,17 +4,17 @@ import * as game from "../../../game";
 
 export default class Shell extends Projectile {
 
-    private static readonly SHOT_DELAY = 15;
+    private static readonly SHOT_DELAY = 7;
 
     private isNextShotReady = false;
     private frameNumber = 0;
     private readonly multiplier: Cell;
 
-    constructor(private readonly target: Cell, from: Cell) {
-        super(3);
+    constructor(private readonly target: Cell, from: Cell, private readonly powerCoefficient: number) {
+        super(4 / powerCoefficient);
         this.multiplier = new Cell(this.target.x < from.x ? -1 : 1, this.target.y < from.y ? -1 : 1);
 
-        this.addChild(new game.Rectangle(10, 4, 0xffff00));
+        this.addChild(new game.Rectangle(powerCoefficient * 5, powerCoefficient * 2, 0xffff00));
         this.rotation = Math.atan2(this.target.y - from.y, this.target.x - from.x);
         this.pivot.x = this.width / 2;
         this.pivot.y = this.height / 2;
@@ -24,7 +24,7 @@ export default class Shell extends Projectile {
     protected update() {
         if (!this.isNextShotReady) {
             this.frameNumber++;
-            if (this.frameNumber == Shell.SHOT_DELAY) {
+            if (this.frameNumber == this.powerCoefficient * Shell.SHOT_DELAY) {
                 this.emitNextShot();
             }
         }
