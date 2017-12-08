@@ -46,7 +46,7 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
             this.unitService.currentUnit.currentMove = this.remainingMoves.shift();
         } else if (actionType == ActionType.Shot) {
             const shot: Shot = this.remainingShots.shift();
-            this.unitService.currentUnit.shoot(this.unitService.units.filter(u =>
+            this.unitService.currentUnit.shoot(this.unitService.unitQueue.filter(u =>
                 u.cell.x == shot.cell.x && u.cell.y == shot.cell.y)[0], shot);
         } else if (actionType == ActionType.NextTurn) {
             this.unitService.nextTurn();

@@ -25,29 +25,26 @@ export default class BattleApp extends game.Application {
                     menuScreen.on(MenuScreen.BATTLE, () => {
                         webSocketConnection.requestBattleData(d => {
                             const projectileService = new ProjectileService();
-                            const destroyedUnitSprites = new Array<PIXI.Sprite>(0);
-                            for (const unit of d.destroyedUnits) {
-                                const sprite = new PIXI.Sprite(PIXI.loader.resources[d.hulls.filter(h =>
-                                    h.id == unit.ship.hullId)[0].texture.name].texture);
-                                sprite.alpha = Unit.ALPHA_DESTROYED;
-                                if (unit.side == Side.Right) {
-                                    sprite.scale.x = -1;
-                                    sprite.anchor.x = 1;
-                                }
-                                sprite.x = unit.cell.x * Unit.WIDTH;
-                                sprite.y = unit.cell.y * Unit.HEIGHT;
-                                destroyedUnitSprites.push(sprite);
-                            }
                             const unitsArray = new Array<Unit>(0);
-                            for (const unit of d.units) {
-                                unitsArray.push(new Unit(unit.actionPoints, unit.ship.strength, unit.side, unit.cell,
-                                    d.hulls.filter(h => h.id == unit.ship.hullId)[0],
-                                    d.guns.filter(g => g.id == unit.ship.firstGunId)[0],
-                                    d.guns.filter(g => g.id == unit.ship.secondGunId)[0],
+                            for (const unitData of d.units) {
+                                unitsArray.push(new Unit(unitData.actionPoints,
+                                    unitData.ship.strength, unitData.side, unitData.cell,
+                                    d.hulls.filter(h => h.id == unitData.ship.hullId)[0],
+                                    d.guns.filter(g => g.id == unitData.ship.firstGunId)[0],
+                                    d.guns.filter(g => g.id == unitData.ship.secondGunId)[0],
                                     projectileService));
                             }
-                            this.currentScreen = new BattlefieldScreen(d.fieldSize, d.playerSide, d.asteroids,
-                                d.clouds, destroyedUnitSprites, unitsArray, projectileService, webSocketConnection);
+                            for (const unitData of d.destroyedUnits) {
+                                const unit = new Unit(unitData.actionPoints,
+                                    unitData.ship.strength, unitData.side, unitData.cell,
+                                    d.hulls.filter(h => h.id == unitData.ship.hullId)[0],
+                                    d.guns.filter(g => g.id == unitData.ship.firstGunId)[0],
+                                    d.guns.filter(g => g.id == unitData.ship.secondGunId)[0]);
+                                unit.strength = 0;
+                                unitsArray.push(unit);
+                            }
+                            this.currentScreen = new BattlefieldScreen(d.fieldSize, d.playerSide,
+                                unitsArray, d.asteroids, d.clouds, projectileService, webSocketConnection);
                             this.currentScreen.once(game.Event.DONE, () => {
                                 webSocketConnection.requestStatus();
                                 this.currentScreen = menuScreen

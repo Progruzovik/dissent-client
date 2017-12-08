@@ -21,7 +21,7 @@ export default class Window extends game.UiLayer {
         this.addChild(this.bgWindow);
         this.updateStats();
 
-        this.unit.on(Unit.UPDATE_STATS, () => this.updateStats());
+        unit.on(Unit.UPDATE_STATS, () => this.updateStats());
     }
 
     resize(width: number, height: number) {

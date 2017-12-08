@@ -36,9 +36,9 @@ export default class Controls extends game.UiLayer {
         this.addChild(this.bgModule);
         this.addChild(this.btnNextTurn);
 
-        this.unitService.on(ActionType.Move, () => this.updateInterface());
-        this.unitService.on(ActionType.Shot, () => this.updateInterface());
-        this.unitService.on(ActionType.NextTurn, () => this.updateInterface());
+        unitService.on(ActionType.Move, () => this.updateInterface());
+        unitService.on(ActionType.Shot, () => this.updateInterface());
+        unitService.on(ActionType.NextTurn, () => this.updateInterface());
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
             if (unitService.currentUnit.preparedGunId == unitService.currentUnit.firstGun.id) {
                 unitService.currentUnit.preparedGunId = -1;

@@ -11,7 +11,7 @@ export default class LeftUi extends game.UiLayer {
 
     constructor(currentPlayerSide: Side, private readonly unitService: UnitService) {
         super();
-        this.unitService.units.forEach((u, i) => {
+        unitService.unitQueue.forEach((u, i) => {
             const unitIcon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT,
                 currentPlayerSide == u.side ? 0x00ff00 : 0xff0000);
             unitIcon.addChild(new PIXI.Sprite(PIXI.loader.resources[u.hull.texture.name].texture));
@@ -28,9 +28,9 @@ export default class LeftUi extends game.UiLayer {
         this.txtActionPoints.x = this.bgQueue.width / 2;
         this.addChild(this.txtActionPoints);
 
-        this.unitService.on(ActionType.Move, () => this.updateActionPointsValue());
-        this.unitService.on(ActionType.Shot, () => this.updateActionPointsValue());
-        this.unitService.on(ActionType.NextTurn, (isFirst: boolean) => {
+        unitService.on(ActionType.Move, () => this.updateActionPointsValue());
+        unitService.on(ActionType.Shot, () => this.updateActionPointsValue());
+        unitService.on(ActionType.NextTurn, (isFirst: boolean) => {
             if (!isFirst) {
                 this.bgQueue.setChildIndex(this.bgQueue.getChildAt(0), this.bgQueue.children.length - 1);
                 this.updateUnitSpritePositions();

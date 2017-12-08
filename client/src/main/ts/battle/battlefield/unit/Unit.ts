@@ -20,7 +20,7 @@ export default class Unit extends game.Actor {
 
     constructor(private _actionPoints: number, private _strength: number,
                 readonly side: Side, private _cell: Cell, readonly hull: Hull, readonly firstGun: Gun,
-                readonly secondGun: Gun, private readonly projectileService: ProjectileService) {
+                readonly secondGun: Gun, private readonly projectileService?: ProjectileService) {
         super();
         this.interactive = true;
         const sprite = new PIXI.Sprite(PIXI.loader.resources[hull.texture.name].texture);

@@ -19,7 +19,7 @@ export default class Field extends game.UiLayer {
     private readonly pathLayer = new PIXI.Container();
     private readonly markLayer = new PIXI.Container();
 
-    constructor(private readonly size: Cell, asteroids: Cell[], clouds: Cell[], destroyedUnits: PIXI.Sprite[],
+    constructor(private readonly size: Cell, units: Unit[], asteroids: Cell[], clouds: Cell[],
                 private readonly unitService: UnitService, private readonly projectileService: ProjectileService,
                 private readonly webSocketConnection: WebSocketConnection) {
         super();
@@ -54,23 +54,18 @@ export default class Field extends game.UiLayer {
         this.markLayer.addChild(this.currentMark);
         this.addChild(this.markLayer);
         this.addChild(this.pathLayer);
-        for (const destroyedUnit of destroyedUnits) {
-            this.addChild(destroyedUnit);
-        }
-        for (const unit of unitService.units) {
+        for (const unit of units) {
             this.addChild(unit);
         }
 
-        this.unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
-        this.unitService.on(ActionType.Shot, () => this.updatePathsAndMarks());
-        this.unitService.on(UnitService.SHOT_CELL, (cell: Cell) =>
-            this.markLayer.addChild(new Mark(0xffffff, cell)));
-        this.unitService.on(UnitService.TARGET_CELL, (cell: Cell) =>
-            this.markLayer.addChild(new Mark(0xff0000, cell)));
-        this.unitService.on(Unit.PREPARE_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
-        this.unitService.on(Unit.NOT_PREPARE_TO_SHOT, () => this.addCurrentPathMarks());
-        this.unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
-        this.projectileService.on(Projectile.NEW_SHOT, (projectile: Projectile) => this.addChild(projectile));
+        unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
+        unitService.on(ActionType.Shot, () => this.updatePathsAndMarks());
+        unitService.on(UnitService.SHOT_CELL, (cell: Cell) => this.markLayer.addChild(new Mark(0xffffff, cell)));
+        unitService.on(UnitService.TARGET_CELL, (cell: Cell) => this.markLayer.addChild(new Mark(0xff0000, cell)));
+        unitService.on(Unit.PREPARE_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
+        unitService.on(Unit.NOT_PREPARE_TO_SHOT, () => this.addCurrentPathMarks());
+        unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
+        projectileService.on(Projectile.NEW_SHOT, (projectile: Projectile) => this.addChild(projectile));
     }
 
     removePathsAndMarksExceptCurrent() {
@@ -166,7 +161,7 @@ const enum Direction {
 
 class Mark extends game.Rectangle {
 
-    constructor(color: number, cell: Cell = null) {
+    constructor(color: number, cell?: Cell) {
         super(Unit.WIDTH - Field.LINE_WIDTH, Unit.HEIGHT - Field.LINE_WIDTH, color);
         this.interactive = true;
         this.alpha = 0.4;
