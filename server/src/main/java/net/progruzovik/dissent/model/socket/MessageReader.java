@@ -7,5 +7,5 @@ import java.util.Map;
 @FunctionalInterface
 public interface MessageReader {
 
-    void read(Player p, Map<String, Integer> d);
+    void read(Player player, Map<String, Integer> data);
 }

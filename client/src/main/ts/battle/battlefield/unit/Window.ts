@@ -11,12 +11,12 @@ export default class Window extends game.UiLayer {
 
     constructor(private readonly isLeft: boolean, readonly unit: Unit) {
         super();
-        const txtUnit = new PIXI.Text(unit.hull.texture.name, { fill: 0xffffff });
-        txtUnit.anchor.x = game.CENTER;
-        txtUnit.x = this.bgWindow.width / 2;
-        this.bgWindow.addChild(txtUnit);
+        const txtHull = new PIXI.Text(unit.hull.name, { fill: 0xffffff, fontSize: 24 });
+        txtHull.anchor.x = game.CENTER;
+        txtHull.x = this.bgWindow.width / 2;
+        this.bgWindow.addChild(txtHull);
         this.barStrength.maximum = unit.hull.strength;
-        this.barStrength.y = txtUnit.height;
+        this.barStrength.y = txtHull.height;
         this.bgWindow.addChild(this.barStrength);
         this.addChild(this.bgWindow);
         this.updateStats();

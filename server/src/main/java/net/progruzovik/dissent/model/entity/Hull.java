@@ -10,6 +10,9 @@ public final class Hull {
     private int id;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private int actionPoints;
 
     @Column(nullable = false)
@@ -19,8 +22,9 @@ public final class Hull {
     @JoinColumn(name = "textureId", nullable = false)
     private Texture texture;
 
-    public Hull(int id, int actionPoints, int strength, Texture texture) {
+    public Hull(int id, String name, int actionPoints, int strength, Texture texture) {
         this.id = id;
+        this.name = name;
         this.actionPoints = actionPoints;
         this.strength = strength;
         this.texture = texture;
@@ -30,6 +34,10 @@ public final class Hull {
 
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getActionPoints() {

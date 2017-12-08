@@ -5,6 +5,11 @@ export const enum ActionType {
     BattleFinish = "battleFinish"
 }
 
+export const enum GunType {
+    Beam = "beam",
+    Shell = "shell"
+}
+
 export enum Status {
     Idle, Queued, InBattle
 }
@@ -18,11 +23,11 @@ export class Cell {
 }
 
 export class Gun {
-    constructor(readonly id: number, readonly name: string, readonly shotCost: number, readonly gunTypeName: string) {}
+    constructor(readonly id: number, readonly name: string, readonly shotCost: number, readonly typeName: GunType) {}
 }
 
 export class Hull {
-    constructor(readonly id: number, readonly actionPoints: number,
+    constructor(readonly id: number, readonly name: string, readonly actionPoints: number,
                 readonly strength: number, readonly texture: Texture) {}
 }
 

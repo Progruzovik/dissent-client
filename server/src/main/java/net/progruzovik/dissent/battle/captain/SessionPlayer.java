@@ -38,7 +38,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
         final Hull basicHull = shipDao.getHull(1);
         final Gun shrapnel = gunDao.getGun(1);
         getShips().add(new Ship(basicHull, shrapnel, null));
-        getShips().add(new Ship(shipDao.getHull(2), shrapnel, gunDao.getGun(2)));
+        getShips().add(new Ship(shipDao.getHull(2), shrapnel, gunDao.getGun(3)));
         getShips().add(new Ship(basicHull, shrapnel, null));
         this.queue = queue;
         this.scenarioDigest = scenarioDigest;
