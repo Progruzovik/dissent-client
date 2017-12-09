@@ -23,9 +23,6 @@ public final class Gun {
     @Column(nullable = false)
     private int radius;
 
-    @Column(nullable = false)
-    private int powerCoefficient;
-
     @ManyToOne
     @JoinColumn(name = "gunTypeId", nullable = false)
     private GunType type;
@@ -58,10 +55,6 @@ public final class Gun {
     @JsonIgnore
     public int getRadius() {
         return radius;
-    }
-
-    public int getPowerCoefficient() {
-        return powerCoefficient;
     }
 
     public String getTypeName() {

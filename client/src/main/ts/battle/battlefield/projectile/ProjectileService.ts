@@ -9,8 +9,9 @@ export default class ProjectileService extends PIXI.utils.EventEmitter {
 
     private static createProjectile(gun: Gun, to: Cell, from: Cell): Projectile {
         switch (gun.typeName) {
-            case GunType.Shell: return new Shell(to, from, gun.powerCoefficient);
-            case GunType.Beam: return new Beam(to, from, gun.powerCoefficient);
+            case GunType.Artillery: return new Shell(15, 2, 14, 4, to, from);
+            case GunType.Beam: return new Beam(to, from);
+            case GunType.Shell: return new Shell(3, 4, 7, 2, to, from);
         }
     }
 
