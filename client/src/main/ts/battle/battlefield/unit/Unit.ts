@@ -18,7 +18,7 @@ export default class Unit extends game.Actor {
     private _preparedGunId = -1;
     private _currentMove: Move;
 
-    constructor(private _actionPoints: number, private _strength: number,
+    constructor(currentPlayerSide: Side, private _actionPoints: number, private _strength: number,
                 readonly side: Side, private _cell: Cell, readonly hull: Hull, readonly firstGun: Gun,
                 readonly secondGun: Gun, private readonly projectileService?: ProjectileService) {
         super();
@@ -29,6 +29,8 @@ export default class Unit extends game.Actor {
             sprite.anchor.x = 1;
         }
         this.addChild(sprite);
+        const frameColor = currentPlayerSide == side ? 0x00ff00 : 0xff0000;
+        this.addChild(new game.Frame(sprite.width, sprite.height, 0.75, frameColor));
         this.updatePosition();
     }
 

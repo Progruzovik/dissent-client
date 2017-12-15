@@ -11,15 +11,17 @@ export default class Controls extends game.UiLayer {
     private static readonly EMPTY_SLOT = "[пусто]";
 
     private readonly spriteHull = new PIXI.Sprite();
-    private readonly bgHull = new game.Rectangle(0, 0, 0x333333);
+    private readonly bgHull = new game.Rectangle(0, 0, 0x222222);
 
-    private readonly barStrength = new game.ProgressBar(0, 15, 0xff0000);
-    private readonly bgStats = new game.Rectangle(0, 0);
+    private readonly barStrength = new game.ProgressBar(0, 0, 0xff0000,
+        100, 0, { fill: "white", fontSize: 26, fontWeight: "bold" });
+    private readonly bgStats = new PIXI.Container();
 
     private readonly btnFirstGun = new game.Button();
     private readonly btnSecondGun = new game.Button();
     private readonly bgModule = new game.Rectangle(0, 0);
-    private readonly btnNextTurn = new game.Button("Конец хода");
+    private readonly btnNextTurn = new game.Button("Конец хода", { align: "center",
+        fill: "white", fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
 
     constructor(private readonly unitService: UnitService, webSocketConnection: WebSocketConnection) {
         super();
@@ -27,7 +29,6 @@ export default class Controls extends game.UiLayer {
         this.bgHull.addChild(this.spriteHull);
         this.addChild(this.bgHull);
 
-        this.barStrength.pivot.y = this.barStrength.height / 2;
         this.bgStats.addChild(this.barStrength);
         this.addChild(this.bgStats);
 
@@ -67,9 +68,9 @@ export default class Controls extends game.UiLayer {
         this.spriteHull.position.set(this.bgHull.width / 2, this.bgHull.height / 2);
 
         this.barStrength.width = widthPerSection;
+        this.barStrength.height = heightPerSection / 3;
+        this.barStrength.pivot.y = this.barStrength.height / 2;
         this.barStrength.y = heightPerSection / 2;
-        this.bgStats.width = widthPerSection;
-        this.bgStats.height = heightPerSection;
         this.bgStats.x = this.bgHull.width;
 
         this.btnFirstGun.width = widthPerSection;

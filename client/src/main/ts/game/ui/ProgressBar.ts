@@ -1,5 +1,5 @@
-import { Rectangle } from "./Rectangle";
-import { CENTER } from "./util";
+import { Rectangle } from "../graphics/Rectangle";
+import { CENTER } from "../util";
 import * as PIXI from "pixi.js";
 
 export class ProgressBar extends PIXI.Container {
@@ -8,19 +8,22 @@ export class ProgressBar extends PIXI.Container {
     private _width: number;
 
     private readonly bar: Rectangle;
-    private readonly txtMain = new PIXI.Text("", { fill: 0xffffff, fontSize: 20 });
+    private readonly txtMain: PIXI.Text;
 
     constructor(width: number, height: number = 15, color: number = 0x000000,
-                private _maximum: number = 100, private _minimum: number = 0) {
+                private _maximum: number = 100, private _minimum: number = 0,
+                textStyle: PIXI.TextStyleOptions = { fill: "white", fontSize: 18 }) {
         super();
-        this.bar = new Rectangle(0, height, color);
+        //{ fill: "white", fontSize: 26, fontWeight: "bold" }
+        this.bar = new Rectangle(0, 0, color);
         this.addChild(this.bar);
+        this.txtMain = new PIXI.Text("", textStyle);
         this.txtMain.anchor.set(CENTER, CENTER);
-        this.txtMain.y = height / 2;
         this.addChild(this.txtMain);
 
         this.value = this.minimum;
         this.width = width;
+        this.height = height;
     }
 
     get minimum(): number {
@@ -72,6 +75,15 @@ export class ProgressBar extends PIXI.Container {
         this._width = value;
         this.txtMain.x = value / 2;
         this.calculateBarWidth();
+    }
+
+    get height(): number {
+        return this.bar.height;
+    }
+
+    set height(value: number) {
+        this.bar.height = value;
+        this.txtMain.y = value / 2;
     }
 
     private calculateBarWidth() {

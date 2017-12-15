@@ -26,7 +26,7 @@ export default class BattleApp extends game.Application {
                             const projectileService = new ProjectileService();
                             const unitsArray = new Array<Unit>(0);
                             for (const unitData of d.units) {
-                                unitsArray.push(new Unit(unitData.actionPoints,
+                                unitsArray.push(new Unit(d.playerSide, unitData.actionPoints,
                                     unitData.ship.strength, unitData.side, unitData.cell,
                                     d.hulls.filter(h => h.id == unitData.ship.hullId)[0],
                                     d.guns.filter(g => g.id == unitData.ship.firstGunId)[0],
@@ -34,7 +34,7 @@ export default class BattleApp extends game.Application {
                                     projectileService));
                             }
                             for (const unitData of d.destroyedUnits) {
-                                const unit = new Unit(unitData.actionPoints,
+                                const unit = new Unit(d.playerSide, unitData.actionPoints,
                                     unitData.ship.strength, unitData.side, unitData.cell,
                                     d.hulls.filter(h => h.id == unitData.ship.hullId)[0],
                                     d.guns.filter(g => g.id == unitData.ship.firstGunId)[0],

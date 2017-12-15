@@ -1,15 +1,19 @@
-import { Rectangle } from "./Rectangle";
-import { Event, CENTER } from "./util";
+import { Rectangle } from "../graphics/Rectangle";
+import { Event, CENTER } from "../util";
 import * as PIXI from "pixi.js";
 
 export class Button extends PIXI.Container {
+
+    private static readonly WIDTH = 165;
+    private static readonly HEIGHT = 40;
 
     private _state: State;
     private readonly bg = new PIXI.Container();
     private readonly txtMain: PIXI.Text;
 
-    constructor(text = "", width: number = 165, height: number = 40,
-                private readonly bgMouseOut: PIXI.Container = new Rectangle(0, 0, 0x333333),
+    constructor(text: string = "", textStyle: PIXI.TextStyleOptions = { align: "center", fill: "white", fontSize: 28 },
+                private readonly bgMouseOut: PIXI.Container
+                    = new Rectangle(Button.WIDTH, Button.HEIGHT, 0x333333),
                 private readonly bgMouseOver: PIXI.Container = new Rectangle(0, 0, 0x555555),
                 private readonly bgMouseDown: PIXI.Container = new Rectangle(0, 0, 0x222222),
                 private readonly bgDisabled: PIXI.Container = bgMouseOver) {
@@ -18,11 +22,11 @@ export class Button extends PIXI.Container {
         this.buttonMode = true;
         this.state = State.MouseOut;
         this.addChild(this.bg);
-        this.txtMain = new PIXI.Text(text, { align: "center", fill: 0xffffff, fontSize: 26 });
+        this.txtMain = new PIXI.Text(text, textStyle);
         this.txtMain.anchor.set(CENTER, CENTER);
         this.addChild(this.txtMain);
-        this.width = width;
-        this.height = height;
+        this.width = this.bg.width;
+        this.height = this.bg.height;
 
         this.on(Event.MOUSE_OVER, () => this.state = State.MouseOver);
         this.on(Event.MOUSE_DOWN, () => this.state = State.MouseDown);

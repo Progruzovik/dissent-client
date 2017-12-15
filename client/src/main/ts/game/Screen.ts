@@ -1,4 +1,4 @@
-import { UiLayer } from "./UiLayer";
+import { UiLayer } from "./ui/UiLayer";
 import { Event } from "./util";
 import * as PIXI from "pixi.js";
 

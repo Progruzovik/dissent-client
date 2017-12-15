@@ -3,7 +3,7 @@ import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketConnection from "../WebSocketConnection";
-import { ActionType, Cell, PathNode } from "../util";
+import {ActionType, Cell, PathNode, Side} from "../util";
 import * as game from "../../game";
 
 export default class Field extends game.UiLayer {
@@ -27,12 +27,14 @@ export default class Field extends game.UiLayer {
         const bg = new game.Rectangle(0, 0);
         this.addChild(bg);
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Rectangle(size.x * Unit.WIDTH + Field.LINE_WIDTH, Field.LINE_WIDTH, 0x777777);
+            const line = new game.Rectangle(size.x * Unit.WIDTH + Field.LINE_WIDTH,
+                Field.LINE_WIDTH, 0x777777);
             line.y = i * Unit.HEIGHT;
             this.addChild(line);
         }
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Rectangle(Field.LINE_WIDTH, size.y * Unit.HEIGHT + Field.LINE_WIDTH, 0x777777);
+            const line = new game.Rectangle(Field.LINE_WIDTH,
+                size.y * Unit.HEIGHT + Field.LINE_WIDTH, 0x777777);
             line.x = i * Unit.WIDTH;
             this.addChild(line);
         }
@@ -60,8 +62,10 @@ export default class Field extends game.UiLayer {
 
         unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
         unitService.on(ActionType.Shot, () => this.updatePathsAndMarks());
-        unitService.on(UnitService.SHOT_CELL, (cell: Cell) => this.markLayer.addChild(new Mark(0xffffff, cell)));
-        unitService.on(UnitService.TARGET_CELL, (cell: Cell) => this.markLayer.addChild(new Mark(0xff0000, cell)));
+        unitService.on(UnitService.SHOT_CELL, (cell: Cell) =>
+            this.markLayer.addChild(new Mark(0xffffff, cell)));
+        unitService.on(UnitService.TARGET_CELL, (cell: Cell) =>
+            this.markLayer.addChild(new Mark(0xff0000, cell)));
         unitService.on(Unit.PREPARE_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
         unitService.on(Unit.NOT_PREPARE_TO_SHOT, () => this.addCurrentPathMarks());
         unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
