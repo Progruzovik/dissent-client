@@ -1,22 +1,36 @@
 import Unit from "./Unit";
+import { Side } from "../../util";
 import * as game from "../../../game";
 
 export default class Window extends game.UiLayer {
 
     static readonly WIDTH = 200;
-    static readonly HEIGHT = 55;
+    static readonly HEIGHT = 90;
+
+    private readonly lineToWindow = new game.Rectangle(0, 1, this.unit.frameColor);
 
     private readonly bgWindow = new game.Rectangle(Window.WIDTH, Window.HEIGHT, 0x333333);
     private readonly barStrength = new game.ProgressBar(this.bgWindow.width, 15, 0xff0000);
 
-    constructor(private readonly isLeft: boolean, readonly unit: Unit) {
+    constructor(playerSide: Side, readonly unit: Unit) {
         super();
-        const txtHull = new PIXI.Text(unit.hull.name, { fill: 0xffffff, fontSize: 24 });
-        txtHull.anchor.x = game.CENTER;
-        txtHull.x = this.bgWindow.width / 2;
-        this.bgWindow.addChild(txtHull);
+
+        this.lineToWindow.pivot.y = this.lineToWindow.height / 2;
+        const unitBounds: PIXI.Rectangle = unit.getBounds(true);
+        this.lineToWindow.position.set(unitBounds.x + unitBounds.width / 2, unitBounds.y);
+        this.addChild(this.lineToWindow);
+
+        const txtTitle = new PIXI.Text(unit.hull.name, { fill: 0xffffff, fontSize: 24 });
+        txtTitle.anchor.x = game.CENTER;
+        txtTitle.x = this.bgWindow.width / 2;
+        this.bgWindow.addChild(txtTitle);
+        const unitIcon = unit.createIcon();
+        unitIcon.pivot.x = unitIcon.width / 2;
+        unitIcon.x = this.bgWindow.width / 2;
+        unitIcon.y = txtTitle.height;
+        this.bgWindow.addChild(unitIcon);
         this.barStrength.maximum = unit.hull.strength;
-        this.barStrength.y = txtHull.height;
+        this.barStrength.y = unitIcon.y + unitIcon.height + 5;
         this.bgWindow.addChild(this.barStrength);
         this.addChild(this.bgWindow);
         this.updateStats();
@@ -25,9 +39,13 @@ export default class Window extends game.UiLayer {
     }
 
     resize(width: number, height: number) {
-        if (!this.isLeft) {
+        if (this.unit.side == Side.Right) {
             this.bgWindow.x = width - this.bgWindow.width;
         }
+        const dx = this.bgWindow.x + this.bgWindow.width / 2 - this.lineToWindow.x;
+        const dy = this.bgWindow.y + this.bgWindow.height - this.lineToWindow.y;
+        this.lineToWindow.width = Math.sqrt(dx * dx + dy * dy);
+        this.lineToWindow.rotation = Math.atan2(dy, dx);
     }
 
     destroy(options?: PIXI.DestroyOptions | boolean ) {

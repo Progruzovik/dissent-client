@@ -15,15 +15,15 @@ export default class BattlefieldScreen extends game.Screen {
 
     private currentWindow: Window;
 
-    constructor(fieldSize: Cell, currentPlayerSide: Side, units: Unit[], asteroids: Cell[], clouds: Cell[],
+    constructor(fieldSize: Cell, playerSide: Side, units: Unit[], asteroids: Cell[], clouds: Cell[],
                 projectileService: ProjectileService, webSocketConnection: WebSocketConnection) {
         super();
-        const unitService = new UnitService(currentPlayerSide, units, webSocketConnection);
+        const unitService = new UnitService(playerSide, units, webSocketConnection);
 
         const field = new Field(fieldSize, units, asteroids, clouds,
             unitService, projectileService, webSocketConnection);
         this.content = field;
-        this.leftUi = new LeftUi(currentPlayerSide, unitService);
+        this.leftUi = new LeftUi(playerSide, unitService);
         const controls = new Controls(unitService, webSocketConnection);
         this.bottomUi = controls;
         unitService.emit(ActionType.NextTurn, true);
@@ -33,9 +33,7 @@ export default class BattlefieldScreen extends game.Screen {
             if (this.currentWindow) {
                 this.currentWindow.destroy({ children: true });
             }
-            const isLeft = mousePos.x > this.width - Window.WIDTH - Unit.WIDTH
-                && mousePos.y < Window.HEIGHT + Unit.HEIGHT;
-            this.currentWindow = new Window(isLeft, unit);
+            this.currentWindow = new Window(playerSide, unit);
             this.frontUi = this.currentWindow;
         });
         unitService.on(UnitService.UNIT_MOUSE_OUT, (unit: Unit) => {

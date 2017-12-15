@@ -121,33 +121,33 @@ export default class Field extends game.UiLayer {
                     direction = Direction.Down;
                 }
 
-                const rectLine = new game.Rectangle(5, 5, 0x00ff00);
-                rectLine.position.set(cell.x * Unit.WIDTH, cell.y * Unit.HEIGHT);
+                const pathLine = new game.Rectangle(3.5, 3.5, 0x00ff00);
+                pathLine.position.set(cell.x * Unit.WIDTH, cell.y * Unit.HEIGHT);
                 let k = 0;
                 if (direction == Direction.Left || direction == Direction.Right) {
-                    rectLine.width = Unit.WIDTH;
-                    rectLine.pivot.y = rectLine.height / 2;
+                    pathLine.width = Unit.WIDTH;
+                    pathLine.pivot.y = pathLine.height / 2;
                     k = direction == Direction.Left ? 1 : -1;
-                    rectLine.x += rectLine.width / 2 * k;
-                    rectLine.y += Unit.HEIGHT / 2;
+                    pathLine.x += pathLine.width / 2 * k;
+                    pathLine.y += Unit.HEIGHT / 2;
                 } else if (direction == Direction.Up || direction == Direction.Down) {
-                    rectLine.height = Unit.HEIGHT;
-                    rectLine.pivot.x = rectLine.width / 2;
-                    rectLine.x += Unit.WIDTH / 2;
+                    pathLine.height = Unit.HEIGHT;
+                    pathLine.pivot.x = pathLine.width / 2;
+                    pathLine.x += Unit.WIDTH / 2;
                     k = direction == Direction.Up ? 1 : -1;
-                    rectLine.y += rectLine.height / 2 * k;
+                    pathLine.y += pathLine.height / 2 * k;
                 }
-                this.pathLayer.addChild(rectLine);
+                this.pathLayer.addChild(pathLine);
                 cell = previousCell;
             }
-            const rectEnd = new game.Rectangle(14, 14, 0x00ff00);
-            rectEnd.pivot.set(rectEnd.width / 2, rectEnd.height / 2);
-            rectEnd.position.set((markCell.x + game.CENTER) * Unit.WIDTH, (markCell.y + game.CENTER) * Unit.HEIGHT);
-            this.pathLayer.addChild(rectEnd);
-            const txtCost = new PIXI.Text(this.paths[markCell.x][markCell.y].movementCost.toLocaleString(),
-                { fill: 0xffffff, fontSize: 12 });
-            txtCost.position.set(rectEnd.x + game.INDENT / 2, rectEnd.y - game.INDENT);
-            this.pathLayer.addChild(txtCost);
+            const pathEnd = new game.Rectangle(10.5, 10.5, 0x00ff00);
+            pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
+            pathEnd.position.set((markCell.x + game.CENTER) * Unit.WIDTH, (markCell.y + game.CENTER) * Unit.HEIGHT);
+            this.pathLayer.addChild(pathEnd);
+            const txtMoveCost = new PIXI.Text(`${this.paths[markCell.x][markCell.y].movementCost.toLocaleString()} ОД`,
+                { fill: "white", fontSize: 14 });
+            txtMoveCost.position.set(pathEnd.x + 7, pathEnd.y - game.INDENT);
+            this.pathLayer.addChild(txtMoveCost);
         }
     }
 

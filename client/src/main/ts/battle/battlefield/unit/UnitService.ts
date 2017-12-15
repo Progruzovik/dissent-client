@@ -14,7 +14,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     readonly unitQueue = new Array<Unit>(0);
     private readonly currentTargets = new Array<Unit>(0);
 
-    constructor(private readonly currentPlayerSide: Side, units: Unit[],
+    constructor(private readonly playerSide: Side, units: Unit[],
                 private readonly webSocketConnection: WebSocketConnection) {
         super();
         for (const unit of units) {
@@ -76,7 +76,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     }
 
     get isCurrentPlayerTurn(): boolean {
-        return this.currentPlayerSide == this.currentUnit.side;
+        return this.playerSide == this.currentUnit.side;
     }
 
     get currentUnit(): Unit {

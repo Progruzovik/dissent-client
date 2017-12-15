@@ -15,22 +15,24 @@ export default class Unit extends game.Actor {
     static readonly NOT_PREPARE_TO_SHOT = "notPrepareToShot";
     static readonly DESTROY = "destroy";
 
+    readonly frameColor: number;
+
     private _preparedGunId = -1;
     private _currentMove: Move;
 
-    constructor(currentPlayerSide: Side, private _actionPoints: number, private _strength: number,
+    constructor(private _actionPoints: number, private _strength: number, playerSide: Side,
                 readonly side: Side, private _cell: Cell, readonly hull: Hull, readonly firstGun: Gun,
                 readonly secondGun: Gun, private readonly projectileService?: ProjectileService) {
         super();
         this.interactive = true;
+        this.frameColor = playerSide == this.side ? 0x00ff00 : 0xff0000;
         const sprite = new PIXI.Sprite(PIXI.loader.resources[hull.texture.name].texture);
         if (side == Side.Right) {
             sprite.scale.x = -1;
             sprite.anchor.x = 1;
         }
         this.addChild(sprite);
-        const frameColor = currentPlayerSide == side ? 0x00ff00 : 0xff0000;
-        this.addChild(new game.Frame(sprite.width, sprite.height, 0.6, frameColor));
+        this.addChild(new game.Frame(sprite.width, sprite.height, 0.6, this.frameColor));
         this.updatePosition();
     }
 
@@ -108,6 +110,13 @@ export default class Unit extends game.Actor {
             target.emit(Unit.UPDATE_STATS);
             this.emit(ActionType.Shot);
         });
+    }
+
+    createIcon(): PIXI.Container {
+        const result = new PIXI.Container();
+        result.addChild(new PIXI.Sprite(PIXI.loader.resources[this.hull.texture.name].texture));
+        result.addChild(new game.Frame(Unit.WIDTH, Unit.HEIGHT, 1, this.frameColor));
+        return result;
     }
 
     protected update() {
