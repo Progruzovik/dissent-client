@@ -30,7 +30,7 @@ export default class Unit extends game.Actor {
         }
         this.addChild(sprite);
         const frameColor = currentPlayerSide == side ? 0x00ff00 : 0xff0000;
-        this.addChild(new game.Frame(sprite.width, sprite.height, 0.5, frameColor));
+        this.addChild(new game.Frame(sprite.width, sprite.height, 0.6, frameColor));
         this.updatePosition();
     }
 
