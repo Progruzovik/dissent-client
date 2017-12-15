@@ -71,20 +71,20 @@ export default class Controls extends game.UiLayer {
         this.barStrength.height = heightPerSection / 3;
         this.barStrength.pivot.y = this.barStrength.height / 2;
         this.barStrength.y = heightPerSection / 2;
-        this.bgStats.x = this.bgHull.width;
+        this.bgStats.x = widthPerSection;
 
         this.btnFirstGun.width = widthPerSection;
         this.btnFirstGun.height = heightPerSection;
-        this.btnFirstGun.x = this.bgStats.x + this.bgStats.width;
+        this.btnFirstGun.x = widthPerSection * 2;
         this.btnSecondGun.width = widthPerSection;
         this.btnSecondGun.height = heightPerSection;
-        this.btnSecondGun.x = this.btnFirstGun.x + this.btnFirstGun.width;
+        this.btnSecondGun.x = widthPerSection * 3;
         this.bgModule.width = widthPerSection;
         this.bgModule.height = heightPerSection;
-        this.bgModule.x = this.btnSecondGun.x + this.btnSecondGun.width;
+        this.bgModule.x = widthPerSection * 4;
         this.btnNextTurn.width = widthPerSection;
         this.btnNextTurn.height = heightPerSection;
-        this.btnNextTurn.x = this.bgModule.x + this.bgModule.width;
+        this.btnNextTurn.x = widthPerSection * 5;
     }
 
     lockInterface() {

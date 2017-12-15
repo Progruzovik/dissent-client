@@ -9,10 +9,10 @@ export class Frame extends Shape {
     protected redraw() {
         this.clear();
         this.lineStyle(this.lineThickness, this.color);
-        this.moveTo(0, 0);
-        this.lineTo(this.width, 0);
+        this.moveTo(this.lineThickness, this.lineThickness);
+        this.lineTo(this.width, this.lineThickness);
         this.lineTo(this.width, this.height);
-        this.lineTo(0, this.height);
-        this.lineTo(0, 0);
+        this.lineTo(this.lineThickness, this.height);
+        this.lineTo(this.lineThickness, this.lineThickness);
     }
 }

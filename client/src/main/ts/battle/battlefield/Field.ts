@@ -168,7 +168,7 @@ class Mark extends game.Rectangle {
     constructor(color: number, cell?: Cell) {
         super(Unit.WIDTH - Field.LINE_WIDTH, Unit.HEIGHT - Field.LINE_WIDTH, color);
         this.interactive = true;
-        this.alpha = 0.4;
+        this.alpha = 0.35;
         if (cell) {
             this.cell = cell;
         }
