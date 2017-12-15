@@ -11,7 +11,7 @@ export default class Controls extends game.UiLayer {
     private static readonly EMPTY_SLOT = "[пусто]";
 
     private readonly spriteHull = new PIXI.Sprite();
-    private readonly bgHull = new game.Rectangle(0, 0, 0x222222);
+    private readonly bgHull = new game.Rectangle(0, 0, 0x333333);
 
     private readonly barStrength = new game.ProgressBar(0, 0, 0xff0000,
         100, 0, { fill: "white", fontSize: 26, fontWeight: "bold" });

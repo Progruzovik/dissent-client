@@ -6,14 +6,14 @@ import * as PIXI from "pixi.js";
 
 export default class LeftUi extends game.UiLayer {
 
-    private readonly bgQueue = new game.Rectangle(Unit.WIDTH, 0, 0x222222);
+    private readonly bgQueue = new PIXI.Container();
     private readonly txtActionPoints = new PIXI.Text("", { align: "center", fill: "white",
         fontSize: 36, fontWeight: "bold", stroke: "blue", strokeThickness: 4 });
 
     constructor(currentPlayerSide: Side, private readonly unitService: UnitService) {
         super();
         unitService.unitQueue.forEach((u, i) => {
-            const unitIcon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT, 0x555555);
+            const unitIcon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT, 0x444444);
             unitIcon.addChild(new PIXI.Sprite(PIXI.loader.resources[u.hull.texture.name].texture));
             const frameColor = currentPlayerSide == u.side ? 0x00ff00 : 0xff0000;
             unitIcon.addChild(new game.Frame(Unit.WIDTH, Unit.HEIGHT, 1, frameColor));
@@ -42,7 +42,6 @@ export default class LeftUi extends game.UiLayer {
     }
 
     resize(width: number, height: number) {
-        this.bgQueue.height = height;
         this.txtActionPoints.y = height - this.txtActionPoints.height;
     }
 
