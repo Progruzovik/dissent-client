@@ -1,3 +1,5 @@
+import * as game from "../game";
+
 export const enum ActionType {
     Move = "move",
     Shot = "shot",
@@ -19,10 +21,6 @@ export const enum Side {
     None, Left, Right
 }
 
-export class Cell {
-    constructor(readonly x: number, readonly y: number) {}
-}
-
 export class Gun {
     constructor(readonly id: number, readonly name: string,
                 readonly shotCost: number, readonly typeName: GunType) {}
@@ -34,15 +32,15 @@ export class Hull {
 }
 
 export class Move {
-    constructor(readonly cost: number, readonly cells: Cell[]) {}
+    constructor(readonly cost: number, readonly cells: game.Point[]) {}
 }
 
 export class PathNode {
-    constructor(readonly movementCost: number, readonly cell: Cell) {}
+    constructor(readonly movementCost: number, readonly cell: game.Point) {}
 }
 
 export class Shot {
-    constructor(readonly gunId: number, readonly damage: number, readonly cell: Cell) {}
+    constructor(readonly gunId: number, readonly damage: number, readonly cell: game.Point) {}
 }
 
 export class Texture {

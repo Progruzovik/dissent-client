@@ -17,3 +17,7 @@ export namespace Event {
 
     export const DONE = "done";
 }
+
+export class Point {
+    constructor(readonly x: number, readonly y: number) {}
+}

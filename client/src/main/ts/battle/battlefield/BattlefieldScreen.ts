@@ -7,7 +7,7 @@ import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import Window from "./unit/Window";
 import WebSocketConnection from "../WebSocketConnection";
-import { ActionType, Cell, Side } from "../util";
+import { ActionType, Side } from "../util";
 import * as game from "../../game";
 import * as PIXI from "pixi.js";
 
@@ -15,8 +15,8 @@ export default class BattlefieldScreen extends game.Screen {
 
     private currentWindow: Window;
 
-    constructor(fieldSize: Cell, playerSide: Side, units: Unit[], asteroids: Cell[], clouds: Cell[],
-                projectileService: ProjectileService, webSocketConnection: WebSocketConnection) {
+    constructor(fieldSize: game.Point, playerSide: Side, units: Unit[], asteroids: game.Point[],
+                clouds: game.Point[], projectileService: ProjectileService, webSocketConnection: WebSocketConnection) {
         super();
         const unitService = new UnitService(playerSide, units, webSocketConnection);
 

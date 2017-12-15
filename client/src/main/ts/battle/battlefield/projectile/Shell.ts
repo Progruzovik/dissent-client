@@ -1,5 +1,4 @@
 import Projectile from "./Projectile";
-import { Cell } from "../../util";
 import * as game from "../../../game";
 
 export default class Shell extends Projectile {
@@ -8,12 +7,12 @@ export default class Shell extends Projectile {
 
     private isNextShotReady = false;
     private frameNumber = 0;
-    private readonly multiplier: Cell;
+    private readonly multiplier: game.Point;
 
     constructor(private readonly shotDelay: number, shotsCount: number,
-                width: number, height: number, private readonly target: Cell, from: Cell) {
+                width: number, height: number, from: game.Point, private readonly target: game.Point) {
         super(shotsCount);
-        this.multiplier = new Cell(this.target.x < from.x ? -1 : 1, this.target.y < from.y ? -1 : 1);
+        this.multiplier = new game.Point(this.target.x < from.x ? -1 : 1, this.target.y < from.y ? -1 : 1);
 
         this.addChild(new game.Rectangle(width, height, 0xffff00));
         this.rotation = Math.atan2(this.target.y - from.y, this.target.x - from.x);

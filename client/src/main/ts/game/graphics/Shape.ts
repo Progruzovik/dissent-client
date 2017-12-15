@@ -1,9 +1,9 @@
 export abstract class Shape extends PIXI.Graphics {
 
-    constructor(private _color: number, private _width: number,
-                private _height: number, readonly lineThickness: number = 0) {
+    constructor(private _width: number = 0, private _height: number = 0,
+                private _thickness: number = 1, private _color: number = 0x000000) {
         super();
-        this.redraw();
+        this.draw();
     }
 
     get color(): number {
@@ -33,5 +33,19 @@ export abstract class Shape extends PIXI.Graphics {
         this.redraw();
     }
 
-    protected abstract redraw();
+    get thickness(): number {
+        return this._thickness;
+    }
+
+    set thickness(value: number) {
+        this._thickness = value;
+        this.redraw();
+    }
+
+    protected abstract draw();
+
+    private redraw() {
+        this.clear();
+        this.draw();
+    }
 }

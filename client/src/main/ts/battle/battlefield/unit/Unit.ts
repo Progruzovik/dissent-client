@@ -1,6 +1,6 @@
 import Field from "../Field";
 import ProjectileService from "../projectile/ProjectileService";
-import { ActionType, Cell, Gun, Hull, Move, Shot, Side } from "../../util";
+import { ActionType, Gun, Hull, Move, Shot, Side } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 
@@ -21,7 +21,7 @@ export default class Unit extends game.Actor {
     private _currentMove: Move;
 
     constructor(private _actionPoints: number, private _strength: number, playerSide: Side,
-                readonly side: Side, private _cell: Cell, readonly hull: Hull, readonly firstGun: Gun,
+                readonly side: Side, private _cell: game.Point, readonly hull: Hull, readonly firstGun: Gun,
                 readonly secondGun: Gun, private readonly projectileService?: ProjectileService) {
         super();
         this.interactive = true;
@@ -56,7 +56,7 @@ export default class Unit extends game.Actor {
         }
     }
 
-    get cell(): Cell {
+    get cell(): game.Point {
         return this._cell;
     }
 
@@ -87,8 +87,8 @@ export default class Unit extends game.Actor {
         }
     }
 
-    get center(): Cell {
-        return new Cell(this.x + this.width / 2, this.y + this.height / 2);
+    get center(): game.Point {
+        return new game.Point(this.x + this.width / 2, this.y + this.height / 2);
     }
 
     makeCurrent() {
@@ -96,13 +96,14 @@ export default class Unit extends game.Actor {
     }
 
     shoot(target: Unit, shot: Shot) {
+        let activeGun: Gun = null;
         if (shot.gunId == this.firstGun.id) {
-            this._actionPoints -= this.firstGun.shotCost;
-            this.projectileService.shoot(this.firstGun, target.center, this.center);
+            activeGun = this.firstGun;
         } else if (shot.gunId == this.secondGun.id) {
-            this._actionPoints -= this.secondGun.shotCost;
-            this.projectileService.shoot(this.secondGun, target.center, this.center);
+            activeGun = this.secondGun;
         }
+        this._actionPoints -= activeGun.shotCost;
+        this.projectileService.shoot(activeGun, this.center, target.center);
 
         this.projectileService.once(game.Event.DONE, () => {
             this._preparedGunId = -1;

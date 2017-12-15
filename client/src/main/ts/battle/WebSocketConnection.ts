@@ -1,6 +1,6 @@
+import { Gun, Hull, PathNode, Side, Texture } from "./util";
+import * as game from "../game";
 import * as PIXI from "pixi.js";
-import { Cell, Gun, Hull, PathNode, Side, Status, Texture } from "./util";
-import Point = PIXI.Point;
 
 export default class WebSocketConnection extends PIXI.utils.EventEmitter {
 
@@ -46,27 +46,27 @@ export default class WebSocketConnection extends PIXI.utils.EventEmitter {
         this.prepareMessage(new Message("startScenario"));
     }
 
-    requestBattleData(callback: (data: { playerSide: Side, fieldSize: Point, hulls: Hull[], guns: Gun[],
-        asteroids: Point[], clouds: Point[], units: Unit[], destroyedUnits: Unit[] }) => void) {
+    requestBattleData(callback: (data: { playerSide: Side, fieldSize: game.Point, hulls: Hull[], guns: Gun[],
+        asteroids: game.Point[], clouds: game.Point[], units: Unit[], destroyedUnits: Unit[] }) => void) {
         this.prepareMessage(new Message("requestBattleData"));
         this.once("battleData", callback);
     }
 
-    requestPathsAndReachableCells(callback: (data: { paths: PathNode[][], reachableCells: Cell[] }) => void) {
+    requestPathsAndReachableCells(callback: (data: { paths: PathNode[][], reachableCells: game.Point[] }) => void) {
         this.prepareMessage(new Message("requestPathsAndReachableCells"));
         this.once("pathsAndReachableCells", callback);
     }
 
-    requestGunCells(gunId: number, callback: (data: { shotCells: Cell[], targetCells: Cell[] }) => void) {
+    requestGunCells(gunId: number, callback: (data: { shotCells: game.Point[], targetCells: game.Point[] }) => void) {
         this.prepareMessage(new Message("requestGunCells", { gunId: gunId }));
         this.once("gunCells", callback);
     }
 
-    moveCurrentUnit(cell: Cell) {
+    moveCurrentUnit(cell: game.Point) {
         this.prepareMessage(new Message("moveCurrentUnit", cell));
     }
 
-    shootWithCurrentUnit(gunId: number, cell: Cell) {
+    shootWithCurrentUnit(gunId: number, cell: game.Point) {
         this.prepareMessage(new Message("shootWithCurrentUnit", { gunId: gunId, x: cell.x, y: cell.y }));
     }
 
@@ -97,5 +97,5 @@ class Ship {
 }
 
 class Unit {
-    constructor(readonly actionPoints: number, readonly side: Side, readonly cell: Cell, readonly ship: Ship) {}
+    constructor(readonly actionPoints: number, readonly side: Side, readonly cell: game.Point, readonly ship: Ship) {}
 }

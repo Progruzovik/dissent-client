@@ -7,7 +7,7 @@ export default class Window extends game.UiLayer {
     static readonly WIDTH = 200;
     static readonly HEIGHT = 90;
 
-    private readonly lineToWindow = new game.Rectangle(0, 1, this.unit.frameColor);
+    private readonly lineToWindow = new game.Line(0, 1, this.unit.frameColor);
 
     private readonly bgWindow = new game.Rectangle(Window.WIDTH, Window.HEIGHT, 0x333333);
     private readonly barStrength = new game.ProgressBar(this.bgWindow.width, 15, 0xff0000);
@@ -15,7 +15,6 @@ export default class Window extends game.UiLayer {
     constructor(playerSide: Side, readonly unit: Unit) {
         super();
 
-        this.lineToWindow.pivot.y = this.lineToWindow.height / 2;
         const unitBounds: PIXI.Rectangle = unit.getBounds(true);
         this.lineToWindow.position.set(unitBounds.x + unitBounds.width / 2, unitBounds.y);
         this.addChild(this.lineToWindow);
@@ -42,10 +41,8 @@ export default class Window extends game.UiLayer {
         if (this.unit.side == Side.Right) {
             this.bgWindow.x = width - this.bgWindow.width;
         }
-        const dx = this.bgWindow.x + this.bgWindow.width / 2 - this.lineToWindow.x;
-        const dy = this.bgWindow.y + this.bgWindow.height - this.lineToWindow.y;
-        this.lineToWindow.width = Math.sqrt(dx * dx + dy * dy);
-        this.lineToWindow.rotation = Math.atan2(dy, dx);
+        const to = new game.Point(this.bgWindow.x + this.bgWindow.width / 2, this.bgWindow.y + this.bgWindow.height);
+        this.lineToWindow.direct(to);
     }
 
     destroy(options?: PIXI.DestroyOptions | boolean ) {
