@@ -13,7 +13,7 @@ export default class LeftUi extends game.UiLayer {
     constructor(currentPlayerSide: Side, private readonly unitService: UnitService) {
         super();
         unitService.unitQueue.forEach((u, i) => {
-            const unitIcon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT, 0x666666);
+            const unitIcon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT, 0x555555);
             unitIcon.addChild(new PIXI.Sprite(PIXI.loader.resources[u.hull.texture.name].texture));
             const frameColor = currentPlayerSide == u.side ? 0x00ff00 : 0xff0000;
             unitIcon.addChild(new game.Frame(Unit.WIDTH, Unit.HEIGHT, 1, frameColor));
