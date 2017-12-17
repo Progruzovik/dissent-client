@@ -1,3 +1,4 @@
+import Field from "./Field";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import { ActionType, Side } from "../util";
@@ -13,9 +14,9 @@ export default class LeftUi extends game.UiLayer {
     constructor(playerSide: Side, private readonly unitService: UnitService) {
         super();
         unitService.unitQueue.forEach((u, i) => {
-            const unitIcon = new game.Rectangle(Unit.WIDTH, Unit.HEIGHT, 0x444444);
+            const unitIcon = new game.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0x444444);
             unitIcon.addChild(u.createIcon());
-            unitIcon.y = Unit.HEIGHT * i;
+            unitIcon.addChild(new game.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 1, u.frameColor));
             this.bgQueue.addChild(unitIcon);
 
             u.on(Unit.DESTROY, () => {
@@ -27,6 +28,7 @@ export default class LeftUi extends game.UiLayer {
         this.txtActionPoints.anchor.x = game.CENTER;
         this.txtActionPoints.x = this.bgQueue.width / 2;
         this.addChild(this.txtActionPoints);
+        this.updateUnitSpritePositions();
 
         unitService.on(ActionType.Move, () => this.updateActionPointsValue());
         unitService.on(ActionType.Shot, () => this.updateActionPointsValue());
@@ -44,7 +46,7 @@ export default class LeftUi extends game.UiLayer {
     }
 
     private updateUnitSpritePositions() {
-        this.bgQueue.children.forEach((c, i) => c.y = Unit.HEIGHT * i);
+        this.bgQueue.children.forEach((c, i) => c.y = Field.CELL_SIZE.y * i);
     }
 
     private updateActionPointsValue() {

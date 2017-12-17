@@ -1,3 +1,4 @@
+import Field from "./Field";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketConnection from "../WebSocketConnection";
@@ -63,7 +64,7 @@ export default class Controls extends game.UiLayer {
 
         this.bgHull.width = widthPerSection;
         this.bgHull.height = heightPerSection;
-        const shipRatio = this.bgHull.height / Unit.HEIGHT;
+        const shipRatio = this.bgHull.height / Field.CELL_SIZE.y;
         this.spriteHull.scale.set(shipRatio, shipRatio);
         this.spriteHull.position.set(this.bgHull.width / 2, this.bgHull.height / 2);
 

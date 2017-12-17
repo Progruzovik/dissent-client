@@ -5,7 +5,7 @@ import * as game from "../../../game";
 export default class Window extends game.UiLayer {
 
     static readonly WIDTH = 200;
-    static readonly HEIGHT = 90;
+    static readonly HEIGHT = 95;
 
     private readonly lineToWindow = new game.Line(0, 1, this.unit.frameColor);
 
@@ -31,6 +31,7 @@ export default class Window extends game.UiLayer {
         this.barStrength.maximum = unit.hull.strength;
         this.barStrength.y = unitIcon.y + unitIcon.height + 5;
         this.bgWindow.addChild(this.barStrength);
+        this.bgWindow.addChild(new game.Frame(this.bgWindow.width, this.bgWindow.height, 1, unit.frameColor));
         this.addChild(this.bgWindow);
         this.updateStats();
 
@@ -38,9 +39,12 @@ export default class Window extends game.UiLayer {
     }
 
     resize(width: number, height: number) {
-        if (this.unit.side == Side.Right) {
-            this.bgWindow.x = width - this.bgWindow.width;
+        if (this.unit.side == Side.Left) {
+            this.bgWindow.x = game.INDENT / 2;
+        } else if (this.unit.side == Side.Right) {
+            this.bgWindow.x = width - this.bgWindow.width - game.INDENT / 2;
         }
+        this.bgWindow.y = game.INDENT / 2;
         const to = new game.Point(this.bgWindow.x + this.bgWindow.width / 2, this.bgWindow.y + this.bgWindow.height);
         this.lineToWindow.direct(to);
     }

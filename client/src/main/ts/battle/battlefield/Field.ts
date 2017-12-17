@@ -8,11 +8,13 @@ import * as game from "../../game";
 
 export default class Field extends game.UiLayer {
 
+    static readonly CELL_SIZE = new game.Point(64, 48);
     static readonly LINE_WIDTH = 1.5;
+    static readonly PATH_MARK_COLOR = 0xffff00;
 
     private paths: PathNode[][];
 
-    private selectedCell: game.Point;
+    private selectedMark: Mark;
 
     private readonly currentMark = new Mark(0x00ff00);
     private readonly pathMarks = new Array<Mark>(0);
@@ -27,15 +29,15 @@ export default class Field extends game.UiLayer {
         const bg = new game.Rectangle(0, 0);
         this.addChild(bg);
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Line(size.x * Unit.WIDTH + Field.LINE_WIDTH, Field.LINE_WIDTH, 0x777777);
-            line.y = i * Unit.HEIGHT;
+            const line = new game.Line(size.x * Field.CELL_SIZE.x + Field.LINE_WIDTH, Field.LINE_WIDTH, 0x777777);
+            line.y = i * Field.CELL_SIZE.y;
             this.addChild(line);
         }
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Line(size.y * Unit.HEIGHT + Field.LINE_WIDTH, Field.LINE_WIDTH, 0x777777);
+            const line = new game.Line(size.y * Field.CELL_SIZE.y + Field.LINE_WIDTH, Field.LINE_WIDTH, 0x777777);
             line.pivot.y = line.thickness;
             line.rotation = Math.PI / 2;
-            line.x = i * Unit.WIDTH;
+            line.x = i * Field.CELL_SIZE.x;
             this.addChild(line);
         }
         bg.width = this.width;
@@ -43,14 +45,14 @@ export default class Field extends game.UiLayer {
 
         for (const asteroid of asteroids) {
             const spriteAsteroid = new PIXI.Sprite(PIXI.loader.resources["asteroid"].texture);
-            spriteAsteroid.x = asteroid.x * Unit.WIDTH;
-            spriteAsteroid.y = asteroid.y * Unit.HEIGHT;
+            spriteAsteroid.x = asteroid.x * Field.CELL_SIZE.x;
+            spriteAsteroid.y = asteroid.y * Field.CELL_SIZE.y;
             this.addChild(spriteAsteroid);
         }
         for (const cloud of clouds) {
             const spriteCloud = new PIXI.Sprite(PIXI.loader.resources["cloud"].texture);
-            spriteCloud.x = cloud.x * Unit.WIDTH;
-            spriteCloud.y = cloud.y * Unit.HEIGHT;
+            spriteCloud.x = cloud.x * Field.CELL_SIZE.x;
+            spriteCloud.y = cloud.y * Field.CELL_SIZE.y;
             this.addChild(spriteCloud);
         }
         this.markLayer.addChild(this.currentMark);
@@ -85,15 +87,15 @@ export default class Field extends game.UiLayer {
                 this.paths = d.paths;
                 this.pathMarks.length = 0;
                 for (const cell of d.reachableCells) {
-                    const pathMark = new Mark(0xffff00, cell);
+                    const pathMark = new Mark(Field.PATH_MARK_COLOR, cell);
                     this.pathMarks.push(pathMark);
 
-                    pathMark.on(game.Event.MOUSE_OVER, () =>
-                        this.showPath(cell, this.unitService.currentUnit.cell));
+                    pathMark.on(game.Event.MOUSE_OVER, () => this.showPath(pathMark));
                     pathMark.on(game.Event.CLICK, () => this.webSocketConnection.moveCurrentUnit(cell));
                     pathMark.on(game.Event.MOUSE_OUT, () => {
-                        if (this.selectedCell == cell) {
-                            this.selectedCell = null;
+                        if (this.selectedMark == pathMark) {
+                            pathMark.color = Field.PATH_MARK_COLOR;
+                            this.selectedMark = null;
                             this.pathLayer.removeChildren();
                         }
                     });
@@ -103,12 +105,17 @@ export default class Field extends game.UiLayer {
         }
     }
 
-    private showPath(markCell: game.Point, unitCell: game.Point) {
-        if (this.paths[markCell.x][markCell.y]) {
-            this.selectedCell = markCell;
+    private showPath(mark: Mark) {
+        if (this.paths[mark.cell.x][mark.cell.y]) {
+            if (this.selectedMark != null) {
+                this.selectedMark.color = Field.PATH_MARK_COLOR;
+            }
+            mark.color = 0x00ff00;
+            this.selectedMark = mark;
             this.pathLayer.removeChildren();
-            let cell: game.Point = markCell;
-            while (!(cell.x == unitCell.x && cell.y == unitCell.y)) {
+
+            let cell: game.Point = mark.cell;
+            while (!(cell.x == this.unitService.currentUnit.cell.x && cell.y == this.unitService.currentUnit.cell.y)) {
                 const previousCell: game.Point = this.paths[cell.x][cell.y].cell;
                 let direction: Direction;
                 if (cell.x == previousCell.x - 1) {
@@ -121,28 +128,26 @@ export default class Field extends game.UiLayer {
                     direction = Direction.Down;
                 }
 
-                const pathLine = new game.Line(0, 3.5, 0x00ff00);
-                pathLine.position.set((cell.x + game.CENTER) * Unit.WIDTH, (cell.y + game.CENTER) * Unit.HEIGHT);
+                const pathLine = new game.Line(0, 4, 0x00ff00);
+                pathLine.alpha = 0.5;
+                pathLine.x = (cell.x + game.CENTER) * Field.CELL_SIZE.x;
+                pathLine.y = (cell.y + game.CENTER) * Field.CELL_SIZE.y;
                 const k = direction == Direction.Left || direction == Direction.Up ? 1 : -1;
                 const destination = new PIXI.Point(pathLine.x, pathLine.y);
                 if (direction == Direction.Left || direction == Direction.Right) {
-                    pathLine.width = Unit.WIDTH;
+                    pathLine.width = Field.CELL_SIZE.x;
                     destination.x += pathLine.width * k;
                 } else if (direction == Direction.Up || direction == Direction.Down) {
-                    pathLine.width = Unit.HEIGHT;
+                    pathLine.width = Field.CELL_SIZE.y;
                     destination.y += pathLine.width * k;
                 }
                 pathLine.direct(destination);
                 this.pathLayer.addChild(pathLine);
                 cell = previousCell;
             }
-            const pathEnd = new game.Rectangle(10.5, 10.5, 0x00ff00);
-            pathEnd.pivot.set(pathEnd.width / 2, pathEnd.height / 2);
-            pathEnd.position.set((markCell.x + game.CENTER) * Unit.WIDTH, (markCell.y + game.CENTER) * Unit.HEIGHT);
-            this.pathLayer.addChild(pathEnd);
-            const moveCost = `${this.paths[markCell.x][markCell.y].movementCost.toLocaleString()} ОД`;
+            const moveCost = `${this.paths[mark.cell.x][mark.cell.y].movementCost.toLocaleString()} ОД`;
             const txtMoveCost = new PIXI.Text(moveCost, { fill: "white", fontSize: 14 });
-            txtMoveCost.position.set(pathEnd.x + 7, pathEnd.y - game.INDENT);
+            txtMoveCost.position.set(this.selectedMark.x, this.selectedMark.y);
             this.pathLayer.addChild(txtMoveCost);
         }
     }
@@ -161,8 +166,10 @@ const enum Direction {
 
 class Mark extends game.Rectangle {
 
+    private _cell: game.Point;
+
     constructor(color: number, cell?: game.Point) {
-        super(Unit.WIDTH - Field.LINE_WIDTH, Unit.HEIGHT - Field.LINE_WIDTH, color);
+        super(Field.CELL_SIZE.x - Field.LINE_WIDTH, Field.CELL_SIZE.y - Field.LINE_WIDTH, color);
         this.interactive = true;
         this.alpha = 0.35;
         if (cell) {
@@ -170,8 +177,13 @@ class Mark extends game.Rectangle {
         }
     }
 
+    get cell(): game.Point {
+        return this._cell;
+    }
+
     set cell(value: game.Point) {
-        this.x = value.x * Unit.WIDTH + Field.LINE_WIDTH;
-        this.y = value.y * Unit.HEIGHT + Field.LINE_WIDTH;
+        this._cell = value;
+        this.x = value.x * Field.CELL_SIZE.x + Field.LINE_WIDTH;
+        this.y = value.y * Field.CELL_SIZE.y + Field.LINE_WIDTH;
     }
 }

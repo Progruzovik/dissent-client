@@ -6,8 +6,6 @@ import * as PIXI from "pixi.js";
 
 export default class Unit extends game.Actor {
 
-    static readonly WIDTH = 64;
-    static readonly HEIGHT = 32;
     static readonly ALPHA_DESTROYED = 0.5;
 
     static readonly UPDATE_STATS = "updateStats";
@@ -32,7 +30,7 @@ export default class Unit extends game.Actor {
             sprite.anchor.x = 1;
         }
         this.addChild(sprite);
-        this.addChild(new game.Frame(sprite.width, sprite.height, 0.6, this.frameColor));
+        this.addChild(new game.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0.6, this.frameColor));
         this.updatePosition();
     }
 
@@ -114,10 +112,7 @@ export default class Unit extends game.Actor {
     }
 
     createIcon(): PIXI.Container {
-        const result = new PIXI.Container();
-        result.addChild(new PIXI.Sprite(PIXI.loader.resources[this.hull.texture.name].texture));
-        result.addChild(new game.Frame(Unit.WIDTH, Unit.HEIGHT, 1, this.frameColor));
-        return result;
+        return new PIXI.Sprite(PIXI.loader.resources[this.hull.texture.name].texture);
     }
 
     protected update() {
@@ -133,7 +128,7 @@ export default class Unit extends game.Actor {
     }
 
     private updatePosition() {
-        this.x = this.cell.x * Unit.WIDTH + Field.LINE_WIDTH / 2;
-        this.y = this.cell.y * Unit.HEIGHT + Field.LINE_WIDTH / 2;
+        this.x = this.cell.x * Field.CELL_SIZE.x + Field.LINE_WIDTH / 2;
+        this.y = this.cell.y * Field.CELL_SIZE.y + Field.LINE_WIDTH / 2;
     }
 }
