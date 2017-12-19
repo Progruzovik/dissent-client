@@ -1,7 +1,7 @@
 import Field from "./Field";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import WebSocketConnection from "../WebSocketConnection";
+import WebSocketClient from "../WebSocketClient";
 import { ActionType } from "../util";
 import * as game from "../../game";
 
@@ -24,7 +24,7 @@ export default class Controls extends game.UiLayer {
     private readonly btnNextTurn = new game.Button("Конец хода", { align: "center",
         fill: "white", fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
 
-    constructor(private readonly unitService: UnitService, webSocketConnection: WebSocketConnection) {
+    constructor(private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
         super();
         this.spriteHull.anchor.set(game.CENTER, game.CENTER);
         this.bgHull.addChild(this.spriteHull);
@@ -55,7 +55,7 @@ export default class Controls extends game.UiLayer {
                 unitService.currentUnit.preparedGunId = unitService.currentUnit.secondGun.id;
             }
         });
-        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketConnection.endTurn());
+        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketClient.endTurn());
     }
 
     resize(width: number, height: number) {

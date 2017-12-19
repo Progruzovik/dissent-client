@@ -1,4 +1,4 @@
-import WebSocketConnection from "../WebSocketConnection";
+import WebSocketClient from "../WebSocketClient";
 import { Status } from "../util";
 import * as game from "../../game";
 
@@ -11,7 +11,7 @@ export default class Menu extends game.UiLayer {
     private readonly btnQueue = new game.Button();
     private readonly btnScenario = new game.Button("PVE");
 
-    constructor(private readonly webSocketConnection: WebSocketConnection) {
+    constructor(private readonly webSocketClient: WebSocketClient) {
         super();
         this.txtDissent.anchor.x = game.CENTER;
         this.addChild(this.txtDissent);
@@ -22,15 +22,7 @@ export default class Menu extends game.UiLayer {
         this.btnScenario.pivot.x = this.btnScenario.width / 2;
         this.addChild(this.btnScenario);
 
-        this.btnQueue.on(game.Event.BUTTON_CLICK, () => {
-            if (this.status == Status.Queued) {
-                webSocketConnection.removeFromQueue();
-            } else {
-                webSocketConnection.addToQueue();
-            }
-        });
-        this.btnScenario.on(game.Event.BUTTON_CLICK, () => webSocketConnection.startScenario());
-        this.webSocketConnection.on(WebSocketConnection.STATUS, (status: Status) => {
+        this.webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
             this.status = status;
             if (status == Status.InBattle) {
                 this.emit(game.Event.DONE);
@@ -38,7 +30,16 @@ export default class Menu extends game.UiLayer {
                 this.updateInterface();
             }
         });
-        webSocketConnection.requestStatus();
+        this.btnQueue.on(game.Event.BUTTON_CLICK, () => {
+            if (this.status == Status.Queued) {
+                webSocketClient.removeFromQueue();
+            } else {
+                webSocketClient.addToQueue();
+            }
+        });
+        this.btnScenario.on(game.Event.BUTTON_CLICK, () => webSocketClient.startScenario());
+
+        webSocketClient.updateStatus();
     }
 
     resize(width: number, height: number) {

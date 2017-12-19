@@ -5,7 +5,7 @@ import * as game from "../../../game";
 export default class Window extends game.UiLayer {
 
     static readonly WIDTH = 200;
-    static readonly HEIGHT = 95;
+    static readonly HEIGHT = 105;
 
     private readonly lineToWindow = new game.Line(0, 1, this.unit.frameColor);
 

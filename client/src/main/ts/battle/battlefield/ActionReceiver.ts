@@ -1,7 +1,7 @@
 import Controls from "./Controls";
 import Field from "./Field";
 import UnitService from "./unit/UnitService";
-import WebSocketConnection from "../WebSocketConnection";
+import WebSocketClient from "../WebSocketClient";
 import { ActionType, Move, Shot } from "../util";
 import * as PIXI from "pixi.js";
 
@@ -13,21 +13,21 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
     private readonly remainingActions = new Array<ActionType>(0);
 
     constructor(private readonly field: Field, private readonly controls: Controls,
-                private readonly unitService: UnitService, webSocketConnection: WebSocketConnection) {
+                private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
         super();
         unitService.on(ActionType.Move, () => this.finishActionProcessing());
         unitService.on(ActionType.Shot, () => this.finishActionProcessing());
         unitService.on(ActionType.NextTurn, () => this.finishActionProcessing());
-        webSocketConnection.on(ActionType.Move, (move: Move) => {
+        webSocketClient.on(ActionType.Move, (move: Move) => {
             this.remainingMoves.push(move);
             this.addAction(ActionType.Move);
         });
-        webSocketConnection.on(ActionType.Shot, (shot: Shot) => {
+        webSocketClient.on(ActionType.Shot, (shot: Shot) => {
             this.remainingShots.push(shot);
             this.addAction(ActionType.Shot);
         });
-        webSocketConnection.on(ActionType.NextTurn, () => this.addAction(ActionType.NextTurn));
-        webSocketConnection.on(ActionType.BattleFinish, () => this.addAction(ActionType.BattleFinish));
+        webSocketClient.on(ActionType.NextTurn, () => this.addAction(ActionType.NextTurn));
+        webSocketClient.on(ActionType.BattleFinish, () => this.addAction(ActionType.BattleFinish));
     }
 
     private addAction(actionType: ActionType) {

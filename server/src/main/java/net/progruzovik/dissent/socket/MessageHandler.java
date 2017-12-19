@@ -21,11 +21,12 @@ import java.util.Map;
 public final class MessageHandler extends TextWebSocketHandler {
 
     private final ObjectMapper mapper;
-    private final Map<String, MessageReader> readers = new HashMap<>(1);
+    private final Map<String, MessageReader> readers = new HashMap<>();
 
     public MessageHandler(ObjectMapper mapper, TextureDao textureDao) {
         this.mapper = mapper;
-        readers.put("requestTextures", (p, d) -> p.sendMessage(new Message<>("textures", textureDao.getTextures())));
+        readers.put("requestTextures", (p, d) ->
+                p.sendMessage(new Message<>("textures", textureDao.getTextures())));
 
         readers.put("requestStatus", (p, d) -> p.sendMessage(new Message<>("status", p.getStatus())));
         readers.put("addToQueue", (p, d) -> p.addToQueue());

@@ -2,7 +2,7 @@ import Projectile from "./projectile/Projectile";
 import ProjectileService from "./projectile/ProjectileService";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import WebSocketConnection from "../WebSocketConnection";
+import WebSocketClient from "../WebSocketClient";
 import { ActionType, PathNode } from "../util";
 import * as game from "../../game";
 
@@ -23,7 +23,7 @@ export default class Field extends game.UiLayer {
 
     constructor(private readonly size: game.Point, units: Unit[], asteroids: game.Point[], clouds: game.Point[],
                 private readonly unitService: UnitService, private readonly projectileService: ProjectileService,
-                private readonly webSocketConnection: WebSocketConnection) {
+                private readonly webSocketClient: WebSocketClient) {
         super();
 
         const bg = new game.Rectangle(0, 0);
@@ -83,7 +83,7 @@ export default class Field extends game.UiLayer {
     private updatePathsAndMarks() {
         this.currentMark.cell = this.unitService.currentUnit.cell;
         if (this.unitService.isCurrentPlayerTurn) {
-            this.webSocketConnection.requestPathsAndReachableCells(d => {
+            this.webSocketClient.requestPathsAndReachableCells(d => {
                 this.paths = d.paths;
                 this.pathMarks.length = 0;
                 for (const cell of d.reachableCells) {
@@ -91,7 +91,7 @@ export default class Field extends game.UiLayer {
                     this.pathMarks.push(pathMark);
 
                     pathMark.on(game.Event.MOUSE_OVER, () => this.showPath(pathMark));
-                    pathMark.on(game.Event.CLICK, () => this.webSocketConnection.moveCurrentUnit(cell));
+                    pathMark.on(game.Event.CLICK, () => this.webSocketClient.moveCurrentUnit(cell));
                     pathMark.on(game.Event.MOUSE_OUT, () => {
                         if (this.selectedMark == pathMark) {
                             pathMark.color = Field.PATH_MARK_COLOR;

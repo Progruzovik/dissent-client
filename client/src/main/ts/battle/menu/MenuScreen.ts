@@ -1,15 +1,17 @@
 import Menu from "./Menu";
-import WebSocketConnection from "../WebSocketConnection";
+import WebSocketClient from "../WebSocketClient";
 import * as game from "../../game";
 
 export default class MenuScreen extends game.Screen {
 
     static readonly BATTLE = "battle";
 
-    constructor(webSocketConnection: WebSocketConnection) {
+    private readonly menu: Menu;
+
+    constructor(webSocketClient: WebSocketClient) {
         super();
-        const menu = new Menu(webSocketConnection);
-        this.frontUi = menu;
-        menu.on(game.Event.DONE, () => this.emit(MenuScreen.BATTLE));
+        this.menu = new Menu(webSocketClient);
+        this.frontUi = this.menu;
+        this.menu.on(game.Event.DONE, () => this.emit(MenuScreen.BATTLE));
     }
 }

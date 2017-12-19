@@ -1,5 +1,5 @@
 import Unit from "./Unit";
-import WebSocketConnection from "../../WebSocketConnection";
+import WebSocketClient from "../../WebSocketClient";
 import { ActionType, Side } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
@@ -15,14 +15,14 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     private readonly currentTargets = new Array<Unit>(0);
 
     constructor(private readonly playerSide: Side, units: Unit[],
-                private readonly webSocketConnection: WebSocketConnection) {
+                private readonly webSocketClient: WebSocketClient) {
         super();
         for (const unit of units) {
             if (unit.strength > 0) {
                 this.unitQueue.push(unit);
                 unit.on(game.Event.CLICK, () => {
                     if (this.currentTargets.indexOf(unit) != -1) {
-                        webSocketConnection.shootWithCurrentUnit(this.currentUnit.preparedGunId, unit.cell);
+                        webSocketClient.shootWithCurrentUnit(this.currentUnit.preparedGunId, unit.cell);
                     }
                 });
                 unit.on(ActionType.Move, () => {
@@ -34,7 +34,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                     this.checkCurrentUnitActionPoints();
                 });
                 unit.on(Unit.PREPARE_TO_SHOT, () => {
-                    webSocketConnection.requestGunCells(unit.preparedGunId, g => {
+                    webSocketClient.requestGunCells(unit.preparedGunId, g => {
                         this.emit(Unit.PREPARE_TO_SHOT);
                         for (const cell of g.shotCells) {
                             this.emit(UnitService.SHOT_CELL, cell);
@@ -92,7 +92,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
 
     private checkCurrentUnitActionPoints() {
         if (this.isCurrentPlayerTurn && this.currentUnit.actionPoints == 0) {
-            this.webSocketConnection.endTurn();
+            this.webSocketClient.endTurn();
         }
     }
 }
