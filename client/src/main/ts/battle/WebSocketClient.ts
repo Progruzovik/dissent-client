@@ -15,11 +15,11 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
     }
 
     requestTextures(callback: (textures: Texture[]) => void) {
-        this.connection.prepareRequest("textures", callback);
+        this.makeRequest("textures", callback);
     }
 
     updateStatus() {
-        this.connection.prepareRequest("status");
+        this.makeRequest("status");
     }
 
     addToQueue() {
@@ -36,15 +36,15 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
 
     requestBattleData(callback: (data: { playerSide: Side, fieldSize: game.Point, hulls: Hull[], guns: Gun[],
         asteroids: game.Point[], clouds: game.Point[], units: Unit[], destroyedUnits: Unit[] }) => void) {
-        this.connection.prepareRequest("battleData", callback);
+        this.makeRequest("battleData", callback);
     }
 
     requestPathsAndReachableCells(callback: (data: { paths: PathNode[][], reachableCells: game.Point[] }) => void) {
-        this.connection.prepareRequest("pathsAndReachableCells", callback);
+        this.makeRequest("pathsAndReachableCells", callback);
     }
 
     requestGunCells(gunId: number, callback: (data: { shotCells: game.Point[], targetCells: game.Point[] }) => void) {
-        this.connection.prepareRequest("gunCells", callback, { gunId: gunId });
+        this.makeRequest("gunCells", callback, { gunId: gunId });
     }
 
     moveCurrentUnit(cell: game.Point) {
@@ -58,6 +58,13 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
     endTurn() {
         this.connection.prepareMessage(new Message("endTurn"));
     }
+
+    private makeRequest(name: string, callback?: (data: any) => void, data?: any) {
+        this.connection.prepareMessage(new Message("request" + name.charAt(0).toUpperCase() + name.slice(1), data));
+        if (callback) {
+            this.once(name, callback);
+        }
+    }
 }
 
 class WebSocketConnection extends PIXI.utils.EventEmitter {
@@ -67,28 +74,18 @@ class WebSocketConnection extends PIXI.utils.EventEmitter {
     private readonly messagesToSend = new Array<Message>(0);
     private readonly webSocket: WebSocket;
 
-    private readonly callbacks = new Array<(data: any) => void>(0);
-
     constructor() {
         super();
-        this.webSocket = new WebSocket(document.baseURI.toString()
-            .replace("http", "ws") + "/app");
+        const webSocketUrl: string = document.baseURI.toString().replace("http", "ws") + "/app";
+        this.webSocket = new WebSocket(webSocketUrl);
+
         this.webSocket.onopen = () => {
             for (const message of this.messagesToSend) {
                 this.sendMessage(message);
             }
             this.messagesToSend.length = 0;
         };
-        this.webSocket.onmessage = e => {
-            const message: Message = JSON.parse(e.data);
-            if (this.callbacks[message.subject]) {
-                this.callbacks[message.subject](message.data);
-                this.callbacks[message.subject] = null;
-            } else {
-                console.log(message);
-                this.emit(WebSocketConnection.MESSAGE, message);
-            }
-        };
+        this.webSocket.onmessage = e => this.emit(WebSocketConnection.MESSAGE, JSON.parse(e.data));
     }
 
     prepareMessage(message: Message) {
@@ -97,12 +94,6 @@ class WebSocketConnection extends PIXI.utils.EventEmitter {
         } else {
             this.messagesToSend.push(message);
         }
-    }
-
-    prepareRequest(name: string, callback?: (data: any) => void, data?: any) {
-        this.callbacks[name] = callback;
-        const requestName: string = name.charAt(0).toUpperCase() + name.slice(1);
-        this.prepareMessage(new Message(`request${requestName}`, data));
     }
 
     private sendMessage(message: Message) {
