@@ -1,5 +1,6 @@
-package net.progruzovik.dissent.battle.captain;
+package net.progruzovik.dissent.battle;
 
+import net.progruzovik.dissent.captain.AbstractCaptain;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.battle.model.Unit;
@@ -22,8 +23,8 @@ public final class AiCaptain extends AbstractCaptain {
     public AiCaptain(HullDao hullDao, GunDao gunDao) {
         final Hull aiHull = hullDao.getHull(3);
         final Gun artillery = gunDao.getGun(2);
-        getShips().add(new Ship(aiHull, artillery, null));
-        getShips().add(new Ship(aiHull, artillery, null));
+        getFleet().addShip(new Ship(aiHull, artillery, null));
+        getFleet().addShip(new Ship(aiHull, artillery, null));
     }
 
     @Override

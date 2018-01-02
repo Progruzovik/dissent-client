@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.captain;
+package net.progruzovik.dissent.captain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.battle.PlayerQueue;
@@ -37,9 +37,9 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
         id = session.getId();
         final Hull basicHull = shipDao.getHull(1);
         final Gun shrapnel = gunDao.getGun(1);
-        getShips().add(new Ship(basicHull, shrapnel, null));
-        getShips().add(new Ship(shipDao.getHull(2), shrapnel, gunDao.getGun(3)));
-        getShips().add(new Ship(basicHull, shrapnel, null));
+        getFleet().addShip(new Ship(basicHull, shrapnel, null));
+        getFleet().addShip(new Ship(shipDao.getHull(2), shrapnel, gunDao.getGun(3)));
+        getFleet().addShip(new Ship(basicHull, shrapnel, null));
         this.queue = queue;
         this.scenarioDigest = scenarioDigest;
         messageSender = new MessageSender(mapper);
@@ -58,11 +58,14 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     }
 
     @Override
-    public void registerBattle(Side side, Battle battle) {
+    public void addToBattle(Side side, Battle battle) {
         if (getStatus() == Status.IN_BATTLE) {
             sendMessage(new Message("battleFinish"));
         }
-        super.registerBattle(side, battle);
+        for (final Ship ship : getFleet().getShips()) {
+            ship.setStrength(ship.getHull().getStrength());
+        }
+        super.addToBattle(side, battle);
         sendCurrentStatus();
     }
 

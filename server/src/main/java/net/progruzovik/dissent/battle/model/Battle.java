@@ -1,15 +1,20 @@
 package net.progruzovik.dissent.battle.model;
 
-import net.progruzovik.dissent.battle.captain.Captain;
-import net.progruzovik.dissent.exception.InvalidShotException;
 import net.progruzovik.dissent.battle.model.field.Field;
 import net.progruzovik.dissent.battle.model.field.GunCells;
 import net.progruzovik.dissent.battle.model.field.PathNode;
+import net.progruzovik.dissent.captain.Captain;
+import net.progruzovik.dissent.captain.model.Fleet;
+import net.progruzovik.dissent.exception.InvalidShotException;
+import net.progruzovik.dissent.model.entity.Gun;
+import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.socket.model.Message;
 import net.progruzovik.dissent.model.util.Cell;
+import net.progruzovik.dissent.socket.model.Message;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static net.progruzovik.dissent.battle.model.field.Field.BORDER_INDENT;
 import static net.progruzovik.dissent.battle.model.field.Field.UNIT_INDENT;
@@ -20,6 +25,9 @@ public final class Battle {
 
     private final Captain leftCaptain;
     private final Captain rightCaptain;
+
+    private final Set<Hull> uniqueHulls = new HashSet<>();
+    private final Set<Gun> uniqueGuns = new HashSet<>();
 
     private final UnitQueue unitQueue;
     private final Field field;
@@ -32,9 +40,8 @@ public final class Battle {
     }
 
     public BattleData getBattleData(String captainId) {
-        return new BattleData(getCaptainSide(captainId), field.getSize(),
-                unitQueue.getUniqueHulls(), unitQueue.getUniqueGuns(), field.getAsteroids(),
-                field.getClouds(), unitQueue.getUnits(), field.getDestroyedUnits());
+        return new BattleData(getCaptainSide(captainId), field.getSize(), uniqueHulls, uniqueGuns,
+                field.getAsteroids(), field.getClouds(), unitQueue.getUnits(), field.getDestroyedUnits());
     }
 
     public boolean isRunning() {
@@ -49,11 +56,17 @@ public final class Battle {
         return field.getReachableCells();
     }
 
-    public void registerShip(int number, Side side, Ship ship) {
-        final int unitCol = side == Side.RIGHT ? field.getSize().getX() - 1 : 0;
-        final Unit unit = new Unit(new Cell(unitCol, number * UNIT_INDENT + BORDER_INDENT), side, ship);
-        field.addUnit(unit);
-        unitQueue.addUnit(unit);
+    public void registerFleet(Side side, Fleet fleet) {
+        uniqueHulls.addAll(fleet.getUniqueHulls());
+        uniqueGuns.addAll(fleet.getUniqueGuns());
+
+        final int column = side == Side.RIGHT ? field.getSize().getX() - 1 : 0;
+        for (int i = 0; i < fleet.getShips().size(); i++) {
+            final Ship ship = fleet.getShips().get(i);
+            final Unit unit = new Unit(new Cell(column, i * UNIT_INDENT + BORDER_INDENT), side, ship);
+            field.addUnit(unit);
+            unitQueue.addUnit(unit);
+        }
     }
 
     public void startBattle() {

@@ -1,4 +1,4 @@
-export * from "./Actor";
+export * from "./AbstractActor";
 export * from "./Application";
 export * from "./Screen";
 export * from "./util";

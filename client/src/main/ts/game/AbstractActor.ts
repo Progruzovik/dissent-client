@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-export abstract class Actor extends PIXI.Container {
+export abstract class AbstractActor extends PIXI.Container {
 
     constructor() {
         super();

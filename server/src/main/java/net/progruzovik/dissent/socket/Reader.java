@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.socket;
 
-import net.progruzovik.dissent.battle.captain.Player;
+import net.progruzovik.dissent.captain.Player;
 
 import java.util.Map;
 

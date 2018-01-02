@@ -1,6 +1,6 @@
 import * as game from "../../../game";
 
-export default abstract class Projectile extends game.Actor {
+export default abstract class Projectile extends game.AbstractActor {
 
     static readonly NEW_SHOT = "newShot";
 

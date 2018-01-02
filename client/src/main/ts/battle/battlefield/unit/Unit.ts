@@ -4,7 +4,7 @@ import { ActionType, Gun, Hull, Move, Shot, Side } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 
-export default class Unit extends game.Actor {
+export default class Unit extends game.AbstractActor {
 
     static readonly ALPHA_DESTROYED = 0.5;
 
