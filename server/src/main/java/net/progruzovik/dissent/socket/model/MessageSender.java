@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.model.socket;
+package net.progruzovik.dissent.socket.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

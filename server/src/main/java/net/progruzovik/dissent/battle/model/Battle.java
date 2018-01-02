@@ -1,18 +1,18 @@
-package net.progruzovik.dissent.model.battle;
+package net.progruzovik.dissent.battle.model;
 
 import net.progruzovik.dissent.battle.captain.Captain;
 import net.progruzovik.dissent.exception.InvalidShotException;
-import net.progruzovik.dissent.model.battle.field.Field;
-import net.progruzovik.dissent.model.battle.field.GunCells;
-import net.progruzovik.dissent.model.battle.field.PathNode;
+import net.progruzovik.dissent.battle.model.field.Field;
+import net.progruzovik.dissent.battle.model.field.GunCells;
+import net.progruzovik.dissent.battle.model.field.PathNode;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.socket.Message;
+import net.progruzovik.dissent.socket.model.Message;
 import net.progruzovik.dissent.model.util.Cell;
 
 import java.util.List;
 
-import static net.progruzovik.dissent.model.battle.field.Field.BORDER_INDENT;
-import static net.progruzovik.dissent.model.battle.field.Field.UNIT_INDENT;
+import static net.progruzovik.dissent.battle.model.field.Field.BORDER_INDENT;
+import static net.progruzovik.dissent.battle.model.field.Field.UNIT_INDENT;
 
 public final class Battle {
 

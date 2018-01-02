@@ -1,8 +1,8 @@
-package net.progruzovik.dissent.model.battle;
+package net.progruzovik.dissent.battle.model;
 
 import net.progruzovik.dissent.exception.InvalidMoveException;
 import net.progruzovik.dissent.exception.InvalidShotException;
-import net.progruzovik.dissent.model.battle.field.LocationStatus;
+import net.progruzovik.dissent.battle.model.field.LocationStatus;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.util.Cell;

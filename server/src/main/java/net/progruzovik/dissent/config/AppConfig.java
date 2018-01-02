@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import net.progruzovik.dissent.battle.BattleFactory;
 import net.progruzovik.dissent.config.json.NullValueSerializer;
-import net.progruzovik.dissent.model.battle.Battle;
-import net.progruzovik.dissent.model.battle.Side;
-import net.progruzovik.dissent.model.battle.UnitQueue;
-import net.progruzovik.dissent.model.battle.field.Field;
+import net.progruzovik.dissent.battle.model.Battle;
+import net.progruzovik.dissent.battle.model.Side;
+import net.progruzovik.dissent.battle.model.UnitQueue;
+import net.progruzovik.dissent.battle.model.field.Field;
 import net.progruzovik.dissent.model.util.Cell;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,8 +20,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import javax.sql.DataSource;
 
-import static net.progruzovik.dissent.model.battle.field.Field.BORDER_INDENT;
-import static net.progruzovik.dissent.model.battle.field.Field.UNIT_INDENT;
+import static net.progruzovik.dissent.battle.model.field.Field.BORDER_INDENT;
+import static net.progruzovik.dissent.battle.model.field.Field.UNIT_INDENT;
 
 @Configuration
 @ComponentScan("net.progruzovik.dissent")

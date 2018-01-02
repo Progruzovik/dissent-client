@@ -1,9 +1,9 @@
-package net.progruzovik.dissent.model.battle.field;
+package net.progruzovik.dissent.battle.model.field;
 
 import net.progruzovik.dissent.exception.InvalidMoveException;
 import net.progruzovik.dissent.exception.InvalidUnitException;
-import net.progruzovik.dissent.model.battle.Side;
-import net.progruzovik.dissent.model.battle.Unit;
+import net.progruzovik.dissent.battle.model.Side;
+import net.progruzovik.dissent.battle.model.Unit;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.util.Cell;
 import net.progruzovik.dissent.model.util.Point;

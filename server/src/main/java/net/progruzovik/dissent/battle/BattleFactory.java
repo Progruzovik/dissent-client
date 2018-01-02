@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.battle;
 
 import net.progruzovik.dissent.battle.captain.Captain;
-import net.progruzovik.dissent.model.battle.Battle;
+import net.progruzovik.dissent.battle.model.Battle;
 
 @FunctionalInterface
 public interface BattleFactory {

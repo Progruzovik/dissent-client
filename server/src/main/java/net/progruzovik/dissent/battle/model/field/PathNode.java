@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.model.battle.field;
+package net.progruzovik.dissent.battle.model.field;
 
 import net.progruzovik.dissent.model.util.Cell;
 

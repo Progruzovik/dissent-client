@@ -2,14 +2,13 @@ package net.progruzovik.dissent.battle.captain;
 
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
-import net.progruzovik.dissent.model.battle.Unit;
-import net.progruzovik.dissent.model.battle.field.GunCells;
+import net.progruzovik.dissent.battle.model.Unit;
+import net.progruzovik.dissent.battle.model.field.GunCells;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.socket.Message;
+import net.progruzovik.dissent.socket.model.Message;
 import net.progruzovik.dissent.model.util.Cell;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope("prototype")
 public final class AiCaptain extends AbstractCaptain {
 
     public AiCaptain(HullDao hullDao, GunDao gunDao) {

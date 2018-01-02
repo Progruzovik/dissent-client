@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.battle.captain.Player;
 import net.progruzovik.dissent.battle.captain.SessionPlayer;
 import net.progruzovik.dissent.dao.TextureDao;
-import net.progruzovik.dissent.model.socket.IncomingMessage;
-import net.progruzovik.dissent.model.socket.Message;
-import net.progruzovik.dissent.model.socket.MessageReader;
+import net.progruzovik.dissent.socket.model.IncomingMessage;
+import net.progruzovik.dissent.socket.model.Message;
 import net.progruzovik.dissent.model.util.Cell;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -21,7 +20,7 @@ import java.util.Map;
 public final class MessageHandler extends TextWebSocketHandler {
 
     private final ObjectMapper mapper;
-    private final Map<String, MessageReader> readers = new HashMap<>();
+    private final Map<String, Reader> readers = new HashMap<>();
 
     public MessageHandler(ObjectMapper mapper, TextureDao textureDao) {
         this.mapper = mapper;
