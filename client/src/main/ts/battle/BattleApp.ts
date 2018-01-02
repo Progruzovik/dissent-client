@@ -27,19 +27,12 @@ export default class BattleApp extends game.Application {
                         webSocketClient.requestBattleData(d => {
                             const unitsArray = new Array<Unit>(0);
                             for (const unitData of d.units) {
-                                unitsArray.push(new Unit(unitData.actionPoints,
-                                    unitData.ship.strength, d.playerSide, unitData.side, unitData.cell,
-                                    d.hulls.filter(h => h.id == unitData.ship.hullId)[0],
-                                    d.guns.filter(g => g.id == unitData.ship.firstGunId)[0],
-                                    d.guns.filter(g => g.id == unitData.ship.secondGunId)[0],
-                                    this.projectileService));
+                                unitsArray.push(new Unit(unitData.actionPoints, d.playerSide,
+                                    unitData.side, unitData.cell, unitData.ship, this.projectileService));
                             }
                             for (const unitData of d.destroyedUnits) {
-                                const unit = new Unit(unitData.actionPoints,
-                                    unitData.ship.strength, d.playerSide, unitData.side, unitData.cell,
-                                    d.hulls.filter(h => h.id == unitData.ship.hullId)[0],
-                                    d.guns.filter(g => g.id == unitData.ship.firstGunId)[0],
-                                    d.guns.filter(g => g.id == unitData.ship.secondGunId)[0]);
+                                const unit = new Unit(unitData.actionPoints, d.playerSide,
+                                    unitData.side, unitData.cell, unitData.ship);
                                 unit.strength = 0;
                                 unitsArray.push(unit);
                             }

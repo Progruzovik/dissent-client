@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.captain.Captain;
+import net.progruzovik.dissent.battle.captain.AiCaptain;
+import net.progruzovik.dissent.battle.captain.Captain;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Service;
 

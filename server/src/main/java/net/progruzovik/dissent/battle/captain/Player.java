@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.captain;
+package net.progruzovik.dissent.battle.captain;
 
 import org.springframework.web.socket.WebSocketSession;
 

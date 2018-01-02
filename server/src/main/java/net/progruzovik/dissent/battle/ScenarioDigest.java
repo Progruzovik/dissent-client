@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.captain.Captain;
+import net.progruzovik.dissent.battle.captain.Captain;
 
 public interface ScenarioDigest {
 

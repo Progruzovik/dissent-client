@@ -1,8 +1,8 @@
 package net.progruzovik.dissent.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.progruzovik.dissent.captain.Player;
-import net.progruzovik.dissent.captain.SessionPlayer;
+import net.progruzovik.dissent.battle.captain.Player;
+import net.progruzovik.dissent.battle.captain.SessionPlayer;
 import net.progruzovik.dissent.dao.TextureDao;
 import net.progruzovik.dissent.socket.model.IncomingMessage;
 import net.progruzovik.dissent.socket.model.Message;
@@ -28,7 +28,7 @@ public final class MessageHandler extends TextWebSocketHandler {
                 p.sendMessage(new Message<>("textures", textureDao.getTextures())));
 
         readers.put("requestStatus", (p, d) -> p.sendMessage(new Message<>("status", p.getStatus())));
-        readers.put("requestFleet", (p, d) -> p.sendMessage(new Message<>("fleet", p.getFleet())));
+        readers.put("requestShips", (p, d) -> p.sendMessage(new Message<>("fleet", p.getShips())));
         readers.put("addToQueue", (p, d) -> p.addToQueue());
         readers.put("removeFromQueue", (p, d) -> p.removeFromQueue());
         readers.put("startScenario", (p, d) -> p.startScenario());

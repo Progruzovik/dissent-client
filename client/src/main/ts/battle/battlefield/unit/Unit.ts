@@ -1,6 +1,6 @@
 import Field from "../Field";
 import ProjectileService from "../projectile/ProjectileService";
-import { ActionType, Gun, Hull, Move, Shot, Side } from "../../util";
+import { ActionType, Gun, Hull, Move, Ship, Shot, Side } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 
@@ -13,18 +13,27 @@ export default class Unit extends game.AbstractActor {
     static readonly NOT_PREPARE_TO_SHOT = "notPrepareToShot";
     static readonly DESTROY = "destroy";
 
+    private _strength: number;
     readonly frameColor: number;
 
     private _preparedGunId = -1;
     private _currentMove: Move;
 
-    constructor(private _actionPoints: number, private _strength: number, playerSide: Side,
-                readonly side: Side, private _cell: game.Point, readonly hull: Hull, readonly firstGun: Gun,
-                readonly secondGun: Gun, private readonly projectileService?: ProjectileService) {
+    readonly hull: Hull;
+    readonly firstGun: Gun;
+    readonly secondGun: Gun;
+
+    constructor(private _actionPoints: number, playerSide: Side, readonly side: Side,
+                private _cell: game.Point, ship: Ship, private readonly projectileService?: ProjectileService) {
         super();
         this.interactive = true;
+        this._strength = ship.strength;
         this.frameColor = playerSide == this.side ? 0x00ff00 : 0xff0000;
-        const sprite = new PIXI.Sprite(PIXI.loader.resources[hull.texture.name].texture);
+        this.hull = ship.hull;
+        this.firstGun = ship.firstGun;
+        this.secondGun = ship.secondGun;
+
+        const sprite = new PIXI.Sprite(PIXI.loader.resources[ship.hull.texture.name].texture);
         if (side == Side.Right) {
             sprite.scale.x = -1;
             sprite.anchor.x = 1;

@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.battle;
 
-import net.progruzovik.dissent.captain.Player;
+import net.progruzovik.dissent.battle.captain.Player;
 import org.springframework.stereotype.Service;
 
 @Service

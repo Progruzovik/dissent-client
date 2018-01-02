@@ -31,6 +31,10 @@ export class Hull {
                 readonly strength: number, readonly texture: Texture) {}
 }
 
+export class Ship {
+    constructor(readonly strength: number, readonly hull: Hull, readonly firstGun: Gun, readonly secondGun: Gun) {}
+}
+
 export class Move {
     constructor(readonly cost: number, readonly cells: game.Point[]) {}
 }

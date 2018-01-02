@@ -1,17 +1,20 @@
-package net.progruzovik.dissent.captain;
+package net.progruzovik.dissent.battle.captain;
 
 import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
-import net.progruzovik.dissent.captain.model.Fleet;
+import net.progruzovik.dissent.model.entity.Ship;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractCaptain implements Captain {
 
-    private final Fleet fleet = new Fleet();
+    private final List<Ship> ships = new ArrayList<>();
     private Battle battle;
 
     @Override
-    public Fleet getFleet() {
-        return fleet;
+    public List<Ship> getShips() {
+        return ships;
     }
 
     @Override
@@ -21,7 +24,7 @@ public abstract class AbstractCaptain implements Captain {
 
     @Override
     public void addToBattle(Side side, Battle battle) {
-        battle.registerFleet(side, fleet);
+        battle.registerShips(side, ships);
         this.battle = battle;
     }
 }

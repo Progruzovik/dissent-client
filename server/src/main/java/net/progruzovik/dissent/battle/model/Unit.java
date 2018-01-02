@@ -66,8 +66,8 @@ public final class Unit {
     }
 
     private Gun findGunById(int gunId) {
-        if (gunId == ship.getFirstGunId()) return ship.getFirstGun();
-        if (gunId == ship.getSecondGunId()) return ship.getSecondGun();
+        if (gunId == ship.getFirstGun().getId()) return ship.getFirstGun();
+        if (gunId == ship.getSecondGun().getId()) return ship.getSecondGun();
         return null;
     }
 }
