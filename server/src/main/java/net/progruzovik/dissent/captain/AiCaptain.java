@@ -57,5 +57,5 @@ public final class AiCaptain extends AbstractCaptain {
     }
 
     @Override
-    public void sendMessage(Message message) { }
+    public <T> void sendMessage(Message<T> message) { }
 }

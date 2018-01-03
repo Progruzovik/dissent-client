@@ -20,5 +20,5 @@ public interface Captain {
 
     void act(Unit unit);
 
-    void sendMessage(Message message);
+    <T> void sendMessage(Message<T> message);
 }

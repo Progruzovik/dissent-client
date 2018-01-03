@@ -85,10 +85,7 @@ public final class Battle {
                 field.destroyUnit(target);
                 if (!unitQueue.hasUnitsOnBothSides()) {
                     isRunning = false;
-                    for (final Unit unit : unitQueue.getUnits()) {
-                        unit.getShip().setStrength(unit.getShip().getHull().getStrength());
-                    }
-                    createMessage(new Message("battleFinish"));
+                    createMessage(new Message<>("battleFinish"));
                 }
             }
         }
@@ -97,7 +94,7 @@ public final class Battle {
     public void endTurn(String captainId) {
         if (isIdBelongsToCurrentCaptain(captainId)) {
             unitQueue.nextTurn();
-            createMessage(new Message("nextTurn"));
+            createMessage(new Message<>("nextTurn"));
             onNextTurn();
         }
     }
@@ -130,7 +127,7 @@ public final class Battle {
         }
     }
 
-    private void createMessage(Message message) {
+    private <T> void createMessage(Message<T> message) {
         leftCaptain.sendMessage(message);
         rightCaptain.sendMessage(message);
     }

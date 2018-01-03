@@ -23,7 +23,7 @@ public final class MessageSender {
         this.session = session;
     }
 
-    public void send(Message message)  {
+    public <T> void send(Message<T> message)  {
         if (session != null) {
             try {
                 session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));

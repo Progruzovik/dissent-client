@@ -61,7 +61,10 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     @Override
     public void addToBattle(Side side, Battle battle) {
         if (getStatus() == Status.IN_BATTLE) {
-            sendMessage(new Message("battleFinish"));
+            sendMessage(new Message<>("battleFinish"));
+        }
+        for (final Ship ship : getShips()) {
+            ship.setStrength(ship.getHull().getStrength());
         }
         super.addToBattle(side, battle);
         sendCurrentStatus();
@@ -93,7 +96,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     public void act(Unit unit) { }
 
     @Override
-    public void sendMessage(Message message) {
+    public <T> void sendMessage(Message<T> message) {
         messageSender.send(message);
     }
 
