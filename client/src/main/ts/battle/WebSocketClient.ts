@@ -105,10 +105,10 @@ class WebSocketConnection extends PIXI.utils.EventEmitter {
     }
 }
 
-class Message {
-    constructor(readonly subject: string, readonly data?: any) {}
+interface Unit {
+    readonly actionPoints: number, readonly side: Side, readonly cell: game.Point, readonly ship: ShipData;
 }
 
-class Unit {
-    constructor(readonly actionPoints: number, readonly side: Side, readonly cell: game.Point, readonly ship: ShipData) {}
+class Message {
+    constructor(readonly subject: string, readonly data?: any) {}
 }

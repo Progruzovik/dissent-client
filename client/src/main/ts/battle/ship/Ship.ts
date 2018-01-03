@@ -1,6 +1,6 @@
 import { Gun, Hull, ShipData } from "../util";
 
-export default class Ship {
+export default class Ship implements ShipData {
 
     private _strength: number;
 
