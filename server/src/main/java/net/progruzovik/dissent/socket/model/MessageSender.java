@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.socket.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.progruzovik.dissent.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.TextMessage;

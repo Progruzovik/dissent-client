@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.captain.model;
+package net.progruzovik.dissent.captain;
 
 public enum Status {
     IDLE,

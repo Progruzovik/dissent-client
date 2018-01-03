@@ -3,23 +3,21 @@ package net.progruzovik.dissent.captain;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.battle.PlayerQueue;
 import net.progruzovik.dissent.battle.ScenarioDigest;
-import net.progruzovik.dissent.captain.model.Status;
-import net.progruzovik.dissent.dao.GunDao;
-import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
-import net.progruzovik.dissent.battle.model.Unit;
+import net.progruzovik.dissent.dao.GunDao;
+import net.progruzovik.dissent.dao.HullDao;
+import net.progruzovik.dissent.model.Message;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.socket.model.Message;
 import net.progruzovik.dissent.socket.model.MessageSender;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.WebSocketSession;
 
 import javax.servlet.http.HttpSession;
+import java.util.Observable;
 
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
@@ -59,20 +57,28 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     }
 
     @Override
+    public MessageSender getMessageSender() {
+        return messageSender;
+    }
+
+    @Override
+    public void update(Observable battle, Object data) {
+        final Message<?> message = (Message<?>) data;
+        if (!message.getSubject().equals(Battle.TIME_TO_ACT)) {
+            messageSender.send((Message<?>) data);
+        }
+    }
+
+    @Override
     public void addToBattle(Side side, Battle battle) {
         if (getStatus() == Status.IN_BATTLE) {
-            sendMessage(new Message<>("battleFinish"));
+            messageSender.send(new Message<>("battleFinish"));
         }
         for (final Ship ship : getShips()) {
             ship.setStrength(ship.getHull().getStrength());
         }
         super.addToBattle(side, battle);
         sendCurrentStatus();
-    }
-
-    @Override
-    public void setWebSocketSession(WebSocketSession webSocketSession) {
-        messageSender.setSession(webSocketSession);
     }
 
     @Override
@@ -92,15 +98,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
         scenarioDigest.start(this);
     }
 
-    @Override
-    public void act(Unit unit) { }
-
-    @Override
-    public <T> void sendMessage(Message<T> message) {
-        messageSender.send(message);
-    }
-
     private void sendCurrentStatus() {
-        sendMessage(new Message<>("status", getStatus()));
+        messageSender.send(new Message<>("status", getStatus()));
     }
 }

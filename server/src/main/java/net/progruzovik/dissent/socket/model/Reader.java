@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.socket;
+package net.progruzovik.dissent.socket.model;
 
 import net.progruzovik.dissent.captain.Player;
 

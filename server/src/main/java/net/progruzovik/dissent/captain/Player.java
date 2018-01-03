@@ -1,13 +1,12 @@
 package net.progruzovik.dissent.captain;
 
-import net.progruzovik.dissent.captain.model.Status;
-import org.springframework.web.socket.WebSocketSession;
+import net.progruzovik.dissent.socket.model.MessageSender;
 
 public interface Player extends Captain {
 
     Status getStatus();
 
-    void setWebSocketSession(WebSocketSession webSocketSession);
+    MessageSender getMessageSender();
 
     void addToQueue();
 

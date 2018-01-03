@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.dao.TextureDao;
 import net.progruzovik.dissent.captain.Player;
 import net.progruzovik.dissent.captain.SessionPlayer;
-import net.progruzovik.dissent.socket.model.Message;
+import net.progruzovik.dissent.model.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.socket.TextMessage;
@@ -38,6 +38,6 @@ public final class MessageHandlerTest {
     public void handleStatusMessage() throws Exception {
         final Message message = new Message<>("requestStatus", null);
         messageHandler.handleTextMessage(session, new TextMessage(objectMapper.writeValueAsString(message)));
-        verify(player).sendMessage(any(Message.class));
+        verify(player).getMessageSender();
     }
 }
