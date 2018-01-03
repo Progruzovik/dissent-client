@@ -9,6 +9,7 @@ import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.util.Cell;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Observable;
 
 import static net.progruzovik.dissent.battle.model.field.Field.BORDER_INDENT;
@@ -55,7 +56,7 @@ public final class Battle extends Observable {
     }
 
     public boolean isIdBelongsToCurrentCaptain(String id) {
-        return getCurrentCaptainId() != null && getCurrentCaptainId().equals(id);
+        return Objects.equals(getCurrentCaptainId(), id);
     }
 
     public GunCells getGunCells(int gunId) {
