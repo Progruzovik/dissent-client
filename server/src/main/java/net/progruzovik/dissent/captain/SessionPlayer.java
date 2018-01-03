@@ -1,8 +1,9 @@
-package net.progruzovik.dissent.battle.captain;
+package net.progruzovik.dissent.captain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.battle.PlayerQueue;
 import net.progruzovik.dissent.battle.ScenarioDigest;
+import net.progruzovik.dissent.captain.model.Status;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.battle.model.Battle;
@@ -61,9 +62,6 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     public void addToBattle(Side side, Battle battle) {
         if (getStatus() == Status.IN_BATTLE) {
             sendMessage(new Message("battleFinish"));
-        }
-        for (final Ship ship : getShips()) {
-            ship.setStrength(ship.getHull().getStrength());
         }
         super.addToBattle(side, battle);
         sendCurrentStatus();

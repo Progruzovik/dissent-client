@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.battle.model;
 
-import net.progruzovik.dissent.battle.captain.Captain;
+import net.progruzovik.dissent.captain.Captain;
 import net.progruzovik.dissent.battle.model.field.Field;
 import net.progruzovik.dissent.battle.model.field.GunCells;
 import net.progruzovik.dissent.battle.model.field.PathNode;
@@ -85,6 +85,9 @@ public final class Battle {
                 field.destroyUnit(target);
                 if (!unitQueue.hasUnitsOnBothSides()) {
                     isRunning = false;
+                    for (final Unit unit : unitQueue.getUnits()) {
+                        unit.getShip().setStrength(unit.getShip().getHull().getStrength());
+                    }
                     createMessage(new Message("battleFinish"));
                 }
             }

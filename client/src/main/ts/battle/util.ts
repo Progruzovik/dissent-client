@@ -31,7 +31,7 @@ export class Hull {
                 readonly strength: number, readonly texture: Texture) {}
 }
 
-export class Ship {
+export class ShipData {
     constructor(readonly strength: number, readonly hull: Hull, readonly firstGun: Gun, readonly secondGun: Gun) {}
 }
 

@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.captain;
+package net.progruzovik.dissent.captain;
 
 import net.progruzovik.dissent.battle.model.Unit;
 import net.progruzovik.dissent.battle.model.field.GunCells;

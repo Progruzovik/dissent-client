@@ -42,17 +42,17 @@ export default class Controls extends game.UiLayer {
         unitService.on(ActionType.Shot, () => this.updateInterface());
         unitService.on(ActionType.NextTurn, () => this.updateInterface());
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
-            if (unitService.currentUnit.preparedGunId == unitService.currentUnit.firstGun.id) {
+            if (unitService.currentUnit.preparedGunId == unitService.currentUnit.ship.firstGun.id) {
                 unitService.currentUnit.preparedGunId = -1;
             } else {
-                unitService.currentUnit.preparedGunId = unitService.currentUnit.firstGun.id;
+                unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.firstGun.id;
             }
         });
         this.btnSecondGun.on(game.Event.BUTTON_CLICK, () => {
-            if (unitService.currentUnit.preparedGunId == unitService.currentUnit.secondGun.id) {
+            if (unitService.currentUnit.preparedGunId == unitService.currentUnit.ship.secondGun.id) {
                 unitService.currentUnit.preparedGunId = -1;
             } else {
-                unitService.currentUnit.preparedGunId = unitService.currentUnit.secondGun.id;
+                unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.secondGun.id;
             }
         });
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketClient.endTurn());
@@ -96,22 +96,22 @@ export default class Controls extends game.UiLayer {
 
     private updateInterface() {
         const currentUnit: Unit = this.unitService.currentUnit;
-        this.spriteHull.texture = PIXI.loader.resources[currentUnit.hull.texture.name].texture;
-        this.barStrength.maximum = currentUnit.hull.strength;
+        this.spriteHull.texture = PIXI.loader.resources[currentUnit.ship.hull.texture.name].texture;
+        this.barStrength.maximum = currentUnit.ship.hull.strength;
         this.barStrength.value = currentUnit.strength;
         this.barStrength.text = `${this.barStrength.value}/${this.barStrength.maximum}`;
-        if (currentUnit.firstGun) {
-            this.btnFirstGun.text = `${currentUnit.firstGun.name}\n(${currentUnit.firstGun.shotCost} ОД)`;
+        if (currentUnit.ship.firstGun) {
+            this.btnFirstGun.text = `${currentUnit.ship.firstGun.name}\n(${currentUnit.ship.firstGun.shotCost} ОД)`;
             this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn
-                && currentUnit.actionPoints >= currentUnit.firstGun.shotCost;
+                && currentUnit.actionPoints >= currentUnit.ship.firstGun.shotCost;
         } else {
             this.btnFirstGun.text = Controls.EMPTY_SLOT;
             this.btnFirstGun.isEnabled = false;
         }
-        if (currentUnit.secondGun) {
-            this.btnSecondGun.text = `${currentUnit.secondGun.name}\n(${currentUnit.secondGun.shotCost} ОД)`;
+        if (currentUnit.ship.secondGun) {
+            this.btnSecondGun.text = `${currentUnit.ship.secondGun.name}\n(${currentUnit.ship.secondGun.shotCost} ОД)`;
             this.btnSecondGun.isEnabled = this.unitService.isCurrentPlayerTurn
-                && currentUnit.actionPoints >= currentUnit.secondGun.shotCost;
+                && currentUnit.actionPoints >= currentUnit.ship.secondGun.shotCost;
         } else {
             this.btnSecondGun.text = Controls.EMPTY_SLOT;
             this.btnSecondGun.isEnabled = false;

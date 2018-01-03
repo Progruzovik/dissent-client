@@ -4,7 +4,7 @@ import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
 import net.progruzovik.dissent.battle.model.UnitQueue;
 import net.progruzovik.dissent.battle.model.field.Field;
-import net.progruzovik.dissent.battle.captain.Captain;
+import net.progruzovik.dissent.captain.Captain;
 import net.progruzovik.dissent.model.util.Cell;
 import org.springframework.stereotype.Service;
 

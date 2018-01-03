@@ -1,6 +1,7 @@
 import Field from "../Field";
 import ProjectileService from "../projectile/ProjectileService";
-import { ActionType, Gun, Hull, Move, Ship, Shot, Side } from "../../util";
+import Ship from "../../ship/Ship";
+import { ActionType, Gun, Hull, Move, Shot, Side } from "../../util";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 
@@ -13,25 +14,16 @@ export default class Unit extends game.AbstractActor {
     static readonly NOT_PREPARE_TO_SHOT = "notPrepareToShot";
     static readonly DESTROY = "destroy";
 
-    private _strength: number;
     readonly frameColor: number;
 
     private _preparedGunId = -1;
     private _currentMove: Move;
 
-    readonly hull: Hull;
-    readonly firstGun: Gun;
-    readonly secondGun: Gun;
-
-    constructor(private _actionPoints: number, playerSide: Side, readonly side: Side,
-                private _cell: game.Point, ship: Ship, private readonly projectileService?: ProjectileService) {
+    constructor(private _actionPoints: number, playerSide: Side, readonly side: Side, private _cell: game.Point,
+                readonly ship: Ship, private readonly projectileService?: ProjectileService) {
         super();
         this.interactive = true;
-        this._strength = ship.strength;
         this.frameColor = playerSide == this.side ? 0x00ff00 : 0xff0000;
-        this.hull = ship.hull;
-        this.firstGun = ship.firstGun;
-        this.secondGun = ship.secondGun;
 
         const sprite = new PIXI.Sprite(PIXI.loader.resources[ship.hull.texture.name].texture);
         if (side == Side.Right) {
@@ -48,18 +40,14 @@ export default class Unit extends game.AbstractActor {
     }
 
     get strength(): number {
-        return this._strength;
+        return this.ship.strength;
     }
 
     set strength(value: number) {
-        if (value <= 0) {
-            this._strength = 0;
+        this.ship.strength = value;
+        if (this.ship.strength == 0) {
             this.alpha = Unit.ALPHA_DESTROYED;
             this.emit(Unit.DESTROY);
-        } else if (value >= this.hull.strength) {
-            this._strength = this.hull.strength;
-        } else {
-            this._strength = value;
         }
     }
 
@@ -87,7 +75,7 @@ export default class Unit extends game.AbstractActor {
             if (value == -1) {
                 this._preparedGunId = -1;
                 this.emit(Unit.NOT_PREPARE_TO_SHOT);
-            } else if (value == this.firstGun.id || value == this.secondGun.id) {
+            } else if (value == this.ship.firstGun.id || value == this.ship.secondGun.id) {
                 this._preparedGunId = value;
                 this.emit(Unit.PREPARE_TO_SHOT);
             }
@@ -99,15 +87,15 @@ export default class Unit extends game.AbstractActor {
     }
 
     makeCurrent() {
-        this._actionPoints = this.hull.actionPoints;
+        this._actionPoints = this.ship.hull.actionPoints;
     }
 
     shoot(target: Unit, shot: Shot) {
         let activeGun: Gun = null;
-        if (shot.gunId == this.firstGun.id) {
-            activeGun = this.firstGun;
-        } else if (shot.gunId == this.secondGun.id) {
-            activeGun = this.secondGun;
+        if (shot.gunId == this.ship.firstGun.id) {
+            activeGun = this.ship.firstGun;
+        } else if (shot.gunId == this.ship.secondGun.id) {
+            activeGun = this.ship.secondGun;
         }
         this._actionPoints -= activeGun.shotCost;
         this.projectileService.shoot(activeGun, this.center, target.center);
@@ -118,10 +106,6 @@ export default class Unit extends game.AbstractActor {
             target.emit(Unit.UPDATE_STATS);
             this.emit(ActionType.Shot);
         });
-    }
-
-    createIcon(): PIXI.Container {
-        return new PIXI.Sprite(PIXI.loader.resources[this.hull.texture.name].texture);
     }
 
     protected update() {

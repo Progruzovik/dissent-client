@@ -15,7 +15,7 @@ export default class LeftUi extends game.UiLayer {
         super();
         unitService.unitQueue.forEach((u, i) => {
             const unitIcon = new game.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0x444444);
-            unitIcon.addChild(u.createIcon());
+            unitIcon.addChild(u.ship.createIcon());
             unitIcon.addChild(new game.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 1, u.frameColor));
             this.bgQueue.addChild(unitIcon);
 
@@ -51,6 +51,6 @@ export default class LeftUi extends game.UiLayer {
 
     private updateActionPointsValue() {
         this.txtActionPoints.text = "ОД\n" + this.unitService.currentUnit.actionPoints
-            + "/" + this.unitService.currentUnit.hull.actionPoints;
+            + "/" + this.unitService.currentUnit.ship.hull.actionPoints;
     }
 }

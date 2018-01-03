@@ -19,16 +19,16 @@ export default class Window extends game.UiLayer {
         this.lineToWindow.position.set(unitBounds.x + unitBounds.width / 2, unitBounds.y);
         this.addChild(this.lineToWindow);
 
-        const txtTitle = new PIXI.Text(unit.hull.name, { fill: 0xffffff, fontSize: 24 });
+        const txtTitle = new PIXI.Text(unit.ship.hull.name, { fill: 0xffffff, fontSize: 24 });
         txtTitle.anchor.x = game.CENTER;
         txtTitle.x = this.bgWindow.width / 2;
         this.bgWindow.addChild(txtTitle);
-        const unitIcon = unit.createIcon();
+        const unitIcon = unit.ship.createIcon();
         unitIcon.pivot.x = unitIcon.width / 2;
         unitIcon.x = this.bgWindow.width / 2;
         unitIcon.y = txtTitle.height;
         this.bgWindow.addChild(unitIcon);
-        this.barStrength.maximum = unit.hull.strength;
+        this.barStrength.maximum = unit.ship.hull.strength;
         this.barStrength.y = unitIcon.y + unitIcon.height + 5;
         this.bgWindow.addChild(this.barStrength);
         this.bgWindow.addChild(new game.Frame(this.bgWindow.width, this.bgWindow.height, 1, unit.frameColor));

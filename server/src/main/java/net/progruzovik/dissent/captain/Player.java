@@ -1,5 +1,6 @@
-package net.progruzovik.dissent.battle.captain;
+package net.progruzovik.dissent.captain;
 
+import net.progruzovik.dissent.captain.model.Status;
 import org.springframework.web.socket.WebSocketSession;
 
 public interface Player extends Captain {

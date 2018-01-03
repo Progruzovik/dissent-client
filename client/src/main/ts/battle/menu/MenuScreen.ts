@@ -8,8 +8,10 @@ export default class MenuScreen extends game.Screen {
 
     constructor(webSocketClient: WebSocketClient) {
         super();
-        const menu = new Menu(webSocketClient);
-        this.frontUi = menu;
-        menu.on(game.Event.DONE, () => this.emit(MenuScreen.BATTLE));
+        webSocketClient.requestShips(sd => {
+            const menu = new Menu(sd, webSocketClient);
+            this.frontUi = menu;
+            menu.on(game.Event.DONE, () => this.emit(MenuScreen.BATTLE));
+        });
     }
 }

@@ -1,4 +1,4 @@
-import { Gun, Hull, PathNode, Ship, Side, Texture } from "./util";
+import { PathNode, ShipData, Side, Texture } from "./util";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
@@ -18,7 +18,7 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
         this.makeRequest("textures", callback);
     }
 
-    requestShips(callback: (fleet: Ship[]) => void) {
+    requestShips(callback: (ships: ShipData[]) => void) {
         this.makeRequest("ships", callback);
     }
 
@@ -110,5 +110,5 @@ class Message {
 }
 
 class Unit {
-    constructor(readonly actionPoints: number, readonly side: Side, readonly cell: game.Point, readonly ship: Ship) {}
+    constructor(readonly actionPoints: number, readonly side: Side, readonly cell: game.Point, readonly ship: ShipData) {}
 }

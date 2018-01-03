@@ -9,11 +9,10 @@ export class Button extends PIXI.Container {
 
     private _state: State;
     private readonly bg = new PIXI.Container();
-    private readonly txtMain: PIXI.Text;
+    readonly txtMain: PIXI.Text;
 
     constructor(text: string = "", textStyle: PIXI.TextStyleOptions = { align: "center", fill: "white", fontSize: 28 },
-                private readonly bgMouseOut: PIXI.Container
-                    = new Rectangle(Button.WIDTH, Button.HEIGHT, 0x333333),
+                private readonly bgMouseOut: PIXI.Container = new Rectangle(Button.WIDTH, Button.HEIGHT, 0x333333),
                 private readonly bgMouseOver: PIXI.Container = new Rectangle(0, 0, 0x555555),
                 private readonly bgMouseDown: PIXI.Container = new Rectangle(0, 0, 0x222222),
                 private readonly bgDisabled: PIXI.Container = bgMouseOver) {
