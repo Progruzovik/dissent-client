@@ -4,7 +4,8 @@ import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import MenuScreen from "./menu/MenuScreen";
 import Ship from "./ship/Ship";
-import { getId } from "./request";
+import { updateLocalizedData } from "../localizer";
+import { initClient } from "./request";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
@@ -14,7 +15,8 @@ export default class BattleApp extends game.Application {
 
     constructor() {
         super();
-        getId(() => {
+        initClient("ru", s => {
+            updateLocalizedData(s);
             const webSocketClient = new WebSocketClient();
             webSocketClient.requestTextures(textures => {
                 for (const texture of textures) {

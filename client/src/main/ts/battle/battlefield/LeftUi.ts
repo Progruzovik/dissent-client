@@ -2,6 +2,7 @@ import Field from "./Field";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import { ActionType, Side } from "../util";
+import { l } from "../../localizer";
 import * as game from "../../game";
 import * as PIXI from "pixi.js";
 
@@ -50,7 +51,7 @@ export default class LeftUi extends game.UiLayer {
     }
 
     private updateActionPointsValue() {
-        this.txtActionPoints.text = "ОД\n" + this.unitService.currentUnit.actionPoints
-            + "/" + this.unitService.currentUnit.ship.hull.actionPoints;
+        this.txtActionPoints.text = `${l("ap")}\n${this.unitService.currentUnit.actionPoints}`
+            + `/${this.unitService.currentUnit.ship.hull.actionPoints}`;
     }
 }

@@ -1,11 +1,12 @@
 import Ship from "../ship/Ship";
 import { ShipData } from "../util";
+import { l } from "../../localizer";
 import * as game from "../../game"
 import * as PIXI from "pixi.js";
 
 export default class ShipsPanel extends PIXI.Container {
 
-    private readonly txtFleet = new PIXI.Text("Your fleet", { fill: "white", fontWeight: "bold" });
+    private readonly txtFleet = new PIXI.Text(l("yourFleet"), { fill: "white", fontWeight: "bold" });
     private readonly groupShips = new PIXI.Container();
 
     constructor(shipsData: ShipData[]) {

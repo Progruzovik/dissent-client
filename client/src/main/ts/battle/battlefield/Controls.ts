@@ -3,13 +3,13 @@ import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketClient from "../WebSocketClient";
 import { ActionType } from "../util";
+import { l } from "../../localizer";
 import * as game from "../../game";
 
 export default class Controls extends game.UiLayer {
 
     private static readonly SECTIONS_COUNT = 6;
     private static readonly SECTION_RATIO = 3;
-    private static readonly EMPTY_SLOT = "[пусто]";
 
     private readonly spriteHull = new PIXI.Sprite();
     private readonly bgHull = new game.Rectangle(0, 0, 0x333333);
@@ -21,7 +21,7 @@ export default class Controls extends game.UiLayer {
     private readonly btnFirstGun = new game.Button();
     private readonly btnSecondGun = new game.Button();
     private readonly bgModule = new game.Rectangle(0, 0);
-    private readonly btnNextTurn = new game.Button("Конец хода", { align: "center",
+    private readonly btnNextTurn = new game.Button(l("endTurn"), { align: "center",
         fill: "white", fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
 
     constructor(private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
@@ -101,19 +101,21 @@ export default class Controls extends game.UiLayer {
         this.barStrength.value = currentUnit.strength;
         this.barStrength.text = `${this.barStrength.value}/${this.barStrength.maximum}`;
         if (currentUnit.ship.firstGun) {
-            this.btnFirstGun.text = `${currentUnit.ship.firstGun.name}\n(${currentUnit.ship.firstGun.shotCost} ОД)`;
+            this.btnFirstGun.text =
+                `${currentUnit.ship.firstGun.name}\n(${currentUnit.ship.firstGun.shotCost} ${l("ap")})`;
             this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn
                 && currentUnit.actionPoints >= currentUnit.ship.firstGun.shotCost;
         } else {
-            this.btnFirstGun.text = Controls.EMPTY_SLOT;
+            this.btnFirstGun.text = `[${l("empty")}]`;
             this.btnFirstGun.isEnabled = false;
         }
         if (currentUnit.ship.secondGun) {
-            this.btnSecondGun.text = `${currentUnit.ship.secondGun.name}\n(${currentUnit.ship.secondGun.shotCost} ОД)`;
+            this.btnSecondGun.text =
+                `${currentUnit.ship.secondGun.name}\n(${currentUnit.ship.secondGun.shotCost} ${l("ap")})`;
             this.btnSecondGun.isEnabled = this.unitService.isCurrentPlayerTurn
                 && currentUnit.actionPoints >= currentUnit.ship.secondGun.shotCost;
         } else {
-            this.btnSecondGun.text = Controls.EMPTY_SLOT;
+            this.btnSecondGun.text = `[${l("empty")}]`;
             this.btnSecondGun.isEnabled = false;
         }
         this.btnNextTurn.isEnabled = this.unitService.isCurrentPlayerTurn;

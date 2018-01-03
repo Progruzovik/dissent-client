@@ -1,5 +1,6 @@
 import ShipsPanel from "./ShipsPanel";
 import WebSocketClient from "../WebSocketClient";
+import { l } from "../../localizer";
 import { ShipData, Status } from "../util";
 import * as game from "../../game";
 
@@ -61,9 +62,9 @@ export default class Menu extends game.UiLayer {
     }
 
     private updateStatus() {
-        this.txtStatus.text = `Your status: ${Status[this.status]}`;
+        this.txtStatus.text = `${l("yourStatus")}: ${Status[this.status]}`;
         if (this.status == Status.Queued) {
-            this.btnQueue.text = "Out of queue";
+            this.btnQueue.text = l("fromQueue");
         } else {
             this.btnQueue.text = "PVP";
         }
