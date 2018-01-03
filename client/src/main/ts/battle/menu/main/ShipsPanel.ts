@@ -1,10 +1,12 @@
-import Ship from "../ship/Ship";
-import { ShipData } from "../util";
-import { l } from "../../localizer";
-import * as game from "../../game"
+import Ship from "../../ship/Ship";
+import { ShipData } from "../../util";
+import { l } from "../../../localizer";
+import * as game from "../../../game"
 import * as PIXI from "pixi.js";
 
 export default class ShipsPanel extends PIXI.Container {
+
+    static readonly OPEN_INFO = "openInfo";
 
     private readonly txtFleet = new PIXI.Text(l("yourFleet"), { fill: "white", fontWeight: "bold" });
     private readonly groupShips = new PIXI.Container();
@@ -21,6 +23,8 @@ export default class ShipsPanel extends PIXI.Container {
             const btnShip = new game.Button("", null, iconDefault, iconOver, iconOver, iconDefault);
             btnShip.x = (btnShip.width + game.INDENT / 2) * i;
             this.groupShips.addChild(btnShip);
+
+            btnShip.on(game.Event.BUTTON_CLICK, () => this.emit(ShipsPanel.OPEN_INFO, ship));
         });
         this.groupShips.pivot.x = this.groupShips.width / 2;
         this.groupShips.y = this.txtFleet.height;

@@ -1,10 +1,13 @@
 import ShipsPanel from "./ShipsPanel";
-import WebSocketClient from "../WebSocketClient";
-import { l } from "../../localizer";
-import { ShipData, Status } from "../util";
-import * as game from "../../game";
+import WebSocketClient from "../../WebSocketClient";
+import Ship from "../../ship/Ship";
+import { ShipData, Status } from "../../util";
+import { l } from "../../../localizer";
+import * as game from "../../../game";
 
 export default class Menu extends game.UiLayer {
+
+    static readonly BATTLE = "battle";
 
     private status: Status;
 
@@ -36,7 +39,7 @@ export default class Menu extends game.UiLayer {
         webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
             this.status = status;
             if (status == Status.InBattle) {
-                this.emit(game.Event.DONE);
+                this.emit(Menu.BATTLE);
             } else {
                 this.updateStatus();
             }
@@ -49,6 +52,7 @@ export default class Menu extends game.UiLayer {
             }
         });
         btnScenario.on(game.Event.BUTTON_CLICK, () => webSocketClient.startScenario());
+        this.shipsPanel.on(ShipsPanel.OPEN_INFO, (ship: Ship) => this.emit(ShipsPanel.OPEN_INFO, ship));
 
         webSocketClient.updateStatus();
     }
