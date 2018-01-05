@@ -1,5 +1,5 @@
 import { Rectangle } from "../graphics/Rectangle";
-import { CENTER } from "../util";
+import { BarTextConfig, CENTER } from "../util";
 import * as PIXI from "pixi.js";
 
 export class ProgressBar extends PIXI.Container {
@@ -8,16 +8,15 @@ export class ProgressBar extends PIXI.Container {
     private _width: number;
 
     private readonly bar: Rectangle;
-    private readonly txtMain: PIXI.Text;
+    readonly txtMain: PIXI.Text;
 
     constructor(width: number, height: number = 15, color: number = 0x000000,
-                private _maximum: number = 100, private _minimum: number = 0,
-                textStyle: PIXI.TextStyleOptions = { fill: "white", fontSize: 18 }) {
+                private readonly textConfig = BarTextConfig.Custom,
+                private _maximum: number = 100, private _minimum: number = 0) {
         super();
-        //{ fill: "white", fontSize: 26, fontWeight: "bold" }
         this.bar = new Rectangle(0, 0, color);
         this.addChild(this.bar);
-        this.txtMain = new PIXI.Text("", textStyle);
+        this.txtMain = new PIXI.Text("", { fill: "white", fontSize: 18 });
         this.txtMain.anchor.set(CENTER, CENTER);
         this.addChild(this.txtMain);
 
@@ -57,6 +56,9 @@ export class ProgressBar extends PIXI.Container {
             this._value = value;
         }
         this.calculateBarWidth();
+        if (this.textConfig == BarTextConfig.Default) {
+            this.text = `${this.value}/${this.maximum}`;
+        }
     }
 
     get text(): string {

@@ -4,14 +4,14 @@ import * as PIXI from "pixi.js";
 
 export class Button extends PIXI.Container {
 
-    private static readonly WIDTH = 165;
-    private static readonly HEIGHT = 40;
+    static readonly WIDTH = 165;
+    static readonly HEIGHT = 40;
 
     private _state: State;
     private readonly bg = new PIXI.Container();
     readonly txtMain: PIXI.Text;
 
-    constructor(text: string = "", textStyle: PIXI.TextStyleOptions = { align: "center", fill: "white", fontSize: 28 },
+    constructor(text: string = "",
                 private readonly bgMouseOut: PIXI.Container = new Rectangle(Button.WIDTH, Button.HEIGHT, 0x333333),
                 private readonly bgMouseOver: PIXI.Container = new Rectangle(0, 0, 0x555555),
                 private readonly bgMouseDown: PIXI.Container = new Rectangle(0, 0, 0x222222),
@@ -21,7 +21,7 @@ export class Button extends PIXI.Container {
         this.buttonMode = true;
         this.state = State.MouseOut;
         this.addChild(this.bg);
-        this.txtMain = new PIXI.Text(text, textStyle);
+        this.txtMain = new PIXI.Text(text, { align: "center", fill: "white", fontSize: 28 });
         this.txtMain.anchor.set(CENTER, CENTER);
         this.addChild(this.txtMain);
         this.width = this.bg.width;

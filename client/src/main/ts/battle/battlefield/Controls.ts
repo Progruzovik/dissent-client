@@ -14,15 +14,13 @@ export default class Controls extends game.UiLayer {
     private readonly spriteHull = new PIXI.Sprite();
     private readonly bgHull = new game.Rectangle(0, 0, 0x333333);
 
-    private readonly barStrength = new game.ProgressBar(0, 0, 0xff0000,
-        100, 0, { fill: "white", fontSize: 26, fontWeight: "bold" });
+    private readonly barStrength = new game.ProgressBar(0, 0, 0xff0000, game.BarTextConfig.Default);
     private readonly bgStats = new PIXI.Container();
 
     private readonly btnFirstGun = new game.Button();
     private readonly btnSecondGun = new game.Button();
     private readonly bgModule = new game.Rectangle(0, 0);
-    private readonly btnNextTurn = new game.Button(l("endTurn"), { align: "center",
-        fill: "white", fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
+    private readonly btnNextTurn = new game.Button(l("endTurn"));
 
     constructor(private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
         super();
@@ -68,6 +66,7 @@ export default class Controls extends game.UiLayer {
         this.spriteHull.scale.set(shipRatio, shipRatio);
         this.spriteHull.position.set(this.bgHull.width / 2, this.bgHull.height / 2);
 
+        this.barStrength.txtMain.style = new PIXI.TextStyle({ fill: "white", fontSize: 26, fontWeight: "bold" });
         this.barStrength.width = widthPerSection;
         this.barStrength.height = heightPerSection / 3;
         this.barStrength.pivot.y = this.barStrength.height / 2;
@@ -83,6 +82,9 @@ export default class Controls extends game.UiLayer {
         this.bgModule.width = widthPerSection;
         this.bgModule.height = heightPerSection;
         this.bgModule.x = widthPerSection * 4;
+
+        this.btnNextTurn.txtMain.style = new PIXI.TextStyle({ align: "center", fill: "white",
+            fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
         this.btnNextTurn.width = widthPerSection;
         this.btnNextTurn.height = heightPerSection;
         this.btnNextTurn.x = widthPerSection * 5;
@@ -99,7 +101,6 @@ export default class Controls extends game.UiLayer {
         this.spriteHull.texture = PIXI.loader.resources[currentUnit.ship.hull.texture.name].texture;
         this.barStrength.maximum = currentUnit.ship.hull.strength;
         this.barStrength.value = currentUnit.strength;
-        this.barStrength.text = `${this.barStrength.value}/${this.barStrength.maximum}`;
         if (currentUnit.ship.firstGun) {
             this.btnFirstGun.text =
                 `${currentUnit.ship.firstGun.name}\n(${currentUnit.ship.firstGun.shotCost} ${l("ap")})`;

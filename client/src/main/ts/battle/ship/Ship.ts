@@ -1,4 +1,6 @@
 import { Gun, Hull, ShipData } from "../util";
+import * as game from "../../game";
+import * as PIXI from "pixi.js";
 
 export default class Ship implements ShipData {
 
@@ -31,5 +33,11 @@ export default class Ship implements ShipData {
 
     createIcon(): PIXI.Container {
         return new PIXI.Sprite(PIXI.loader.resources[this.hull.texture.name].texture);
+    }
+
+    createBarStrength(width: number, height: number = 15, color: number = 0xff0000): game.ProgressBar {
+        const result = new game.ProgressBar(width, height, color, game.BarTextConfig.Default, this.hull.strength);
+        result.value = this.strength;
+        return result;
     }
 }

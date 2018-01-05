@@ -18,6 +18,10 @@ export namespace Event {
     export const DONE = "done";
 }
 
+export const enum BarTextConfig {
+    Default, Custom
+}
+
 export class Point {
     constructor(readonly x: number, readonly y: number) {}
 }

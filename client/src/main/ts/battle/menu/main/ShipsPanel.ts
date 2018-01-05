@@ -20,7 +20,7 @@ export default class ShipsPanel extends PIXI.Container {
             const iconDefault = ship.createIcon();
             const iconOver = ship.createIcon();
             iconOver.addChild(new game.Frame(iconOver.width, iconOver.height, 1, 0xffff00));
-            const btnShip = new game.Button("", null, iconDefault, iconOver, iconOver, iconDefault);
+            const btnShip = new game.Button("", iconDefault, iconOver, iconOver, iconDefault);
             btnShip.x = (btnShip.width + game.INDENT / 2) * i;
             this.groupShips.addChild(btnShip);
 
