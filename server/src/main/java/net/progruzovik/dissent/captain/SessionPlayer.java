@@ -85,7 +85,9 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     @Override
     public void addToQueue() {
         queue.add(this);
-        sendCurrentStatus();
+        if (queue.isQueued(this)) {
+            sendCurrentStatus();
+        }
     }
 
     @Override
