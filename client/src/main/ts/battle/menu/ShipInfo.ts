@@ -1,6 +1,7 @@
 import Ship from "../ship/Ship";
 import { l } from "../../localizer";
 import * as game from "../../game";
+import * as PIXI from "pixi.js";
 
 export default class ShipInfo extends game.UiLayer {
 

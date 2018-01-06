@@ -8,7 +8,7 @@ module.exports = env => {
         module: {
             loaders: [
                 {
-                    loader: "ts-loader",
+                    loader: "awesome-typescript-loader",
                     exclude: /node_modules/
                 }
             ]
