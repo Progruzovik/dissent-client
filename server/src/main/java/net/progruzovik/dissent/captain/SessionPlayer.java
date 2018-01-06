@@ -65,6 +65,9 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     public void update(Observable battle, Object data) {
         final Message<?> message = (Message<?>) data;
         if (!message.getSubject().equals(Battle.TIME_TO_ACT)) {
+            if (message.getSubject().equals("battleFinish")) {
+                onBattleFinish();;
+            }
             messageSender.send((Message<?>) data);
         }
     }
@@ -72,10 +75,8 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     @Override
     public void addToBattle(Side side, Battle battle) {
         if (getStatus() == Status.IN_BATTLE) {
+            onBattleFinish();;
             messageSender.send(new Message<>("battleFinish"));
-        }
-        for (final Ship ship : getShips()) {
-            ship.setStrength(ship.getHull().getStrength());
         }
         super.addToBattle(side, battle);
         sendCurrentStatus();
@@ -96,6 +97,12 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     @Override
     public void startScenario() {
         scenarioDigest.start(this);
+    }
+
+    private void onBattleFinish() {
+        for (final Ship ship : getShips()) {
+            ship.setStrength(ship.getHull().getStrength());
+        }
     }
 
     private void sendCurrentStatus() {

@@ -6,10 +6,10 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
 
     static readonly STATUS = "status";
 
-    private readonly connection = new WebSocketConnection();
+    private connection: WebSocketConnection;
 
-    constructor() {
-        super();
+    createConnection(url: string) {
+        this.connection = new WebSocketConnection(url);
         this.connection.on(WebSocketConnection.MESSAGE, (message: Message) =>
             this.emit(message.subject, message.data));
     }
@@ -71,6 +71,14 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
     }
 }
 
+interface Unit {
+    readonly actionPoints: number, readonly side: Side, readonly cell: game.Point, readonly ship: ShipData;
+}
+
+class Message {
+    constructor(readonly subject: string, readonly data?: any) {}
+}
+
 class WebSocketConnection extends PIXI.utils.EventEmitter {
 
     static readonly MESSAGE = "message";
@@ -78,10 +86,9 @@ class WebSocketConnection extends PIXI.utils.EventEmitter {
     private readonly messagesToSend = new Array<Message>(0);
     private readonly webSocket: WebSocket;
 
-    constructor() {
+    constructor(url: string) {
         super();
-        const webSocketUrl: string = document.baseURI.toString().replace("http", "ws") + "/app";
-        this.webSocket = new WebSocket(webSocketUrl);
+        this.webSocket = new WebSocket(url);
 
         this.webSocket.onopen = () => {
             for (const message of this.messagesToSend) {
@@ -103,12 +110,4 @@ class WebSocketConnection extends PIXI.utils.EventEmitter {
     private sendMessage(message: Message) {
         this.webSocket.send(JSON.stringify(message));
     }
-}
-
-interface Unit {
-    readonly actionPoints: number, readonly side: Side, readonly cell: game.Point, readonly ship: ShipData;
-}
-
-class Message {
-    constructor(readonly subject: string, readonly data?: any) {}
 }

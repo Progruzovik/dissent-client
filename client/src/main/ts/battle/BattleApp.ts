@@ -14,44 +14,48 @@ export default class BattleApp extends game.Application {
 
     private menuScreen: MenuScreen;
     private readonly projectileService = new ProjectileService();
+    private readonly webSocketClient = new WebSocketClient();
 
     constructor() {
         super();
         initClient("ru", s => {
             updateLocalizedData(s);
-            const webSocketClient = new WebSocketClient();
-            webSocketClient.requestTextures(textures => {
+            const webSocketUrl: string = document.baseURI.toString()
+                .replace("http", "ws") + "/app";
+            this.webSocketClient.createConnection(webSocketUrl);
+            this.webSocketClient.requestTextures(textures => {
                 for (const texture of textures) {
                     PIXI.loader.add(texture.name, `img/${texture.name}.png`);
                 }
                 PIXI.loader.load(() => {
-                    webSocketClient.requestShips((sd => {
-                        this.menuScreen = new MenuScreen(sd, webSocketClient);
-                        this.currentScreen = this.menuScreen;
-
-                        this.menuScreen.on(Menu.BATTLE, () => {
-                            webSocketClient.requestBattleData(d => {
-                                const unitsArray = new Array<Unit>(0);
-                                for (const unitData of d.units) {
-                                    unitsArray.push(new Unit(unitData.actionPoints, d.playerSide, unitData.side,
-                                        unitData.cell, new Ship(unitData.ship), this.projectileService));
-                                }
-                                for (const unitData of d.destroyedUnits) {
-                                    const unit = new Unit(unitData.actionPoints, d.playerSide,
-                                        unitData.side, unitData.cell, new Ship(unitData.ship));
-                                    unit.strength = 0;
-                                    unitsArray.push(unit);
-                                }
-                                this.currentScreen = new BattlefieldScreen(d.fieldSize, d.playerSide,
-                                    unitsArray, d.asteroids, d.clouds, this.projectileService, webSocketClient);
-                                this.currentScreen.once(game.Event.DONE, () => {
-                                    webSocketClient.updateStatus();
-                                    this.currentScreen = this.menuScreen;
-                                });
-                            });
-                        });
-                    }));
+                    this.menuScreen = new MenuScreen(this.webSocketClient);
+                    this.currentScreen = this.menuScreen;
+                    this.menuScreen.on(Menu.BATTLE, () => this.startBattle());
                 });
+            });
+        });
+    }
+
+    startBattle() {
+        this.webSocketClient.requestBattleData(d => {
+            const unitsArray = new Array<Unit>(0);
+            for (const unitData of d.units) {
+                unitsArray.push(new Unit(unitData.actionPoints, d.playerSide, unitData.side,
+                    unitData.cell, new Ship(unitData.ship), this.projectileService));
+            }
+            for (const unitData of d.destroyedUnits) {
+                const unit = new Unit(unitData.actionPoints, d.playerSide,
+                    unitData.side, unitData.cell, new Ship(unitData.ship));
+                unit.strength = 0;
+                unitsArray.push(unit);
+            }
+
+            const battlefield = new BattlefieldScreen(d.fieldSize, d.playerSide,
+                unitsArray, d.asteroids, d.clouds, this.projectileService, this.webSocketClient);
+            this.currentScreen = battlefield;
+            battlefield.once(game.Event.DONE, () => {
+                this.menuScreen.reload();
+                this.currentScreen = this.menuScreen;
             });
         });
     }

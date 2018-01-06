@@ -11,10 +11,16 @@ export default class ShipsPanel extends PIXI.Container {
     private readonly txtFleet = new PIXI.Text(l("yourFleet"), { fill: "white", fontWeight: "bold" });
     private readonly groupShips = new PIXI.Container();
 
-    constructor(shipsData: ShipData[]) {
+    constructor() {
         super();
         this.txtFleet.pivot.x = this.txtFleet.width / 2;
         this.addChild(this.txtFleet);
+        this.groupShips.y = this.txtFleet.height;
+        this.addChild(this.groupShips);
+    }
+
+    reload(shipsData: ShipData[]) {
+        this.groupShips.removeChildren();
         shipsData.forEach((sd, i) => {
             const ship = new Ship(sd);
             const iconDefault = ship.createIcon();
@@ -27,8 +33,6 @@ export default class ShipsPanel extends PIXI.Container {
             btnShip.on(game.Event.BUTTON_CLICK, () => this.emit(ShipsPanel.OPEN_INFO, ship));
         });
         this.groupShips.pivot.x = this.groupShips.width / 2;
-        this.groupShips.y = this.txtFleet.height;
-        this.addChild(this.groupShips);
     }
 
     resize(width: number) {

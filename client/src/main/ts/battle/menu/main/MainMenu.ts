@@ -1,7 +1,7 @@
 import ShipsPanel from "./ShipsPanel";
 import WebSocketClient from "../../WebSocketClient";
 import Ship from "../../ship/Ship";
-import { ShipData, Status } from "../../util";
+import { Status } from "../../util";
 import { l } from "../../../localizer";
 import * as game from "../../../game";
 
@@ -17,9 +17,9 @@ export default class Menu extends game.UiLayer {
     private readonly btnQueue = new game.Button();
     private readonly groupButtons = new PIXI.Container();
 
-    private readonly shipsPanel: ShipsPanel;
+    readonly shipsPanel = new ShipsPanel();
 
-    constructor(shipsData: ShipData[], private readonly webSocketClient: WebSocketClient) {
+    constructor(webSocketClient: WebSocketClient) {
         super();
         this.txtDissent.anchor.x = game.CENTER;
         this.addChild(this.txtDissent);
@@ -33,7 +33,6 @@ export default class Menu extends game.UiLayer {
         this.groupButtons.pivot.x = this.groupButtons.width / 2;
         this.addChild(this.groupButtons);
 
-        this.shipsPanel = new ShipsPanel(shipsData);
         this.addChild(this.shipsPanel);
 
         webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
@@ -53,8 +52,6 @@ export default class Menu extends game.UiLayer {
         });
         btnScenario.on(game.Event.BUTTON_CLICK, () => webSocketClient.startScenario());
         this.shipsPanel.on(ShipsPanel.OPEN_INFO, (ship: Ship) => this.emit(ShipsPanel.OPEN_INFO, ship));
-
-        webSocketClient.updateStatus();
     }
 
     resize(width: number, height: number) {
