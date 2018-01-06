@@ -8,10 +8,14 @@ export default class ShipInfo extends game.UiLayer {
 
     constructor(ship: Ship) {
         super();
-        const icon = ship.createIcon();
-        this.content.addChild(icon);
-        const barStrength = ship.createBarStrength(game.Button.WIDTH);
-        barStrength.y = icon.height;
+        const iconShip = ship.createIcon();
+        this.content.addChild(iconShip);
+        const cardGuns = ship.createGunsCard();
+        cardGuns.x = iconShip.width;
+        this.content.addChild(cardGuns);
+
+        const barStrength = ship.createStrengthBar(game.Button.WIDTH);
+        barStrength.y = iconShip.height;
         this.content.addChild(barStrength);
 
         const btnBack = new game.Button(l("back"));

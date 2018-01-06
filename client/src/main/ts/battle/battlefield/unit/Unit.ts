@@ -8,6 +8,7 @@ import * as PIXI from "pixi.js";
 export default class Unit extends game.AbstractActor {
 
     static readonly ALPHA_DESTROYED = 0.5;
+    static readonly NO_GUN_ID = -1;
 
     static readonly UPDATE_STATS = "updateStats";
     static readonly PREPARE_TO_SHOT = "prepareToShot";
@@ -16,7 +17,7 @@ export default class Unit extends game.AbstractActor {
 
     readonly frameColor: number;
 
-    private _preparedGunId = -1;
+    private _preparedGunId = Unit.NO_GUN_ID;
     private _currentMove: Move;
 
     constructor(private _actionPoints: number, playerSide: Side, readonly side: Side, private _cell: game.Point,
@@ -71,14 +72,12 @@ export default class Unit extends game.AbstractActor {
     }
 
     set preparedGunId(value: number) {
-        if (this.preparedGunId != value) {
-            if (value == -1) {
-                this._preparedGunId = -1;
-                this.emit(Unit.NOT_PREPARE_TO_SHOT);
-            } else if (value == this.ship.firstGun.id || value == this.ship.secondGun.id) {
-                this._preparedGunId = value;
-                this.emit(Unit.PREPARE_TO_SHOT);
-            }
+        if (this.preparedGunId == value) {
+            this._preparedGunId = Unit.NO_GUN_ID;
+            this.emit(Unit.NOT_PREPARE_TO_SHOT);
+        } else if (value == this.ship.firstGun.id || value == this.ship.secondGun.id) {
+            this._preparedGunId = value;
+            this.emit(Unit.PREPARE_TO_SHOT);
         }
     }
 
@@ -101,7 +100,7 @@ export default class Unit extends game.AbstractActor {
         this.projectileService.shoot(activeGun, this.center, target.center);
 
         this.projectileService.once(game.Event.DONE, () => {
-            this._preparedGunId = -1;
+            this._preparedGunId = Unit.NO_GUN_ID;
             target.strength -= shot.damage;
             target.emit(Unit.UPDATE_STATS);
             this.emit(ActionType.Shot);

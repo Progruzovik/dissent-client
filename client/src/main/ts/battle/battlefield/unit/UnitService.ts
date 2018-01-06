@@ -61,7 +61,8 @@ export default class UnitService extends PIXI.utils.EventEmitter {
             }
 
             unit.on(game.Event.MOUSE_OVER, (e: PIXI.interaction.InteractionEvent) => {
-                if (this.currentUnit.preparedGunId != -1 && this.currentUnit.side != unit.side && unit.strength > 0) {
+                if (this.currentUnit.preparedGunId != Unit.NO_GUN_ID
+                    && this.currentUnit.side != unit.side && unit.strength > 0) {
                     unit.alpha = 0.75;
                 }
                 this.emit(UnitService.UNIT_MOUSE_OVER, e.data.global, unit);
@@ -84,7 +85,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     }
 
     nextTurn() {
-        this.currentUnit.preparedGunId = -1;
+        this.currentUnit.preparedGunId = Unit.NO_GUN_ID;
         this.unitQueue.push(this.unitQueue.shift());
         this.currentUnit.makeCurrent();
         this.emit(ActionType.NextTurn, false);

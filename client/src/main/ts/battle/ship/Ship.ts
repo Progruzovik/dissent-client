@@ -35,7 +35,20 @@ export default class Ship implements ShipData {
         return new PIXI.Sprite(PIXI.loader.resources[this.hull.texture.name].texture);
     }
 
-    createBarStrength(width: number, height: number = 15, color: number = 0xff0000): game.ProgressBar {
+    createGunsCard(): PIXI.Container {
+        const result = new PIXI.Container();
+        if (this.firstGun) {
+            result.addChild(new PIXI.Text(this.firstGun.name, { fill: "white" }));
+        }
+        if (this.secondGun) {
+            const txtSecondGun = new PIXI.Text(this.secondGun.name, { fill: "white" });
+            txtSecondGun.x = result.width + game.INDENT;
+            result.addChild(txtSecondGun);
+        }
+        return result;
+    }
+
+    createStrengthBar(width: number, height: number = 15, color: number = 0xff0000): game.ProgressBar {
         const result = new game.ProgressBar(width, height, color, game.BarTextConfig.Default, this.hull.strength);
         result.value = this.strength;
         return result;

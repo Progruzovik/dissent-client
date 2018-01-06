@@ -10,7 +10,7 @@ export default class Window extends game.UiLayer {
     private readonly lineToWindow = new game.Line(0, 1, this.unit.frameColor);
 
     private readonly bgWindow = new game.Rectangle(Window.WIDTH, Window.HEIGHT, 0x333333);
-    private readonly barStrength = this.unit.ship.createBarStrength(this.bgWindow.width);
+    private readonly barStrength = this.unit.ship.createStrengthBar(this.bgWindow.width);
 
     constructor(playerSide: Side, readonly unit: Unit) {
         super();

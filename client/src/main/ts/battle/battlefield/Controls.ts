@@ -2,7 +2,7 @@ import Field from "./Field";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketClient from "../WebSocketClient";
-import { ActionType } from "../util";
+import { ActionType, Gun } from "../util";
 import { l } from "../../localizer";
 import * as game from "../../game";
 
@@ -39,20 +39,10 @@ export default class Controls extends game.UiLayer {
         unitService.on(ActionType.Move, () => this.updateInterface());
         unitService.on(ActionType.Shot, () => this.updateInterface());
         unitService.on(ActionType.NextTurn, () => this.updateInterface());
-        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
-            if (unitService.currentUnit.preparedGunId == unitService.currentUnit.ship.firstGun.id) {
-                unitService.currentUnit.preparedGunId = -1;
-            } else {
-                unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.firstGun.id;
-            }
-        });
-        this.btnSecondGun.on(game.Event.BUTTON_CLICK, () => {
-            if (unitService.currentUnit.preparedGunId == unitService.currentUnit.ship.secondGun.id) {
-                unitService.currentUnit.preparedGunId = -1;
-            } else {
-                unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.secondGun.id;
-            }
-        });
+        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () =>
+            unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.firstGun.id);
+        this.btnSecondGun.on(game.Event.BUTTON_CLICK, () =>
+            unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.secondGun.id);
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketClient.endTurn());
     }
 
@@ -101,24 +91,19 @@ export default class Controls extends game.UiLayer {
         this.spriteHull.texture = PIXI.loader.resources[currentUnit.ship.hull.texture.name].texture;
         this.barStrength.maximum = currentUnit.ship.hull.strength;
         this.barStrength.value = currentUnit.strength;
-        if (currentUnit.ship.firstGun) {
-            this.btnFirstGun.text =
-                `${currentUnit.ship.firstGun.name}\n(${currentUnit.ship.firstGun.shotCost} ${l("ap")})`;
-            this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn
-                && currentUnit.actionPoints >= currentUnit.ship.firstGun.shotCost;
-        } else {
-            this.btnFirstGun.text = `[${l("empty")}]`;
-            this.btnFirstGun.isEnabled = false;
-        }
-        if (currentUnit.ship.secondGun) {
-            this.btnSecondGun.text =
-                `${currentUnit.ship.secondGun.name}\n(${currentUnit.ship.secondGun.shotCost} ${l("ap")})`;
-            this.btnSecondGun.isEnabled = this.unitService.isCurrentPlayerTurn
-                && currentUnit.actionPoints >= currentUnit.ship.secondGun.shotCost;
-        } else {
-            this.btnSecondGun.text = `[${l("empty")}]`;
-            this.btnSecondGun.isEnabled = false;
-        }
+        this.updateBtnGun(this.btnFirstGun, currentUnit.ship.firstGun);
+        this.updateBtnGun(this.btnSecondGun, currentUnit.ship.secondGun);
         this.btnNextTurn.isEnabled = this.unitService.isCurrentPlayerTurn;
+    }
+
+    private updateBtnGun(btnGun: game.Button, gun: Gun) {
+        if (gun) {
+            btnGun.isEnabled = this.unitService.isCurrentPlayerTurn
+                && this.unitService.currentUnit.actionPoints >= gun.shotCost;
+            btnGun.text = `${gun.name}\n(${gun.shotCost} ${l("ap")})`;
+        } else {
+            btnGun.isEnabled = false;
+            btnGun.text = `[${l("empty")}]`;
+        }
     }
 }

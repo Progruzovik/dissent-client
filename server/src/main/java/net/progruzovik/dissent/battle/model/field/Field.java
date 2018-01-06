@@ -23,7 +23,7 @@ public final class Field {
     private final List<Unit> destroyedUnits = new ArrayList<>();
 
     private Unit activeUnit;
-    private int preparedGunId = -1;
+    private int preparedGunId = Gun.NO_GUN_ID;
     private final List<List<PathNode>> paths;
     private List<Cell> reachableCells;
     private final GunCells gunCells = new GunCells();
@@ -101,7 +101,7 @@ public final class Field {
     }
 
     public void updateActiveUnit() {
-        preparedGunId = -1;
+        preparedGunId = Gun.NO_GUN_ID;
         for (final List<PathNode> currentPath : paths) {
             for (int j = 0; j < currentPath.size(); j++) {
                 currentPath.set(j, null);
