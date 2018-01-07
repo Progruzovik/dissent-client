@@ -1,6 +1,8 @@
 import { Gun, Hull, ShipData } from "../util";
+import { l } from "../../localizer";
 import * as game from "../../game";
 import * as PIXI from "pixi.js";
+import Card from "../menu/ship/Card";
 
 export default class Ship implements ShipData {
 
@@ -38,12 +40,16 @@ export default class Ship implements ShipData {
     createGunsCard(): PIXI.Container {
         const result = new PIXI.Container();
         if (this.firstGun) {
-            result.addChild(new PIXI.Text(this.firstGun.name, { fill: "white" }));
+            const gunSprite = new PIXI.Sprite(PIXI.loader.resources[this.firstGun.texture.name].texture);
+            gunSprite.scale.set(4, 4);
+            result.addChild(new Card(l(this.firstGun.name), gunSprite));
         }
         if (this.secondGun) {
-            const txtSecondGun = new PIXI.Text(this.secondGun.name, { fill: "white" });
-            txtSecondGun.x = result.width + game.INDENT;
-            result.addChild(txtSecondGun);
+            const gunSprite = new PIXI.Sprite(PIXI.loader.resources[this.secondGun.texture.name].texture);
+            gunSprite.scale.set(4, 4);
+            const cardSecondGun = new Card(l(this.secondGun.name), gunSprite);
+            cardSecondGun.x = result.width + game.INDENT;
+            result.addChild(cardSecondGun);
         }
         return result;
     }

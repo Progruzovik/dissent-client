@@ -29,6 +29,10 @@ public final class Gun {
     @JoinColumn(name = "gunTypeId", nullable = false)
     private GunType type;
 
+    @ManyToOne
+    @JoinColumn(name = "textureId", nullable = false)
+    private Texture texture;
+
     public Gun(int shotCost, int radius, GunType type) {
         this.shotCost = shotCost;
         this.radius = radius;
@@ -61,5 +65,9 @@ public final class Gun {
 
     public String getTypeName() {
         return type.getName();
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 }

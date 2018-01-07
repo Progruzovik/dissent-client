@@ -22,11 +22,12 @@ export const enum Side {
 }
 
 export interface Gun {
-    readonly id: number, readonly name: string, readonly shotCost: number, readonly typeName: GunType;
+    readonly id: number, readonly name: string, readonly shotCost: number,
+    readonly typeName: GunType, readonly texture: Texture;
 }
 
 export interface Hull {
-    readonly id: number, readonly name: string,readonly actionPoints: number,
+    readonly id: number, readonly name: string, readonly actionPoints: number,
     readonly strength: number, readonly texture: Texture;
 }
 

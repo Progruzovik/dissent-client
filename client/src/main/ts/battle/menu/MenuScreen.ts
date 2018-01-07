@@ -1,4 +1,4 @@
-import ShipInfo from "./ShipInfo";
+import ShipInfo from "./ship/ShipInfo";
 import MainMenu from "./main/MainMenu";
 import ShipsPanel from "./main/ShipsPanel";
 import WebSocketClient from "../WebSocketClient";

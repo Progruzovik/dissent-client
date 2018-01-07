@@ -100,7 +100,7 @@ export default class Controls extends game.UiLayer {
         if (gun) {
             btnGun.isEnabled = this.unitService.isCurrentPlayerTurn
                 && this.unitService.currentUnit.actionPoints >= gun.shotCost;
-            btnGun.text = `${gun.name}\n(${gun.shotCost} ${l("ap")})`;
+            btnGun.text = `${l(gun.name)}\n(${gun.shotCost} ${l("ap")})`;
         } else {
             btnGun.isEnabled = false;
             btnGun.text = `[${l("empty")}]`;
