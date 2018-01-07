@@ -1,4 +1,5 @@
 import * as game from "../../../game";
+import * as PIXI from "pixi.js";
 
 export default class Card extends game.Rectangle {
 

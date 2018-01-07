@@ -14,19 +14,23 @@ export default class ShipInfo extends game.UiLayer {
         this.txtName.anchor.set(game.CENTER, 1);
         this.addChild(this.txtName);
 
+        const txtAp = new PIXI.Text(`${l("ap")}: ${ship.hull.actionPoints}`, { fill: "white", fontSize: 24 });
+        this.content.addChild(txtAp);
+
         const iconShip = ship.createIcon();
         iconShip.scale.set(2, 2);
+        iconShip.y = txtAp.height;
         this.content.addChild(iconShip);
         const cardGuns = ship.createGunsCard();
-        cardGuns.x = iconShip.width + game.INDENT;
+        cardGuns.position.set(iconShip.width + game.INDENT, iconShip.y);
         this.content.addChild(cardGuns);
 
         const barStrength = ship.createStrengthBar(iconShip.width);
-        barStrength.y = iconShip.height;
+        barStrength.y = iconShip.y + iconShip.height;
         this.content.addChild(barStrength);
 
         const btnBack = new game.Button(l("back"));
-        btnBack.y = cardGuns.height + game.INDENT;
+        btnBack.y = cardGuns.y + cardGuns.height + game.INDENT;
         this.content.addChild(btnBack);
         this.content.pivot.set(this.content.width / 2, this.content.height / 2);
         this.addChild(this.content);
