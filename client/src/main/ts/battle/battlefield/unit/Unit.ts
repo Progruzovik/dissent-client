@@ -82,13 +82,12 @@ export default class Unit extends game.AbstractActor {
         }
     }
 
-    get center(): game.Point {
-        return new game.Point(this.x + this.width / 2, this.y + this.height / 2);
+    findCenterCell(): game.Point {
+        return new game.Point((this.ship.hull.width - 1) / 2, (this.ship.hull.height - 1) / 2);
     }
 
-    isOccupyCell(cell: game.Point): boolean {
-        return cell.x >= this.cell.x && cell.x < this.cell.x + this.ship.hull.width
-            && cell.y >= this.cell.y && cell.y < this.cell.y + this.ship.hull.height;
+    findCenter(): game.Point {
+        return new game.Point(this.x + this.width / 2, this.y + this.height / 2);
     }
 
     makeCurrent() {
@@ -103,7 +102,7 @@ export default class Unit extends game.AbstractActor {
             activeGun = this.ship.secondGun;
         }
         this._actionPoints -= activeGun.shotCost;
-        this.projectileService.shoot(activeGun, this.center, target.center);
+        this.projectileService.shoot(activeGun, this.findCenter(), target.findCenter());
 
         this.projectileService.once(game.Event.DONE, () => {
             this._preparedGunId = Unit.NO_GUN_ID;

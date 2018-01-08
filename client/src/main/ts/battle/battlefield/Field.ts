@@ -15,11 +15,11 @@ export default class Field extends game.UiLayer {
 
     private paths: PathNode[][];
 
+    private selectedMarks: MarksContainer;
     private readonly markCurrent = new Mark(0x005500);
-    private markSelected: Mark;
 
-    private readonly pathMarks = new Array<Mark>(0);
     private readonly pathLayer = new PIXI.Container();
+    private readonly pathMarks = new PIXI.Container();
     private readonly markLayer = new PIXI.Container();
 
     constructor(private readonly size: game.Point, units: Unit[], asteroids: game.Point[], clouds: game.Point[],
@@ -84,50 +84,52 @@ export default class Field extends game.UiLayer {
         this.markCurrent.width = this.unitService.currentUnit.width - Field.LINE_WIDTH;
         this.markCurrent.height = this.unitService.currentUnit.height - Field.LINE_WIDTH;
         this.markCurrent.cell = this.unitService.currentUnit.cell;
+        const unitWidth: number = this.unitService.currentUnit.ship.hull.width;
+        const unitHeight: number = this.unitService.currentUnit.ship.hull.height;
+        const activeAreaOffset: game.Point = this.unitService.currentUnit.findCenterCell();
         if (this.unitService.isCurrentPlayerTurn) {
             this.webSocketClient.requestPathsAndReachableCells(d => {
                 this.paths = d.paths;
-                this.pathMarks.length = 0;
+                this.pathMarks.removeChildren();
                 for (const cell of d.reachableCells) {
-                    if (!this.unitService.currentUnit.isOccupyCell(cell)) {
-                        const markPath = new Mark(Field.PATH_MARK_COLOR, cell);
-                        this.pathMarks.push(markPath);
+                    const marks = new MarksContainer(cell, unitWidth, unitHeight);
+                    const activeArea = new game.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y);
+                    activeArea.interactive = true;
+                    activeArea.alpha = 0;
+                    activeArea.x = activeAreaOffset.x * Field.CELL_SIZE.x;
+                    activeArea.y = activeAreaOffset.y * Field.CELL_SIZE.y;
+                    marks.addChild(activeArea);
+                    marks.x = cell.x * Field.CELL_SIZE.x;
+                    marks.y = cell.y * Field.CELL_SIZE.y;
+                    this.pathMarks.addChild(marks);
 
-                        markPath.on(game.Event.MOUSE_OVER, () => this.showPath(markPath));
-                        markPath.on(game.Event.CLICK, () => this.webSocketClient.moveCurrentUnit(cell));
-                        markPath.on(game.Event.MOUSE_OUT, () => {
-                            if (this.markSelected == markPath) {
-                                markPath.color = Field.PATH_MARK_COLOR;
-                                markPath.width = Field.CELL_SIZE.x - Field.LINE_WIDTH;
-                                markPath.height = Field.CELL_SIZE.y - Field.LINE_WIDTH;
-                                this.markSelected = null;
-                                this.pathLayer.removeChildren();
-                            }
-                        });
-                    }
+                    activeArea.on(game.Event.MOUSE_OVER, () => this.showPath(marks));
+                    activeArea.on(game.Event.CLICK, () => this.webSocketClient.moveCurrentUnit(cell));
+                    activeArea.on(game.Event.MOUSE_OUT, () => {
+                        if (this.selectedMarks == marks) {
+                            marks.resetMarks();
+                            this.selectedMarks = null;
+                            this.pathLayer.removeChildren();
+                        }
+                    });
                 }
                 this.addCurrentPathMarks();
             });
         }
     }
 
-    private showPath(mark: Mark) {
-        if (this.paths[mark.cell.x][mark.cell.y]) {
-            if (this.markSelected != null) {
-                this.markSelected.color = Field.PATH_MARK_COLOR;
-                this.markSelected.width = Field.CELL_SIZE.x - Field.LINE_WIDTH;
-                this.markSelected.height = Field.CELL_SIZE.y - Field.LINE_WIDTH;
+    private showPath(marks: MarksContainer) {
+        if (this.paths[marks.cell.x][marks.cell.y]) {
+            if (this.selectedMarks != null) {
+                this.selectedMarks.resetMarks();
             }
-            this.markSelected = mark;
-            this.markSelected.color = 0x005500;
-            this.markSelected.width = this.unitService.currentUnit.width - Field.LINE_WIDTH;
-            this.markSelected.height = this.unitService.currentUnit.height - Field.LINE_WIDTH;
+            this.selectedMarks = marks;
+            this.selectedMarks.highlightMarks();
             this.pathLayer.removeChildren();
-            this.markLayer.setChildIndex(this.markSelected, this.markLayer.children.length - 1);
+            this.pathMarks.setChildIndex(this.selectedMarks, this.pathMarks.children.length - 1);
 
-            const pathOffsetX: number = (this.unitService.currentUnit.ship.hull.width - 1) / 2;
-            const pathOffsetY: number = (this.unitService.currentUnit.ship.hull.height - 1) / 2;
-            let cell: game.Point = mark.cell;
+            const pathOffset: game.Point = this.unitService.currentUnit.findCenterCell();
+            let cell: game.Point = marks.cell;
             while (!(cell.x == this.unitService.currentUnit.cell.x && cell.y == this.unitService.currentUnit.cell.y)) {
                 const previousCell: game.Point = this.paths[cell.x][cell.y].cell;
                 let direction: Direction;
@@ -142,8 +144,8 @@ export default class Field extends game.UiLayer {
                 }
 
                 const pathLine = new game.Line(0, 4, 0x00aa00);
-                pathLine.x = (cell.x + pathOffsetX + game.CENTER) * Field.CELL_SIZE.x;
-                pathLine.y = (cell.y + pathOffsetY + game.CENTER) * Field.CELL_SIZE.y;
+                pathLine.x = (cell.x + pathOffset.x + game.CENTER) * Field.CELL_SIZE.x;
+                pathLine.y = (cell.y + pathOffset.y + game.CENTER) * Field.CELL_SIZE.y;
                 const k = direction == Direction.Left || direction == Direction.Up ? 1 : -1;
                 const destination = new PIXI.Point(pathLine.x, pathLine.y);
                 if (direction == Direction.Left || direction == Direction.Right) {
@@ -157,23 +159,49 @@ export default class Field extends game.UiLayer {
                 this.pathLayer.addChild(pathLine);
                 cell = previousCell;
             }
-            const moveCost = `${this.paths[mark.cell.x][mark.cell.y].movementCost.toLocaleString()} ${l("ap")}`;
+            const moveCost = `${this.paths[marks.cell.x][marks.cell.y].movementCost.toLocaleString()} ${l("ap")}`;
             const txtMoveCost = new PIXI.Text(moveCost, { fill: "white", fontSize: 12 });
-            txtMoveCost.position.set(this.markSelected.x, this.markSelected.y);
+            txtMoveCost.position.set(this.selectedMarks.x, this.selectedMarks.y);
             this.pathLayer.addChild(txtMoveCost);
         }
     }
 
     private addCurrentPathMarks() {
         this.removePathsAndMarksExceptCurrent();
-        for (const mark of this.pathMarks) {
-            this.markLayer.addChild(mark);
-        }
+        this.markLayer.addChildAt(this.pathMarks, 0);
     }
 }
 
 const enum Direction {
     Left, Right, Up, Down
+}
+
+class MarksContainer extends PIXI.Container {
+
+    private readonly marks = new Array<Mark>(0);
+
+    constructor(readonly cell: game.Point, width: number, height: number) {
+        super();
+        for (let i = 0; i < width; i++) {
+            for (let j = 0; j < height; j++) {
+                const mark = new Mark(Field.PATH_MARK_COLOR, new game.Point(i, j));
+                this.marks.push(mark);
+                this.addChild(mark);
+            }
+        }
+    }
+
+    highlightMarks() {
+        for (const mark of this.marks) {
+            mark.color = 0x005500;
+        }
+    }
+
+    resetMarks() {
+        for (const mark of this.marks) {
+            mark.color = Field.PATH_MARK_COLOR;
+        }
+    }
 }
 
 class Mark extends game.Rectangle {
@@ -182,7 +210,6 @@ class Mark extends game.Rectangle {
 
     constructor(color: number, cell?: game.Point) {
         super(Field.CELL_SIZE.x - Field.LINE_WIDTH, Field.CELL_SIZE.y - Field.LINE_WIDTH, color);
-        this.interactive = true;
         if (cell) {
             this.cell = cell;
         }
