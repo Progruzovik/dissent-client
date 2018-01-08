@@ -25,6 +25,7 @@ public final class AiCaptain extends AbstractCaptain {
         final Hull aiHull = hullDao.getHull(3);
         final Gun artillery = gunDao.getGun(2);
         getShips().add(new Ship(aiHull, artillery, null));
+        getShips().add(new Ship(hullDao.getHull(2), gunDao.getGun(3), null));
         getShips().add(new Ship(aiHull, artillery, null));
     }
 
