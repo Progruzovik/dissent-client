@@ -18,9 +18,9 @@ export default class Field extends game.UiLayer {
     private selectedMarks: MarksContainer;
     private readonly markCurrent = new Mark(0x005500);
 
-    private readonly pathLayer = new PIXI.Container();
     private readonly pathMarks = new PIXI.Container();
     private readonly markLayer = new PIXI.Container();
+    private readonly pathLayer = new PIXI.Container();
 
     constructor(private readonly size: game.Point, units: Unit[], asteroids: game.Point[], clouds: game.Point[],
                 private readonly unitService: UnitService, private readonly projectileService: ProjectileService,
@@ -44,24 +44,28 @@ export default class Field extends game.UiLayer {
         bg.width = this.width;
         bg.height = this.height;
 
+        this.markLayer.addChild(this.markCurrent);
+        this.addChild(this.markLayer);
+        const objectsLayer = new PIXI.Container();
         for (const asteroid of asteroids) {
             const spriteAsteroid = new PIXI.Sprite(PIXI.loader.resources["asteroid"].texture);
             spriteAsteroid.x = asteroid.x * Field.CELL_SIZE.x;
             spriteAsteroid.y = asteroid.y * Field.CELL_SIZE.y;
-            this.addChild(spriteAsteroid);
+            objectsLayer.addChild(spriteAsteroid);
         }
         for (const cloud of clouds) {
             const spriteCloud = new PIXI.Sprite(PIXI.loader.resources["cloud"].texture);
             spriteCloud.x = cloud.x * Field.CELL_SIZE.x;
             spriteCloud.y = cloud.y * Field.CELL_SIZE.y;
-            this.addChild(spriteCloud);
+            objectsLayer.addChild(spriteCloud);
         }
-        this.markLayer.addChild(this.markCurrent);
-        this.addChild(this.markLayer);
+        this.addChild(objectsLayer);
         this.addChild(this.pathLayer);
+        const unitsLayer = new PIXI.Container();
         for (const unit of units) {
-            this.addChild(unit);
+            unitsLayer.addChild(unit);
         }
+        this.addChild(unitsLayer);
 
         unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
         unitService.on(ActionType.Shot, () => this.updatePathsAndMarks());
