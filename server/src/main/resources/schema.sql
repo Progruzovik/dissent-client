@@ -7,6 +7,8 @@ CREATE TABLE hull(
   name VARCHAR(30) NOT NULL,
   actionPoints INT NOT NULL,
   strength INT NOT NULL,
+  width INT NOT NULL,
+  height INT NOT NULL,
   textureId INT NOT NULL REFERENCES texture(id));
 
 CREATE TABLE gunType(
@@ -26,16 +28,18 @@ INSERT INTO texture(id, name) VALUES
   (1, 'hull-2-2'),
   (2, 'hull-3-1'),
   (3, 'hull-4-2'),
-  (4, 'gun-1'),
-  (5, 'gun-2'),
-  (6, 'gun-3'),
-  (7, 'asteroid'),
-  (8, 'cloud');
+  (4, 'hull-7-1'),
+  (5, 'gun-1'),
+  (6, 'gun-2'),
+  (7, 'gun-3'),
+  (8, 'asteroid'),
+  (9, 'cloud');
 
-INSERT INTO hull(id, name, actionPoints, strength, textureId) VALUES
-  (1, 'Trainhauler', 4, 4, 1),
-  (2, 'Pointer', 5, 6, 2),
-  (3, 'Catfish', 2, 9, 3);
+INSERT INTO hull(id, name, actionPoints, strength, width, height, textureId) VALUES
+  (1, 'Trainhauler', 4, 4, 1, 1, 1),
+  (2, 'Pointer', 5, 6, 1, 1, 2),
+  (3, 'Catfish', 2, 9, 1, 1, 3),
+  (4, 'Chrome', 5, 6, 2, 1, 4);
 
 INSERT INTO gunType(id, name) VALUES
   (1, 'artillery'),
@@ -43,6 +47,6 @@ INSERT INTO gunType(id, name) VALUES
   (3, 'shell');
 
 INSERT INTO gun(id, name, shotCost, damage, radius, gunTypeId, textureId) VALUES
-  (1, 'shrapnel', 1, 2, 6, 3, 4),
-  (2, 'artillery', 2, 3, 12, 1, 5),
-  (3, 'laser', 2, 3, 9, 2, 6);
+  (1, 'shrapnel', 1, 2, 6, 3, 5),
+  (2, 'artillery', 2, 3, 12, 1, 6),
+  (3, 'laser', 2, 3, 9, 2, 7);

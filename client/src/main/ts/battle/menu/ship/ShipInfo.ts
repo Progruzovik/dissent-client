@@ -17,7 +17,7 @@ export default class ShipInfo extends game.UiLayer {
         const txtAp = new PIXI.Text(`${l("ap")}: ${ship.hull.actionPoints}`, { fill: "white", fontSize: 24 });
         this.content.addChild(txtAp);
 
-        const iconShip = ship.createIcon();
+        const iconShip = ship.createSprite();
         iconShip.scale.set(2, 2);
         iconShip.y = txtAp.height;
         this.content.addChild(iconShip);

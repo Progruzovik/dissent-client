@@ -23,7 +23,7 @@ export default class BattlefieldScreen extends game.Screen {
         const field = new Field(fieldSize, units, asteroids, clouds,
             unitService, projectileService, webSocketClient);
         this.content = field;
-        this.leftUi = new LeftUi(playerSide, unitService);
+        this.leftUi = new LeftUi(unitService);
         const controls = new Controls(unitService, webSocketClient);
         this.bottomUi = controls;
         unitService.emit(ActionType.NextTurn, true);

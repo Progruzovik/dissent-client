@@ -41,11 +41,11 @@ export default class BattleApp extends game.Application {
             const unitsArray = new Array<Unit>(0);
             for (const unitData of d.units) {
                 unitsArray.push(new Unit(unitData.actionPoints, d.playerSide, unitData.side,
-                    unitData.cell, new Ship(unitData.ship), this.projectileService));
+                    unitData.firstCell, new Ship(unitData.ship), this.projectileService));
             }
             for (const unitData of d.destroyedUnits) {
                 const unit = new Unit(unitData.actionPoints, d.playerSide,
-                    unitData.side, unitData.cell, new Ship(unitData.ship));
+                    unitData.side, unitData.firstCell, new Ship(unitData.ship));
                 unit.strength = 0;
                 unitsArray.push(unit);
             }

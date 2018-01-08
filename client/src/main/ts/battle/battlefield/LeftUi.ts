@@ -12,16 +12,21 @@ export default class LeftUi extends game.UiLayer {
     private readonly txtActionPoints = new PIXI.Text("", { align: "center", fill: "white",
         fontSize: 36, fontWeight: "bold", stroke: "blue", strokeThickness: 4 });
 
-    constructor(playerSide: Side, private readonly unitService: UnitService) {
+    constructor(private readonly unitService: UnitService) {
         super();
         unitService.unitQueue.forEach((u, i) => {
-            const unitIcon = new game.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0x444444);
-            unitIcon.addChild(u.ship.createIcon());
-            unitIcon.addChild(new game.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 1, u.frameColor));
-            this.bgQueue.addChild(unitIcon);
+            const iconUnit = new game.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0x444444);
+            const spriteUnit: PIXI.Sprite = u.ship.createSprite();
+            const factor: number = Math.min(1 / u.ship.hull.width, 1 / u.ship.hull.height);
+            spriteUnit.scale.set(factor, factor);
+            spriteUnit.anchor.set(game.CENTER, game.CENTER);
+            spriteUnit.position.set(iconUnit.width / 2, iconUnit.height / 2);
+            iconUnit.addChild(spriteUnit);
+            iconUnit.addChild(new game.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 1, u.frameColor));
+            this.bgQueue.addChild(iconUnit);
 
             u.on(Unit.DESTROY, () => {
-                this.bgQueue.removeChild(unitIcon);
+                this.bgQueue.removeChild(iconUnit);
                 this.updateUnitSpritePositions();
             });
         });

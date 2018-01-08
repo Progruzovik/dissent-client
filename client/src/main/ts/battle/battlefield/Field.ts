@@ -4,6 +4,7 @@ import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketClient from "../WebSocketClient";
 import { ActionType, PathNode } from "../util";
+import { l } from "../../localizer";
 import * as game from "../../game";
 
 export default class Field extends game.UiLayer {
@@ -64,8 +65,7 @@ export default class Field extends game.UiLayer {
 
         unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
         unitService.on(ActionType.Shot, () => this.updatePathsAndMarks());
-        unitService.on(UnitService.SHOT_CELL, (cell: game.Point) =>
-            this.markLayer.addChild(new Mark(0xffffff, cell)));
+        unitService.on(UnitService.SHOT_CELL, (cell: game.Point) => this.markLayer.addChild(new Mark(0xffffff, cell)));
         unitService.on(UnitService.TARGET_CELL, (cell: game.Point) =>
             this.markLayer.addChild(new Mark(0xff0000, cell)));
         unitService.on(Unit.PREPARE_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
@@ -145,8 +145,8 @@ export default class Field extends game.UiLayer {
                 this.pathLayer.addChild(pathLine);
                 cell = previousCell;
             }
-            const moveCost = `${this.paths[mark.cell.x][mark.cell.y].movementCost.toLocaleString()} ОД`;
-            const txtMoveCost = new PIXI.Text(moveCost, { fill: "white", fontSize: 14 });
+            const moveCost = `${this.paths[mark.cell.x][mark.cell.y].movementCost.toLocaleString()} ${l("ap")}`;
+            const txtMoveCost = new PIXI.Text(moveCost, { fill: "white", fontSize: 12 });
             txtMoveCost.position.set(this.selectedMark.x, this.selectedMark.y);
             this.pathLayer.addChild(txtMoveCost);
         }

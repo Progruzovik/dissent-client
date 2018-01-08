@@ -18,15 +18,23 @@ public final class Hull {
     @Column(nullable = false)
     private int strength;
 
+    @Column(nullable = false)
+    private int width;
+
+    @Column(nullable = false)
+    private int height;
+
     @ManyToOne
     @JoinColumn(name = "textureId", nullable = false)
     private Texture texture;
 
-    public Hull(int id, String name, int actionPoints, int strength, Texture texture) {
+    public Hull(int id, String name, int actionPoints, int strength, int width, int height, Texture texture) {
         this.id = id;
         this.name = name;
         this.actionPoints = actionPoints;
         this.strength = strength;
+        this.width = width;
+        this.height = height;
         this.texture = texture;
     }
 
@@ -46,6 +54,14 @@ public final class Hull {
 
     public int getStrength() {
         return strength;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public Texture getTexture() {

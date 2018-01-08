@@ -26,13 +26,14 @@ export default class Unit extends game.AbstractActor {
         this.interactive = true;
         this.frameColor = playerSide == this.side ? 0x00ff00 : 0xff0000;
 
-        const sprite = new PIXI.Sprite(PIXI.loader.resources[ship.hull.texture.name].texture);
+        const sprite = ship.createSprite();
         if (side == Side.Right) {
             sprite.scale.x = -1;
             sprite.anchor.x = 1;
         }
         this.addChild(sprite);
-        this.addChild(new game.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0.6, this.frameColor));
+        const frameWidth = ship.hull.width * Field.CELL_SIZE.x, frameHeight = ship.hull.height * Field.CELL_SIZE.y;
+        this.addChild(new game.Frame(frameWidth, frameHeight, 0.6, this.frameColor));
         this.updatePosition();
     }
 

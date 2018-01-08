@@ -33,7 +33,7 @@ export default class Ship implements ShipData {
         }
     }
 
-    createIcon(): PIXI.Container {
+    createSprite(): PIXI.Sprite {
         return new PIXI.Sprite(PIXI.loader.resources[this.hull.texture.name].texture);
     }
 

@@ -72,7 +72,7 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
 }
 
 interface Unit {
-    readonly actionPoints: number, readonly side: Side, readonly cell: game.Point, readonly ship: ShipData;
+    readonly actionPoints: number, readonly side: Side, readonly firstCell: game.Point, readonly ship: ShipData;
 }
 
 class Message {

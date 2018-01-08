@@ -33,10 +33,11 @@ public final class Gun {
     @JoinColumn(name = "textureId", nullable = false)
     private Texture texture;
 
-    public Gun(int shotCost, int radius, GunType type) {
+    public Gun(int shotCost, int radius, GunType type, Texture texture) {
         this.shotCost = shotCost;
         this.radius = radius;
         this.type = type;
+        this.texture = texture;
     }
 
     public Gun() { }

@@ -23,7 +23,7 @@ export default class Window extends game.UiLayer {
         txtTitle.anchor.x = game.CENTER;
         txtTitle.x = this.bgWindow.width / 2;
         this.bgWindow.addChild(txtTitle);
-        const unitIcon = unit.ship.createIcon();
+        const unitIcon = unit.ship.createSprite();
         unitIcon.pivot.x = unitIcon.width / 2;
         unitIcon.x = this.bgWindow.width / 2;
         unitIcon.y = txtTitle.height;
