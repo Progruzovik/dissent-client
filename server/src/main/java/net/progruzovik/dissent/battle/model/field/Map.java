@@ -8,9 +8,11 @@ import java.util.List;
 
 final class Map {
 
+    private final Cell size;
     private final List<List<Location>> locations;
 
     Map(Cell size) {
+        this.size = size;
         locations = new ArrayList<>(size.getX());
         for (int i = 0; i < size.getX(); i++) {
             locations.add(new ArrayList<>(size.getY()));
@@ -20,13 +22,20 @@ final class Map {
         }
     }
 
+    Cell getSize() {
+        return size;
+    }
+
     int getMovementCost(Cell cell, int width, int height) {
         int result = 0;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                final int movementCost = locations.get(cell.getX() + i).get(cell.getY() + j).getMovementCost();
-                if (movementCost > result) {
-                    result = movementCost;
+                final Cell nextCell = new Cell(cell.getX() + i, cell.getY() + j);
+                if (nextCell.isInBorders(size)) {
+                    final int movementCost = locations.get(nextCell.getX()).get(nextCell.getY()).getMovementCost();
+                    if (movementCost > result) {
+                        result = movementCost;
+                    }
                 }
             }
         }

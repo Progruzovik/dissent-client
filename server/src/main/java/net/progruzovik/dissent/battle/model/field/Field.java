@@ -19,7 +19,6 @@ public final class Field {
     public static final int UNIT_INDENT = 3;
     public static final int BORDER_INDENT = 4;
 
-    private final Cell size;
     private final Map map;
     private final List<Cell> asteroids = new ArrayList<>();
     private final List<Cell> clouds = new ArrayList<>();
@@ -32,7 +31,6 @@ public final class Field {
     private final GunCells gunCells = new GunCells();
 
     public Field(Cell size) {
-        this.size = size;
         map = new Map(size);
         paths = new ArrayList<>(size.getX());
         for (int i = 0; i < size.getX(); i++) {
@@ -61,7 +59,7 @@ public final class Field {
     }
 
     public Cell getSize() {
-        return size;
+        return map.getSize();
     }
 
     public void setActiveUnit(Unit activeUnit) {
@@ -132,7 +130,7 @@ public final class Field {
     }
 
     public Move moveActiveUnit(Cell cell) {
-        if (!cell.isInBorders(size) || !isCellReachable(cell)) {
+        if (!cell.isInBorders(map.getSize()) || !isCellReachable(cell)) {
             throw new InvalidMoveException(activeUnit.getActionPoints(), activeUnit.getFirstCell(), cell);
         }
         final int movementCost = paths.get(cell.getX()).get(cell.getY()).getMovementCost();
@@ -240,7 +238,7 @@ public final class Field {
                 result.add(new Cell(start.getX() + j + centerWidth - 1, start.getY() + i));
             }
         }
-        result.removeIf(c -> !c.isInBorders(size) || !filter.test(c));
+        result.removeIf(c -> !c.isInBorders(map.getSize()) || !filter.test(c));
         return result;
     }
 
