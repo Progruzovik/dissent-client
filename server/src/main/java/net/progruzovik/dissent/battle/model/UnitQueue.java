@@ -25,7 +25,7 @@ public final class UnitQueue {
         queue.offer(unit);
     }
 
-    public Unit getUnitOnCell(Cell cell) {
+    public Unit findUnitOnCell(Cell cell) {
         for (final Unit unit : queue) {
             if (unit.isOccupyCell(cell)) {
                 return unit;

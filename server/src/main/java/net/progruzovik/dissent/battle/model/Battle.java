@@ -97,12 +97,12 @@ public final class Battle extends Observable {
 
     public void shootWithCurrentUnit(String captainId, int gunId, Cell cell) {
         if (isIdBelongsToCurrentCaptain(captainId) && field.canActiveUnitHitCell(gunId, cell)) {
-            final Unit target = unitQueue.getUnitOnCell(cell);
+            final Unit target = unitQueue.findUnitOnCell(cell);
             if (target == null) throw new InvalidShotException();
 
             final int damage = unitQueue.getCurrentUnit().shoot(gunId, target);
             field.updateActiveUnit();
-            notifyObservers(new Message<>("shot", new Shot(gunId, damage, cell)));
+            notifyObservers(new Message<>("shot", new Shot(gunId, damage, target.getFirstCell())));
             if (target.getShip().getStrength() == 0) {
                 unitQueue.getUnits().remove(target);
                 field.destroyUnit(target);
