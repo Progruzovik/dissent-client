@@ -26,7 +26,7 @@ final class Map {
         return size;
     }
 
-    int getMovementCost(Cell cell, int width, int height) {
+    int findMovementCost(Cell cell, int width, int height) {
         int result = 0;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -43,11 +43,7 @@ final class Map {
     }
 
     LocationStatus getLocationStatus(Cell cell) {
-        return getLocationStatus(cell.getX(), cell.getY());
-    }
-
-    LocationStatus getLocationStatus(int x, int y) {
-        return locations.get(x).get(y).getCurrentStatus();
+        return locations.get(cell.getX()).get(cell.getY()).getCurrentStatus();
     }
 
     void createLocation(Cell cell, LocationStatus defaultStatus) {
@@ -55,7 +51,7 @@ final class Map {
     }
 
     void addUnit(Unit unit) {
-        setLocationsStatusInBorders(unit.getFirstCell(), unit.getWidth(), unit.getHeight(), unit.getLocationStatus());
+        setLocationsStatus(unit.getFirstCell(), unit.getWidth(), unit.getHeight(), unit.getLocationStatus());
     }
 
     void moveUnit(Unit unit, Cell newCell) {
@@ -65,15 +61,15 @@ final class Map {
                 locations.get(firstCell.getX() + i).get(firstCell.getY() + j).resetStatusToDefault();
             }
         }
-        setLocationsStatusInBorders(newCell, unit.getWidth(), unit.getHeight(), unit.getLocationStatus());
+        setLocationsStatus(newCell, unit.getWidth(), unit.getHeight(), unit.getLocationStatus());
     }
 
     void destroyUnit(Unit unit) {
         final int width = unit.getWidth(), height = unit.getHeight();
-        setLocationsStatusInBorders(unit.getFirstCell(), width, height, LocationStatus.UNIT_DESTROYED);
+        setLocationsStatus(unit.getFirstCell(), width, height, LocationStatus.UNIT_DESTROYED);
     }
 
-    private void setLocationsStatusInBorders(Cell start, int width, int height, LocationStatus status) {
+    private void setLocationsStatus(Cell start, int width, int height, LocationStatus status) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 locations.get(start.getX() + i).get(start.getY() + j).setCurrentStatus(status);

@@ -54,12 +54,8 @@ public final class Unit {
     }
 
     public boolean isOccupyCell(Cell cell) {
-        return isOccupyCell(cell.getX(), cell.getY());
-    }
-
-    public boolean isOccupyCell(int x, int y) {
-        return x >= firstCell.getX() && x < firstCell.getX() + ship.getHull().getWidth()
-                && y >= firstCell.getY() && y < firstCell.getY() + ship.getHull().getHeight();
+        return cell.getX() >= firstCell.getX() && cell.getX() < firstCell.getX() + ship.getHull().getWidth()
+                && cell.getY() >= firstCell.getY() && cell.getY() < firstCell.getY() + ship.getHull().getHeight();
     }
 
     public void activate() {

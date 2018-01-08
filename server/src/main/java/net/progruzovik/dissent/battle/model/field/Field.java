@@ -116,7 +116,7 @@ public final class Field {
             final Cell cell = cellQueue.poll();
             final int distanceToCell = paths.get(cell.getX()).get(cell.getY()).getMovementCost();
             for (final Cell neighborCell : findNeighborsForCell(cell)) {
-                final int distanceToNeighbor = distanceToCell + map.getMovementCost(neighborCell, width, height);
+                final int distanceToNeighbor = distanceToCell + map.findMovementCost(neighborCell, width, height);
                 final PathNode pathFromNeighbor = paths.get(neighborCell.getX()).get(neighborCell.getY());
                 if (distanceToNeighbor <= activeUnit.getActionPoints()
                         && (pathFromNeighbor == null || pathFromNeighbor.getMovementCost() > distanceToNeighbor)) {
@@ -152,13 +152,14 @@ public final class Field {
             preparedGunId = gunId;
             gunCells.clear();
 
+            final Cell unitCell = activeUnit.getFirstCell();
             final int radius = activeUnit.getShip().findGunById(gunId).getRadius();
             final List<Cell> availableCells = findNeighborsInRadius(activeUnit.getFirstCell(),
                     activeUnit.getWidth(), activeUnit.getHeight(), radius, c -> {
                 for (int i = 0; i < activeUnit.getWidth(); i++) {
                     for (int j = 0; j < activeUnit.getHeight(); j++) {
-                        final int x = activeUnit.getFirstCell().getX() + i, y = activeUnit.getFirstCell().getY() + j;
-                        if (isCellCanBeShot(new Cell(x, y), c)) {
+                        final Cell cell = new Cell(unitCell.getX() + i, unitCell.getY() + j);
+                        if (cell.isInBorders(map.getSize()) && isCellCanBeShot(cell, c)) {
                             return true;
                         }
                     }
@@ -189,10 +190,11 @@ public final class Field {
         if (paths.get(cell.getX()).get(cell.getY()) == null) return false;
         for (int i = 0; i < activeUnit.getWidth(); i++) {
             for (int j = 0; j < activeUnit.getHeight(); j++) {
-                final int x = cell.getX() + i, y = cell.getY() + j;
-                final LocationStatus status = map.getLocationStatus(x, y);
+                final Cell nextCell = new Cell(cell.getX() + i, cell.getY() + j);
+                if (!nextCell.isInBorders(map.getSize())) return false;
+                final LocationStatus status = map.getLocationStatus(nextCell);
                 if (status != LocationStatus.EMPTY
-                        && status != LocationStatus.CLOUD && !activeUnit.isOccupyCell(x, y)) {
+                        && status != LocationStatus.CLOUD && !activeUnit.isOccupyCell(nextCell)) {
                     return false;
                 }
             }

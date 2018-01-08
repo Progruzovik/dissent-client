@@ -12,6 +12,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     static readonly TARGET_CELL = "targetCell";
 
     readonly unitQueue = new Array<Unit>(0);
+    private targetCells: game.Point[];
     private readonly currentTargets = new Array<Unit>(0);
 
     constructor(private readonly playerSide: Side, units: Unit[],
@@ -21,8 +22,9 @@ export default class UnitService extends PIXI.utils.EventEmitter {
             if (unit.strength > 0) {
                 this.unitQueue.push(unit);
                 unit.on(game.Event.CLICK, () => {
-                    if (this.currentTargets.indexOf(unit) != -1) {
-                        webSocketClient.shootWithCurrentUnit(this.currentUnit.preparedGunId, unit.cell);
+                    const index: number = this.currentTargets.indexOf(unit);
+                    if (index != -1) {
+                        webSocketClient.shootWithCurrentUnit(this.currentUnit.preparedGunId, this.targetCells[index]);
                     }
                 });
                 unit.on(ActionType.Move, () => {
@@ -39,9 +41,9 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                         for (const cell of g.shotCells) {
                             this.emit(UnitService.SHOT_CELL, cell);
                         }
-                        for (const cell of g.targetCells) {
-                            this.currentTargets.push(this.unitQueue
-                                .filter(u => u.cell.x == cell.x && u.cell.y == cell.y)[0]);
+                        this.targetCells = g.targetCells;
+                        for (const cell of this.targetCells) {
+                            this.currentTargets.push(this.unitQueue.filter(u => u.isOccupyCell(cell))[0]);
                             this.emit(UnitService.TARGET_CELL, cell);
                         }
                     });

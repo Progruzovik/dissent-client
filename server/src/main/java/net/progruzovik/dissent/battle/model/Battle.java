@@ -75,10 +75,10 @@ public final class Battle extends Observable {
         super.notifyObservers(arg);
     }
 
-    public void registerShips(Side side, List<Ship> ships) {
-        final int column = side == Side.RIGHT ? field.getSize().getX() - 1 : 0;
+    public void addShips(Side side, List<Ship> ships) {
         for (int i = 0; i < ships.size(); i++) {
             final Ship ship = ships.get(i);
+            final int column = side == Side.RIGHT ? field.getSize().getX() - ship.getHull().getWidth() : 0;
             final Unit unit = new Unit(new Cell(column, i * UNIT_INDENT + BORDER_INDENT), side, ship);
             field.addUnit(unit);
             unitQueue.addUnit(unit);

@@ -29,6 +29,7 @@ public final class MessageSender {
             try {
                 session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));
             } catch (IOException e) {
+                session = null;
                 log.error("Can't send message with subject \"{}\"!", message.getSubject(), e);
             }
         }

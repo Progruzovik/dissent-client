@@ -73,7 +73,10 @@ export default class Field extends game.UiLayer {
         unitService.on(UnitService.TARGET_CELL, (cell: game.Point) =>
             this.markLayer.addChild(new Mark(0x550000, cell)));
         unitService.on(Unit.PREPARE_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
-        unitService.on(Unit.NOT_PREPARE_TO_SHOT, () => this.addCurrentPathMarks());
+        unitService.on(Unit.NOT_PREPARE_TO_SHOT, () => {
+            this.removePathsAndMarksExceptCurrent();
+            this.addCurrentPathMarks()
+        });
         unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
         projectileService.on(Projectile.NEW_SHOT, (projectile: Projectile) => this.addChild(projectile));
     }
@@ -88,11 +91,12 @@ export default class Field extends game.UiLayer {
         this.markCurrent.width = this.unitService.currentUnit.width - Field.LINE_WIDTH;
         this.markCurrent.height = this.unitService.currentUnit.height - Field.LINE_WIDTH;
         this.markCurrent.cell = this.unitService.currentUnit.cell;
-        const unitWidth: number = this.unitService.currentUnit.ship.hull.width;
-        const unitHeight: number = this.unitService.currentUnit.ship.hull.height;
-        const activeAreaOffset: game.Point = this.unitService.currentUnit.findCenterCell();
+        this.removePathsAndMarksExceptCurrent();
         if (this.unitService.isCurrentPlayerTurn) {
             this.webSocketClient.requestPathsAndReachableCells(d => {
+                const unitWidth: number = this.unitService.currentUnit.ship.hull.width;
+                const unitHeight: number = this.unitService.currentUnit.ship.hull.height;
+                const activeAreaOffset: game.Point = this.unitService.currentUnit.findCenterCell();
                 this.paths = d.paths;
                 this.pathMarks.removeChildren();
                 for (const cell of d.reachableCells) {
@@ -171,7 +175,6 @@ export default class Field extends game.UiLayer {
     }
 
     private addCurrentPathMarks() {
-        this.removePathsAndMarksExceptCurrent();
         this.markLayer.addChildAt(this.pathMarks, 0);
     }
 }
