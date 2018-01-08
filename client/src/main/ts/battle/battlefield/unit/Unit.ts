@@ -86,6 +86,11 @@ export default class Unit extends game.AbstractActor {
         return new game.Point(this.x + this.width / 2, this.y + this.height / 2);
     }
 
+    isOccupyCell(cell: game.Point): boolean {
+        return cell.x >= this.cell.x && cell.x < this.cell.x + this.ship.hull.width
+            && cell.y >= this.cell.y && cell.y < this.cell.y + this.ship.hull.height;
+    }
+
     makeCurrent() {
         this._actionPoints = this.ship.hull.actionPoints;
     }
