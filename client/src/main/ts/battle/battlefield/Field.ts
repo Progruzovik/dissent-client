@@ -26,7 +26,6 @@ export default class Field extends game.UiLayer {
                 private readonly unitService: UnitService, private readonly projectileService: ProjectileService,
                 private readonly webSocketClient: WebSocketClient) {
         super();
-
         const bg = new game.Rectangle(0, 0);
         this.addChild(bg);
         for (let i = 0; i <= size.y; i++) {
@@ -75,30 +74,29 @@ export default class Field extends game.UiLayer {
         unitService.on(Unit.PREPARE_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
         unitService.on(Unit.NOT_PREPARE_TO_SHOT, () => {
             this.removePathsAndMarksExceptCurrent();
-            this.addCurrentPathMarks()
+            this.addCurrentPathMarks();
         });
         unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
         projectileService.on(Projectile.NEW_SHOT, (projectile: Projectile) => this.addChild(projectile));
     }
 
     removePathsAndMarksExceptCurrent() {
-        this.pathLayer.removeChildren();
         this.markLayer.removeChildren();
         this.markLayer.addChild(this.markCurrent);
+        this.pathLayer.removeChildren();
     }
 
     private updatePathsAndMarks() {
         this.markCurrent.width = this.unitService.currentUnit.width - Field.LINE_WIDTH;
         this.markCurrent.height = this.unitService.currentUnit.height - Field.LINE_WIDTH;
         this.markCurrent.cell = this.unitService.currentUnit.cell;
-        this.removePathsAndMarksExceptCurrent();
+        this.pathMarks.removeChildren();
         if (this.unitService.isCurrentPlayerTurn) {
             this.webSocketClient.requestPathsAndReachableCells(d => {
                 const unitWidth: number = this.unitService.currentUnit.ship.hull.width;
                 const unitHeight: number = this.unitService.currentUnit.ship.hull.height;
                 const activeAreaOffset: game.Point = this.unitService.currentUnit.findCenterCell();
                 this.paths = d.paths;
-                this.pathMarks.removeChildren();
                 for (const cell of d.reachableCells) {
                     const marks = new MarksContainer(cell, unitWidth, unitHeight);
                     const activeArea = new game.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y);

@@ -86,8 +86,12 @@ export default class UnitService extends PIXI.utils.EventEmitter {
         return this.unitQueue[0];
     }
 
-    nextTurn() {
+    endTurn() {
         this.currentUnit.preparedGunId = Unit.NO_GUN_ID;
+        this.webSocketClient.endTurn();
+    }
+
+    nextTurn() {
         this.unitQueue.push(this.unitQueue.shift());
         this.currentUnit.makeCurrent();
         this.emit(ActionType.NextTurn, false);

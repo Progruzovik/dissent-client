@@ -1,7 +1,6 @@
 import Field from "./Field";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import WebSocketClient from "../WebSocketClient";
 import { ActionType, Gun } from "../util";
 import { l } from "../../localizer";
 import * as game from "../../game";
@@ -22,7 +21,7 @@ export default class Controls extends game.UiLayer {
     private readonly bgModule = new game.Rectangle(0, 0);
     private readonly btnNextTurn = new game.Button(l("endTurn"));
 
-    constructor(private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
+    constructor(private readonly unitService: UnitService) {
         super();
         this.spriteHull.anchor.set(game.CENTER, game.CENTER);
         this.bgHull.addChild(this.spriteHull);
@@ -43,7 +42,7 @@ export default class Controls extends game.UiLayer {
             unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.firstGun.id);
         this.btnSecondGun.on(game.Event.BUTTON_CLICK, () =>
             unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.secondGun.id);
-        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketClient.endTurn());
+        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => unitService.endTurn());
     }
 
     resize(width: number, height: number) {
