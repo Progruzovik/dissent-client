@@ -11,7 +11,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     static readonly SHOT_CELL = "shotCell";
     static readonly TARGET_CELL = "targetCell";
 
-    readonly unitQueue = new Array<Unit>(0);
+    private readonly unitQueue = new Array<Unit>(0);
     private targetCells: game.Point[];
     private readonly currentTargets = new Array<Unit>(0);
 
@@ -29,11 +29,11 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 });
                 unit.on(ActionType.Move, () => {
                     this.emit(ActionType.Move);
-                    this.checkCurrentUnitActionPoints();
+                    this.tryToEndTurn();
                 });
                 unit.on(ActionType.Shot, () => {
                     this.emit(ActionType.Shot);
-                    this.checkCurrentUnitActionPoints();
+                    this.tryToEndTurn();
                 });
                 unit.on(Unit.PREPARE_TO_SHOT, () => {
                     webSocketClient.requestGunCells(unit.preparedGunId, g => {
@@ -42,23 +42,17 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                             this.emit(UnitService.SHOT_CELL, cell);
                         }
                         this.targetCells = g.targetCells;
+                        this.currentTargets.length = 0;
                         for (const cell of this.targetCells) {
-                            this.currentTargets.push(this.unitQueue.filter(u => u.isOccupyCell(cell))[0]);
+                            this.currentTargets.push(this.findUnitOnCell(cell));
                             this.emit(UnitService.TARGET_CELL, cell);
                         }
                     });
                 });
-                unit.on(Unit.NOT_PREPARE_TO_SHOT, () => {
-                    this.currentTargets.length = 0;
-                    this.emit(Unit.NOT_PREPARE_TO_SHOT);
-                });
+                unit.on(Unit.NOT_PREPARE_TO_SHOT, () => this.emit(Unit.NOT_PREPARE_TO_SHOT));
                 unit.once(Unit.DESTROY, () => {
                     this.unitQueue.splice(this.unitQueue.indexOf(unit), 1);
-                    unit.off(game.Event.CLICK);
-                    unit.off(ActionType.Move);
-                    unit.off(ActionType.Shot);
-                    unit.off(Unit.PREPARE_TO_SHOT);
-                    unit.off(Unit.NOT_PREPARE_TO_SHOT);
+                    unit.removeAllListeners();
                 });
             }
 
@@ -86,9 +80,8 @@ export default class UnitService extends PIXI.utils.EventEmitter {
         return this.unitQueue[0];
     }
 
-    endTurn() {
-        this.currentUnit.preparedGunId = Unit.NO_GUN_ID;
-        this.webSocketClient.endTurn();
+    findUnitOnCell(cell: game.Point) {
+        return this.unitQueue.filter(u => u.isOccupyCell(cell))[0];
     }
 
     nextTurn() {
@@ -97,7 +90,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
         this.emit(ActionType.NextTurn, false);
     }
 
-    private checkCurrentUnitActionPoints() {
+    private tryToEndTurn() {
         if (this.isCurrentPlayerTurn && this.currentUnit.actionPoints == 0) {
             this.webSocketClient.endTurn();
         }

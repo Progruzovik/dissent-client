@@ -17,7 +17,7 @@ export default class Unit extends game.AbstractActor {
 
     readonly frameColor: number;
 
-    private _preparedGunId = Unit.NO_GUN_ID;
+    private _preparedGunId: number = Unit.NO_GUN_ID;
     private _currentMove: Move;
 
     constructor(private _actionPoints: number, playerSide: Side, readonly side: Side, private _cell: game.Point,
@@ -73,7 +73,7 @@ export default class Unit extends game.AbstractActor {
     }
 
     set preparedGunId(value: number) {
-        if (this.preparedGunId == value) {
+        if (this.preparedGunId == value || value == Unit.NO_GUN_ID) {
             this._preparedGunId = Unit.NO_GUN_ID;
             this.emit(Unit.NOT_PREPARE_TO_SHOT);
         } else if (value == this.ship.firstGun.id || value == this.ship.secondGun.id) {
@@ -97,6 +97,7 @@ export default class Unit extends game.AbstractActor {
 
     makeCurrent() {
         this._actionPoints = this.ship.hull.actionPoints;
+        this.preparedGunId = Unit.NO_GUN_ID;
     }
 
     shoot(target: Unit, shot: Shot) {
@@ -110,7 +111,7 @@ export default class Unit extends game.AbstractActor {
         this.projectileService.shoot(activeGun, this.findCenter(), target.findCenter());
 
         this.projectileService.once(game.Event.DONE, () => {
-            this._preparedGunId = Unit.NO_GUN_ID;
+            this.preparedGunId = Unit.NO_GUN_ID;
             target.strength -= shot.damage;
             target.emit(Unit.UPDATE_STATS);
             this.emit(ActionType.Shot);

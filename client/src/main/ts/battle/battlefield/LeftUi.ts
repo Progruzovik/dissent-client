@@ -12,9 +12,9 @@ export default class LeftUi extends game.UiLayer {
     private readonly txtActionPoints = new PIXI.Text("", { align: "center", fill: "white",
         fontSize: 36, fontWeight: "bold", stroke: "blue", strokeThickness: 4 });
 
-    constructor(private readonly unitService: UnitService) {
+    constructor(units: Unit[], private readonly unitService: UnitService) {
         super();
-        unitService.unitQueue.forEach((u, i) => {
+        units.forEach((u, i) => {
             const iconUnit = new game.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0x444444);
             const spriteUnit: PIXI.Sprite = u.ship.createSprite();
             const factor: number = Math.min(1 / u.ship.hull.width, 1 / u.ship.hull.height);
