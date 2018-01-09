@@ -7,10 +7,10 @@ export abstract class AbstractActor extends PIXI.Container {
         PIXI.ticker.shared.add(this.update, this);
     }
     
-    destroy() {
+    destroy(options?: PIXI.DestroyOptions | boolean) {
         PIXI.ticker.shared.remove(this.update, this);
-        super.destroy({ children: true });
+        super.destroy(options);
     }
 
-    protected abstract update();
+    protected abstract update(deltaTime: number);
 }

@@ -118,7 +118,7 @@ export default class Unit extends game.AbstractActor {
         });
     }
 
-    protected update() {
+    protected update(deltaTime: number) {
         if (this.currentMove) {
             if (this.currentMove.cells.length > 0) {
                 this._cell = this.currentMove.cells.pop();
