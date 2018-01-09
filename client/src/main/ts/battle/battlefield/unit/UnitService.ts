@@ -52,7 +52,11 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 unit.on(Unit.NOT_PREPARE_TO_SHOT, () => this.emit(Unit.NOT_PREPARE_TO_SHOT));
                 unit.once(Unit.DESTROY, () => {
                     this.unitQueue.splice(this.unitQueue.indexOf(unit), 1);
-                    unit.removeAllListeners();
+                    unit.off(game.Event.CLICK);
+                    unit.off(ActionType.Move);
+                    unit.off(ActionType.Shot);
+                    unit.off(Unit.PREPARE_TO_SHOT);
+                    unit.off(Unit.NOT_PREPARE_TO_SHOT);
                 });
             }
 
