@@ -1,7 +1,7 @@
 import ActionReceiver from "./ActionReceiver"
 import Controls from "./Controls";
 import Field from "./Field";
-import LeftUi from "./LeftUi";
+import LeftPanel from "./LeftPanel";
 import ProjectileService from "./projectile/ProjectileService";
 import PopUp from "./unit/PopUp";
 import Unit from "./unit/Unit";
@@ -15,7 +15,7 @@ export default class BattlefieldRoot extends game.AbstractRoot {
 
     private readonly field: Field;
     private readonly controls: Controls;
-    private readonly leftUi: LeftUi;
+    private readonly leftUi: LeftPanel;
 
     private unitPopUp: PopUp;
 
@@ -28,7 +28,7 @@ export default class BattlefieldRoot extends game.AbstractRoot {
         this.addChild(this.field);
         this.controls = new Controls(unitService, webSocketClient);
         this.addChild(this.controls);
-        this.leftUi = new LeftUi(units, unitService);
+        this.leftUi = new LeftPanel(units, unitService);
         this.addChild(this.leftUi);
         unitService.emit(ActionType.NextTurn, true);
         const actionReceiver = new ActionReceiver(this.field, this.controls, unitService, webSocketClient);

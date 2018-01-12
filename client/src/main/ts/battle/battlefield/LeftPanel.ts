@@ -6,7 +6,7 @@ import { l } from "../../localizer";
 import * as game from "../../game";
 import * as PIXI from "pixi.js";
 
-export default class LeftUi extends game.AbstractBranch {
+export default class LeftPanel extends game.AbstractBranch {
 
     private readonly bgQueue = new PIXI.Container();
     private readonly txtActionPoints = new PIXI.Text("", { align: "center", fill: "white",

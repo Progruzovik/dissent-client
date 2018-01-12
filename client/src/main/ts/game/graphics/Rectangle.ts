@@ -7,8 +7,8 @@ export class Rectangle extends Shape {
     }
 
     protected draw() {
-        this.beginFill(this.color);
-        this.drawRect(0, 0, this.width, this.height);
-        this.endFill();
+        this.graphics.beginFill(this.color);
+        this.graphics.drawRect(0, 0, this.width, this.height);
+        this.graphics.endFill();
     }
 }

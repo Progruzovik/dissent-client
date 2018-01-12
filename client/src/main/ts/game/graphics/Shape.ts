@@ -1,10 +1,13 @@
 import * as PIXI from "pixi.js";
 
-export abstract class Shape extends PIXI.Graphics {
+export abstract class Shape extends PIXI.Container {
+
+    protected readonly graphics = new PIXI.Graphics();
 
     constructor(private _width: number = 0, private _height: number = 0,
                 private _thickness: number = 1, private _color: number = 0x000000) {
         super();
+        this.addChild(this.graphics);
         this.draw();
     }
 
@@ -47,7 +50,7 @@ export abstract class Shape extends PIXI.Graphics {
     protected abstract draw();
 
     private redraw() {
-        this.clear();
+        this.graphics.clear();
         this.draw();
     }
 }

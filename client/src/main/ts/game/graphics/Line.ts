@@ -23,8 +23,8 @@ export class Line extends Shape {
     }
 
     protected draw() {
-        this.lineStyle(this.thickness, this.color);
-        this.moveTo(0, this.thickness / 2);
-        this.lineTo(this.width, this.thickness / 2);
+        this.graphics.lineStyle(this.thickness, this.color);
+        this.graphics.moveTo(0, this.thickness / 2);
+        this.graphics.lineTo(this.width, this.thickness / 2);
     }
 }

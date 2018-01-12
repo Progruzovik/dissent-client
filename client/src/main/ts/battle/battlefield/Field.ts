@@ -28,18 +28,19 @@ export default class Field extends game.Field {
         super();
         const bg = new game.Rectangle(size.x * Field.CELL_SIZE.x + Field.LINE_WIDTH,
             size.y * Field.CELL_SIZE.y + Field.LINE_WIDTH);
+        const lines = new PIXI.Graphics();
+        lines.lineStyle(Field.LINE_WIDTH, 0x777777);
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Line(bg.width, Field.LINE_WIDTH, 0x777777);
-            line.y = i * Field.CELL_SIZE.y;
-            bg.addChild(line);
+            const lineY = i * Field.CELL_SIZE.y + lines.lineWidth / 2;
+            lines.moveTo(0, lineY);
+            lines.lineTo(bg.width, lineY);
         }
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Line(bg.height, Field.LINE_WIDTH, 0x777777);
-            line.pivot.y = line.thickness;
-            line.rotation = Math.PI / 2;
-            line.x = i * Field.CELL_SIZE.x;
-            bg.addChild(line);
+            const lineX = i * Field.CELL_SIZE.x + lines.lineWidth / 2;
+            lines.moveTo(lineX, 0);
+            lines.lineTo(lineX, bg.height);
         }
+        bg.addChild(lines);
         this.content.addChild(bg);
 
         this.markLayer.addChild(this.markCurrent);
