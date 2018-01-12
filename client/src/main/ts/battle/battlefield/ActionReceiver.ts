@@ -43,10 +43,10 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
         this.field.removePathsAndMarksExceptCurrent();
         this.controls.lockInterface();
         if (actionType == ActionType.Move) {
-            this.unitService.currentUnit.currentMove = this.remainingMoves.shift();
+            this.unitService.activeUnit.currentMove = this.remainingMoves.shift();
         } else if (actionType == ActionType.Shot) {
             const shot: Shot = this.remainingShots.shift();
-            this.unitService.currentUnit.shoot(this.unitService.findUnitOnCell(shot.cell), shot);
+            this.unitService.activeUnit.shoot(this.unitService.findUnitOnCell(shot.cell), shot);
         } else if (actionType == ActionType.NextTurn) {
             this.unitService.nextTurn();
         } else if (actionType == ActionType.BattleFinish) {

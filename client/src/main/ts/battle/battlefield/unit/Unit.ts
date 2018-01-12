@@ -95,7 +95,7 @@ export default class Unit extends game.AbstractActor {
         return new game.Point(this.x + this.width / 2, this.y + this.height / 2);
     }
 
-    makeCurrent() {
+    activate() {
         this._actionPoints = this.ship.hull.actionPoints;
         this.preparedGunId = Unit.NO_GUN_ID;
     }

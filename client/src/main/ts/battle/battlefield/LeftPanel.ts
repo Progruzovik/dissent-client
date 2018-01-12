@@ -55,7 +55,7 @@ export default class LeftPanel extends game.AbstractBranch {
     }
 
     private updateActionPointsValue() {
-        this.txtActionPoints.text = `${l("ap")}\n${this.unitService.currentUnit.actionPoints}`
-            + `/${this.unitService.currentUnit.ship.hull.actionPoints}`;
+        this.txtActionPoints.text = `${l("ap")}\n${this.unitService.activeUnit.actionPoints}`
+            + `/${this.unitService.activeUnit.ship.hull.actionPoints}`;
     }
 }

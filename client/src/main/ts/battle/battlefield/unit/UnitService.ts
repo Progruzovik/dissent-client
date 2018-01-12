@@ -24,7 +24,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 unit.on(game.Event.CLICK, () => {
                     const index: number = this.currentTargets.indexOf(unit);
                     if (index != -1) {
-                        webSocketClient.shootWithCurrentUnit(this.currentUnit.preparedGunId, this.targetCells[index]);
+                        webSocketClient.shootWithCurrentUnit(this.activeUnit.preparedGunId, this.targetCells[index]);
                     }
                 });
                 unit.on(ActionType.Move, () => {
@@ -61,8 +61,8 @@ export default class UnitService extends PIXI.utils.EventEmitter {
             }
 
             unit.on(game.Event.MOUSE_OVER, (e: PIXI.interaction.InteractionEvent) => {
-                if (this.currentUnit.preparedGunId != Unit.NO_GUN_ID
-                    && this.currentUnit.side != unit.side && unit.strength > 0) {
+                if (this.activeUnit.preparedGunId != Unit.NO_GUN_ID
+                    && this.activeUnit.side != unit.side && unit.strength > 0) {
                     unit.alpha = 0.75;
                 }
                 this.emit(UnitService.UNIT_MOUSE_OVER, e.data.global, unit);
@@ -77,10 +77,10 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     }
 
     get isCurrentPlayerTurn(): boolean {
-        return this.playerSide == this.currentUnit.side;
+        return this.playerSide == this.activeUnit.side;
     }
 
-    get currentUnit(): Unit {
+    get activeUnit(): Unit {
         return this.unitQueue[0];
     }
 
@@ -90,12 +90,12 @@ export default class UnitService extends PIXI.utils.EventEmitter {
 
     nextTurn() {
         this.unitQueue.push(this.unitQueue.shift());
-        this.currentUnit.makeCurrent();
+        this.activeUnit.activate();
         this.emit(ActionType.NextTurn, false);
     }
 
     private tryToEndTurn() {
-        if (this.isCurrentPlayerTurn && this.currentUnit.actionPoints == 0) {
+        if (this.isCurrentPlayerTurn && this.activeUnit.actionPoints == 0) {
             this.webSocketClient.endTurn();
         }
     }

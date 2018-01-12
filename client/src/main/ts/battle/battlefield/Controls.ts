@@ -40,9 +40,9 @@ export default class Controls extends game.AbstractBranch {
         unitService.on(ActionType.Shot, () => this.updateInterface());
         unitService.on(ActionType.NextTurn, () => this.updateInterface());
         this.btnFirstGun.on(game.Event.BUTTON_CLICK, () =>
-            unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.firstGun.id);
+            unitService.activeUnit.preparedGunId = unitService.activeUnit.ship.firstGun.id);
         this.btnSecondGun.on(game.Event.BUTTON_CLICK, () =>
-            unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.secondGun.id);
+            unitService.activeUnit.preparedGunId = unitService.activeUnit.ship.secondGun.id);
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketClient.endTurn());
     }
 
@@ -87,19 +87,19 @@ export default class Controls extends game.AbstractBranch {
     }
 
     private updateInterface() {
-        const currentUnit: Unit = this.unitService.currentUnit;
-        this.spriteHull.texture = PIXI.loader.resources[currentUnit.ship.hull.texture.name].texture;
-        this.barStrength.maximum = currentUnit.ship.hull.strength;
-        this.barStrength.value = currentUnit.strength;
-        this.updateBtnGun(this.btnFirstGun, currentUnit.ship.firstGun);
-        this.updateBtnGun(this.btnSecondGun, currentUnit.ship.secondGun);
+        const activeUnit: Unit = this.unitService.activeUnit;
+        this.spriteHull.texture = PIXI.loader.resources[activeUnit.ship.hull.texture.name].texture;
+        this.barStrength.maximum = activeUnit.ship.hull.strength;
+        this.barStrength.value = activeUnit.strength;
+        this.updateBtnGun(this.btnFirstGun, activeUnit.ship.firstGun);
+        this.updateBtnGun(this.btnSecondGun, activeUnit.ship.secondGun);
         this.btnNextTurn.isEnabled = this.unitService.isCurrentPlayerTurn;
     }
 
     private updateBtnGun(btnGun: game.Button, gun: Gun) {
         if (gun) {
             btnGun.isEnabled = this.unitService.isCurrentPlayerTurn
-                && this.unitService.currentUnit.actionPoints >= gun.shotCost;
+                && this.unitService.activeUnit.actionPoints >= gun.shotCost;
             btnGun.text = `${l(gun.name)}\n(${gun.shotCost} ${l("ap")})`;
         } else {
             btnGun.isEnabled = false;

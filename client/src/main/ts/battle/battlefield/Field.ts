@@ -87,15 +87,15 @@ export default class Field extends game.Field {
     }
 
     private updatePathsAndMarks() {
-        this.markCurrent.width = this.unitService.currentUnit.width - Field.LINE_WIDTH;
-        this.markCurrent.height = this.unitService.currentUnit.height - Field.LINE_WIDTH;
-        this.markCurrent.cell = this.unitService.currentUnit.cell;
+        this.markCurrent.width = this.unitService.activeUnit.width - Field.LINE_WIDTH;
+        this.markCurrent.height = this.unitService.activeUnit.height - Field.LINE_WIDTH;
+        this.markCurrent.cell = this.unitService.activeUnit.cell;
         this.pathMarks.removeChildren();
         if (this.unitService.isCurrentPlayerTurn) {
             this.webSocketClient.requestPathsAndReachableCells(d => {
-                const unitWidth: number = this.unitService.currentUnit.ship.hull.width;
-                const unitHeight: number = this.unitService.currentUnit.ship.hull.height;
-                const activeAreaOffset: game.Point = this.unitService.currentUnit.findCenterCell();
+                const unitWidth: number = this.unitService.activeUnit.ship.hull.width;
+                const unitHeight: number = this.unitService.activeUnit.ship.hull.height;
+                const activeAreaOffset: game.Point = this.unitService.activeUnit.findCenterCell();
                 this.paths = d.paths;
                 for (const cell of d.reachableCells) {
                     const marks = new MarksContainer(cell, unitWidth, unitHeight);
@@ -134,9 +134,9 @@ export default class Field extends game.Field {
             this.pathLayer.removeChildren();
             this.pathMarks.setChildIndex(this.selectedMarks, this.pathMarks.children.length - 1);
 
-            const pathOffset: game.Point = this.unitService.currentUnit.findCenterCell();
+            const pathOffset: game.Point = this.unitService.activeUnit.findCenterCell();
             let cell: game.Point = marks.cell;
-            while (!(cell.x == this.unitService.currentUnit.cell.x && cell.y == this.unitService.currentUnit.cell.y)) {
+            while (!(cell.x == this.unitService.activeUnit.cell.x && cell.y == this.unitService.activeUnit.cell.y)) {
                 const previousCell: game.Point = this.paths[cell.x][cell.y].cell;
                 let direction: Direction;
                 if (cell.x == previousCell.x - 1) {
