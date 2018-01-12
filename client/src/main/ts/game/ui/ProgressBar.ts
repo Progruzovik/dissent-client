@@ -1,5 +1,4 @@
-import { Rectangle } from "../graphics/Rectangle";
-import { BarTextConfig, CENTER } from "../util";
+import { BarTextConfig, CENTER, Rectangle } from "../";
 import * as PIXI from "pixi.js";
 
 export class ProgressBar extends PIXI.Container {

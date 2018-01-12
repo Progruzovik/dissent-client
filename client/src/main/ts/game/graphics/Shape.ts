@@ -1,3 +1,5 @@
+import * as PIXI from "pixi.js";
+
 export abstract class Shape extends PIXI.Graphics {
 
     constructor(private _width: number = 0, private _height: number = 0,

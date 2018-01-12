@@ -3,12 +3,7 @@ import * as PIXI from "pixi.js";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
-const battle = new BattleApp();
+const battle = new BattleApp(window.devicePixelRatio || 1, window.innerWidth, window.innerHeight);
 document.body.appendChild(battle.view);
-resizeBattle();
 
-window.onresize = resizeBattle;
-
-function resizeBattle() {
-    battle.resize(window.innerWidth, window.innerHeight);
-}
+window.onresize = () => battle.resize(window.innerWidth, window.innerHeight);

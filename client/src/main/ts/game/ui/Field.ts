@@ -1,6 +1,6 @@
-import * as game from "../";
+import { AbstractBranch, Event } from "../";
 
-export class Field extends game.AbstractBranch {
+export class Field extends AbstractBranch {
 
     private _width: number;
     private _height: number;
@@ -15,11 +15,11 @@ export class Field extends game.AbstractBranch {
         this.interactive = true;
         this.addChild(this.content);
 
-        this.on(game.Event.MOUSE_DOWN, (e: PIXI.interaction.InteractionEvent) => {
+        this.on(Event.MOUSE_DOWN, (e: PIXI.interaction.InteractionEvent) => {
             this.isLeftMouseButtonDown = true;
             this.savedMousePosition.set(e.data.global.x, e.data.global.y);
         });
-        this.on(game.Event.MOUSE_MOVE, (e: PIXI.interaction.InteractionEvent) => {
+        this.on(Event.MOUSE_MOVE, (e: PIXI.interaction.InteractionEvent) => {
             if (this.isLeftMouseButtonDown) {
                 this.content.x += e.data.global.x - this.savedMousePosition.x;
                 if (this.content.x > 0) {
@@ -46,8 +46,8 @@ export class Field extends game.AbstractBranch {
                 this.savedMousePosition.set(e.data.global.x, e.data.global.y);
             }
         });
-        this.on(game.Event.MOUSE_UP, () => this.isLeftMouseButtonDown = false);
-        this.on(game.Event.MOUSE_OUT, () => this.isLeftMouseButtonDown = false);
+        this.on(Event.MOUSE_UP, () => this.isLeftMouseButtonDown = false);
+        this.on(Event.MOUSE_OUT, () => this.isLeftMouseButtonDown = false);
     }
 
     get width(): number {

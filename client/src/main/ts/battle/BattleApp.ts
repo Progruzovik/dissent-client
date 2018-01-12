@@ -10,14 +10,14 @@ import { initClient } from "./request";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
-export default class BattleApp extends game.Application {
+export default class BattleApp extends game.App {
 
     private menuRoot: MenuRoot;
     private readonly projectileService = new ProjectileService();
     private readonly webSocketClient = new WebSocketClient();
 
-    constructor() {
-        super();
+    constructor(resolution: number, width: number, height: number) {
+        super(resolution, width, height);
         initClient("ru", s => {
             updateLocalizedData(s);
             const webSocketUrl: string = document.baseURI.toString()
@@ -36,7 +36,7 @@ export default class BattleApp extends game.Application {
         });
     }
 
-    startBattle() {
+    private startBattle() {
         this.webSocketClient.requestBattleData(d => {
             const unitsArray = new Array<Unit>(0);
             for (const unitData of d.units) {
@@ -50,10 +50,9 @@ export default class BattleApp extends game.Application {
                 unitsArray.push(unit);
             }
 
-            const battlefield = new BattlefieldRoot(d.fieldSize, d.playerSide,
+            this.root = new BattlefieldRoot(d.fieldSize, d.playerSide,
                 unitsArray, d.asteroids, d.clouds, this.projectileService, this.webSocketClient);
-            this.root = battlefield;
-            battlefield.once(game.Event.DONE, () => {
+            this.root.once(game.Event.DONE, () => {
                 this.menuRoot.reload();
                 this.root = this.menuRoot;
             });

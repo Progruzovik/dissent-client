@@ -1,6 +1,6 @@
 export * from "./AbstractActor";
 export * from "./AbstractRoot";
-export * from "./Application";
+export * from "./App";
 export * from "./util";
 
 export * from "./graphics/Frame";
