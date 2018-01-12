@@ -1,4 +1,4 @@
-import { Gun, Hull, PathNode, Side, Texture } from "./util";
+import { PathNode, ShipData, Side, Texture } from "./util";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
@@ -6,16 +6,20 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
 
     static readonly STATUS = "status";
 
-    private readonly connection = new WebSocketConnection();
+    private connection: WebSocketConnection;
 
-    constructor() {
-        super();
+    createConnection(url: string) {
+        this.connection = new WebSocketConnection(url);
         this.connection.on(WebSocketConnection.MESSAGE, (message: Message) =>
             this.emit(message.subject, message.data));
     }
 
     requestTextures(callback: (textures: Texture[]) => void) {
         this.makeRequest("textures", callback);
+    }
+
+    requestShips(callback: (ships: ShipData[]) => void) {
+        this.makeRequest("ships", callback);
     }
 
     updateStatus() {
@@ -34,7 +38,7 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
         this.connection.prepareMessage(new Message("startScenario"));
     }
 
-    requestBattleData(callback: (data: { playerSide: Side, fieldSize: game.Point, hulls: Hull[], guns: Gun[],
+    requestBattleData(callback: (data: { playerSide: Side, fieldSize: game.Point,
         asteroids: game.Point[], clouds: game.Point[], units: Unit[], destroyedUnits: Unit[] }) => void) {
         this.makeRequest("battleData", callback);
     }
@@ -67,6 +71,14 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
     }
 }
 
+interface Unit {
+    readonly actionPoints: number, readonly side: Side, readonly firstCell: game.Point, readonly ship: ShipData;
+}
+
+class Message {
+    constructor(readonly subject: string, readonly data?: any) {}
+}
+
 class WebSocketConnection extends PIXI.utils.EventEmitter {
 
     static readonly MESSAGE = "message";
@@ -74,10 +86,9 @@ class WebSocketConnection extends PIXI.utils.EventEmitter {
     private readonly messagesToSend = new Array<Message>(0);
     private readonly webSocket: WebSocket;
 
-    constructor() {
+    constructor(url: string) {
         super();
-        const webSocketUrl: string = document.baseURI.toString().replace("http", "ws") + "/app";
-        this.webSocket = new WebSocket(webSocketUrl);
+        this.webSocket = new WebSocket(url);
 
         this.webSocket.onopen = () => {
             for (const message of this.messagesToSend) {
@@ -99,17 +110,4 @@ class WebSocketConnection extends PIXI.utils.EventEmitter {
     private sendMessage(message: Message) {
         this.webSocket.send(JSON.stringify(message));
     }
-}
-
-class Message {
-    constructor(readonly subject: string, readonly data?: any) {}
-}
-
-class Ship {
-    constructor(readonly strength: number, readonly hullId: number,
-                readonly firstGunId: number, readonly secondGunId: number) {}
-}
-
-class Unit {
-    constructor(readonly actionPoints: number, readonly side: Side, readonly cell: game.Point, readonly ship: Ship) {}
 }

@@ -1,15 +1,32 @@
-import Menu from "./Menu";
+import ShipInfo from "./ship/ShipInfo";
+import MainMenu from "./main/MainMenu";
+import ShipsPanel from "./main/ShipsPanel";
 import WebSocketClient from "../WebSocketClient";
+import Ship from "../ship/Ship";
 import * as game from "../../game";
 
 export default class MenuScreen extends game.Screen {
 
-    static readonly BATTLE = "battle";
+    private readonly menu = new MainMenu(this.webSocketClient);
 
-    constructor(webSocketClient: WebSocketClient) {
+    constructor(private readonly webSocketClient: WebSocketClient) {
         super();
-        const menu = new Menu(webSocketClient);
-        this.frontUi = menu;
-        menu.on(game.Event.DONE, () => this.emit(MenuScreen.BATTLE));
+        this.frontUi = this.menu;
+        this.reload();
+
+        this.menu.on(ShipsPanel.OPEN_INFO, (ship: Ship) => {
+            const shipInfo = new ShipInfo(ship);
+            this.frontUi = shipInfo;
+            shipInfo.once(game.Event.DONE, () => {
+               shipInfo.destroy({ children: true });
+               this.frontUi = this.menu;
+            });
+        });
+        this.menu.on(MainMenu.BATTLE, () => this.emit(MainMenu.BATTLE));
+    }
+
+    reload() {
+        this.webSocketClient.updateStatus();
+        this.webSocketClient.requestShips(sd => this.menu.shipsPanel.reload(sd));
     }
 }

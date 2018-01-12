@@ -2,27 +2,25 @@ import Field from "./Field";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketClient from "../WebSocketClient";
-import { ActionType } from "../util";
+import { ActionType, Gun } from "../util";
+import { l } from "../../localizer";
 import * as game from "../../game";
 
 export default class Controls extends game.UiLayer {
 
     private static readonly SECTIONS_COUNT = 6;
     private static readonly SECTION_RATIO = 3;
-    private static readonly EMPTY_SLOT = "[пусто]";
 
     private readonly spriteHull = new PIXI.Sprite();
     private readonly bgHull = new game.Rectangle(0, 0, 0x333333);
 
-    private readonly barStrength = new game.ProgressBar(0, 0, 0xff0000,
-        100, 0, { fill: "white", fontSize: 26, fontWeight: "bold" });
+    private readonly barStrength = new game.ProgressBar(0, 0, 0xff0000, game.BarTextConfig.Default);
     private readonly bgStats = new PIXI.Container();
 
     private readonly btnFirstGun = new game.Button();
     private readonly btnSecondGun = new game.Button();
     private readonly bgModule = new game.Rectangle(0, 0);
-    private readonly btnNextTurn = new game.Button("Конец хода", { align: "center",
-        fill: "white", fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
+    private readonly btnNextTurn = new game.Button(l("endTurn"));
 
     constructor(private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
         super();
@@ -41,20 +39,10 @@ export default class Controls extends game.UiLayer {
         unitService.on(ActionType.Move, () => this.updateInterface());
         unitService.on(ActionType.Shot, () => this.updateInterface());
         unitService.on(ActionType.NextTurn, () => this.updateInterface());
-        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () => {
-            if (unitService.currentUnit.preparedGunId == unitService.currentUnit.firstGun.id) {
-                unitService.currentUnit.preparedGunId = -1;
-            } else {
-                unitService.currentUnit.preparedGunId = unitService.currentUnit.firstGun.id;
-            }
-        });
-        this.btnSecondGun.on(game.Event.BUTTON_CLICK, () => {
-            if (unitService.currentUnit.preparedGunId == unitService.currentUnit.secondGun.id) {
-                unitService.currentUnit.preparedGunId = -1;
-            } else {
-                unitService.currentUnit.preparedGunId = unitService.currentUnit.secondGun.id;
-            }
-        });
+        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () =>
+            unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.firstGun.id);
+        this.btnSecondGun.on(game.Event.BUTTON_CLICK, () =>
+            unitService.currentUnit.preparedGunId = unitService.currentUnit.ship.secondGun.id);
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketClient.endTurn());
     }
 
@@ -68,6 +56,7 @@ export default class Controls extends game.UiLayer {
         this.spriteHull.scale.set(shipRatio, shipRatio);
         this.spriteHull.position.set(this.bgHull.width / 2, this.bgHull.height / 2);
 
+        this.barStrength.txtMain.style = new PIXI.TextStyle({ fill: "white", fontSize: 26, fontWeight: "bold" });
         this.barStrength.width = widthPerSection;
         this.barStrength.height = heightPerSection / 3;
         this.barStrength.pivot.y = this.barStrength.height / 2;
@@ -83,6 +72,9 @@ export default class Controls extends game.UiLayer {
         this.bgModule.width = widthPerSection;
         this.bgModule.height = heightPerSection;
         this.bgModule.x = widthPerSection * 4;
+
+        this.btnNextTurn.txtMain.style = new PIXI.TextStyle({ align: "center", fill: "white",
+            fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
         this.btnNextTurn.width = widthPerSection;
         this.btnNextTurn.height = heightPerSection;
         this.btnNextTurn.x = widthPerSection * 5;
@@ -96,26 +88,22 @@ export default class Controls extends game.UiLayer {
 
     private updateInterface() {
         const currentUnit: Unit = this.unitService.currentUnit;
-        this.spriteHull.texture = PIXI.loader.resources[currentUnit.hull.texture.name].texture;
-        this.barStrength.maximum = currentUnit.hull.strength;
+        this.spriteHull.texture = PIXI.loader.resources[currentUnit.ship.hull.texture.name].texture;
+        this.barStrength.maximum = currentUnit.ship.hull.strength;
         this.barStrength.value = currentUnit.strength;
-        this.barStrength.text = `${this.barStrength.value}/${this.barStrength.maximum}`;
-        if (currentUnit.firstGun) {
-            this.btnFirstGun.text = `${currentUnit.firstGun.name}\n(${currentUnit.firstGun.shotCost} ОД)`;
-            this.btnFirstGun.isEnabled = this.unitService.isCurrentPlayerTurn
-                && currentUnit.actionPoints >= currentUnit.firstGun.shotCost;
-        } else {
-            this.btnFirstGun.text = Controls.EMPTY_SLOT;
-            this.btnFirstGun.isEnabled = false;
-        }
-        if (currentUnit.secondGun) {
-            this.btnSecondGun.text = `${currentUnit.secondGun.name}\n(${currentUnit.secondGun.shotCost} ОД)`;
-            this.btnSecondGun.isEnabled = this.unitService.isCurrentPlayerTurn
-                && currentUnit.actionPoints >= currentUnit.secondGun.shotCost;
-        } else {
-            this.btnSecondGun.text = Controls.EMPTY_SLOT;
-            this.btnSecondGun.isEnabled = false;
-        }
+        this.updateBtnGun(this.btnFirstGun, currentUnit.ship.firstGun);
+        this.updateBtnGun(this.btnSecondGun, currentUnit.ship.secondGun);
         this.btnNextTurn.isEnabled = this.unitService.isCurrentPlayerTurn;
+    }
+
+    private updateBtnGun(btnGun: game.Button, gun: Gun) {
+        if (gun) {
+            btnGun.isEnabled = this.unitService.isCurrentPlayerTurn
+                && this.unitService.currentUnit.actionPoints >= gun.shotCost;
+            btnGun.text = `${l(gun.name)}\n(${gun.shotCost} ${l("ap")})`;
+        } else {
+            btnGun.isEnabled = false;
+            btnGun.text = `[${l("empty")}]`;
+        }
     }
 }

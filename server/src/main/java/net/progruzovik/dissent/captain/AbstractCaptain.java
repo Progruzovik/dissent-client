@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.captain;
+package net.progruzovik.dissent.captain;
 
 import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
@@ -23,13 +23,9 @@ public abstract class AbstractCaptain implements Captain {
     }
 
     @Override
-    public void registerBattle(Side side, Battle battle) {
-        if (battle != null) {
-            for (int i = 0; i < getShips().size(); i++) {
-                getShips().get(i).setStrength(getShips().get(i).getHull().getStrength());
-                battle.registerShip(i, side, getShips().get(i));
-            }
-        }
+    public void addToBattle(Side side, Battle battle) {
+        battle.addObserver(this);
+        battle.addShips(side, ships);
         this.battle = battle;
     }
 }

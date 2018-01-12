@@ -2,56 +2,60 @@ import WebSocketClient from "./WebSocketClient";
 import BattlefieldScreen from "./battlefield/BattlefieldScreen";
 import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
+import Menu from "./menu/main/MainMenu";
 import MenuScreen from "./menu/MenuScreen";
-import { getId } from "./request";
+import Ship from "./ship/Ship";
+import { updateLocalizedData } from "../localizer";
+import { initClient } from "./request";
 import * as game from "../game";
 import * as PIXI from "pixi.js";
 
 export default class BattleApp extends game.Application {
 
+    private menuScreen: MenuScreen;
     private readonly projectileService = new ProjectileService();
+    private readonly webSocketClient = new WebSocketClient();
 
     constructor() {
         super();
-        getId(() => {
-            const webSocketClient = new WebSocketClient();
-            webSocketClient.requestTextures(textures => {
+        initClient("ru", s => {
+            updateLocalizedData(s);
+            const webSocketUrl: string = document.baseURI.toString()
+                .replace("http", "ws") + "/app";
+            this.webSocketClient.createConnection(webSocketUrl);
+            this.webSocketClient.requestTextures(textures => {
                 for (const texture of textures) {
                     PIXI.loader.add(texture.name, `img/${texture.name}.png`);
                 }
                 PIXI.loader.load(() => {
-                    const menuScreen = new MenuScreen(webSocketClient);
-                    this.currentScreen = menuScreen;
-
-                    menuScreen.on(MenuScreen.BATTLE, () => {
-                        webSocketClient.requestBattleData(d => {
-                            const unitsArray = new Array<Unit>(0);
-                            for (const unitData of d.units) {
-                                unitsArray.push(new Unit(unitData.actionPoints,
-                                    unitData.ship.strength, d.playerSide, unitData.side, unitData.cell,
-                                    d.hulls.filter(h => h.id == unitData.ship.hullId)[0],
-                                    d.guns.filter(g => g.id == unitData.ship.firstGunId)[0],
-                                    d.guns.filter(g => g.id == unitData.ship.secondGunId)[0],
-                                    this.projectileService));
-                            }
-                            for (const unitData of d.destroyedUnits) {
-                                const unit = new Unit(unitData.actionPoints,
-                                    unitData.ship.strength, d.playerSide, unitData.side, unitData.cell,
-                                    d.hulls.filter(h => h.id == unitData.ship.hullId)[0],
-                                    d.guns.filter(g => g.id == unitData.ship.firstGunId)[0],
-                                    d.guns.filter(g => g.id == unitData.ship.secondGunId)[0]);
-                                unit.strength = 0;
-                                unitsArray.push(unit);
-                            }
-                            this.currentScreen = new BattlefieldScreen(d.fieldSize, d.playerSide,
-                                unitsArray, d.asteroids, d.clouds, this.projectileService, webSocketClient);
-                            this.currentScreen.once(game.Event.DONE, () => {
-                                webSocketClient.updateStatus();
-                                this.currentScreen = menuScreen
-                            });
-                        });
-                    });
+                    this.menuScreen = new MenuScreen(this.webSocketClient);
+                    this.currentScreen = this.menuScreen;
+                    this.menuScreen.on(Menu.BATTLE, () => this.startBattle());
                 });
+            });
+        });
+    }
+
+    startBattle() {
+        this.webSocketClient.requestBattleData(d => {
+            const unitsArray = new Array<Unit>(0);
+            for (const unitData of d.units) {
+                unitsArray.push(new Unit(unitData.actionPoints, d.playerSide, unitData.side,
+                    unitData.firstCell, new Ship(unitData.ship), this.projectileService));
+            }
+            for (const unitData of d.destroyedUnits) {
+                const unit = new Unit(unitData.actionPoints, d.playerSide,
+                    unitData.side, unitData.firstCell, new Ship(unitData.ship));
+                unit.strength = 0;
+                unitsArray.push(unit);
+            }
+
+            const battlefield = new BattlefieldScreen(d.fieldSize, d.playerSide,
+                unitsArray, d.asteroids, d.clouds, this.projectileService, this.webSocketClient);
+            this.currentScreen = battlefield;
+            battlefield.once(game.Event.DONE, () => {
+                this.menuScreen.reload();
+                this.currentScreen = this.menuScreen;
             });
         });
     }

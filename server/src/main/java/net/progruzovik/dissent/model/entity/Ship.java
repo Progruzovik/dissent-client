@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.progruzovik.dissent.exception.InvalidGunException;
 
 public final class Ship {
 
@@ -33,40 +33,21 @@ public final class Ship {
         }
     }
 
-    @JsonIgnore
     public Hull getHull() {
         return hull;
     }
 
-    public int getHullId() {
-        return hull.getId();
-    }
-
-    @JsonIgnore
     public Gun getFirstGun() {
         return firstGun;
     }
 
-    public int getFirstGunId() {
-        return firstGun == null ? 0 : firstGun.getId();
-    }
-
-    @JsonIgnore
     public Gun getSecondGun() {
         return secondGun;
     }
 
-    public int getSecondGunId() {
-        return secondGun == null ? 0 : secondGun.getId();
-    }
-
-    public Gun getGun(int gunId) {
-        if (firstGun != null && gunId == firstGun.getId()) {
-            return firstGun;
-        }
-        if (secondGun != null && gunId == secondGun.getId()) {
-            return secondGun;
-        }
-        return null;
+    public Gun findGunById(int gunId) {
+        if (firstGun != null && gunId == firstGun.getId()) return firstGun;
+        if (secondGun != null && gunId == secondGun.getId()) return secondGun;
+        throw new InvalidGunException();
     }
 }

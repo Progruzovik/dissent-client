@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.socket.model;
+package net.progruzovik.dissent.model;
 
 public class Message<T> {
 

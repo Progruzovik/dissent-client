@@ -12,10 +12,16 @@ import static org.junit.Assert.assertEquals;
 
 public final class FieldTest {
 
-    private Field field;
+    private final Ship ship;
     private Unit unit;
-    private final Ship ship = new Ship(new Hull(0, "test", 5, 2, new Texture()),
-            new Gun(0, 3, new GunType()), null);
+    private Field field;
+
+    public FieldTest() {
+        final Texture emptyTexture = new Texture();
+        final Hull hull = new Hull(0, "test", 5, 2, 1, 1, emptyTexture);
+        final Gun gun = new Gun(0, 3, new GunType(), emptyTexture);
+        ship = new Ship(hull, gun, null);
+    }
 
     @Before
     public void setUp() {
@@ -34,15 +40,15 @@ public final class FieldTest {
     @Test
     public void moveUnit() {
         assertEquals(5, unit.getActionPoints());
-        final Cell cell = new Cell(unit.getCell().getX() + 1, unit.getCell().getY() + 2);
+        final Cell cell = new Cell(unit.getFirstCell().getX() + 1, unit.getFirstCell().getY() + 2);
         field.moveActiveUnit(cell);
         assertEquals(2, unit.getActionPoints());
-        assertEquals(cell, unit.getCell());
+        assertEquals(cell, unit.getFirstCell());
     }
 
     @Test(expected = InvalidMoveException.class)
     public void moveUnitToUnreachableCell() {
-        field.moveActiveUnit(new Cell(unit.getCell().getX() + unit.getActionPoints(),
-                unit.getCell().getY() + unit.getActionPoints()));
+        field.moveActiveUnit(new Cell(unit.getFirstCell().getX() + unit.getActionPoints(),
+                unit.getFirstCell().getY() + unit.getActionPoints()));
     }
 }

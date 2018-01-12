@@ -10,7 +10,7 @@ export default class Window extends game.UiLayer {
     private readonly lineToWindow = new game.Line(0, 1, this.unit.frameColor);
 
     private readonly bgWindow = new game.Rectangle(Window.WIDTH, Window.HEIGHT, 0x333333);
-    private readonly barStrength = new game.ProgressBar(this.bgWindow.width, 15, 0xff0000);
+    private readonly barStrength = this.unit.ship.createStrengthBar(this.bgWindow.width);
 
     constructor(playerSide: Side, readonly unit: Unit) {
         super();
@@ -19,21 +19,19 @@ export default class Window extends game.UiLayer {
         this.lineToWindow.position.set(unitBounds.x + unitBounds.width / 2, unitBounds.y);
         this.addChild(this.lineToWindow);
 
-        const txtTitle = new PIXI.Text(unit.hull.name, { fill: 0xffffff, fontSize: 24 });
+        const txtTitle = new PIXI.Text(unit.ship.hull.name, { fill: 0xffffff, fontSize: 24 });
         txtTitle.anchor.x = game.CENTER;
         txtTitle.x = this.bgWindow.width / 2;
         this.bgWindow.addChild(txtTitle);
-        const unitIcon = unit.createIcon();
+        const unitIcon = unit.ship.createSprite();
         unitIcon.pivot.x = unitIcon.width / 2;
         unitIcon.x = this.bgWindow.width / 2;
         unitIcon.y = txtTitle.height;
         this.bgWindow.addChild(unitIcon);
-        this.barStrength.maximum = unit.hull.strength;
         this.barStrength.y = unitIcon.y + unitIcon.height + 5;
         this.bgWindow.addChild(this.barStrength);
         this.bgWindow.addChild(new game.Frame(this.bgWindow.width, this.bgWindow.height, 1, unit.frameColor));
         this.addChild(this.bgWindow);
-        this.updateStats();
 
         unit.on(Unit.UPDATE_STATS, () => this.updateStats());
     }
@@ -56,6 +54,5 @@ export default class Window extends game.UiLayer {
 
     private updateStats() {
         this.barStrength.value = this.unit.strength;
-        this.barStrength.text = `${this.barStrength.value}/${this.barStrength.maximum}`;
     }
 }

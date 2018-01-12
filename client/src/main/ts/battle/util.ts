@@ -21,28 +21,43 @@ export const enum Side {
     None, Left, Right
 }
 
-export class Gun {
-    constructor(readonly id: number, readonly name: string,
-                readonly shotCost: number, readonly typeName: GunType) {}
+export interface Gun {
+    readonly id: number,
+    readonly name: string,
+    readonly shotCost: number,
+    readonly typeName: GunType,
+    readonly texture: Texture;
 }
 
-export class Hull {
-    constructor(readonly id: number, readonly name: string, readonly actionPoints: number,
-                readonly strength: number, readonly texture: Texture) {}
+export interface Hull {
+    readonly id: number,
+    readonly name: string,
+    readonly actionPoints: number,
+    readonly strength: number,
+    readonly width: number,
+    readonly height: number,
+    readonly texture: Texture;
 }
 
-export class Move {
-    constructor(readonly cost: number, readonly cells: game.Point[]) {}
+export interface ShipData {
+    readonly strength: number;
+    readonly hull: Hull;
+    readonly firstGun: Gun;
+    readonly secondGun: Gun;
 }
 
-export class PathNode {
-    constructor(readonly movementCost: number, readonly cell: game.Point) {}
+export interface Move {
+    readonly cost: number, readonly cells: game.Point[];
 }
 
-export class Shot {
-    constructor(readonly gunId: number, readonly damage: number, readonly cell: game.Point) {}
+export interface PathNode {
+    readonly movementCost: number, readonly cell: game.Point;
 }
 
-export class Texture {
-    constructor(readonly id: number, readonly name: string) {}
+export interface Shot {
+    readonly gunId: number, readonly damage: number, readonly cell: game.Point;
+}
+
+export interface Texture {
+    readonly id: number, readonly name: string;
 }

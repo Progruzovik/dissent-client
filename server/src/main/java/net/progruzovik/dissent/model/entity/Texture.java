@@ -12,6 +12,13 @@ public final class Texture {
     @Column(nullable = false)
     private String name;
 
+    public Texture(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Texture() { }
+
     public int getId() {
         return id;
     }

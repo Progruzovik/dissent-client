@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.socket.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.progruzovik.dissent.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.TextMessage;
@@ -23,11 +24,12 @@ public final class MessageSender {
         this.session = session;
     }
 
-    public void send(Message message)  {
+    public <T> void send(Message<T> message)  {
         if (session != null) {
             try {
                 session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));
             } catch (IOException e) {
+                session = null;
                 log.error("Can't send message with subject \"{}\"!", message.getSubject(), e);
             }
         }

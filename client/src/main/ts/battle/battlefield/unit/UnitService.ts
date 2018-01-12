@@ -11,7 +11,8 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     static readonly SHOT_CELL = "shotCell";
     static readonly TARGET_CELL = "targetCell";
 
-    readonly unitQueue = new Array<Unit>(0);
+    private readonly unitQueue = new Array<Unit>(0);
+    private targetCells: game.Point[];
     private readonly currentTargets = new Array<Unit>(0);
 
     constructor(private readonly playerSide: Side, units: Unit[],
@@ -21,17 +22,18 @@ export default class UnitService extends PIXI.utils.EventEmitter {
             if (unit.strength > 0) {
                 this.unitQueue.push(unit);
                 unit.on(game.Event.CLICK, () => {
-                    if (this.currentTargets.indexOf(unit) != -1) {
-                        webSocketClient.shootWithCurrentUnit(this.currentUnit.preparedGunId, unit.cell);
+                    const index: number = this.currentTargets.indexOf(unit);
+                    if (index != -1) {
+                        webSocketClient.shootWithCurrentUnit(this.currentUnit.preparedGunId, this.targetCells[index]);
                     }
                 });
                 unit.on(ActionType.Move, () => {
                     this.emit(ActionType.Move);
-                    this.checkCurrentUnitActionPoints();
+                    this.tryToEndTurn();
                 });
                 unit.on(ActionType.Shot, () => {
                     this.emit(ActionType.Shot);
-                    this.checkCurrentUnitActionPoints();
+                    this.tryToEndTurn();
                 });
                 unit.on(Unit.PREPARE_TO_SHOT, () => {
                     webSocketClient.requestGunCells(unit.preparedGunId, g => {
@@ -39,17 +41,15 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                         for (const cell of g.shotCells) {
                             this.emit(UnitService.SHOT_CELL, cell);
                         }
-                        for (const cell of g.targetCells) {
-                            this.currentTargets.push(this.unitQueue
-                                .filter(u => u.cell.x == cell.x && u.cell.y == cell.y)[0]);
+                        this.targetCells = g.targetCells;
+                        this.currentTargets.length = 0;
+                        for (const cell of this.targetCells) {
+                            this.currentTargets.push(this.findUnitOnCell(cell));
                             this.emit(UnitService.TARGET_CELL, cell);
                         }
                     });
                 });
-                unit.on(Unit.NOT_PREPARE_TO_SHOT, () => {
-                    this.currentTargets.length = 0;
-                    this.emit(Unit.NOT_PREPARE_TO_SHOT);
-                });
+                unit.on(Unit.NOT_PREPARE_TO_SHOT, () => this.emit(Unit.NOT_PREPARE_TO_SHOT));
                 unit.once(Unit.DESTROY, () => {
                     this.unitQueue.splice(this.unitQueue.indexOf(unit), 1);
                     unit.off(game.Event.CLICK);
@@ -61,7 +61,8 @@ export default class UnitService extends PIXI.utils.EventEmitter {
             }
 
             unit.on(game.Event.MOUSE_OVER, (e: PIXI.interaction.InteractionEvent) => {
-                if (this.currentUnit.preparedGunId != -1 && this.currentUnit.side != unit.side && unit.strength > 0) {
+                if (this.currentUnit.preparedGunId != Unit.NO_GUN_ID
+                    && this.currentUnit.side != unit.side && unit.strength > 0) {
                     unit.alpha = 0.75;
                 }
                 this.emit(UnitService.UNIT_MOUSE_OVER, e.data.global, unit);
@@ -83,14 +84,17 @@ export default class UnitService extends PIXI.utils.EventEmitter {
         return this.unitQueue[0];
     }
 
+    findUnitOnCell(cell: game.Point) {
+        return this.unitQueue.filter(u => u.isOccupyCell(cell))[0];
+    }
+
     nextTurn() {
-        this.currentUnit.preparedGunId = -1;
         this.unitQueue.push(this.unitQueue.shift());
         this.currentUnit.makeCurrent();
         this.emit(ActionType.NextTurn, false);
     }
 
-    private checkCurrentUnitActionPoints() {
+    private tryToEndTurn() {
         if (this.isCurrentPlayerTurn && this.currentUnit.actionPoints == 0) {
             this.webSocketClient.endTurn();
         }
