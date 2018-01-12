@@ -54,6 +54,7 @@ export default class BattleApp extends game.App {
                 unitsArray, d.asteroids, d.clouds, this.projectileService, this.webSocketClient);
             this.root.once(game.Event.DONE, () => {
                 this.menuRoot.reload();
+                this.root.destroy({ children: true });
                 this.root = this.menuRoot;
             });
         });

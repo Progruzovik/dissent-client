@@ -5,6 +5,9 @@ export const INDENT = 20;
 
 export namespace Event {
 
+    export const ADDED = "added";
+    export const REMOVED = "removed";
+
     export const BUTTON_CLICK = "buttonClick";
     export const CLICK = "click";
 

@@ -22,8 +22,6 @@ export class App {
         if (value) {
             value.setUpChildren(this.width, this.height);
             this.application.stage.addChild(value);
-
-            value.once(Event.DONE, () => this.root.destroy({ children: true }));
         }
     }
 
