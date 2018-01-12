@@ -1,5 +1,5 @@
 import { PathNode, ShipData, Side, Texture } from "./util";
-import * as game from "../game";
+import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
 export default class WebSocketClient extends PIXI.utils.EventEmitter {
@@ -38,24 +38,24 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
         this.connection.prepareMessage(new Message("startScenario"));
     }
 
-    requestBattleData(callback: (data: { playerSide: Side, fieldSize: game.Point,
-        asteroids: game.Point[], clouds: game.Point[], units: Unit[], destroyedUnits: Unit[] }) => void) {
+    requestBattleData(callback: (data: { playerSide: Side, fieldSize: druid.Point,
+        asteroids: druid.Point[], clouds: druid.Point[], units: Unit[], destroyedUnits: Unit[] }) => void) {
         this.makeRequest("battleData", callback);
     }
 
-    requestPathsAndReachableCells(callback: (data: { paths: PathNode[][], reachableCells: game.Point[] }) => void) {
+    requestPathsAndReachableCells(callback: (data: { paths: PathNode[][], reachableCells: druid.Point[] }) => void) {
         this.makeRequest("pathsAndReachableCells", callback);
     }
 
-    requestGunCells(gunId: number, callback: (data: { shotCells: game.Point[], targetCells: game.Point[] }) => void) {
+    requestGunCells(gunId: number, callback: (data: { shotCells: druid.Point[], targetCells: druid.Point[] }) => void) {
         this.makeRequest("gunCells", callback, { gunId: gunId });
     }
 
-    moveCurrentUnit(cell: game.Point) {
+    moveCurrentUnit(cell: druid.Point) {
         this.connection.prepareMessage(new Message("moveCurrentUnit", cell));
     }
 
-    shootWithCurrentUnit(gunId: number, cell: game.Point) {
+    shootWithCurrentUnit(gunId: number, cell: druid.Point) {
         this.connection.prepareMessage(new Message("shootWithCurrentUnit", { gunId: gunId, x: cell.x, y: cell.y }));
     }
 
@@ -72,7 +72,7 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
 }
 
 interface Unit {
-    readonly actionPoints: number, readonly side: Side, readonly firstCell: game.Point, readonly ship: ShipData;
+    readonly actionPoints: number, readonly side: Side, readonly firstCell: druid.Point, readonly ship: ShipData;
 }
 
 class Message {

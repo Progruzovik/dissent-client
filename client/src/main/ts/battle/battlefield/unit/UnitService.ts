@@ -1,7 +1,7 @@
 import Unit from "./Unit";
 import WebSocketClient from "../../WebSocketClient";
 import { ActionType, Side } from "../../util";
-import * as game from "../../../game";
+import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
 export default class UnitService extends PIXI.utils.EventEmitter {
@@ -12,7 +12,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     static readonly TARGET_CELL = "targetCell";
 
     private readonly unitQueue = new Array<Unit>(0);
-    private targetCells: game.Point[];
+    private targetCells: druid.Point[];
     private readonly currentTargets = new Array<Unit>(0);
 
     constructor(private readonly playerSide: Side, units: Unit[],
@@ -21,7 +21,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
         for (const unit of units) {
             if (unit.strength > 0) {
                 this.unitQueue.push(unit);
-                unit.on(game.Event.CLICK, () => {
+                unit.on(druid.Event.CLICK, () => {
                     const index: number = this.currentTargets.indexOf(unit);
                     if (index != -1) {
                         webSocketClient.shootWithCurrentUnit(this.activeUnit.preparedGunId, this.targetCells[index]);
@@ -52,7 +52,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 unit.on(Unit.NOT_PREPARE_TO_SHOT, () => this.emit(Unit.NOT_PREPARE_TO_SHOT));
                 unit.once(Unit.DESTROY, () => {
                     this.unitQueue.splice(this.unitQueue.indexOf(unit), 1);
-                    unit.off(game.Event.CLICK);
+                    unit.off(druid.Event.CLICK);
                     unit.off(ActionType.Move);
                     unit.off(ActionType.Shot);
                     unit.off(Unit.PREPARE_TO_SHOT);
@@ -60,14 +60,14 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                 });
             }
 
-            unit.on(game.Event.MOUSE_OVER, (e: PIXI.interaction.InteractionEvent) => {
+            unit.on(druid.Event.MOUSE_OVER, (e: PIXI.interaction.InteractionEvent) => {
                 if (this.activeUnit.preparedGunId != Unit.NO_GUN_ID
                     && this.activeUnit.side != unit.side && unit.strength > 0) {
                     unit.alpha = 0.75;
                 }
                 this.emit(UnitService.UNIT_MOUSE_OVER, e.data.global, unit);
             });
-            unit.on(game.Event.MOUSE_OUT, () => {
+            unit.on(druid.Event.MOUSE_OUT, () => {
                 if (unit.strength > 0) {
                     unit.alpha = 1;
                 }
@@ -84,7 +84,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
         return this.unitQueue[0];
     }
 
-    findUnitOnCell(cell: game.Point) {
+    findUnitOnCell(cell: druid.Point) {
         return this.unitQueue.filter(u => u.isOccupyCell(cell))[0];
     }
 

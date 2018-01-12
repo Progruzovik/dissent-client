@@ -5,11 +5,11 @@ import UnitService from "./unit/UnitService";
 import WebSocketClient from "../WebSocketClient";
 import { ActionType, PathNode } from "../util";
 import { l } from "../../localizer";
-import * as game from "../../game";
+import * as druid from "pixi-druid";
 
-export default class Field extends game.Field {
+export default class Field extends druid.Field {
 
-    static readonly CELL_SIZE = new game.Point(64, 48);
+    static readonly CELL_SIZE = new druid.Point(64, 48);
     static readonly LINE_WIDTH = 1.5;
     static readonly PATH_MARK_COLOR = 0x555500;
 
@@ -22,11 +22,11 @@ export default class Field extends game.Field {
     private readonly markLayer = new PIXI.Container();
     private readonly pathLayer = new PIXI.Container();
 
-    constructor(private readonly size: game.Point, units: Unit[], asteroids: game.Point[], clouds: game.Point[],
+    constructor(private readonly size: druid.Point, units: Unit[], asteroids: druid.Point[], clouds: druid.Point[],
                 private readonly unitService: UnitService, private readonly projectileService: ProjectileService,
                 private readonly webSocketClient: WebSocketClient) {
         super();
-        const bg = new game.Rectangle(size.x * Field.CELL_SIZE.x + Field.LINE_WIDTH,
+        const bg = new druid.Rectangle(size.x * Field.CELL_SIZE.x + Field.LINE_WIDTH,
             size.y * Field.CELL_SIZE.y + Field.LINE_WIDTH);
         const lines = new PIXI.Graphics();
         lines.lineStyle(Field.LINE_WIDTH, 0x777777);
@@ -68,8 +68,8 @@ export default class Field extends game.Field {
 
         unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
         unitService.on(ActionType.Shot, () => this.updatePathsAndMarks());
-        unitService.on(UnitService.SHOT_CELL, (cell: game.Point) => this.markLayer.addChild(new Mark(0x555555, cell)));
-        unitService.on(UnitService.TARGET_CELL, (cell: game.Point) =>
+        unitService.on(UnitService.SHOT_CELL, (cell: druid.Point) => this.markLayer.addChild(new Mark(0x555555, cell)));
+        unitService.on(UnitService.TARGET_CELL, (cell: druid.Point) =>
             this.markLayer.addChild(new Mark(0x550000, cell)));
         unitService.on(Unit.PREPARE_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
         unitService.on(Unit.NOT_PREPARE_TO_SHOT, () => {
@@ -95,11 +95,11 @@ export default class Field extends game.Field {
             this.webSocketClient.requestPathsAndReachableCells(d => {
                 const unitWidth: number = this.unitService.activeUnit.ship.hull.width;
                 const unitHeight: number = this.unitService.activeUnit.ship.hull.height;
-                const activeAreaOffset: game.Point = this.unitService.activeUnit.findCenterCell();
+                const activeAreaOffset: druid.Point = this.unitService.activeUnit.findCenterCell();
                 this.paths = d.paths;
                 for (const cell of d.reachableCells) {
                     const marks = new MarksContainer(cell, unitWidth, unitHeight);
-                    const activeArea = new game.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y);
+                    const activeArea = new druid.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y);
                     activeArea.interactive = true;
                     activeArea.alpha = 0;
                     activeArea.x = activeAreaOffset.x * Field.CELL_SIZE.x;
@@ -109,9 +109,9 @@ export default class Field extends game.Field {
                     marks.y = cell.y * Field.CELL_SIZE.y;
                     this.pathMarks.addChild(marks);
 
-                    activeArea.on(game.Event.MOUSE_OVER, () => this.showPath(marks));
-                    activeArea.on(game.Event.CLICK, () => this.webSocketClient.moveCurrentUnit(cell));
-                    activeArea.on(game.Event.MOUSE_OUT, () => {
+                    activeArea.on(druid.Event.MOUSE_OVER, () => this.showPath(marks));
+                    activeArea.on(druid.Event.CLICK, () => this.webSocketClient.moveCurrentUnit(cell));
+                    activeArea.on(druid.Event.MOUSE_OUT, () => {
                         if (this.selectedMarks == marks) {
                             marks.resetMarks();
                             this.selectedMarks = null;
@@ -134,10 +134,10 @@ export default class Field extends game.Field {
             this.pathLayer.removeChildren();
             this.pathMarks.setChildIndex(this.selectedMarks, this.pathMarks.children.length - 1);
 
-            const pathOffset: game.Point = this.unitService.activeUnit.findCenterCell();
-            let cell: game.Point = marks.cell;
+            const pathOffset: druid.Point = this.unitService.activeUnit.findCenterCell();
+            let cell: druid.Point = marks.cell;
             while (!(cell.x == this.unitService.activeUnit.cell.x && cell.y == this.unitService.activeUnit.cell.y)) {
-                const previousCell: game.Point = this.paths[cell.x][cell.y].cell;
+                const previousCell: druid.Point = this.paths[cell.x][cell.y].cell;
                 let direction: Direction;
                 if (cell.x == previousCell.x - 1) {
                     direction = Direction.Left;
@@ -149,9 +149,9 @@ export default class Field extends game.Field {
                     direction = Direction.Down;
                 }
 
-                const pathLine = new game.Line(0, 4, 0x00aa00);
-                pathLine.x = (cell.x + pathOffset.x + game.CENTER) * Field.CELL_SIZE.x;
-                pathLine.y = (cell.y + pathOffset.y + game.CENTER) * Field.CELL_SIZE.y;
+                const pathLine = new druid.Line(0, 4, 0x00aa00);
+                pathLine.x = (cell.x + pathOffset.x + druid.CENTER) * Field.CELL_SIZE.x;
+                pathLine.y = (cell.y + pathOffset.y + druid.CENTER) * Field.CELL_SIZE.y;
                 const k = direction == Direction.Left || direction == Direction.Up ? 1 : -1;
                 const destination = new PIXI.Point(pathLine.x, pathLine.y);
                 if (direction == Direction.Left || direction == Direction.Right) {
@@ -185,11 +185,11 @@ class MarksContainer extends PIXI.Container {
 
     private readonly marks = new Array<Mark>(0);
 
-    constructor(readonly cell: game.Point, width: number, height: number) {
+    constructor(readonly cell: druid.Point, width: number, height: number) {
         super();
         for (let i = 0; i < width; i++) {
             for (let j = 0; j < height; j++) {
-                const mark = new Mark(Field.PATH_MARK_COLOR, new game.Point(i, j));
+                const mark = new Mark(Field.PATH_MARK_COLOR, new druid.Point(i, j));
                 this.marks.push(mark);
                 this.addChild(mark);
             }
@@ -209,22 +209,22 @@ class MarksContainer extends PIXI.Container {
     }
 }
 
-class Mark extends game.Rectangle {
+class Mark extends druid.Rectangle {
 
-    private _cell: game.Point;
+    private _cell: druid.Point;
 
-    constructor(color: number, cell?: game.Point) {
+    constructor(color: number, cell?: druid.Point) {
         super(Field.CELL_SIZE.x - Field.LINE_WIDTH, Field.CELL_SIZE.y - Field.LINE_WIDTH, color);
         if (cell) {
             this.cell = cell;
         }
     }
 
-    get cell(): game.Point {
+    get cell(): druid.Point {
         return this._cell;
     }
 
-    set cell(value: game.Point) {
+    set cell(value: druid.Point) {
         this._cell = value;
         this.x = value.x * Field.CELL_SIZE.x + Field.LINE_WIDTH;
         this.y = value.y * Field.CELL_SIZE.y + Field.LINE_WIDTH;

@@ -1,6 +1,6 @@
-import * as game from "../../../game";
+import * as druid from "pixi-druid";
 
-export default abstract class Projectile extends game.AbstractActor {
+export default abstract class Projectile extends druid.AbstractActor {
 
     static readonly NEW_SHOT = "newShot";
 

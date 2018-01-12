@@ -8,10 +8,10 @@ import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketClient from "../WebSocketClient";
 import { ActionType, Side } from "../util";
-import * as game from "../../game";
+import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class BattlefieldRoot extends game.AbstractRoot {
+export default class BattlefieldRoot extends druid.AbstractRoot {
 
     private readonly field: Field;
     private readonly controls: Controls;
@@ -19,8 +19,8 @@ export default class BattlefieldRoot extends game.AbstractRoot {
 
     private unitPopUp: PopUp;
 
-    constructor(fieldSize: game.Point, playerSide: Side, units: Unit[], asteroids: game.Point[],
-                clouds: game.Point[], projectileService: ProjectileService, webSocketClient: WebSocketClient) {
+    constructor(fieldSize: druid.Point, playerSide: Side, units: Unit[], asteroids: druid.Point[],
+                clouds: druid.Point[], projectileService: ProjectileService, webSocketClient: WebSocketClient) {
         super();
         const unitService = new UnitService(playerSide, units, webSocketClient);
 
@@ -47,7 +47,7 @@ export default class BattlefieldRoot extends game.AbstractRoot {
                 this.unitPopUp = null;
             }
         });
-        actionReceiver.once(ActionType.BattleFinish, () => this.emit(game.Event.DONE));
+        actionReceiver.once(ActionType.BattleFinish, () => this.emit(druid.Event.DONE));
     }
 
     onSetUpChildren(width: number, height: number) {

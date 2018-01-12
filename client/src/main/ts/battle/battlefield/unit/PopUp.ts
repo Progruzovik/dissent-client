@@ -1,15 +1,15 @@
 import Unit from "./Unit";
 import { Side } from "../../util";
-import * as game from "../../../game";
+import * as druid from "pixi-druid";
 
-export default class PopUp extends game.AbstractBranch {
+export default class PopUp extends druid.AbstractBranch {
 
     static readonly WIDTH = 200;
     static readonly HEIGHT = 105;
 
-    private readonly lineToWindow = new game.Line(0, 1, this.unit.frameColor);
+    private readonly lineToWindow = new druid.Line(0, 1, this.unit.frameColor);
 
-    private readonly bgWindow = new game.Rectangle(PopUp.WIDTH, PopUp.HEIGHT, 0x333333);
+    private readonly bgWindow = new druid.Rectangle(PopUp.WIDTH, PopUp.HEIGHT, 0x333333);
     private readonly barStrength = this.unit.ship.createStrengthBar(this.bgWindow.width);
 
     constructor(rootWidth: number, rootHeight: number, readonly unit: Unit) {
@@ -20,7 +20,7 @@ export default class PopUp extends game.AbstractBranch {
         this.addChild(this.lineToWindow);
 
         const txtTitle = new PIXI.Text(unit.ship.hull.name, { fill: 0xffffff, fontSize: 24 });
-        txtTitle.anchor.x = game.CENTER;
+        txtTitle.anchor.x = druid.CENTER;
         txtTitle.x = this.bgWindow.width / 2;
         this.bgWindow.addChild(txtTitle);
         const unitIcon = unit.ship.createSprite();
@@ -30,7 +30,7 @@ export default class PopUp extends game.AbstractBranch {
         this.bgWindow.addChild(unitIcon);
         this.barStrength.y = unitIcon.y + unitIcon.height + 5;
         this.bgWindow.addChild(this.barStrength);
-        this.bgWindow.addChild(new game.Frame(this.bgWindow.width, this.bgWindow.height, 1, unit.frameColor));
+        this.bgWindow.addChild(new druid.Frame(this.bgWindow.width, this.bgWindow.height, 1, unit.frameColor));
         this.addChild(this.bgWindow);
         this.setUpChildren(rootWidth, rootHeight);
 
@@ -39,12 +39,12 @@ export default class PopUp extends game.AbstractBranch {
 
     setUpChildren(width: number, height: number) {
         if (this.unit.side == Side.Left) {
-            this.bgWindow.x = game.INDENT / 2;
+            this.bgWindow.x = druid.INDENT / 2;
         } else if (this.unit.side == Side.Right) {
-            this.bgWindow.x = width - this.bgWindow.width - game.INDENT / 2;
+            this.bgWindow.x = width - this.bgWindow.width - druid.INDENT / 2;
         }
-        this.bgWindow.y = game.INDENT / 2;
-        const to = new game.Point(this.bgWindow.x + this.bgWindow.width / 2, this.bgWindow.y + this.bgWindow.height);
+        this.bgWindow.y = druid.INDENT / 2;
+        const to = new druid.Point(this.bgWindow.x + this.bgWindow.width / 2, this.bgWindow.y + this.bgWindow.height);
         this.lineToWindow.direct(to);
     }
 

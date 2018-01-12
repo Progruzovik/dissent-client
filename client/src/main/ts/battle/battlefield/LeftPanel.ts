@@ -3,10 +3,10 @@ import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import { ActionType, Side } from "../util";
 import { l } from "../../localizer";
-import * as game from "../../game";
+import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class LeftPanel extends game.AbstractBranch {
+export default class LeftPanel extends druid.AbstractBranch {
 
     private readonly bgQueue = new PIXI.Container();
     private readonly txtActionPoints = new PIXI.Text("", { align: "center", fill: "white",
@@ -15,14 +15,14 @@ export default class LeftPanel extends game.AbstractBranch {
     constructor(units: Unit[], private readonly unitService: UnitService) {
         super();
         units.forEach((u, i) => {
-            const iconUnit = new game.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0x444444);
+            const iconUnit = new druid.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0x444444);
             const spriteUnit: PIXI.Sprite = u.ship.createSprite();
             const factor: number = Math.min(1 / u.ship.hull.width, 1 / u.ship.hull.height);
             spriteUnit.scale.set(factor, factor);
-            spriteUnit.anchor.set(game.CENTER, game.CENTER);
+            spriteUnit.anchor.set(druid.CENTER, druid.CENTER);
             spriteUnit.position.set(iconUnit.width / 2, iconUnit.height / 2);
             iconUnit.addChild(spriteUnit);
-            iconUnit.addChild(new game.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 1, u.frameColor));
+            iconUnit.addChild(new druid.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 1, u.frameColor));
             this.bgQueue.addChild(iconUnit);
 
             u.on(Unit.DESTROY, () => {
@@ -31,7 +31,7 @@ export default class LeftPanel extends game.AbstractBranch {
             });
         });
         this.addChild(this.bgQueue);
-        this.txtActionPoints.anchor.set(game.CENTER, 1);
+        this.txtActionPoints.anchor.set(druid.CENTER, 1);
         this.addChild(this.txtActionPoints);
         this.updateUnitSpritePositions();
 

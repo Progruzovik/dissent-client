@@ -4,27 +4,27 @@ import UnitService from "./unit/UnitService";
 import WebSocketClient from "../WebSocketClient";
 import { ActionType, Gun } from "../util";
 import { l } from "../../localizer";
-import * as game from "../../game";
+import * as druid from "pixi-druid";
 
-export default class Controls extends game.AbstractBranch {
+export default class Controls extends druid.AbstractBranch {
 
     private static readonly SECTIONS_COUNT = 6;
     private static readonly SECTION_RATIO = 3;
 
     private readonly spriteHull = new PIXI.Sprite();
-    private readonly bgHull = new game.Rectangle(0, 0, 0x333333);
+    private readonly bgHull = new druid.Rectangle(0, 0, 0x333333);
 
-    private readonly barStrength = new game.ProgressBar(0, 0, 0xff0000, game.BarTextConfig.Default);
+    private readonly barStrength = new druid.ProgressBar(0, 0, 0xff0000, druid.BarTextConfig.Default);
     private readonly bgStats = new PIXI.Container();
 
-    private readonly btnFirstGun = new game.Button();
-    private readonly btnSecondGun = new game.Button();
-    private readonly bgModule = new game.Rectangle(0, 0);
-    private readonly btnNextTurn = new game.Button(l("endTurn"));
+    private readonly btnFirstGun = new druid.Button();
+    private readonly btnSecondGun = new druid.Button();
+    private readonly bgModule = new druid.Rectangle(0, 0);
+    private readonly btnNextTurn = new druid.Button(l("endTurn"));
 
     constructor(private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
         super();
-        this.spriteHull.anchor.set(game.CENTER, game.CENTER);
+        this.spriteHull.anchor.set(druid.CENTER, druid.CENTER);
         this.bgHull.addChild(this.spriteHull);
         this.addChild(this.bgHull);
 
@@ -39,11 +39,11 @@ export default class Controls extends game.AbstractBranch {
         unitService.on(ActionType.Move, () => this.updateInterface());
         unitService.on(ActionType.Shot, () => this.updateInterface());
         unitService.on(ActionType.NextTurn, () => this.updateInterface());
-        this.btnFirstGun.on(game.Event.BUTTON_CLICK, () =>
+        this.btnFirstGun.on(druid.Event.BUTTON_CLICK, () =>
             unitService.activeUnit.preparedGunId = unitService.activeUnit.ship.firstGun.id);
-        this.btnSecondGun.on(game.Event.BUTTON_CLICK, () =>
+        this.btnSecondGun.on(druid.Event.BUTTON_CLICK, () =>
             unitService.activeUnit.preparedGunId = unitService.activeUnit.ship.secondGun.id);
-        this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketClient.endTurn());
+        this.btnNextTurn.on(druid.Event.BUTTON_CLICK, () => webSocketClient.endTurn());
     }
 
     setUpChildren(width: number, height: number) {
@@ -96,7 +96,7 @@ export default class Controls extends game.AbstractBranch {
         this.btnNextTurn.isEnabled = this.unitService.isCurrentPlayerTurn;
     }
 
-    private updateBtnGun(btnGun: game.Button, gun: Gun) {
+    private updateBtnGun(btnGun: druid.Button, gun: Gun) {
         if (gun) {
             btnGun.isEnabled = this.unitService.isCurrentPlayerTurn
                 && this.unitService.activeUnit.actionPoints >= gun.shotCost;

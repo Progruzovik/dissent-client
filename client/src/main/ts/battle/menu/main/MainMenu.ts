@@ -3,9 +3,9 @@ import WebSocketClient from "../../WebSocketClient";
 import Ship from "../../ship/Ship";
 import { Status } from "../../util";
 import { l } from "../../../localizer";
-import * as game from "../../../game";
+import * as druid from "pixi-druid";
 
-export default class Menu extends game.AbstractBranch {
+export default class Menu extends druid.AbstractBranch {
 
     static readonly BATTLE = "battle";
 
@@ -14,21 +14,21 @@ export default class Menu extends game.AbstractBranch {
     private readonly txtDissent = new PIXI.Text("Dissent", { fill: "white", fontSize: 48, fontWeight: "bold" });
     private readonly txtStatus = new PIXI.Text("", { fill: "white" });
 
-    private readonly btnQueue = new game.Button();
+    private readonly btnQueue = new druid.Button();
     private readonly groupButtons = new PIXI.Container();
 
     readonly shipsPanel = new ShipsPanel();
 
     constructor(webSocketClient: WebSocketClient) {
         super();
-        this.txtDissent.anchor.x = game.CENTER;
+        this.txtDissent.anchor.x = druid.CENTER;
         this.addChild(this.txtDissent);
-        this.txtStatus.anchor.x = game.CENTER;
+        this.txtStatus.anchor.x = druid.CENTER;
         this.addChild(this.txtStatus);
 
         this.groupButtons.addChild(this.btnQueue);
-        const btnScenario = new game.Button("PVE");
-        btnScenario.x = this.btnQueue.width + game.INDENT;
+        const btnScenario = new druid.Button("PVE");
+        btnScenario.x = this.btnQueue.width + druid.INDENT;
         this.groupButtons.addChild(btnScenario);
         this.groupButtons.pivot.x = this.groupButtons.width / 2;
         this.addChild(this.groupButtons);
@@ -43,23 +43,23 @@ export default class Menu extends game.AbstractBranch {
                 this.updateStatus();
             }
         });
-        this.btnQueue.on(game.Event.BUTTON_CLICK, () => {
+        this.btnQueue.on(druid.Event.BUTTON_CLICK, () => {
             if (this.status == Status.Queued) {
                 webSocketClient.removeFromQueue();
             } else {
                 webSocketClient.addToQueue();
             }
         });
-        btnScenario.on(game.Event.BUTTON_CLICK, () => webSocketClient.startScenario());
+        btnScenario.on(druid.Event.BUTTON_CLICK, () => webSocketClient.startScenario());
         this.shipsPanel.on(ShipsPanel.OPEN_INFO, (ship: Ship) => this.emit(ShipsPanel.OPEN_INFO, ship));
     }
 
     setUpChildren(width: number, height: number) {
-        this.txtDissent.position.set(width / 2, game.INDENT * 3);
-        this.txtStatus.position.set(width / 2, this.txtDissent.y + this.txtDissent.height + game.INDENT / 2);
-        this.groupButtons.position.set(width / 2, this.txtStatus.y + this.txtStatus.height + game.INDENT);
+        this.txtDissent.position.set(width / 2, druid.INDENT * 3);
+        this.txtStatus.position.set(width / 2, this.txtDissent.y + this.txtDissent.height + druid.INDENT / 2);
+        this.groupButtons.position.set(width / 2, this.txtStatus.y + this.txtStatus.height + druid.INDENT);
         this.shipsPanel.resize(width);
-        this.shipsPanel.y = this.groupButtons.y + this.groupButtons.height + game.INDENT * 2;
+        this.shipsPanel.y = this.groupButtons.y + this.groupButtons.height + druid.INDENT * 2;
     }
 
     private updateStatus() {

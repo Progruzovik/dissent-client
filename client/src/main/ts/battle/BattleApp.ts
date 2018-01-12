@@ -7,10 +7,10 @@ import MenuRoot from "./menu/MenuRoot";
 import Ship from "./ship/Ship";
 import { updateLocalizedData } from "../localizer";
 import { initClient } from "./request";
-import * as game from "../game";
+import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class BattleApp extends game.App {
+export default class BattleApp extends druid.App {
 
     private menuRoot: MenuRoot;
     private readonly projectileService = new ProjectileService();
@@ -52,7 +52,7 @@ export default class BattleApp extends game.App {
 
             this.root = new BattlefieldRoot(d.fieldSize, d.playerSide,
                 unitsArray, d.asteroids, d.clouds, this.projectileService, this.webSocketClient);
-            this.root.once(game.Event.DONE, () => {
+            this.root.once(druid.Event.DONE, () => {
                 this.menuRoot.reload();
                 this.root.destroy({ children: true });
                 this.root = this.menuRoot;

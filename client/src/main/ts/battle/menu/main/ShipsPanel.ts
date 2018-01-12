@@ -1,7 +1,7 @@
 import Ship from "../../ship/Ship";
 import { ShipData } from "../../util";
 import { l } from "../../../localizer";
-import * as game from "../../../game"
+import * as druid from "pixi-druid"
 import * as PIXI from "pixi.js";
 
 export default class ShipsPanel extends PIXI.Container {
@@ -25,12 +25,12 @@ export default class ShipsPanel extends PIXI.Container {
             const ship = new Ship(sd);
             const iconDefault = ship.createSprite();
             const iconOver = ship.createSprite();
-            iconOver.addChild(new game.Frame(iconOver.width, iconOver.height, 1, 0xffff00));
-            const btnShip = new game.Button("", iconDefault, iconOver, iconOver, iconDefault);
-            btnShip.x = this.groupShips.width + game.INDENT / 2 * i;
+            iconOver.addChild(new druid.Frame(iconOver.width, iconOver.height, 1, 0xffff00));
+            const btnShip = new druid.Button("", iconDefault, iconOver, iconOver, iconDefault);
+            btnShip.x = this.groupShips.width + druid.INDENT / 2 * i;
             this.groupShips.addChild(btnShip);
 
-            btnShip.on(game.Event.BUTTON_CLICK, () => this.emit(ShipsPanel.OPEN_INFO, ship));
+            btnShip.on(druid.Event.BUTTON_CLICK, () => this.emit(ShipsPanel.OPEN_INFO, ship));
         });
         this.groupShips.pivot.x = this.groupShips.width / 2;
     }

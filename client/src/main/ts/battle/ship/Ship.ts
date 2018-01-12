@@ -1,6 +1,6 @@
 import { Gun, Hull, ShipData } from "../util";
 import { l } from "../../localizer";
-import * as game from "../../game";
+import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 import Card from "../menu/ship/Card";
 
@@ -48,14 +48,14 @@ export default class Ship implements ShipData {
             const gunSprite = new PIXI.Sprite(PIXI.loader.resources[this.secondGun.texture.name].texture);
             gunSprite.scale.set(4, 4);
             const cardSecondGun = new Card(l(this.secondGun.name), gunSprite);
-            cardSecondGun.x = result.width + game.INDENT;
+            cardSecondGun.x = result.width + druid.INDENT;
             result.addChild(cardSecondGun);
         }
         return result;
     }
 
-    createStrengthBar(width: number, height: number = 15, color: number = 0xff0000): game.ProgressBar {
-        const result = new game.ProgressBar(width, height, color, game.BarTextConfig.Default, this.hull.strength);
+    createStrengthBar(width: number, height: number = 15, color: number = 0xff0000): druid.ProgressBar {
+        const result = new druid.ProgressBar(width, height, color, druid.BarTextConfig.Default, this.hull.strength);
         result.value = this.strength;
         return result;
     }

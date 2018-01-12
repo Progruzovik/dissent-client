@@ -3,9 +3,9 @@ import ShipsPanel from "./main/ShipsPanel";
 import ShipInfo from "./ship/ShipInfo";
 import Ship from "../ship/Ship";
 import WebSocketClient from "../WebSocketClient";
-import * as game from "../../game";
+import * as druid from "pixi-druid";
 
-export default class MenuRoot extends game.AbstractRoot {
+export default class MenuRoot extends druid.AbstractRoot {
 
     private readonly menu = new MainMenu(this.webSocketClient);
     private shipInfo: ShipInfo;
@@ -20,7 +20,7 @@ export default class MenuRoot extends game.AbstractRoot {
             this.shipInfo = new ShipInfo(this.width, this.height, ship);
             this.addChild(this.shipInfo);
 
-            this.shipInfo.once(game.Event.DONE, () => {
+            this.shipInfo.once(druid.Event.DONE, () => {
                 this.removeChildren();
                 this.shipInfo.destroy({ children: true });
                 this.shipInfo = null;

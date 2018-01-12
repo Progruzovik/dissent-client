@@ -1,4 +1,4 @@
-import * as game from "../game";
+import * as druid from "pixi-druid";
 
 export const enum ActionType {
     Move = "move",
@@ -47,15 +47,15 @@ export interface ShipData {
 }
 
 export interface Move {
-    readonly cost: number, readonly cells: game.Point[];
+    readonly cost: number, readonly cells: druid.Point[];
 }
 
 export interface PathNode {
-    readonly movementCost: number, readonly cell: game.Point;
+    readonly movementCost: number, readonly cell: druid.Point;
 }
 
 export interface Shot {
-    readonly gunId: number, readonly damage: number, readonly cell: game.Point;
+    readonly gunId: number, readonly damage: number, readonly cell: druid.Point;
 }
 
 export interface Texture {
