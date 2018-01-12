@@ -38,6 +38,7 @@ export default class BattlefieldRoot extends game.AbstractRoot {
                 this.unitPopUp.destroy({ children: true });
             }
             this.unitPopUp = new PopUp(unit);
+            this.unitPopUp.setUpChildren(this.width, this.height);
             this.addChild(this.unitPopUp);
         });
         unitService.on(UnitService.UNIT_MOUSE_OUT, (unit: Unit) => {
@@ -56,5 +57,8 @@ export default class BattlefieldRoot extends game.AbstractRoot {
         this.leftUi.setUpChildren(Field.CELL_SIZE.x, this.controls.y);
         this.field.x = this.leftUi.width;
         this.field.setUpChildren(width - this.field.x, this.controls.y);
+        if (this.unitPopUp) {
+            this.unitPopUp.setUpChildren(width, height);
+        }
     }
 }

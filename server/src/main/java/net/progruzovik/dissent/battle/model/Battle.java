@@ -108,7 +108,7 @@ public final class Battle extends Observable {
                 field.destroyUnit(target);
                 if (!unitQueue.hasUnitsOnBothSides()) {
                     isRunning = false;
-                    field.finish();
+                    field.resetActiveUnit();
                     notifyObservers(new Message<>("battleFinish"));
                     deleteObservers();
                 }

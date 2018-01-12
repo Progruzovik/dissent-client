@@ -8,10 +8,7 @@ import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.util.Cell;
 import net.progruzovik.dissent.model.util.Point;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.Predicate;
 
 public final class Field {
@@ -34,10 +31,7 @@ public final class Field {
         map = new Map(size);
         paths = new ArrayList<>(size.getX());
         for (int i = 0; i < size.getX(); i++) {
-            paths.add(new ArrayList<>(size.getY()));
-            for (int j = 0; j < size.getY(); j++) {
-                paths.get(i).add(null);
-            }
+            paths.add(new ArrayList<>(Collections.nCopies(size.getY(), null)));
         }
 
         asteroids.add(new Cell(5, 3));
@@ -106,27 +100,36 @@ public final class Field {
                 currentPath.set(j, null);
             }
         }
-
-        final int width = activeUnit.getWidth(), height = activeUnit.getHeight();
-        final PathNode firstNode = new PathNode(0, activeUnit.getFirstCell());
-        paths.get(activeUnit.getFirstCell().getX()).set(activeUnit.getFirstCell().getY(), firstNode);
-        final Queue<Cell> cellQueue = new LinkedList<>();
-        cellQueue.offer(activeUnit.getFirstCell());
-        while (!cellQueue.isEmpty()) {
-            final Cell cell = cellQueue.poll();
-            final int distanceToCell = paths.get(cell.getX()).get(cell.getY()).getMovementCost();
-            for (final Cell neighborCell : findNeighborsForCell(cell)) {
-                final int distanceToNeighbor = distanceToCell + map.findMovementCost(neighborCell, width, height);
-                final PathNode pathFromNeighbor = paths.get(neighborCell.getX()).get(neighborCell.getY());
-                if (distanceToNeighbor <= activeUnit.getActionPoints()
-                        && (pathFromNeighbor == null || pathFromNeighbor.getMovementCost() > distanceToNeighbor)) {
-                    paths.get(neighborCell.getX()).set(neighborCell.getY(), new PathNode(distanceToNeighbor, cell));
-                    cellQueue.offer(neighborCell);
+        if (activeUnit == null) {
+            reachableCells = null;
+        } else {
+            final int width = activeUnit.getWidth(), height = activeUnit.getHeight();
+            final PathNode firstNode = new PathNode(0, activeUnit.getFirstCell());
+            paths.get(activeUnit.getFirstCell().getX()).set(activeUnit.getFirstCell().getY(), firstNode);
+            final Queue<Cell> cellQueue = new LinkedList<>();
+            cellQueue.offer(activeUnit.getFirstCell());
+            while (!cellQueue.isEmpty()) {
+                final Cell cell = cellQueue.poll();
+                final int distanceToCell = paths.get(cell.getX()).get(cell.getY()).getMovementCost();
+                for (final Cell neighbor : findNeighborsForCell(cell)) {
+                    final int distanceToNeighbor = distanceToCell + map.findMovementCost(neighbor, width, height);
+                    final PathNode pathFromNeighbor = paths.get(neighbor.getX()).get(neighbor.getY());
+                    if (distanceToNeighbor <= activeUnit.getActionPoints()
+                            && (pathFromNeighbor == null || pathFromNeighbor.getMovementCost() > distanceToNeighbor)) {
+                        paths.get(neighbor.getX()).set(neighbor.getY(), new PathNode(distanceToNeighbor, cell));
+                        cellQueue.offer(neighbor);
+                    }
                 }
             }
+            reachableCells = findNeighborsInRadius(activeUnit.getFirstCell(),
+                    activeUnit.getActionPoints(), this::isCellReachable);
         }
-        reachableCells = findNeighborsInRadius(activeUnit.getFirstCell(),
-                activeUnit.getActionPoints(), this::isCellReachable);
+        gunCells.clear();
+    }
+
+    public void resetActiveUnit() {
+        activeUnit = null;
+        updateActiveUnit();
     }
 
     public Move moveActiveUnit(Cell cell) {
@@ -184,14 +187,6 @@ public final class Field {
         destroyedUnits.add(unit);
         map.destroyUnit(unit);
         gunCells.getTargetCells().remove(unit.getFirstCell());
-    }
-
-    public void finish() {
-        activeUnit = null;
-        preparedGunId = Gun.NO_GUN_ID;
-        paths.clear();
-        reachableCells.clear();
-        gunCells.clear();
     }
 
     private boolean isCellReachable(Cell cell) {
