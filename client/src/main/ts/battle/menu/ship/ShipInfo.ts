@@ -3,7 +3,7 @@ import { l } from "../../../localizer";
 import * as game from "../../../game";
 import * as PIXI from "pixi.js";
 
-export default class ShipInfo extends game.UiLayer {
+export default class ShipInfo extends game.AbstractBranch {
 
     private readonly txtName: PIXI.Text;
     private readonly content = new PIXI.Container();
@@ -38,7 +38,7 @@ export default class ShipInfo extends game.UiLayer {
         btnBack.on(game.Event.BUTTON_CLICK, () => this.emit(game.Event.DONE));
     }
 
-    resize(width: number, height: number) {
+    setUpChildren(width: number, height: number) {
         this.content.position.set(width / 2, height / 2);
         this.txtName.position.set(width / 2, this.content.y - this.content.pivot.y - game.INDENT);
     }

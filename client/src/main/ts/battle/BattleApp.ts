@@ -1,9 +1,9 @@
 import WebSocketClient from "./WebSocketClient";
-import BattlefieldScreen from "./battlefield/BattlefieldScreen";
+import BattlefieldRoot from "./battlefield/BattlefieldRoot";
 import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import Menu from "./menu/main/MainMenu";
-import MenuScreen from "./menu/MenuScreen";
+import MenuRoot from "./menu/MenuRoot";
 import Ship from "./ship/Ship";
 import { updateLocalizedData } from "../localizer";
 import { initClient } from "./request";
@@ -12,7 +12,7 @@ import * as PIXI from "pixi.js";
 
 export default class BattleApp extends game.Application {
 
-    private menuScreen: MenuScreen;
+    private menuRoot: MenuRoot;
     private readonly projectileService = new ProjectileService();
     private readonly webSocketClient = new WebSocketClient();
 
@@ -28,9 +28,9 @@ export default class BattleApp extends game.Application {
                     PIXI.loader.add(texture.name, `img/${texture.name}.png`);
                 }
                 PIXI.loader.load(() => {
-                    this.menuScreen = new MenuScreen(this.webSocketClient);
-                    this.currentScreen = this.menuScreen;
-                    this.menuScreen.on(Menu.BATTLE, () => this.startBattle());
+                    this.menuRoot = new MenuRoot(this.webSocketClient);
+                    this.root = this.menuRoot;
+                    this.menuRoot.on(Menu.BATTLE, () => this.startBattle());
                 });
             });
         });
@@ -50,12 +50,12 @@ export default class BattleApp extends game.Application {
                 unitsArray.push(unit);
             }
 
-            const battlefield = new BattlefieldScreen(d.fieldSize, d.playerSide,
+            const battlefield = new BattlefieldRoot(d.fieldSize, d.playerSide,
                 unitsArray, d.asteroids, d.clouds, this.projectileService, this.webSocketClient);
-            this.currentScreen = battlefield;
+            this.root = battlefield;
             battlefield.once(game.Event.DONE, () => {
-                this.menuScreen.reload();
-                this.currentScreen = this.menuScreen;
+                this.menuRoot.reload();
+                this.root = this.menuRoot;
             });
         });
     }

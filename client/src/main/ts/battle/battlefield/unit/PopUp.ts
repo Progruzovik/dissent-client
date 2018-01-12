@@ -2,17 +2,17 @@ import Unit from "./Unit";
 import { Side } from "../../util";
 import * as game from "../../../game";
 
-export default class Window extends game.UiLayer {
+export default class PopUp extends game.AbstractBranch {
 
     static readonly WIDTH = 200;
     static readonly HEIGHT = 105;
 
     private readonly lineToWindow = new game.Line(0, 1, this.unit.frameColor);
 
-    private readonly bgWindow = new game.Rectangle(Window.WIDTH, Window.HEIGHT, 0x333333);
+    private readonly bgWindow = new game.Rectangle(PopUp.WIDTH, PopUp.HEIGHT, 0x333333);
     private readonly barStrength = this.unit.ship.createStrengthBar(this.bgWindow.width);
 
-    constructor(playerSide: Side, readonly unit: Unit) {
+    constructor(readonly unit: Unit) {
         super();
 
         const unitBounds: PIXI.Rectangle = unit.getBounds(true);
@@ -36,7 +36,7 @@ export default class Window extends game.UiLayer {
         unit.on(Unit.UPDATE_STATS, () => this.updateStats());
     }
 
-    resize(width: number, height: number) {
+    setUpChildren(width: number, height: number) {
         if (this.unit.side == Side.Left) {
             this.bgWindow.x = game.INDENT / 2;
         } else if (this.unit.side == Side.Right) {

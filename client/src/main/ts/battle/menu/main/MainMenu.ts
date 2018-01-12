@@ -5,7 +5,7 @@ import { Status } from "../../util";
 import { l } from "../../../localizer";
 import * as game from "../../../game";
 
-export default class Menu extends game.UiLayer {
+export default class Menu extends game.AbstractBranch {
 
     static readonly BATTLE = "battle";
 
@@ -54,7 +54,7 @@ export default class Menu extends game.UiLayer {
         this.shipsPanel.on(ShipsPanel.OPEN_INFO, (ship: Ship) => this.emit(ShipsPanel.OPEN_INFO, ship));
     }
 
-    resize(width: number, height: number) {
+    setUpChildren(width: number, height: number) {
         this.txtDissent.position.set(width / 2, game.INDENT * 3);
         this.txtStatus.position.set(width / 2, this.txtDissent.y + this.txtDissent.height + game.INDENT / 2);
         this.groupButtons.position.set(width / 2, this.txtStatus.y + this.txtStatus.height + game.INDENT);

@@ -1,3 +1,5 @@
+import * as PIXI from "pixi.js";
+
 export const CENTER = 0.5;
 export const INDENT = 20;
 
@@ -20,6 +22,14 @@ export namespace Event {
 
 export const enum BarTextConfig {
     Default, Custom
+}
+
+export interface Resizable {
+    setUpChildren(width: number, height: number);
+}
+
+export abstract class AbstractBranch extends PIXI.Container implements Resizable {
+    abstract setUpChildren(width: number, height: number);
 }
 
 export class Point {

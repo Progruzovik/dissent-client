@@ -7,7 +7,7 @@ import { ActionType, PathNode } from "../util";
 import { l } from "../../localizer";
 import * as game from "../../game";
 
-export default class Field extends game.UiLayer {
+export default class Field extends game.Field {
 
     static readonly CELL_SIZE = new game.Point(64, 48);
     static readonly LINE_WIDTH = 1.5;
@@ -26,25 +26,24 @@ export default class Field extends game.UiLayer {
                 private readonly unitService: UnitService, private readonly projectileService: ProjectileService,
                 private readonly webSocketClient: WebSocketClient) {
         super();
-        const bg = new game.Rectangle(0, 0);
-        this.addChild(bg);
+        const bg = new game.Rectangle(size.x * Field.CELL_SIZE.x + Field.LINE_WIDTH,
+            size.y * Field.CELL_SIZE.y + Field.LINE_WIDTH);
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Line(size.x * Field.CELL_SIZE.x + Field.LINE_WIDTH, Field.LINE_WIDTH, 0x777777);
+            const line = new game.Line(bg.width, Field.LINE_WIDTH, 0x777777);
             line.y = i * Field.CELL_SIZE.y;
-            this.addChild(line);
+            bg.addChild(line);
         }
         for (let i = 0; i <= size.y; i++) {
-            const line = new game.Line(size.y * Field.CELL_SIZE.y + Field.LINE_WIDTH, Field.LINE_WIDTH, 0x777777);
+            const line = new game.Line(bg.height, Field.LINE_WIDTH, 0x777777);
             line.pivot.y = line.thickness;
             line.rotation = Math.PI / 2;
             line.x = i * Field.CELL_SIZE.x;
-            this.addChild(line);
+            bg.addChild(line);
         }
-        bg.width = this.width;
-        bg.height = this.height;
+        this.content.addChild(bg);
 
         this.markLayer.addChild(this.markCurrent);
-        this.addChild(this.markLayer);
+        this.content.addChild(this.markLayer);
         const objectsLayer = new PIXI.Container();
         for (const asteroid of asteroids) {
             const spriteAsteroid = new PIXI.Sprite(PIXI.loader.resources["asteroid"].texture);
@@ -58,13 +57,13 @@ export default class Field extends game.UiLayer {
             spriteCloud.y = cloud.y * Field.CELL_SIZE.y;
             objectsLayer.addChild(spriteCloud);
         }
-        this.addChild(objectsLayer);
-        this.addChild(this.pathLayer);
+        this.content.addChild(objectsLayer);
+        this.content.addChild(this.pathLayer);
         const unitsLayer = new PIXI.Container();
         for (const unit of units) {
             unitsLayer.addChild(unit);
         }
-        this.addChild(unitsLayer);
+        this.content.addChild(unitsLayer);
 
         unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
         unitService.on(ActionType.Shot, () => this.updatePathsAndMarks());
@@ -77,7 +76,7 @@ export default class Field extends game.UiLayer {
             this.addCurrentPathMarks();
         });
         unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
-        projectileService.on(Projectile.NEW_SHOT, (projectile: Projectile) => this.addChild(projectile));
+        projectileService.on(Projectile.NEW_SHOT, (projectile: Projectile) => this.content.addChild(projectile));
     }
 
     removePathsAndMarksExceptCurrent() {

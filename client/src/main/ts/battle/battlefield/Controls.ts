@@ -6,7 +6,7 @@ import { ActionType, Gun } from "../util";
 import { l } from "../../localizer";
 import * as game from "../../game";
 
-export default class Controls extends game.UiLayer {
+export default class Controls extends game.AbstractBranch {
 
     private static readonly SECTIONS_COUNT = 6;
     private static readonly SECTION_RATIO = 3;
@@ -46,7 +46,7 @@ export default class Controls extends game.UiLayer {
         this.btnNextTurn.on(game.Event.BUTTON_CLICK, () => webSocketClient.endTurn());
     }
 
-    resize(width: number, height: number) {
+    setUpChildren(width: number, height: number) {
         const widthPerSection = width / Controls.SECTIONS_COUNT;
         const heightPerSection = widthPerSection / Controls.SECTION_RATIO;
 

@@ -6,7 +6,7 @@ import { l } from "../../localizer";
 import * as game from "../../game";
 import * as PIXI from "pixi.js";
 
-export default class LeftUi extends game.UiLayer {
+export default class LeftUi extends game.AbstractBranch {
 
     private readonly bgQueue = new PIXI.Container();
     private readonly txtActionPoints = new PIXI.Text("", { align: "center", fill: "white",
@@ -31,8 +31,7 @@ export default class LeftUi extends game.UiLayer {
             });
         });
         this.addChild(this.bgQueue);
-        this.txtActionPoints.anchor.x = game.CENTER;
-        this.txtActionPoints.x = this.bgQueue.width / 2;
+        this.txtActionPoints.anchor.set(game.CENTER, 1);
         this.addChild(this.txtActionPoints);
         this.updateUnitSpritePositions();
 
@@ -47,8 +46,8 @@ export default class LeftUi extends game.UiLayer {
         });
     }
 
-    resize(width: number, height: number) {
-        this.txtActionPoints.y = height - this.txtActionPoints.height;
+    setUpChildren(width: number, height: number) {
+        this.txtActionPoints.position.set(width / 2, height);
     }
 
     private updateUnitSpritePositions() {
