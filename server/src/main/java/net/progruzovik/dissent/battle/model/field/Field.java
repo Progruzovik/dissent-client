@@ -24,10 +24,10 @@ public final class Field {
     private final List<Cell> clouds = new ArrayList<>();
     private final List<Unit> destroyedUnits = new ArrayList<>();
 
-    private Unit activeUnit;
+    private Unit activeUnit = null;
     private int preparedGunId = Gun.NO_GUN_ID;
     private final List<List<PathNode>> paths;
-    private List<Cell> reachableCells;
+    private List<Cell> reachableCells = null;
     private final GunCells gunCells = new GunCells();
 
     public Field(Cell size) {
@@ -184,6 +184,14 @@ public final class Field {
         destroyedUnits.add(unit);
         map.destroyUnit(unit);
         gunCells.getTargetCells().remove(unit.getFirstCell());
+    }
+
+    public void finish() {
+        activeUnit = null;
+        preparedGunId = Gun.NO_GUN_ID;
+        paths.clear();
+        reachableCells.clear();
+        gunCells.clear();
     }
 
     private boolean isCellReachable(Cell cell) {
