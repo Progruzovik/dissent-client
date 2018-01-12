@@ -8,7 +8,7 @@ export default class ShipInfo extends game.AbstractBranch {
     private readonly txtName: PIXI.Text;
     private readonly content = new PIXI.Container();
 
-    constructor(ship: Ship) {
+    constructor(width: number, height: number, ship: Ship) {
         super();
         this.txtName = new PIXI.Text(ship.hull.name, { fill: "white", fontSize: 32, fontWeight: "bold" });
         this.txtName.anchor.set(game.CENTER, 1);
@@ -34,6 +34,7 @@ export default class ShipInfo extends game.AbstractBranch {
         this.content.addChild(btnBack);
         this.content.pivot.set(this.content.width / 2, this.content.height / 2);
         this.addChild(this.content);
+        this.setUpChildren(width, height);
 
         btnBack.on(game.Event.BUTTON_CLICK, () => this.emit(game.Event.DONE));
     }

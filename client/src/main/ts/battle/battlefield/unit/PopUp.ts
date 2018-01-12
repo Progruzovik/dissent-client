@@ -12,7 +12,7 @@ export default class PopUp extends game.AbstractBranch {
     private readonly bgWindow = new game.Rectangle(PopUp.WIDTH, PopUp.HEIGHT, 0x333333);
     private readonly barStrength = this.unit.ship.createStrengthBar(this.bgWindow.width);
 
-    constructor(readonly unit: Unit) {
+    constructor(rootWidth: number, rootHeight: number, readonly unit: Unit) {
         super();
 
         const unitBounds: PIXI.Rectangle = unit.getBounds(true);
@@ -32,6 +32,7 @@ export default class PopUp extends game.AbstractBranch {
         this.bgWindow.addChild(this.barStrength);
         this.bgWindow.addChild(new game.Frame(this.bgWindow.width, this.bgWindow.height, 1, unit.frameColor));
         this.addChild(this.bgWindow);
+        this.setUpChildren(rootWidth, rootHeight);
 
         unit.on(Unit.UPDATE_STATS, () => this.updateStats());
     }

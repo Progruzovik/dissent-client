@@ -17,8 +17,7 @@ export default class MenuRoot extends game.AbstractRoot {
 
         this.menu.on(ShipsPanel.OPEN_INFO, (ship: Ship) => {
             this.removeChildren();
-            this.shipInfo = new ShipInfo(ship);
-            this.shipInfo.setUpChildren(this.width, this.height);
+            this.shipInfo = new ShipInfo(this.width, this.height, ship);
             this.addChild(this.shipInfo);
 
             this.shipInfo.once(game.Event.DONE, () => {

@@ -9,7 +9,7 @@ final class Move {
     private final int cost;
     private final List<Cell> cells;
 
-    Move(int cost, List<Cell> cells) {
+    public Move(int cost, List<Cell> cells) {
         this.cost = cost;
         this.cells = cells;
     }

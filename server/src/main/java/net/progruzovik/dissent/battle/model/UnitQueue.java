@@ -1,5 +1,6 @@
 package net.progruzovik.dissent.battle.model;
 
+import net.progruzovik.dissent.exception.InvalidCellException;
 import net.progruzovik.dissent.model.util.Cell;
 
 import java.util.LinkedList;
@@ -9,32 +10,32 @@ public final class UnitQueue {
 
     private final LinkedList<Unit> queue = new LinkedList<>();
 
-    public boolean hasUnitsOnBothSides() {
+    boolean hasUnitsOnBothSides() {
         return queue.stream().anyMatch(u -> u.getSide() != getCurrentUnit().getSide());
     }
 
-    public Unit getCurrentUnit() {
+    Unit getCurrentUnit() {
         return queue.element();
     }
 
-    public List<Unit> getUnits() {
+    List<Unit> getUnits() {
         return queue;
     }
 
-    public void addUnit(Unit unit) {
+    void addUnit(Unit unit) {
         queue.offer(unit);
     }
 
-    public Unit findUnitOnCell(Cell cell) {
+    Unit findUnitOnCell(Cell cell) {
         for (final Unit unit : queue) {
             if (unit.isOccupyCell(cell)) {
                 return unit;
             }
         }
-        return null;
+        throw new InvalidCellException();
     }
 
-    public void nextTurn() {
+    void nextTurn() {
         queue.offer(queue.poll());
     }
 }

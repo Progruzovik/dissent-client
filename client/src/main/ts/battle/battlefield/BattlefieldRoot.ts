@@ -37,8 +37,7 @@ export default class BattlefieldRoot extends game.AbstractRoot {
             if (this.unitPopUp) {
                 this.unitPopUp.destroy({ children: true });
             }
-            this.unitPopUp = new PopUp(unit);
-            this.unitPopUp.setUpChildren(this.width, this.height);
+            this.unitPopUp = new PopUp(this.width, this.height, unit);
             this.addChild(this.unitPopUp);
         });
         unitService.on(UnitService.UNIT_MOUSE_OUT, (unit: Unit) => {
