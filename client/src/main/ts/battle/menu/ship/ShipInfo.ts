@@ -36,7 +36,7 @@ export default class ShipInfo extends druid.AbstractBranch {
         this.addChild(this.content);
         this.setUpChildren(width, height);
 
-        btnBack.on(druid.Event.BUTTON_CLICK, () => this.emit(druid.Event.DONE));
+        btnBack.on(druid.Button.TOGGLE, () => this.emit(druid.Event.DONE));
     }
 
     setUpChildren(width: number, height: number) {

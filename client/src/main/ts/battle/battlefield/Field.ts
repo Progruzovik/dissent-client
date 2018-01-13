@@ -68,7 +68,8 @@ export default class Field extends druid.Field {
 
         unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
         unitService.on(ActionType.Shot, () => this.updatePathsAndMarks());
-        unitService.on(UnitService.SHOT_CELL, (cell: druid.Point) => this.markLayer.addChild(new Mark(0x555555, cell)));
+        unitService.on(UnitService.SHOT_CELL, (cell: druid.Point) =>
+            this.markLayer.addChild(new Mark(0x555555, cell)));
         unitService.on(UnitService.TARGET_CELL, (cell: druid.Point) =>
             this.markLayer.addChild(new Mark(0x550000, cell)));
         unitService.on(Unit.PREPARE_TO_SHOT, () => this.removePathsAndMarksExceptCurrent());
@@ -149,19 +150,19 @@ export default class Field extends druid.Field {
                     direction = Direction.Down;
                 }
 
-                const pathLine = new druid.Line(0, 4, 0x00aa00);
+                const pathLine = new druid.Line(4, 0x00aa00);
                 pathLine.x = (cell.x + pathOffset.x + druid.CENTER) * Field.CELL_SIZE.x;
                 pathLine.y = (cell.y + pathOffset.y + druid.CENTER) * Field.CELL_SIZE.y;
-                const k = direction == Direction.Left || direction == Direction.Up ? 1 : -1;
-                const destination = new PIXI.Point(pathLine.x, pathLine.y);
+                const k: number = direction == Direction.Left || direction == Direction.Up ? 1 : -1;
+                let destinationX: number = pathLine.x, destinationY: number = pathLine.y;
                 if (direction == Direction.Left || direction == Direction.Right) {
                     pathLine.width = Field.CELL_SIZE.x;
-                    destination.x += pathLine.width * k;
+                    destinationX += pathLine.width * k;
                 } else if (direction == Direction.Up || direction == Direction.Down) {
                     pathLine.width = Field.CELL_SIZE.y;
-                    destination.y += pathLine.width * k;
+                    destinationY += pathLine.width * k;
                 }
-                pathLine.direct(destination);
+                pathLine.directTo(destinationX, destinationY);
                 this.pathLayer.addChild(pathLine);
                 cell = previousCell;
             }

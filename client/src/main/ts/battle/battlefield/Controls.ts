@@ -39,11 +39,11 @@ export default class Controls extends druid.AbstractBranch {
         unitService.on(ActionType.Move, () => this.updateInterface());
         unitService.on(ActionType.Shot, () => this.updateInterface());
         unitService.on(ActionType.NextTurn, () => this.updateInterface());
-        this.btnFirstGun.on(druid.Event.BUTTON_CLICK, () =>
+        this.btnFirstGun.on(druid.Button.TOGGLE, () =>
             unitService.activeUnit.preparedGunId = unitService.activeUnit.ship.firstGun.id);
-        this.btnSecondGun.on(druid.Event.BUTTON_CLICK, () =>
+        this.btnSecondGun.on(druid.Button.TOGGLE, () =>
             unitService.activeUnit.preparedGunId = unitService.activeUnit.ship.secondGun.id);
-        this.btnNextTurn.on(druid.Event.BUTTON_CLICK, () => webSocketClient.endTurn());
+        this.btnNextTurn.on(druid.Button.TOGGLE, () => webSocketClient.endTurn());
     }
 
     setUpChildren(width: number, height: number) {

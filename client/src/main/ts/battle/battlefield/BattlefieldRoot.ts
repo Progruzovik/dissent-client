@@ -50,7 +50,7 @@ export default class BattlefieldRoot extends druid.AbstractRoot {
         actionReceiver.once(ActionType.BattleFinish, () => this.emit(druid.Event.DONE));
     }
 
-    onSetUpChildren(width: number, height: number) {
+    protected resize(width: number, height: number) {
         this.controls.setUpChildren(width, height);
         this.controls.y = height - this.controls.height;
         this.leftUi.setUpChildren(Field.CELL_SIZE.x, this.controls.y);

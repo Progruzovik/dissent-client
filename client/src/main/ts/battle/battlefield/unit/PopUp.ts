@@ -7,7 +7,7 @@ export default class PopUp extends druid.AbstractBranch {
     static readonly WIDTH = 200;
     static readonly HEIGHT = 105;
 
-    private readonly lineToWindow = new druid.Line(0, 1, this.unit.frameColor);
+    private readonly lineToWindow = new druid.Line(1, this.unit.frameColor);
 
     private readonly bgWindow = new druid.Rectangle(PopUp.WIDTH, PopUp.HEIGHT, 0x333333);
     private readonly barStrength = this.unit.ship.createStrengthBar(this.bgWindow.width);
@@ -30,7 +30,8 @@ export default class PopUp extends druid.AbstractBranch {
         this.bgWindow.addChild(unitIcon);
         this.barStrength.y = unitIcon.y + unitIcon.height + 5;
         this.bgWindow.addChild(this.barStrength);
-        this.bgWindow.addChild(new druid.Frame(this.bgWindow.width, this.bgWindow.height, 1, unit.frameColor));
+        const frame = new druid.Frame(this.bgWindow.width, this.bgWindow.height, 1, unit.frameColor);
+        this.bgWindow.addChild(frame);
         this.addChild(this.bgWindow);
         this.setUpChildren(rootWidth, rootHeight);
 
@@ -44,8 +45,8 @@ export default class PopUp extends druid.AbstractBranch {
             this.bgWindow.x = width - this.bgWindow.width - druid.INDENT / 2;
         }
         this.bgWindow.y = druid.INDENT / 2;
-        const to = new druid.Point(this.bgWindow.x + this.bgWindow.width / 2, this.bgWindow.y + this.bgWindow.height);
-        this.lineToWindow.direct(to);
+        this.lineToWindow.directTo(this.bgWindow.x + this.bgWindow.width / 2,
+            this.bgWindow.y + this.bgWindow.height);
     }
 
     destroy(options?: PIXI.DestroyOptions | boolean ) {

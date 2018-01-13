@@ -5,10 +5,10 @@ export default class Beam extends Projectile {
 
     constructor(from: druid.Point, to: druid.Point) {
         super(1, 12);
-        const line = new druid.Line(0, 2, 0xff0000);
-        line.direct(to, from);
+        const line = new druid.Line(2, 0xff0000);
+        line.position.set(from.x, from.y);
+        line.directTo(to.x, to.y);
         this.addChild(line);
-        this.position.set(from.x, from.y);
     }
 
     protected update(deltaTime: number) {

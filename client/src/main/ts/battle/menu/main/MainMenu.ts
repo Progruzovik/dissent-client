@@ -11,7 +11,8 @@ export default class Menu extends druid.AbstractBranch {
 
     private status: Status;
 
-    private readonly txtDissent = new PIXI.Text("Dissent", { fill: "white", fontSize: 48, fontWeight: "bold" });
+    private readonly txtDissent = new PIXI.Text("Dissent",
+        { fill: "white", fontSize: 48, fontWeight: "bold" });
     private readonly txtStatus = new PIXI.Text("", { fill: "white" });
 
     private readonly btnQueue = new druid.Button();
@@ -43,14 +44,14 @@ export default class Menu extends druid.AbstractBranch {
                 this.updateStatus();
             }
         });
-        this.btnQueue.on(druid.Event.BUTTON_CLICK, () => {
+        this.btnQueue.on(druid.Button.TOGGLE, () => {
             if (this.status == Status.Queued) {
                 webSocketClient.removeFromQueue();
             } else {
                 webSocketClient.addToQueue();
             }
         });
-        btnScenario.on(druid.Event.BUTTON_CLICK, () => webSocketClient.startScenario());
+        btnScenario.on(druid.Button.TOGGLE, () => webSocketClient.startScenario());
         this.shipsPanel.on(ShipsPanel.OPEN_INFO, (ship: Ship) => this.emit(ShipsPanel.OPEN_INFO, ship));
     }
 

@@ -35,7 +35,7 @@ export default class MenuRoot extends druid.AbstractRoot {
         this.webSocketClient.requestShips(sd => this.menu.shipsPanel.reload(sd));
     }
 
-    protected onSetUpChildren(width: number, height: number) {
+    protected resize(width: number, height: number) {
         this.menu.setUpChildren(width, height);
         if (this.shipInfo) {
             this.shipInfo.setUpChildren(width, height);
