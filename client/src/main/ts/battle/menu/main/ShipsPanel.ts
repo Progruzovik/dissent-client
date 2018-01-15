@@ -30,7 +30,7 @@ export default class ShipsPanel extends PIXI.Container {
             btnShip.x = this.groupShips.width + druid.INDENT / 2 * i;
             this.groupShips.addChild(btnShip);
 
-            btnShip.on(druid.Button.TOGGLE, () => this.emit(ShipsPanel.OPEN_INFO, ship));
+            btnShip.on(druid.Button.TRIGGERED, () => this.emit(ShipsPanel.OPEN_INFO, ship));
         });
         this.groupShips.pivot.x = this.groupShips.width / 2;
     }

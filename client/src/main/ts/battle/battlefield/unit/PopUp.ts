@@ -14,7 +14,6 @@ export default class PopUp extends druid.AbstractBranch {
 
     constructor(rootWidth: number, rootHeight: number, readonly unit: Unit) {
         super();
-
         const unitBounds: PIXI.Rectangle = unit.getBounds(true);
         this.lineToWindow.position.set(unitBounds.x + unitBounds.width / 2, unitBounds.y);
         this.addChild(this.lineToWindow);

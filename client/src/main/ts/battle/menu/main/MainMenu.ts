@@ -44,14 +44,14 @@ export default class Menu extends druid.AbstractBranch {
                 this.updateStatus();
             }
         });
-        this.btnQueue.on(druid.Button.TOGGLE, () => {
+        this.btnQueue.on(druid.Button.TRIGGERED, () => {
             if (this.status == Status.Queued) {
                 webSocketClient.removeFromQueue();
             } else {
                 webSocketClient.addToQueue();
             }
         });
-        btnScenario.on(druid.Button.TOGGLE, () => webSocketClient.startScenario());
+        btnScenario.on(druid.Button.TRIGGERED, () => webSocketClient.startScenario());
         this.shipsPanel.on(ShipsPanel.OPEN_INFO, (ship: Ship) => this.emit(ShipsPanel.OPEN_INFO, ship));
     }
 

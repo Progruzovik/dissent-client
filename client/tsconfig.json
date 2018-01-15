@@ -5,8 +5,5 @@
     "outDir": "./target/es2015/",
     "sourceMap": true,
     "target": "es5"
-  },
-  "files": [
-    "./src/main/ts/main.ts"
-  ]
+  }
 }

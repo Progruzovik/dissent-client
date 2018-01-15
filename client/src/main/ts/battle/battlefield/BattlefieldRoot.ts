@@ -11,7 +11,7 @@ import { ActionType, Side } from "../util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class BattlefieldRoot extends druid.AbstractRoot {
+export default class BattlefieldRoot extends druid.AbstractBranch {
 
     private readonly field: Field;
     private readonly controls: Controls;
@@ -50,7 +50,7 @@ export default class BattlefieldRoot extends druid.AbstractRoot {
         actionReceiver.once(ActionType.BattleFinish, () => this.emit(druid.Event.DONE));
     }
 
-    protected resize(width: number, height: number) {
+    setUpChildren(width: number, height: number) {
         this.controls.setUpChildren(width, height);
         this.controls.y = height - this.controls.height;
         this.leftUi.setUpChildren(Field.CELL_SIZE.x, this.controls.y);
