@@ -101,7 +101,7 @@ public final class Field {
             }
         }
         if (activeUnit == null) {
-            reachableCells = null;
+            reachableCells.clear();
         } else {
             final int width = activeUnit.getWidth(), height = activeUnit.getHeight();
             final PathNode firstNode = new PathNode(0, activeUnit.getFirstCell());
@@ -155,28 +155,30 @@ public final class Field {
             preparedGunId = gunId;
             gunCells.clear();
 
-            final Cell unitCell = activeUnit.getFirstCell();
-            final int radius = activeUnit.getShip().findGunById(gunId).getRadius();
-            final List<Cell> availableCells = findNeighborsInRadius(activeUnit.getFirstCell(),
-                    activeUnit.getWidth(), activeUnit.getHeight(), radius, c -> {
-                for (int i = 0; i < activeUnit.getWidth(); i++) {
-                    for (int j = 0; j < activeUnit.getHeight(); j++) {
-                        final Cell cell = new Cell(unitCell.getX() + i, unitCell.getY() + j);
-                        if (cell.isInBorders(map.getSize()) && isCellCanBeShot(cell, c)) {
-                            return true;
-                        }
+            if (activeUnit != null) {
+                final Cell unitCell = activeUnit.getFirstCell();
+                final int radius = activeUnit.getShip().findGunById(gunId).getRadius();
+                final List<Cell> availableCells = findNeighborsInRadius(activeUnit.getFirstCell(),
+                        activeUnit.getWidth(), activeUnit.getHeight(), radius, c -> {
+                            for (int i = 0; i < activeUnit.getWidth(); i++) {
+                                for (int j = 0; j < activeUnit.getHeight(); j++) {
+                                    final Cell cell = new Cell(unitCell.getX() + i, unitCell.getY() + j);
+                                    if (cell.isInBorders(map.getSize()) && isCellCanBeShot(cell, c)) {
+                                        return true;
+                                    }
+                                }
+                            }
+                            return false;
+                        });
+                final LocationStatus targetStatus = activeUnit.getLocationStatus() == LocationStatus.UNIT_LEFT
+                        ? LocationStatus.UNIT_RIGHT : LocationStatus.UNIT_LEFT;
+                for (final Cell cell : availableCells) {
+                    final LocationStatus locationStatus = map.getLocationStatus(cell);
+                    if (locationStatus == LocationStatus.EMPTY) {
+                        gunCells.getShotCells().add(cell);
+                    }  else if (locationStatus == targetStatus) {
+                        gunCells.getTargetCells().add(cell);
                     }
-                }
-                return false;
-            });
-            final LocationStatus targetStatus = activeUnit.getLocationStatus() == LocationStatus.UNIT_LEFT
-                    ? LocationStatus.UNIT_RIGHT : LocationStatus.UNIT_LEFT;
-            for (final Cell cell : availableCells) {
-                final LocationStatus locationStatus = map.getLocationStatus(cell);
-                if (locationStatus == LocationStatus.EMPTY) {
-                    gunCells.getShotCells().add(cell);
-                }  else if (locationStatus == targetStatus) {
-                    gunCells.getTargetCells().add(cell);
                 }
             }
         }
