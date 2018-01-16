@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.battle.model.field;
 
-import net.progruzovik.dissent.model.util.Cell;
+import net.progruzovik.dissent.battle.model.util.Cell;
 
 import java.util.ArrayList;
 import java.util.List;

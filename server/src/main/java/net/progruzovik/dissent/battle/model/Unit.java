@@ -1,11 +1,11 @@
 package net.progruzovik.dissent.battle.model;
 
-import net.progruzovik.dissent.exception.InvalidMoveException;
-import net.progruzovik.dissent.exception.InvalidShotException;
+import net.progruzovik.dissent.battle.exception.InvalidMoveException;
+import net.progruzovik.dissent.battle.exception.InvalidShotException;
 import net.progruzovik.dissent.battle.model.field.LocationStatus;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.util.Cell;
+import net.progruzovik.dissent.battle.model.util.Cell;
 
 public final class Unit {
 
@@ -70,7 +70,10 @@ public final class Unit {
 
     public int shoot(int gunId, Unit target) {
         final Gun gun = ship.findGunById(gunId);
-        if (gun.getShotCost() > actionPoints) throw new InvalidShotException();
+        if (gun.getShotCost() > actionPoints) {
+            final String message = String.format("Not enough action points (%d/%d)!", actionPoints, gun.getShotCost());
+            throw new InvalidShotException(message);
+        }
 
         actionPoints -= gun.getShotCost();
         final int damage = gun.getDamage();

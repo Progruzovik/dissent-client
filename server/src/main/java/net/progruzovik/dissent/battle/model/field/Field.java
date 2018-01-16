@@ -2,11 +2,11 @@ package net.progruzovik.dissent.battle.model.field;
 
 import net.progruzovik.dissent.battle.model.Side;
 import net.progruzovik.dissent.battle.model.Unit;
-import net.progruzovik.dissent.exception.InvalidMoveException;
-import net.progruzovik.dissent.exception.InvalidUnitException;
+import net.progruzovik.dissent.battle.exception.InvalidMoveException;
+import net.progruzovik.dissent.battle.exception.InvalidUnitException;
 import net.progruzovik.dissent.model.entity.Gun;
-import net.progruzovik.dissent.model.util.Cell;
-import net.progruzovik.dissent.model.util.Point;
+import net.progruzovik.dissent.battle.model.util.Cell;
+import net.progruzovik.dissent.battle.model.util.Point;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -57,9 +57,9 @@ public final class Field {
     }
 
     public void setActiveUnit(Unit activeUnit) {
-        final LocationStatus locationStatus = map.getLocationStatus(activeUnit.getFirstCell());
-        if (activeUnit.getSide() == Side.NONE || locationStatus != activeUnit.getLocationStatus()) {
-            throw new InvalidUnitException();
+        final LocationStatus unitLocation = map.getLocationStatus(activeUnit.getFirstCell());
+        if (activeUnit.getSide() == Side.NONE || unitLocation != activeUnit.getLocationStatus()) {
+            throw new InvalidUnitException(activeUnit);
         }
         this.activeUnit = activeUnit;
         updateActiveUnit();

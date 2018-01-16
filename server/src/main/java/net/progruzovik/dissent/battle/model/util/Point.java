@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.model.util;
+package net.progruzovik.dissent.battle.model.util;
 
 public class Point<T> {
 
@@ -38,5 +38,10 @@ public class Point<T> {
         if (getClass() != obj.getClass()) return false;
         final Cell cell = (Cell) obj;
         return getX().equals(cell.getX()) && getY().equals(cell.getY());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%s; %s]", x.toString(), y.toString());
     }
 }

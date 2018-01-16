@@ -9,7 +9,7 @@ import net.progruzovik.dissent.model.Message;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.util.Cell;
+import net.progruzovik.dissent.battle.model.util.Cell;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

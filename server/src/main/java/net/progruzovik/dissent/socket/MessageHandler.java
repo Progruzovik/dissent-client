@@ -7,7 +7,7 @@ import net.progruzovik.dissent.captain.SessionPlayer;
 import net.progruzovik.dissent.dao.TextureDao;
 import net.progruzovik.dissent.socket.model.IncomingMessage;
 import net.progruzovik.dissent.model.Message;
-import net.progruzovik.dissent.model.util.Cell;
+import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.socket.model.Reader;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;

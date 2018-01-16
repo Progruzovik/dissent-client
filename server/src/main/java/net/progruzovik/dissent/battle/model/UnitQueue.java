@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.battle.model;
 
-import net.progruzovik.dissent.exception.InvalidCellException;
-import net.progruzovik.dissent.model.util.Cell;
+import net.progruzovik.dissent.battle.exception.EmptyCellException;
+import net.progruzovik.dissent.battle.model.util.Cell;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +32,7 @@ public final class UnitQueue {
                 return unit;
             }
         }
-        throw new InvalidCellException();
+        throw new EmptyCellException(cell);
     }
 
     void nextTurn() {

@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.model.entity;
 
-import net.progruzovik.dissent.exception.InvalidGunException;
+import net.progruzovik.dissent.battle.exception.InvalidGunIdException;
 
 public final class Ship {
 
@@ -48,6 +48,6 @@ public final class Ship {
     public Gun findGunById(int gunId) {
         if (firstGun != null && gunId == firstGun.getId()) return firstGun;
         if (secondGun != null && gunId == secondGun.getId()) return secondGun;
-        throw new InvalidGunException();
+        throw new InvalidGunIdException(gunId);
     }
 }

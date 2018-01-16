@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.model.util;
+package net.progruzovik.dissent.battle.model.util;
 
 public final class Cell extends Point<Integer> {
 
