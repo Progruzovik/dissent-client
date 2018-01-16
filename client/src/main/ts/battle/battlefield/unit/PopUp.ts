@@ -5,12 +5,12 @@ import * as druid from "pixi-druid";
 export default class PopUp extends druid.AbstractBranch {
 
     static readonly WIDTH = 200;
-    static readonly HEIGHT = 105;
+    static readonly HEIGHT = 100;
 
     private readonly lineToWindow = new druid.Line(1, this.unit.frameColor);
 
-    private readonly bgWindow = new druid.Rectangle(PopUp.WIDTH, PopUp.HEIGHT, 0x333333);
-    private readonly barStrength = this.unit.ship.createStrengthBar(this.bgWindow.width);
+    private readonly bgPopUp = new druid.Rectangle(PopUp.WIDTH, PopUp.HEIGHT, 0x333333);
+    private readonly barStrength = this.unit.ship.createStrengthBar(this.bgPopUp.width);
 
     constructor(rootWidth: number, rootHeight: number, readonly unit: Unit) {
         super();
@@ -18,20 +18,16 @@ export default class PopUp extends druid.AbstractBranch {
         this.lineToWindow.position.set(unitBounds.x + unitBounds.width / 2, unitBounds.y);
         this.addChild(this.lineToWindow);
 
-        const txtTitle = new PIXI.Text(unit.ship.hull.name, { fill: 0xffffff, fontSize: 24 });
-        txtTitle.anchor.x = druid.CENTER;
-        txtTitle.x = this.bgWindow.width / 2;
-        this.bgWindow.addChild(txtTitle);
-        const unitIcon = unit.ship.createSprite();
-        unitIcon.pivot.x = unitIcon.width / 2;
-        unitIcon.x = this.bgWindow.width / 2;
-        unitIcon.y = txtTitle.height;
-        this.bgWindow.addChild(unitIcon);
-        this.barStrength.y = unitIcon.y + unitIcon.height + 5;
-        this.bgWindow.addChild(this.barStrength);
-        const frame = new druid.Frame(this.bgWindow.width, this.bgWindow.height, 1, unit.frameColor);
-        this.bgWindow.addChild(frame);
-        this.addChild(this.bgWindow);
+        const layoutWindow = new druid.HorizontalLayout(druid.Alignment.Center, 0);
+        layoutWindow.addElement(new PIXI.Text(unit.ship.hull.name, { fill: 0xffffff, fontSize: 24 }));
+        layoutWindow.addElement(unit.ship.createSprite());
+        layoutWindow.addElement(this.barStrength);
+        layoutWindow.pivot.set(layoutWindow.width / 2, layoutWindow.height / 2);
+        layoutWindow.position.set(this.bgPopUp.width / 2, this.bgPopUp.height / 2);
+        this.bgPopUp.addChild(layoutWindow);
+        const frame = new druid.Frame(this.bgPopUp.width, this.bgPopUp.height, 1, unit.frameColor);
+        this.bgPopUp.addChild(frame);
+        this.addChild(this.bgPopUp);
         this.setUpChildren(rootWidth, rootHeight);
 
         unit.on(Unit.UPDATE_STATS, () => this.updateStats());
@@ -39,13 +35,13 @@ export default class PopUp extends druid.AbstractBranch {
 
     setUpChildren(width: number, height: number) {
         if (this.unit.side == Side.Left) {
-            this.bgWindow.x = druid.INDENT / 2;
+            this.bgPopUp.x = druid.INDENT / 2;
         } else if (this.unit.side == Side.Right) {
-            this.bgWindow.x = width - this.bgWindow.width - druid.INDENT / 2;
+            this.bgPopUp.x = width - this.bgPopUp.width - druid.INDENT / 2;
         }
-        this.bgWindow.y = druid.INDENT / 2;
-        this.lineToWindow.directTo(this.bgWindow.x + this.bgWindow.width / 2,
-            this.bgWindow.y + this.bgWindow.height);
+        this.bgPopUp.y = druid.INDENT / 2;
+        this.lineToWindow.directTo(this.bgPopUp.x + this.bgPopUp.width / 2,
+            this.bgPopUp.y + this.bgPopUp.height);
     }
 
     destroy(options?: PIXI.DestroyOptions | boolean ) {

@@ -17,7 +17,7 @@ module.exports = env => {
             ]
         },
         output: {
-            filename: "./target/classes/static/js/app.js"
+            filename: buildDir + "js/app.js"
         },
         plugins: isProduction ? [
             new webpack.optimize.UglifyJsPlugin({ comments: false })

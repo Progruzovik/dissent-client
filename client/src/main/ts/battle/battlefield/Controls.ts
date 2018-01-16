@@ -14,27 +14,30 @@ export default class Controls extends druid.AbstractBranch {
     private readonly spriteHull = new PIXI.Sprite();
     private readonly bgHull = new druid.Rectangle(0, 0, 0x333333);
 
-    private readonly barStrength = new druid.ProgressBar(0, 0, 0xff0000, druid.BarTextConfig.Default);
+    private readonly barStrength = new druid.ProgressBar(0,
+        0, 0xff0000, druid.BarTextConfig.Default);
     private readonly bgStats = new PIXI.Container();
 
     private readonly btnFirstGun = new druid.Button();
     private readonly btnSecondGun = new druid.Button();
-    private readonly bgModule = new druid.Rectangle(0, 0);
+    private readonly bgModule = new druid.Rectangle();
     private readonly btnNextTurn = new druid.Button(l("endTurn"));
+    private readonly layout = new druid.VerticalLayout(0);
 
     constructor(private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
         super();
         this.spriteHull.anchor.set(druid.CENTER, druid.CENTER);
         this.bgHull.addChild(this.spriteHull);
-        this.addChild(this.bgHull);
+        this.layout.addElement(this.bgHull);
 
         this.bgStats.addChild(this.barStrength);
-        this.addChild(this.bgStats);
+        this.layout.addElement(this.bgStats);
 
-        this.addChild(this.btnFirstGun);
-        this.addChild(this.btnSecondGun);
-        this.addChild(this.bgModule);
-        this.addChild(this.btnNextTurn);
+        this.layout.addElement(this.btnFirstGun);
+        this.layout.addElement(this.btnSecondGun);
+        this.layout.addElement(this.bgModule);
+        this.layout.addElement(this.btnNextTurn);
+        this.addChild(this.layout);
 
         unitService.on(ActionType.Move, () => this.updateInterface());
         unitService.on(ActionType.Shot, () => this.updateInterface());
@@ -44,6 +47,12 @@ export default class Controls extends druid.AbstractBranch {
         this.btnSecondGun.on(druid.Button.TRIGGERED, () =>
             unitService.activeUnit.preparedGunId = unitService.activeUnit.ship.secondGun.id);
         this.btnNextTurn.on(druid.Button.TRIGGERED, () => webSocketClient.endTurn());
+    }
+
+    lockInterface() {
+        this.btnFirstGun.isEnabled = false;
+        this.btnSecondGun.isEnabled = false;
+        this.btnNextTurn.isEnabled = false;
     }
 
     setUpChildren(width: number, height: number) {
@@ -61,29 +70,19 @@ export default class Controls extends druid.AbstractBranch {
         this.barStrength.height = heightPerSection / 3;
         this.barStrength.pivot.y = this.barStrength.height / 2;
         this.barStrength.y = heightPerSection / 2;
-        this.bgStats.x = widthPerSection;
 
         this.btnFirstGun.width = widthPerSection;
         this.btnFirstGun.height = heightPerSection;
-        this.btnFirstGun.x = widthPerSection * 2;
         this.btnSecondGun.width = widthPerSection;
         this.btnSecondGun.height = heightPerSection;
-        this.btnSecondGun.x = widthPerSection * 3;
         this.bgModule.width = widthPerSection;
         this.bgModule.height = heightPerSection;
-        this.bgModule.x = widthPerSection * 4;
 
-        this.btnNextTurn.txtMain.style = new PIXI.TextStyle({ align: "center", fill: "white",
-            fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
+        this.btnNextTurn.txtMain.style = new PIXI.TextStyle({ align: "center",
+            fill: "white", fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
         this.btnNextTurn.width = widthPerSection;
         this.btnNextTurn.height = heightPerSection;
-        this.btnNextTurn.x = widthPerSection * 5;
-    }
-
-    lockInterface() {
-        this.btnFirstGun.isEnabled = false;
-        this.btnSecondGun.isEnabled = false;
-        this.btnNextTurn.isEnabled = false;
+        this.layout.updateElements();
     }
 
     private updateInterface() {

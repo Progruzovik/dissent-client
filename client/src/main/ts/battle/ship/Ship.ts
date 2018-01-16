@@ -38,18 +38,16 @@ export default class Ship implements ShipData {
     }
 
     createGunsCard(): PIXI.Container {
-        const result = new PIXI.Container();
+        const result = new druid.VerticalLayout();
         if (this.firstGun) {
             const gunSprite = new PIXI.Sprite(PIXI.loader.resources[this.firstGun.texture.name].texture);
             gunSprite.scale.set(4, 4);
-            result.addChild(new Card(l(this.firstGun.name), gunSprite));
+            result.addElement(new Card(l(this.firstGun.name), gunSprite));
         }
         if (this.secondGun) {
             const gunSprite = new PIXI.Sprite(PIXI.loader.resources[this.secondGun.texture.name].texture);
             gunSprite.scale.set(4, 4);
-            const cardSecondGun = new Card(l(this.secondGun.name), gunSprite);
-            cardSecondGun.x = result.width + druid.INDENT;
-            result.addChild(cardSecondGun);
+            result.addElement(new Card(l(this.secondGun.name), gunSprite));
         }
         return result;
     }

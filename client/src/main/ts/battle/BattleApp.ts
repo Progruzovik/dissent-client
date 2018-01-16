@@ -53,7 +53,7 @@ export default class BattleApp extends druid.App {
             this.root = new BattlefieldRoot(d.fieldSize, d.playerSide,
                 unitsArray, d.asteroids, d.clouds, this.projectileService, this.webSocketClient);
             this.root.once(druid.Event.DONE, () => {
-                this.menuRoot.reload();
+                this.menuRoot.updateInfo();
                 this.root.destroy({ children: true });
                 this.root = this.menuRoot;
             });

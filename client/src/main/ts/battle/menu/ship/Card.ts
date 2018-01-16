@@ -5,12 +5,11 @@ export default class Card extends druid.Rectangle {
 
     constructor(name: string, img: PIXI.Sprite) {
         super(150, 110, 0xdedede);
-        const txtName = new PIXI.Text(name, { fontSize: 20, fontWeight: "bold" });
-        txtName.anchor.x = druid.CENTER;
-        txtName.position.set(this.width / 2, druid.INDENT / 2);
-        this.addChild(txtName);
-        img.anchor.x = druid.CENTER;
-        img.position.set(this.width / 2, txtName.y + druid.INDENT);
-        this.addChild(img);
+        const layout = new druid.HorizontalLayout(druid.Alignment.Left, 0);
+        layout.addElement(new PIXI.Text(name, { fontSize: 20, fontWeight: "bold" }));
+        layout.addElement(img);
+        layout.pivot.set(layout.width / 2, layout.height / 2);
+        layout.position.set(this.width / 2, this.height / 2);
+        this.addChild(layout);
     }
 }

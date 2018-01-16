@@ -14,8 +14,8 @@ import * as PIXI from "pixi.js";
 export default class BattlefieldRoot extends druid.AbstractBranch {
 
     private readonly field: Field;
-    private readonly controls: Controls;
     private readonly leftUi: LeftPanel;
+    private readonly controls: Controls;
 
     private unitPopUp: PopUp;
 
@@ -26,10 +26,10 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
 
         this.field = new Field(fieldSize, units, asteroids, clouds, unitService, projectileService, webSocketClient);
         this.addChild(this.field);
-        this.controls = new Controls(unitService, webSocketClient);
-        this.addChild(this.controls);
         this.leftUi = new LeftPanel(units, unitService);
         this.addChild(this.leftUi);
+        this.controls = new Controls(unitService, webSocketClient);
+        this.addChild(this.controls);
         unitService.emit(ActionType.NextTurn, true);
         const actionReceiver = new ActionReceiver(this.field, this.controls, unitService, webSocketClient);
 
