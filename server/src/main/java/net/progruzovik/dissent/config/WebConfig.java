@@ -10,7 +10,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig implements WebMvcConfigurer {
 
     private final ObjectMapper mapper;
 
@@ -31,6 +31,5 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new MappingJackson2HttpMessageConverter(mapper));
-        super.configureMessageConverters(converters);
     }
 }
