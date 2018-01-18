@@ -22,8 +22,6 @@ export default class PopUp extends druid.AbstractBranch {
         layoutWindow.addElement(new PIXI.Text(unit.ship.hull.name, { fill: 0xffffff, fontSize: 24 }));
         layoutWindow.addElement(unit.ship.createSprite());
         layoutWindow.addElement(this.barStrength);
-        layoutWindow.pivot.set(layoutWindow.width / 2, layoutWindow.height / 2);
-        layoutWindow.position.set(this.bgPopUp.width / 2, this.bgPopUp.height / 2);
         this.bgPopUp.addChild(layoutWindow);
         const frame = new druid.Frame(this.bgPopUp.width, this.bgPopUp.height, 1, unit.frameColor);
         this.bgPopUp.addChild(frame);
