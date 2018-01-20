@@ -1,4 +1,4 @@
-import Field from "../Field";
+import Field from "../ui/Field";
 import ProjectileService from "../projectile/ProjectileService";
 import Ship from "../../ship/Ship";
 import { ActionType, Gun, Hull, Move, Shot, Side } from "../../util";
@@ -114,7 +114,7 @@ export default class Unit extends druid.AbstractActor {
             this.preparedGunId = Unit.NO_GUN_ID;
             target.strength -= shot.damage;
             target.emit(Unit.UPDATE_STATS);
-            this.emit(ActionType.Shot);
+            this.emit(ActionType.Shot, activeGun, target, shot.damage);
         });
     }
 

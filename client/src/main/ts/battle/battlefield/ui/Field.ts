@@ -1,10 +1,10 @@
-import Projectile from "./projectile/Projectile";
-import ProjectileService from "./projectile/ProjectileService";
-import Unit from "./unit/Unit";
-import UnitService from "./unit/UnitService";
-import WebSocketClient from "../WebSocketClient";
-import { ActionType, PathNode } from "../util";
-import { l } from "../../localizer";
+import Projectile from "../projectile/Projectile";
+import ProjectileService from "../projectile/ProjectileService";
+import Unit from "../unit/Unit";
+import UnitService from "../unit/UnitService";
+import WebSocketClient from "../../WebSocketClient";
+import { ActionType, PathNode } from "../../util";
+import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
 export default class Field extends druid.Field {
@@ -168,7 +168,7 @@ export default class Field extends druid.Field {
             }
             const moveCost = `${this.paths[marks.cell.x][marks.cell.y].movementCost.toLocaleString()} ${l("ap")}`;
             const txtMoveCost = new PIXI.Text(moveCost, { fill: "white", fontSize: 12 });
-            txtMoveCost.position.set(this.selectedMarks.x, this.selectedMarks.y);
+            txtMoveCost.position.set(marks.x + Field.LINE_WIDTH, marks.y + Field.LINE_WIDTH);
             this.pathLayer.addChild(txtMoveCost);
         }
     }

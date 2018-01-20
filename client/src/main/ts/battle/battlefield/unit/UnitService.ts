@@ -1,6 +1,6 @@
 import Unit from "./Unit";
 import WebSocketClient from "../../WebSocketClient";
-import { ActionType, Side } from "../../util";
+import { ActionType, Gun, Shot, Side } from "../../util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -31,8 +31,8 @@ export default class UnitService extends PIXI.utils.EventEmitter {
                     this.emit(ActionType.Move);
                     this.tryToEndTurn();
                 });
-                unit.on(ActionType.Shot, () => {
-                    this.emit(ActionType.Shot);
+                unit.on(ActionType.Shot, (gun: Gun, target: Unit, damage: number) => {
+                    this.emit(ActionType.Shot, unit, gun, target, damage);
                     this.tryToEndTurn();
                 });
                 unit.on(Unit.PREPARE_TO_SHOT, () => {

@@ -1,7 +1,7 @@
 import ActionReceiver from "./ActionReceiver"
-import Controls from "./Controls";
-import Field from "./Field";
-import LeftPanel from "./LeftPanel";
+import Controls from "./ui/Controls";
+import Field from "./ui/Field";
+import LeftPanel from "./ui/LeftPanel";
 import ProjectileService from "./projectile/ProjectileService";
 import PopUp from "./unit/PopUp";
 import Unit from "./unit/Unit";
@@ -14,7 +14,7 @@ import * as PIXI from "pixi.js";
 export default class BattlefieldRoot extends druid.AbstractBranch {
 
     private readonly field: Field;
-    private readonly leftUi: LeftPanel;
+    private readonly leftPanel: LeftPanel;
     private readonly controls: Controls;
 
     private unitPopUp: PopUp;
@@ -26,8 +26,8 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
 
         this.field = new Field(fieldSize, units, asteroids, clouds, unitService, projectileService, webSocketClient);
         this.addChild(this.field);
-        this.leftUi = new LeftPanel(units, unitService);
-        this.addChild(this.leftUi);
+        this.leftPanel = new LeftPanel(units, unitService);
+        this.addChild(this.leftPanel);
         this.controls = new Controls(unitService, webSocketClient);
         this.addChild(this.controls);
         unitService.emit(ActionType.NextTurn, true);
@@ -52,10 +52,9 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
 
     setUpChildren(width: number, height: number) {
         this.controls.setUpChildren(width, height);
-        this.controls.y = height - this.controls.height;
-        this.leftUi.setUpChildren(Field.CELL_SIZE.x, this.controls.y);
-        this.field.x = this.leftUi.width;
-        this.field.setUpChildren(width - this.field.x, this.controls.y);
+        this.leftPanel.setUpChildren(Field.CELL_SIZE.x, height - this.controls.buttonsHeight);
+        this.field.x = this.leftPanel.width;
+        this.field.setUpChildren(width - this.field.x, height - this.controls.fullBottomHeight);
         if (this.unitPopUp) {
             this.unitPopUp.setUpChildren(width, height);
         }

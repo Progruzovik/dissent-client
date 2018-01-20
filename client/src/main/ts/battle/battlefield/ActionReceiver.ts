@@ -1,5 +1,5 @@
-import Controls from "./Controls";
-import Field from "./Field";
+import Controls from "./ui/Controls";
+import Field from "./ui/Field";
 import UnitService from "./unit/UnitService";
 import WebSocketClient from "../WebSocketClient";
 import { ActionType, Move, Shot } from "../util";
