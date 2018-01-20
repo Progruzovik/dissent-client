@@ -18,7 +18,7 @@ export default class BattleApp extends druid.App {
 
     constructor(resolution: number, width: number, height: number) {
         super(resolution, width, height);
-        initClient("ru", s => {
+        initClient("en", s => {
             updateLocalizedData(s);
             const webSocketUrl: string = document.baseURI.toString()
                 .replace("http", "ws") + "/app";

@@ -57,7 +57,7 @@ export default class Menu extends druid.HorizontalLayout {
         this.txtStatus.text = `${l("yourStatus")}: ${Status[this.status]}`;
         this.txtStatus.pivot.x = this.txtStatus.width / 2;
         if (this.status == Status.Queued) {
-            this.btnQueue.text = l("fromQueue");
+            this.btnQueue.text = l("leaveQueue");
         } else {
             this.btnQueue.text = "PVP";
         }

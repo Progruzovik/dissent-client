@@ -1,0 +1,17 @@
+{
+  "ap": "AP",
+  "back": "Back",
+  "empty": "empty",
+  "endTurn": "End turn",
+  "leaveQueue": "Leave queue",
+  "yourStatus": "Your status",
+  "yourFleet": "Your fleet",
+
+  "hitBy": "was hit by",
+  "with": "with",
+  "for": "for",
+  "damage": "damage",
+
+  "laser": "Laser",
+  "shrapnel": "Shrapnel"
+}

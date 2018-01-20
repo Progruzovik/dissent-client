@@ -1,2 +1,2 @@
 # Dissent
-Пошаговая боёвка в космосе на основе WebSocket. Тестовый сервер находится [здесь](http://dissent.azurewebsites.net/).
+Tactical turn-based space battle based on WebSocket protocol. Test server is [here](http://dissent.azurewebsites.net/).
