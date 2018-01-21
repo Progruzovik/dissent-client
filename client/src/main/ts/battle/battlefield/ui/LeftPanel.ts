@@ -8,45 +8,61 @@ import * as PIXI from "pixi.js";
 
 export default class LeftPanel extends druid.AbstractBranch {
 
+    private freeHeight = 0;
+
     private readonly txtActionPoints = new PIXI.Text("", { align: "center", fill: "white",
         fontSize: 36, fontWeight: "bold", stroke: "blue", strokeThickness: 4 });
 
+    private activeUnit: PIXI.Container;
+    private readonly layoutQueue = new druid.HorizontalLayout(druid.Alignment.Left, 0);
+
     constructor(units: Unit[], private readonly unitService: UnitService) {
         super();
-        const layoutQueue = new druid.HorizontalLayout(druid.Alignment.Left, 0);
-        for (const unit of units) {
+        this.txtActionPoints.anchor.x = 0.5;
+        this.addChild(this.txtActionPoints);
+        for (let i = units.length - 1; i > -1; i--) {
             const iconUnit = new druid.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0x444444);
-            const spriteUnit: PIXI.Sprite = unit.ship.createSprite();
-            const factor: number = Math.min(1 / unit.ship.hull.width, 1 / unit.ship.hull.height);
+            const spriteUnit: PIXI.Sprite = units[i].ship.createSprite();
+            const factor: number = Math.min(1 / units[i].ship.hull.width, 1 / units[i].ship.hull.height);
             spriteUnit.scale.set(factor, factor);
             spriteUnit.anchor.set(druid.CENTER, druid.CENTER);
             spriteUnit.position.set(iconUnit.width / 2, iconUnit.height / 2);
             iconUnit.addChild(spriteUnit);
-            iconUnit.addChild(new druid.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 1, unit.frameColor));
-            layoutQueue.addElement(iconUnit);
+            iconUnit.addChild(new druid.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 1, units[i].frameColor));
+            this.layoutQueue.addElement(iconUnit);
 
-            unit.on(Unit.DESTROY, () => layoutQueue.removeElement(iconUnit));
+            units[i].on(Unit.DESTROY, () => {
+                this.layoutQueue.removeElement(iconUnit);
+                this.updateLayoutQueuePosition();
+            });
         }
-        this.addChild(layoutQueue);
-        this.txtActionPoints.anchor.set(druid.CENTER, 1);
-        this.addChild(this.txtActionPoints);
+        this.addChild(this.layoutQueue);
 
         unitService.on(ActionType.Move, () => this.updateActionPointsValue());
         unitService.on(ActionType.Shot, () => this.updateActionPointsValue());
-        unitService.on(ActionType.NextTurn, (isFirst: boolean) => {
-            if (!isFirst) {
-                layoutQueue.addElement(layoutQueue.removeElement(layoutQueue.getElementAt(0)));
+        unitService.on(ActionType.NextTurn, () => {
+            if (this.activeUnit) {
+                this.layoutQueue.addElementAt(this.activeUnit, 0);
             }
+            this.activeUnit = this.layoutQueue.getElementAt(this.layoutQueue.elementsCount - 1);
+            this.layoutQueue.removeElement(this.activeUnit);
             this.updateActionPointsValue();
         });
     }
 
     setUpChildren(width: number, height: number) {
-        this.txtActionPoints.position.set(width / 2, height);
+        this.freeHeight = height;
+        this.txtActionPoints.x = width / 2;
+        this.updateLayoutQueuePosition();
     }
 
     private updateActionPointsValue() {
         this.txtActionPoints.text = `${l("ap")}\n${this.unitService.activeUnit.actionPoints}`
             + `/${this.unitService.activeUnit.ship.hull.actionPoints}`;
+    }
+
+    private updateLayoutQueuePosition() {
+        this.layoutQueue.pivot.y = this.layoutQueue.height;
+        this.layoutQueue.y = this.freeHeight;
     }
 }

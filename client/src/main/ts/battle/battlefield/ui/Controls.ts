@@ -14,6 +14,7 @@ export default class Controls extends druid.AbstractBranch {
     private readonly txtLog = new PIXI.Text("", { fill: "white", fontSize: 18, wordWrap: true });
 
     private readonly spriteHull = new PIXI.Sprite();
+    private readonly frameUnit = new druid.Frame();
     private readonly bgHull = new druid.Rectangle(0, 0, 0x333333);
 
     private readonly barStrength = new druid.ProgressBar(0,
@@ -33,6 +34,7 @@ export default class Controls extends druid.AbstractBranch {
 
         this.spriteHull.anchor.set(druid.CENTER, druid.CENTER);
         this.bgHull.addChild(this.spriteHull);
+        this.bgHull.addChild(this.frameUnit);
         this.layoutButtons.addElement(this.bgHull);
 
         this.bgStats.addChild(this.barStrength);
@@ -82,6 +84,8 @@ export default class Controls extends druid.AbstractBranch {
         const shipRatio = this.bgHull.height / Field.CELL_SIZE.y;
         this.spriteHull.scale.set(shipRatio, shipRatio);
         this.spriteHull.position.set(this.bgHull.width / 2, this.bgHull.height / 2);
+        this.frameUnit.width = sectionWidth;
+        this.frameUnit.height = sectionHeight;
 
         this.barStrength.txtMain.style = new PIXI.TextStyle({ fill: "white", fontSize: 26, fontWeight: "bold" });
         this.barStrength.width = sectionWidth;
@@ -109,6 +113,7 @@ export default class Controls extends druid.AbstractBranch {
     private updateInterface() {
         const activeUnit: Unit = this.unitService.activeUnit;
         this.spriteHull.texture = PIXI.loader.resources[activeUnit.ship.hull.texture.name].texture;
+        this.frameUnit.color = activeUnit.frameColor;
         this.barStrength.maximum = activeUnit.ship.hull.strength;
         this.barStrength.value = activeUnit.strength;
         this.updateBtnGun(this.btnFirstGun, activeUnit.ship.firstGun);

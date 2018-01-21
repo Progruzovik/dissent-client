@@ -30,7 +30,7 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
         this.addChild(this.leftPanel);
         this.controls = new Controls(unitService, webSocketClient);
         this.addChild(this.controls);
-        unitService.emit(ActionType.NextTurn, true);
+        unitService.emit(ActionType.NextTurn);
         const actionReceiver = new ActionReceiver(this.field, this.controls, unitService, webSocketClient);
 
         unitService.on(UnitService.UNIT_MOUSE_OVER, (mousePos: PIXI.Point, unit: Unit) => {

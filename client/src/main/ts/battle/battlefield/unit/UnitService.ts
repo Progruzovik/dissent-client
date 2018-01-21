@@ -91,7 +91,7 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     nextTurn() {
         this.unitQueue.push(this.unitQueue.shift());
         this.activeUnit.activate();
-        this.emit(ActionType.NextTurn, false);
+        this.emit(ActionType.NextTurn);
     }
 
     private tryToEndTurn() {
