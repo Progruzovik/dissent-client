@@ -3,7 +3,7 @@ import Controls from "./ui/Controls";
 import Field from "./ui/Field";
 import LeftPanel from "./ui/LeftPanel";
 import ProjectileService from "./projectile/ProjectileService";
-import PopUp from "./unit/PopUp";
+import PopUp from "./ui/PopUp";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketClient from "../WebSocketClient";
@@ -12,6 +12,9 @@ import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
 export default class BattlefieldRoot extends druid.AbstractBranch {
+
+    private contentWidth = 0;
+    private contentHeight = 0;
 
     private readonly field: Field;
     private readonly leftPanel: LeftPanel;
@@ -37,11 +40,11 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
             if (this.unitPopUp) {
                 this.unitPopUp.destroy({ children: true });
             }
-            this.unitPopUp = new PopUp(this.width, this.height, unit);
+            this.unitPopUp = new PopUp(this.contentWidth, this.contentHeight, unit);
             this.addChild(this.unitPopUp);
         });
         unitService.on(UnitService.UNIT_MOUSE_OUT, (unit: Unit) => {
-            if (this.unitPopUp.unit == unit) {
+            if (this.unitPopUp && this.unitPopUp.unit == unit) {
                 this.unitPopUp.destroy({ children: true });
                 this.removeChild(this.unitPopUp);
                 this.unitPopUp = null;
@@ -58,11 +61,14 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
 
     setUpChildren(width: number, height: number) {
         this.controls.setUpChildren(width, height);
-        this.leftPanel.setUpChildren(Field.CELL_SIZE.x, height - this.controls.buttonsHeight);
+        this.contentWidth = width;
+        this.contentHeight = height - this.controls.buttonsHeight;
+
+        this.leftPanel.setUpChildren(Field.CELL_SIZE.x, this.contentHeight);
         this.field.x = this.leftPanel.width;
         this.field.setUpChildren(width - this.field.x, height - this.controls.fullBottomHeight);
         if (this.unitPopUp) {
-            this.unitPopUp.setUpChildren(width, height);
+            this.unitPopUp.setUpChildren(this.contentWidth, this.contentHeight);
         }
     }
 }

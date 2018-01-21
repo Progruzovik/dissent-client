@@ -1,4 +1,4 @@
-import Unit from "./Unit";
+import Unit from "../unit/Unit";
 import { Side } from "../../util";
 import * as druid from "pixi-druid";
 
