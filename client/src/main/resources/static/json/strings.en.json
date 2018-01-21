@@ -3,9 +3,10 @@
   "back": "Back",
   "empty": "empty",
   "endTurn": "End turn",
+  "hangar": "Hangar",
   "leaveQueue": "Leave queue",
-  "yourStatus": "Your status",
-  "yourFleet": "Your fleet",
+  "missions": "Missions",
+  "pvp": "PVP\n(experimental)",
 
   "hitBy": "was hit by",
   "with": "with",

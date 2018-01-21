@@ -2,7 +2,7 @@ import WebSocketClient from "./WebSocketClient";
 import BattlefieldRoot from "./battlefield/BattlefieldRoot";
 import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
-import Menu from "./menu/main/MainMenu";
+import Menu from "./menu/hangar/Hangar";
 import MenuRoot from "./menu/MenuRoot";
 import Ship from "./Ship";
 import { updateLocalizedData } from "../localizer";

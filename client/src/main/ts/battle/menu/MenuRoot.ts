@@ -1,52 +1,60 @@
-import MainMenu from "./main/MainMenu";
-import ShipsPanel from "./main/Ships";
-import ShipInfo from "./ship/ShipInfo";
+import Hangar from "./hangar/Hangar";
+import ShipsPanel from "./hangar/Ships";
+import ShipInfo from "./hangar/ship/ShipInfo";
+import Controls from "./Controls";
 import Ship from "../Ship";
 import WebSocketClient from "../WebSocketClient";
 import * as druid from "pixi-druid";
 
 export default class MenuRoot extends druid.AbstractBranch {
 
-    private savedWidth = 0;
-    private savedHeight = 0;
+    private contentWidth = 0;
+    private contentHeight = 0;
 
-    private readonly menu = new MainMenu(this.webSocketClient);
+    private readonly hangar = new Hangar(this.webSocketClient);
     private shipInfo: ShipInfo;
+
+    private readonly controls = new Controls();
 
     constructor(private readonly webSocketClient: WebSocketClient) {
         super();
-        this.menu.pivot.x = this.menu.width / 2;
-        this.addChild(this.menu);
+        this.hangar.pivot.x = this.hangar.width / 2;
+        this.addChild(this.hangar);
+        this.addChild(this.controls);
         this.updateInfo();
 
-        this.menu.on(ShipsPanel.OPEN_INFO, (ship: Ship) => {
+        this.hangar.on(ShipsPanel.OPEN_INFO, (ship: Ship) => {
             this.removeChildren();
-            this.shipInfo = new ShipInfo(this.savedWidth, this.savedHeight, ship);
+            this.shipInfo = new ShipInfo(this.contentWidth, this.contentHeight, ship);
             this.shipInfo.pivot.set(this.shipInfo.width / 2, this.shipInfo.height / 2);
             this.addChild(this.shipInfo);
-            this.setUpChildren(this.savedWidth, this.savedHeight);
+            this.setUpChildren(this.contentWidth, this.contentHeight);
 
             this.shipInfo.once(druid.Event.DONE, () => {
                 this.removeChildren();
                 this.shipInfo.destroy({ children: true });
                 this.shipInfo = null;
-                this.addChild(this.menu);
+                this.addChild(this.hangar);
             });
         });
-        this.menu.on(MainMenu.BATTLE, () => this.emit(MainMenu.BATTLE));
+        this.hangar.on(Hangar.BATTLE, () => this.emit(Hangar.BATTLE));
     }
 
     updateInfo() {
         this.webSocketClient.updateStatus();
-        this.webSocketClient.requestShips(sd => this.menu.updateShipsData(sd));
+        this.webSocketClient.requestShips(sd => this.hangar.updateShipsData(sd));
     }
 
     setUpChildren(width: number, height: number) {
-        this.savedWidth = width;
-        this.savedHeight = height;
-        this.menu.position.set(width / 2, druid.INDENT * 3);
+        this.controls.setUpChildren(width, height);
+        this.controls.pivot.y = this.controls.height;
+        this.controls.y = height;
+        this.contentWidth = width;
+        this.contentHeight = height - this.controls.height;
+
+        this.hangar.position.set(this.contentWidth / 2, druid.INDENT * 3);
         if (this.shipInfo) {
-            this.shipInfo.position.set(width / 2, height / 2);
+            this.shipInfo.position.set(this.contentWidth / 2, this.contentHeight / 2);
         }
     }
 }

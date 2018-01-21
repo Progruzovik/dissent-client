@@ -1,4 +1,4 @@
-import Card from "./menu/ship/Card";
+import Card from "./menu/hangar/ship/Card";
 import { Gun, Hull, ShipData } from "./util";
 import { l } from "../localizer";
 import * as druid from "pixi-druid";

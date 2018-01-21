@@ -5,7 +5,7 @@ import { ShipData, Status } from "../../util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
-export default class Menu extends druid.HorizontalLayout {
+export default class Hangar extends druid.HorizontalLayout {
 
     static readonly BATTLE = "battle";
 
@@ -32,7 +32,7 @@ export default class Menu extends druid.HorizontalLayout {
         webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
             this.status = status;
             if (status == Status.InBattle) {
-                this.emit(Menu.BATTLE);
+                this.emit(Hangar.BATTLE);
             } else {
                 this.updateStatus();
             }
