@@ -50,6 +50,7 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
         this.field.on(druid.Event.MOUSE_DOWN, () => {
             if (this.unitPopUp) {
                 this.unitPopUp.destroy({ children: true });
+                this.unitPopUp = null;
             }
         });
         actionReceiver.once(ActionType.BattleFinish, () => this.emit(druid.Event.DONE));

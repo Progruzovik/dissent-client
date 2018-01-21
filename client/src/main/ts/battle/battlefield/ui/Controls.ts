@@ -3,13 +3,11 @@ import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
 import WebSocketClient from "../../WebSocketClient";
 import { ActionType, Gun } from "../../util";
+import ScalableVerticalLayout from "../../ui/ScalableVerticalLayout";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
 export default class Controls extends druid.AbstractBranch {
-
-    private static readonly SECTIONS_COUNT = 6;
-    private static readonly SECTION_RATIO = 3;
 
     private readonly txtLog = new PIXI.Text("", { fill: "white", fontSize: 18, wordWrap: true });
 
@@ -19,13 +17,11 @@ export default class Controls extends druid.AbstractBranch {
 
     private readonly barStrength = new druid.ProgressBar(0,
         0, 0xff0000, druid.BarTextConfig.Default);
-    private readonly bgStats = new PIXI.Container();
 
     private readonly btnFirstGun = new druid.Button();
     private readonly btnSecondGun = new druid.Button();
-    private readonly bgModule = new druid.Rectangle();
     private readonly btnNextTurn = new druid.Button(l("endTurn"));
-    private readonly layoutButtons = new druid.VerticalLayout(0);
+    private readonly layoutButtons = new ScalableVerticalLayout(3);
 
     constructor(private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
         super();
@@ -37,12 +33,16 @@ export default class Controls extends druid.AbstractBranch {
         this.bgHull.addChild(this.frameUnit);
         this.layoutButtons.addElement(this.bgHull);
 
-        this.bgStats.addChild(this.barStrength);
-        this.layoutButtons.addElement(this.bgStats);
+        const bgStats = new druid.Rectangle();
+        this.barStrength.txtMain.style = new PIXI.TextStyle({ fill: "white", fontSize: 26, fontWeight: "bold" });
+        bgStats.addChild(this.barStrength);
+        this.layoutButtons.addElement(bgStats);
 
         this.layoutButtons.addElement(this.btnFirstGun);
         this.layoutButtons.addElement(this.btnSecondGun);
-        this.layoutButtons.addElement(this.bgModule);
+        this.layoutButtons.addElement(new druid.Rectangle());
+        this.btnNextTurn.txtMain.style = new PIXI.TextStyle({ align: "center",
+            fill: "white", fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
         this.layoutButtons.addElement(this.btnNextTurn);
         this.addChild(this.layoutButtons);
 
@@ -75,39 +75,23 @@ export default class Controls extends druid.AbstractBranch {
     }
 
     setUpChildren(width: number, height: number) {
-        const sectionWidth = width / Controls.SECTIONS_COUNT, sectionHeight = sectionWidth / Controls.SECTION_RATIO;
-        this.txtLog.style.wordWrapWidth = sectionWidth;
-        this.txtLog.x = sectionWidth * (Controls.SECTIONS_COUNT - 1);
+        this.layoutButtons.setUpChildren(width, height);
+        this.txtLog.style.wordWrapWidth = this.layoutButtons.elementWidth;
+        this.txtLog.x = this.layoutButtons.elementWidth * (this.layoutButtons.elementsCount - 1);
+        this.txtLog.y = height - this.buttonsHeight - druid.INDENT / 2;
 
-        this.bgHull.width = sectionWidth;
-        this.bgHull.height = sectionHeight;
         const shipRatio = this.bgHull.height / Field.CELL_SIZE.y;
         this.spriteHull.scale.set(shipRatio, shipRatio);
         this.spriteHull.position.set(this.bgHull.width / 2, this.bgHull.height / 2);
-        this.frameUnit.width = sectionWidth;
-        this.frameUnit.height = sectionHeight;
+        this.frameUnit.width = this.layoutButtons.elementWidth;
+        this.frameUnit.height = this.layoutButtons.elementHeight;
 
-        this.barStrength.txtMain.style = new PIXI.TextStyle({ fill: "white", fontSize: 26, fontWeight: "bold" });
-        this.barStrength.width = sectionWidth;
-        this.barStrength.height = sectionHeight / 3;
-        this.barStrength.y = sectionHeight / 3;
+        this.barStrength.width = this.layoutButtons.elementWidth;
+        this.barStrength.height = this.layoutButtons.elementHeight / 3;
+        this.barStrength.y = this.layoutButtons.elementHeight / 3;
 
-        this.btnFirstGun.width = sectionWidth;
-        this.btnFirstGun.height = sectionHeight;
-        this.btnSecondGun.width = sectionWidth;
-        this.btnSecondGun.height = sectionHeight;
-        this.bgModule.width = sectionWidth;
-        this.bgModule.height = sectionHeight;
-
-        this.btnNextTurn.txtMain.style = new PIXI.TextStyle({ align: "center",
-            fill: "white", fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
-        this.btnNextTurn.width = sectionWidth;
-        this.btnNextTurn.height = sectionHeight;
-        this.layoutButtons.updateElements();
         this.layoutButtons.pivot.y = this.layoutButtons.height;
         this.layoutButtons.y = height;
-
-        this.txtLog.y = height - this.buttonsHeight - druid.INDENT / 2;
     }
 
     private updateInterface() {

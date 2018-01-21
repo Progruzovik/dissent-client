@@ -1,7 +1,7 @@
 import MainMenu from "./main/MainMenu";
 import ShipsPanel from "./main/Ships";
 import ShipInfo from "./ship/ShipInfo";
-import Ship from "../ship/Ship";
+import Ship from "../Ship";
 import WebSocketClient from "../WebSocketClient";
 import * as druid from "pixi-druid";
 

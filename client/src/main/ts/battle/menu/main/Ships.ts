@@ -1,4 +1,4 @@
-import Ship from "../../ship/Ship";
+import Ship from "../../Ship";
 import { ShipData } from "../../util";
 import * as druid from "pixi-druid"
 

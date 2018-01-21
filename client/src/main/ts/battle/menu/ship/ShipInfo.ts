@@ -1,4 +1,4 @@
-import Ship from "../../ship/Ship";
+import Ship from "../../Ship";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";

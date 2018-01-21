@@ -4,7 +4,7 @@ import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import Menu from "./menu/main/MainMenu";
 import MenuRoot from "./menu/MenuRoot";
-import Ship from "./ship/Ship";
+import Ship from "./Ship";
 import { updateLocalizedData } from "../localizer";
 import { initClient } from "./request";
 import * as druid from "pixi-druid";

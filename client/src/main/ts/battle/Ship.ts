@@ -1,6 +1,6 @@
-import Card from "../menu/ship/Card";
-import { Gun, Hull, ShipData } from "../util";
-import { l } from "../../localizer";
+import Card from "./menu/ship/Card";
+import { Gun, Hull, ShipData } from "./util";
+import { l } from "../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
