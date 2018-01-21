@@ -5,13 +5,14 @@ import * as PIXI from "pixi.js";
 
 export default class ShipInfo extends druid.HorizontalLayout {
 
-    constructor(width: number, height: number, ship: Ship) {
+    constructor(ship: Ship) {
         super(druid.Alignment.Center);
         const txtName = new PIXI.Text(ship.hull.name, { fill: "white", fontSize: 32, fontWeight: "bold" });
         this.addElement(txtName);
 
         const layoutContent = new druid.HorizontalLayout();
-        const txtAp = new PIXI.Text(`${l("ap")}: ${ship.hull.actionPoints}`, { fill: "white", fontSize: 24 });
+        const txtAp = new PIXI.Text(`${l("ap")}: ${ship.hull.actionPoints}`,
+            { fill: "white", fontSize: 24 });
         layoutContent.addElement(txtAp);
         const layoutShip = new druid.VerticalLayout();
         const layoutIcon = new druid.HorizontalLayout(druid.Alignment.Left,0);

@@ -1,3 +1,4 @@
+import ShipInfo from "./ship/ShipInfo";
 import Ships from "./Ships";
 import WebSocketClient from "../../WebSocketClient";
 import Ship from "../../Ship";
@@ -5,29 +6,39 @@ import { ShipData, Status } from "../../util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
-export default class Hangar extends druid.HorizontalLayout {
+export default class Hangar extends druid.AbstractBranch {
 
     static readonly BATTLE = "battle";
+
+    private contentWidth = 0;
+    private contentHeight = 0;
 
     private status: Status;
 
     private readonly txtStatus = new PIXI.Text("", { fill: "white" });
     private readonly btnQueue = new druid.Button();
-    private readonly layoutShips = new Ships();
+    private readonly ships = new Ships();
+    private readonly layoutContent = new druid.HorizontalLayout(druid.Alignment.Center);
+
+    private shipInfo: ShipInfo;
 
     constructor(webSocketClient: WebSocketClient) {
-        super(druid.Alignment.Center);
-        this.addElement(new PIXI.Text("Dissent", { fill: "white", fontSize: 48, fontWeight: "bold" }));
-        this.addElement(this.txtStatus);
+        super();
+        const txtTitle = new PIXI.Text("Dissent", { fill: "white", fontSize: 48, fontWeight: "bold" });
+        this.layoutContent.addElement(txtTitle);
+        this.layoutContent.addElement(this.txtStatus);
 
         const layoutControls = new druid.VerticalLayout();
         layoutControls.addElement(this.btnQueue);
         const btnScenario = new druid.Button("PVE");
         layoutControls.addElement(btnScenario);
-        this.addElement(layoutControls);
+        this.layoutContent.addElement(layoutControls);
 
-        this.addElement(new PIXI.Text(l("yourFleet"), { fill: "white", fontWeight: "bold" }));
-        this.addElement(this.layoutShips);
+        this.layoutContent.addElement(new PIXI.Text(l("yourFleet"), { fill: "white", fontWeight: "bold" }));
+        this.layoutContent.addElement(this.ships);
+        this.layoutContent.pivot.x = this.layoutContent.width / 2;
+        this.layoutContent.y = druid.INDENT * 3;
+        this.addChild(this.layoutContent);
 
         webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
             this.status = status;
@@ -45,12 +56,34 @@ export default class Hangar extends druid.HorizontalLayout {
             }
         });
         btnScenario.on(druid.Button.TRIGGERED, () => webSocketClient.startScenario());
-        this.layoutShips.on(Ships.OPEN_INFO, (ship: Ship) => this.emit(Ships.OPEN_INFO, ship));
+        this.ships.on(Ships.OPEN_INFO, (ship: Ship) => {
+            this.layoutContent.visible = false;
+            this.shipInfo = new ShipInfo(ship);
+            this.shipInfo.pivot.set(this.shipInfo.width / 2, this.shipInfo.height / 2);
+            this.addChild(this.shipInfo);
+            this.setUpChildren(this.contentWidth, this.contentHeight);
+
+            this.shipInfo.once(druid.Event.DONE, () => {
+                this.layoutContent.visible = true;
+                this.removeChild(this.shipInfo);
+                this.shipInfo.destroy({ children: true });
+                this.shipInfo = null;
+            });
+        });
+    }
+
+    setUpChildren(width: number, height: number): void {
+        this.contentWidth = width;
+        this.contentHeight = height;
+        this.layoutContent.x = this.contentWidth / 2;
+        if (this.shipInfo) {
+            this.shipInfo.position.set(this.contentWidth / 2, this.contentHeight / 2);
+        }
     }
 
     updateShipsData(shipsData: ShipData[]) {
-        this.layoutShips.updateInfo(shipsData);
-        this.layoutShips.pivot.x = this.layoutShips.width / 2;
+        this.ships.updateInfo(shipsData);
+        this.ships.pivot.x = this.ships.width / 2;
     }
 
     private updateStatus() {
