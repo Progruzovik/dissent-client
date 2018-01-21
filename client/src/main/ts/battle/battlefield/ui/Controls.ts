@@ -32,7 +32,7 @@ export default class Controls extends druid.AbstractBranch {
         this.txtLog.anchor.y = 1;
         this.addChild(this.txtLog);
 
-        this.spriteHull.anchor.set(druid.CENTER, druid.CENTER);
+        this.spriteHull.anchor.set(0.5, 0.5);
         this.bgHull.addChild(this.spriteHull);
         this.bgHull.addChild(this.frameUnit);
         this.layoutButtons.addElement(this.bgHull);

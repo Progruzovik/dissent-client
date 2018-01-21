@@ -21,20 +21,22 @@ export default class LeftPanel extends druid.AbstractBranch {
         this.txtActionPoints.anchor.x = 0.5;
         this.addChild(this.txtActionPoints);
         for (let i = units.length - 1; i > -1; i--) {
-            const iconUnit = new druid.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0x444444);
-            const spriteUnit: PIXI.Sprite = units[i].ship.createSprite();
-            const factor: number = Math.min(1 / units[i].ship.hull.width, 1 / units[i].ship.hull.height);
-            spriteUnit.scale.set(factor, factor);
-            spriteUnit.anchor.set(druid.CENTER, druid.CENTER);
-            spriteUnit.position.set(iconUnit.width / 2, iconUnit.height / 2);
-            iconUnit.addChild(spriteUnit);
-            iconUnit.addChild(new druid.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 1, units[i].frameColor));
-            this.layoutQueue.addElement(iconUnit);
+            if (units[i].strength > 0) {
+                const iconUnit = new druid.Rectangle(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 0x444444);
+                const spriteUnit: PIXI.Sprite = units[i].ship.createSprite();
+                const factor: number = Math.min(1 / units[i].ship.hull.width, 1 / units[i].ship.hull.height);
+                spriteUnit.scale.set(factor, factor);
+                spriteUnit.anchor.set(0.5, 0.5);
+                spriteUnit.position.set(iconUnit.width / 2, iconUnit.height / 2);
+                iconUnit.addChild(spriteUnit);
+                iconUnit.addChild(new druid.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, 1, units[i].frameColor));
+                this.layoutQueue.addElement(iconUnit);
 
-            units[i].on(Unit.DESTROY, () => {
-                this.layoutQueue.removeElement(iconUnit);
-                this.updateLayoutQueuePosition();
-            });
+                units[i].on(Unit.DESTROY, () => {
+                    this.layoutQueue.removeElement(iconUnit);
+                    this.updateLayoutQueuePosition();
+                });
+            }
         }
         this.addChild(this.layoutQueue);
 

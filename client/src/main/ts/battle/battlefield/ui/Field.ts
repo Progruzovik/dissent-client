@@ -151,8 +151,8 @@ export default class Field extends druid.Field {
                 }
 
                 const pathLine = new druid.Line(4, 0x00aa00);
-                pathLine.x = (cell.x + pathOffset.x + druid.CENTER) * Field.CELL_SIZE.x;
-                pathLine.y = (cell.y + pathOffset.y + druid.CENTER) * Field.CELL_SIZE.y;
+                pathLine.x = (cell.x + pathOffset.x + 0.5) * Field.CELL_SIZE.x;
+                pathLine.y = (cell.y + pathOffset.y + 0.5) * Field.CELL_SIZE.y;
                 const k: number = direction == Direction.Left || direction == Direction.Up ? 1 : -1;
                 let destinationX: number = pathLine.x, destinationY: number = pathLine.y;
                 if (direction == Direction.Left || direction == Direction.Right) {
