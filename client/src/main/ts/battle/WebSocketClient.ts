@@ -34,8 +34,8 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
         this.connection.prepareMessage(new Message("removeFromQueue"));
     }
 
-    startScenario() {
-        this.connection.prepareMessage(new Message("startScenario"));
+    startMission() {
+        this.connection.prepareMessage(new Message("startMission"));
     }
 
     requestBattleData(callback: (data: { playerSide: Side, fieldSize: druid.Point,

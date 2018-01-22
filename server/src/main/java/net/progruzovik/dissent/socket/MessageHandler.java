@@ -34,7 +34,7 @@ public final class MessageHandler extends TextWebSocketHandler {
         readers.put("requestShips", (p, d) -> p.getMessageSender().send(new Message<>("ships", p.getShips())));
         readers.put("addToQueue", (p, d) -> p.addToQueue());
         readers.put("removeFromQueue", (p, d) -> p.removeFromQueue());
-        readers.put("startScenario", (p, d) -> p.startScenario());
+        readers.put("startMission", (p, d) -> p.startMission());
 
         readers.put("requestBattleData", (p, d) ->
                 p.getMessageSender().send(new Message<>("battleData", p.getBattle().getBattleData(p.getId()))));

@@ -24,20 +24,18 @@ export default class Hangar extends druid.AbstractBranch {
 
     constructor(webSocketClient: WebSocketClient) {
         super();
-        const txtTitle = new PIXI.Text("Dissent", { fill: "white", fontSize: 48, fontWeight: "bold" });
-        this.layoutContent.addElement(txtTitle);
         this.layoutContent.addElement(this.txtStatus);
 
         const layoutControls = new druid.VerticalLayout();
         layoutControls.addElement(this.btnQueue);
-        const btnScenario = new druid.Button("PVE");
-        layoutControls.addElement(btnScenario);
+        const btnMission = new druid.Button("PVE");
+        layoutControls.addElement(btnMission);
         this.layoutContent.addElement(layoutControls);
 
-        this.layoutContent.addElement(new PIXI.Text(l("yourFleet"), { fill: "white", fontWeight: "bold" }));
+        this.layoutContent.addElement(new PIXI.Text(l("yourHangar"), { fill: "white", fontWeight: "bold" }));
         this.layoutContent.addElement(this.ships);
         this.layoutContent.pivot.x = this.layoutContent.width / 2;
-        this.layoutContent.y = druid.INDENT * 3;
+        this.layoutContent.y = druid.INDENT;
         this.addChild(this.layoutContent);
 
         webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
@@ -55,7 +53,7 @@ export default class Hangar extends druid.AbstractBranch {
                 webSocketClient.addToQueue();
             }
         });
-        btnScenario.on(druid.Button.TRIGGERED, () => webSocketClient.startScenario());
+        btnMission.on(druid.Button.TRIGGERED, () => webSocketClient.startMission());
         this.ships.on(Ships.OPEN_INFO, (ship: Ship) => {
             this.layoutContent.visible = false;
             this.shipInfo = new ShipInfo(ship);
