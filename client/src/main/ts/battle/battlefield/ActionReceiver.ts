@@ -41,7 +41,7 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
     private processAction(actionType: ActionType) {
         this.isProcessingAction = true;
         this.field.removePathsAndMarksExceptCurrent();
-        this.controls.lockInterface();
+        this.controls.lockButtons();
         if (actionType == ActionType.Move) {
             this.unitService.activeUnit.currentMove = this.remainingMoves.shift();
         } else if (actionType == ActionType.Shot) {

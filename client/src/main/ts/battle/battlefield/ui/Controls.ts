@@ -68,7 +68,7 @@ export default class Controls extends druid.AbstractBranch {
         return this.txtLog.height + this.layoutButtons.height;
     }
 
-    lockInterface() {
+    lockButtons() {
         this.btnFirstGun.isEnabled = false;
         this.btnSecondGun.isEnabled = false;
         this.btnNextTurn.isEnabled = false;

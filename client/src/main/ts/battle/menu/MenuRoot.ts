@@ -1,13 +1,19 @@
 import Hangar from "./hangar/Hangar";
 import Controls from "./Controls";
-import Title from "./Title";
+import MissionBranch from "./MissionBranch";
+import PvpBranch from "./PvpBranch";
 import WebSocketClient from "../WebSocketClient";
+import { Status } from "../util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
 export default class MenuRoot extends druid.AbstractBranch {
 
-    private readonly hangar = new Hangar(this.webSocketClient);
+    private readonly hangar = new Hangar();
+    private readonly missionBranch = new MissionBranch(this.webSocketClient);
+    private readonly pvpBranch = new PvpBranch(this.webSocketClient);
+    private _currentBranch: druid.AbstractBranch;
+
     private readonly controls = new Controls();
 
     constructor(private readonly webSocketClient: WebSocketClient) {
@@ -16,11 +22,26 @@ export default class MenuRoot extends druid.AbstractBranch {
         this.addChild(new druid.Rectangle(txtTitle.width + druid.INDENT, 16, 0xdedede));
         txtTitle.x = druid.INDENT / 2;
         this.addChild(txtTitle);
-        this.addChild(this.hangar);
+        this.currentBranch = this.hangar;
         this.addChild(this.controls);
-        this.updateInfo();
 
+        webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
+            this.pvpBranch.status = status;
+            if (status == Status.Idle) {
+                this.controls.lockButtons(false);
+            } else if (status == Status.Queued) {
+                this.currentBranch = this.pvpBranch;
+                this.controls.lockButtons(true);
+            } else if (status == Status.InBattle) {
+                this.emit(Hangar.BATTLE);
+            }
+        });
         this.hangar.on(Hangar.BATTLE, () => this.emit(Hangar.BATTLE));
+        this.controls.on(Controls.HANGAR, () => this.currentBranch = this.hangar);
+        this.controls.on(Controls.MISSIONS, () => this.currentBranch = this.missionBranch);
+        this.controls.on(Controls.PVP, () => this.currentBranch = this.pvpBranch);
+
+        this.updateInfo();
     }
 
     updateInfo() {
@@ -35,5 +56,21 @@ export default class MenuRoot extends druid.AbstractBranch {
 
         const freeHeight = height - this.controls.height;
         this.hangar.setUpChildren(width, freeHeight);
+        this.missionBranch.setUpChildren(width, freeHeight);
+        this.pvpBranch.setUpChildren(width, freeHeight);
+    }
+
+    private get currentBranch(): druid.AbstractBranch {
+        return this._currentBranch;
+    }
+
+    private set currentBranch(value: druid.AbstractBranch) {
+        if (this.currentBranch) {
+            this.removeChild(this.currentBranch);
+        }
+        this._currentBranch = value;
+        if (value) {
+            this.addChild(value);
+        }
     }
 }
