@@ -20,9 +20,8 @@ export default class BattleApp extends druid.App {
         super(resolution, width, height);
         initClient("en", s => {
             updateLocalizedData(s);
-            const webSocketUrl: string = document.baseURI.toString()
-                .replace("http", "ws") + "/app";
-            this.webSocketClient.createConnection(webSocketUrl);
+            this.webSocketClient.createConnection(
+                document.baseURI.toString().replace("http", "ws") + "/app");
             this.webSocketClient.requestTextures(textures => {
                 for (const texture of textures) {
                     PIXI.loader.add(texture.name, `img/${texture.name}.png`);

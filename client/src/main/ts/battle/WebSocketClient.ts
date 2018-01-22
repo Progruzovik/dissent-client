@@ -47,7 +47,8 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
         this.makeRequest("pathsAndReachableCells", callback);
     }
 
-    requestGunCells(gunId: number, callback: (data: { shotCells: druid.Point[], targetCells: druid.Point[] }) => void) {
+    requestGunCells(gunId: number,
+                    callback: (data: { shotCells: druid.Point[], targetCells: druid.Point[] }) => void) {
         this.makeRequest("gunCells", callback, { gunId: gunId });
     }
 
@@ -56,7 +57,8 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
     }
 
     shootWithCurrentUnit(gunId: number, cell: druid.Point) {
-        this.connection.prepareMessage(new Message("shootWithCurrentUnit", { gunId: gunId, x: cell.x, y: cell.y }));
+        this.connection.prepareMessage(new Message("shootWithCurrentUnit",
+            { gunId: gunId, x: cell.x, y: cell.y }));
     }
 
     endTurn() {
@@ -64,7 +66,8 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
     }
 
     private makeRequest(name: string, callback?: (data: any) => void, data?: any) {
-        this.connection.prepareMessage(new Message("request" + name.charAt(0).toUpperCase() + name.slice(1), data));
+        const request = "request" + name.charAt(0).toUpperCase() + name.slice(1);
+        this.connection.prepareMessage(new Message(request, data));
         if (callback) {
             this.once(name, callback);
         }
