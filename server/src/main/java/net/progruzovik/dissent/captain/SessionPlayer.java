@@ -1,8 +1,8 @@
 package net.progruzovik.dissent.captain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.progruzovik.dissent.battle.PlayerQueue;
-import net.progruzovik.dissent.battle.MissionDigest;
+import net.progruzovik.dissent.service.PlayerQueue;
+import net.progruzovik.dissent.service.MissionDigest;
 import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
 import net.progruzovik.dissent.dao.GunDao;
@@ -97,8 +97,8 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     }
 
     @Override
-    public void startMission() {
-        missionDigest.start(this);
+    public void startMission(int missionIndex) {
+        missionDigest.startMission(this, missionIndex);
     }
 
     private void onBattleFinish() {

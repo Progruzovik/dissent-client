@@ -24,7 +24,7 @@ export default class ShipInfo extends druid.HorizontalLayout {
         layoutShip.addElement(ship.createGunsCard());
         layoutContent.addElement(layoutShip);
 
-        const btnBack = new druid.Button(l("back"));
+        const btnBack = new druid.Button(`< ${l("back")}`);
         layoutContent.addElement(btnBack);
         this.addElement(layoutContent);
 

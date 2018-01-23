@@ -12,5 +12,5 @@ public interface Player extends Captain {
 
     void removeFromQueue();
 
-    void startMission();
+    void startMission(int missionIndex);
 }

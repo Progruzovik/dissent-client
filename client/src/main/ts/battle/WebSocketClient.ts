@@ -22,6 +22,10 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
         this.makeRequest("ships", callback);
     }
 
+    requestMissions(callback: (missions: string[]) => void) {
+        this.makeRequest("missions", callback);
+    }
+
     updateStatus() {
         this.makeRequest("status");
     }
@@ -34,8 +38,8 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
         this.connection.prepareMessage(new Message("removeFromQueue"));
     }
 
-    startMission() {
-        this.connection.prepareMessage(new Message("startMission"));
+    startMission(missionIndex: number) {
+        this.connection.prepareMessage(new Message("startMission", { missionIndex: missionIndex }));
     }
 
     requestBattleData(callback: (data: { playerSide: Side, fieldSize: druid.Point,

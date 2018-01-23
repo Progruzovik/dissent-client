@@ -7,7 +7,7 @@ export default class ShipsLayout extends druid.VerticalLayout {
     static readonly OPEN_INFO = "openInfo";
 
     constructor() {
-        super(druid.INDENT / 2);
+        super(druid.INDENT);
     }
 
     updateInfo(shipsData: ShipData[]) {

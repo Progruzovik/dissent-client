@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle;
+package net.progruzovik.dissent.service;
 
 import net.progruzovik.dissent.captain.Player;
 

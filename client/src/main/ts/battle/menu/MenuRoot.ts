@@ -18,6 +18,8 @@ export default class MenuRoot extends druid.AbstractBranch {
 
     constructor(private readonly webSocketClient: WebSocketClient) {
         super();
+        webSocketClient.requestMissions(m => this.missionBranch.updateMissions(m));
+
         const txtTitle = new PIXI.Text("Dissent <tech demo>", { fontSize: 14, fontStyle: "italic" });
         this.addChild(new druid.Rectangle(txtTitle.width + druid.INDENT, 16, 0xdedede));
         txtTitle.x = druid.INDENT / 2;
