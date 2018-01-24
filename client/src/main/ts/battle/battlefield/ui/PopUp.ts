@@ -23,7 +23,7 @@ export default class PopUp extends druid.AbstractBranch {
         layoutWindow.addElement(unit.ship.createSprite());
         layoutWindow.addElement(this.barStrength);
         this.bgPopUp.addChild(layoutWindow);
-        const frame = new druid.Frame(this.bgPopUp.width, this.bgPopUp.height, 1, unit.frameColor);
+        const frame = new druid.Frame(this.bgPopUp.width, this.bgPopUp.height, unit.frameColor);
         this.bgPopUp.addChild(frame);
         this.addChild(this.bgPopUp);
         this.setUpChildren(rootWidth, rootHeight);

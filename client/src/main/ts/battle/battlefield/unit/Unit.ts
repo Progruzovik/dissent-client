@@ -33,7 +33,7 @@ export default class Unit extends druid.AbstractActor {
         }
         this.addChild(sprite);
         const frameWidth = ship.hull.width * Field.CELL_SIZE.x, frameHeight = ship.hull.height * Field.CELL_SIZE.y;
-        this.addChild(new druid.Frame(frameWidth, frameHeight, 0.6, this.frameColor));
+        this.addChild(new druid.Frame(frameWidth, frameHeight, this.frameColor, 0.6));
         this.updatePosition();
     }
 

@@ -1,5 +1,5 @@
-import Ship from "../../../Ship";
-import { l } from "../../../../localizer";
+import Ship from "../../Ship";
+import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -21,7 +21,9 @@ export default class ShipInfo extends druid.HorizontalLayout {
         layoutIcon.addElement(iconShip);
         layoutIcon.addElement(ship.createStrengthBar(iconShip.width));
         layoutShip.addElement(layoutIcon);
-        layoutShip.addElement(ship.createGunsCard());
+        for (const card of ship.createGunCards()) {
+            layoutShip.addElement(card);
+        }
         layoutContent.addElement(layoutShip);
 
         const btnBack = new druid.Button(`< ${l("back")}`);
