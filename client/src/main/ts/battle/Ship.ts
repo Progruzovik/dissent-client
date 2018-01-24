@@ -1,6 +1,4 @@
-import Card from "./menu/hangar/Card";
 import { Gun, Hull, ShipData } from "./util";
-import { l } from "../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -35,21 +33,6 @@ export default class Ship implements ShipData {
 
     createSprite(): PIXI.Sprite {
         return new PIXI.Sprite(PIXI.loader.resources[this.hull.texture.name].texture);
-    }
-
-    createGunCards(): Card[] {
-        const result = new Array<Card>(0);
-        if (this.firstGun) {
-            const gunSprite = new PIXI.Sprite(PIXI.loader.resources[this.firstGun.texture.name].texture);
-            gunSprite.scale.set(4, 4);
-            result.push(new Card(l(this.firstGun.name), gunSprite));
-        }
-        if (this.secondGun) {
-            const gunSprite = new PIXI.Sprite(PIXI.loader.resources[this.secondGun.texture.name].texture);
-            gunSprite.scale.set(4, 4);
-            result.push(new Card(l(this.secondGun.name), gunSprite));
-        }
-        return result;
     }
 
     createStrengthBar(width: number, height: number = 15, color: number = 0xff0000): druid.ProgressBar {

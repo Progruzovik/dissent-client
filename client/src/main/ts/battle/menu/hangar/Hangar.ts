@@ -30,9 +30,9 @@ export default class Hangar extends druid.AbstractBranch {
     setUpChildren(width: number, height: number): void {
         this.contentWidth = width;
         this.contentHeight = height;
-        this.layoutContent.x = this.contentWidth / 2;
+        this.layoutContent.x = width / 2;
         if (this.shipInfo) {
-            this.shipInfo.position.set(this.contentWidth / 2, this.contentHeight / 2);
+            this.shipInfo.setUpChildren(width, height);
         }
     }
 
@@ -53,7 +53,6 @@ export default class Hangar extends druid.AbstractBranch {
     private openShipInfo(ship: Ship) {
         this.layoutContent.visible = false;
         this.shipInfo = new ShipInfo(ship);
-        this.shipInfo.pivot.set(this.shipInfo.width / 2, this.shipInfo.height / 2);
         this.addChild(this.shipInfo);
         this.setUpChildren(this.contentWidth, this.contentHeight);
 
