@@ -25,6 +25,8 @@ export interface Gun {
     readonly id: number,
     readonly name: string,
     readonly shotCost: number,
+    readonly damage: number,
+    readonly radius: number,
     readonly typeName: GunType,
     readonly texture: Texture;
 }

@@ -37,12 +37,12 @@ export default class ShipInfo extends druid.AbstractBranch {
         if (ship.firstGun) {
             const firstGunCard: Card = ShipInfo.createGunCard(ship.firstGun);
             layoutShip.addElement(firstGunCard);
-            firstGunCard.on(druid.Event.MOUSE_UP, () => this.showRightPanelForGun(ship.firstGun));
+            firstGunCard.on(druid.Event.MOUSE_UP, () => this.showRightPanelWithGun(ship.firstGun));
         }
         if (ship.secondGun) {
             const secondGunCard: Card = ShipInfo.createGunCard(ship.secondGun);
             layoutShip.addElement(secondGunCard);
-            secondGunCard.on(druid.Event.MOUSE_UP, () => this.showRightPanelForGun(ship.secondGun));
+            secondGunCard.on(druid.Event.MOUSE_UP, () => this.showRightPanelWithGun(ship.secondGun));
         }
         layoutContent.addElement(layoutShip);
 
@@ -67,9 +67,16 @@ export default class ShipInfo extends druid.AbstractBranch {
         this.rightPanel.x = width;
     }
 
-    private showRightPanelForGun(gun: Gun) {
+    private showRightPanelWithGun(gun: Gun) {
         this.rightPanelContent.removeElements();
-        this.rightPanelContent.addElement(new PIXI.Text(l(gun.name)));
+        this.rightPanelContent.addElement(new PIXI.Text(l(gun.name),
+            { fontSize: 38, fontStyle: "bold", wordWrap: true, wordWrapWidth: this.rightPanel.width }));
+        const textStyle = { wordWrap: true, wordWrapWidth: this.rightPanel.width };
+        this.rightPanelContent.addElement(new PIXI.Text(`${l("type")}: ${l(gun.typeName)}`, textStyle));
+        this.rightPanelContent.addElement(
+            new PIXI.Text(`${l("shotCost")}: ${gun.shotCost} ${l("ap")}`, textStyle));
+        this.rightPanelContent.addElement(new PIXI.Text(`${l("Damage")}: ${gun.damage}`, textStyle));
+        this.rightPanelContent.addElement(new PIXI.Text(`${l("radius")}: ${gun.radius}`, textStyle));
         this.rightPanelContent.pivot.set(this.rightPanelContent.width / 2, this.rightPanelContent.height / 2);
         if (this.rightPanel.parent != this) {
             this.addChild(this.rightPanel);

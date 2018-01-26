@@ -1,6 +1,7 @@
 {
   "ap": "AP",
   "back": "Back",
+  "Damage": "Damage",
   "empty": "empty",
   "endTurn": "End turn",
   "enterQueue": "Enter queue",
@@ -8,6 +9,9 @@
   "leaveQueue": "Leave queue",
   "missions": "Missions",
   "pvp": "PVP\n(experimental)",
+  "radius": "Radius",
+  "shotCost": "Shot cost",
+  "type": "Type",
 
   "hitBy": "was hit by",
   "with": "with",
@@ -15,6 +19,10 @@
   "damage": "damage",
 
   "testMission": "Test mission",
+
+  "artillery": "Artillery",
+  "beam": "Beam",
+  "shell": "Shell",
 
   "laser": "Laser",
   "shrapnel": "Shrapnel"
