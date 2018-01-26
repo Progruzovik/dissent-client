@@ -39,7 +39,10 @@ export default class MenuRoot extends druid.AbstractBranch {
             }
         });
         this.hangar.on(Hangar.BATTLE, () => this.emit(Hangar.BATTLE));
-        this.controls.on(Controls.HANGAR, () => this.currentBranch = this.hangar);
+        this.controls.on(Controls.HANGAR, () => {
+            this.hangar.reset();
+            this.currentBranch = this.hangar;
+        });
         this.controls.on(Controls.MISSIONS, () => this.currentBranch = this.missionBranch);
         this.controls.on(Controls.PVP, () => this.currentBranch = this.pvpBranch);
 

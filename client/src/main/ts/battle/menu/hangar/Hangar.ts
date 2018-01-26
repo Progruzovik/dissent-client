@@ -50,17 +50,21 @@ export default class Hangar extends druid.AbstractBranch {
         this.ships.pivot.x = this.ships.width / 2;
     }
 
+    reset() {
+        this.layoutContent.visible = true;
+        if (this.shipInfo) {
+            this.removeChild(this.shipInfo);
+            this.shipInfo.destroy({ children: true });
+            this.shipInfo = null;
+        }
+    }
+
     private openShipInfo(ship: Ship) {
         this.layoutContent.visible = false;
         this.shipInfo = new ShipInfo(ship);
         this.addChild(this.shipInfo);
         this.setUpChildren(this.contentWidth, this.contentHeight);
 
-        this.shipInfo.once(druid.Event.DONE, () => {
-            this.layoutContent.visible = true;
-            this.removeChild(this.shipInfo);
-            this.shipInfo.destroy({ children: true });
-            this.shipInfo = null;
-        });
+        this.shipInfo.once(druid.Event.DONE, () => this.reset());
     }
 }
