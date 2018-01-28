@@ -32,8 +32,9 @@ INSERT INTO texture(id, name) VALUES
   (5, 'gun-1'),
   (6, 'gun-2'),
   (7, 'gun-3'),
-  (8, 'asteroid'),
-  (9, 'cloud');
+  (8, 'space'),
+  (9, 'asteroid'),
+  (10, 'cloud');
 
 INSERT INTO hull(id, name, actionPoints, strength, width, height, textureId) VALUES
   (1, 'Trainhauler', 4, 4, 1, 1, 1),

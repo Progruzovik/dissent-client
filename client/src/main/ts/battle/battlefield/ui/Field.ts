@@ -28,6 +28,12 @@ export default class Field extends druid.Field {
         super();
         const bg = new druid.Rectangle(size.x * Field.CELL_SIZE.x + Field.LINE_WIDTH,
             size.y * Field.CELL_SIZE.y + Field.LINE_WIDTH);
+        const space = new PIXI.Sprite(PIXI.loader.resources["space"].texture);
+        const spaceRatio = Math.min(bg.width / space.width, bg.height / space.height);
+        space.scale.set(spaceRatio, spaceRatio);
+        space.anchor.set(0.5, 0.5);
+        space.position.set(bg.width / 2, bg.height / 2);
+        bg.addChild(space);
         const lines = new PIXI.Graphics();
         lines.lineStyle(Field.LINE_WIDTH, 0x777777);
         for (let i = 0; i <= size.y; i++) {
