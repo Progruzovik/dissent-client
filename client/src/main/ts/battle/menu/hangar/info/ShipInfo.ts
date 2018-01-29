@@ -1,16 +1,15 @@
 import Card from "./Card";
-import Ship from "../../Ship";
-import { Gun } from "../../util";
-import { l } from "../../../localizer";
+import RightPanel from "./RightPanel";
+import Ship from "../../../Ship";
+import { Gun } from "../../../util";
+import { l } from "../../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
 export default class ShipInfo extends druid.AbstractBranch {
 
     private readonly layout = new druid.HorizontalLayout(druid.Alignment.Center);
-
-    private readonly rightPanelContent = new druid.HorizontalLayout(druid.Alignment.Center);
-    private readonly rightPanel = new druid.Rectangle(200, 0, 0xffffff);
+    private readonly rightPanel = new RightPanel();
 
     private static createGunCard(gun: Gun): Card {
         const gunSprite = new PIXI.Sprite(PIXI.loader.resources[gun.texture.name].texture);
@@ -52,32 +51,19 @@ export default class ShipInfo extends druid.AbstractBranch {
         this.layout.pivot.set(this.layout.width / 2, this.layout.height / 2);
         this.addChild(this.layout);
 
-        this.rightPanelContent.x = this.rightPanel.width / 2;
-        this.rightPanel.addChild(this.rightPanelContent);
-        this.rightPanel.pivot.x = this.rightPanel.width;
-
         btnBack.on(druid.Button.TRIGGERED, () => this.emit(druid.Event.DONE));
     }
 
     setUpChildren(width: number, height: number): void {
         this.layout.position.set(width / 2, height / 2);
 
-        this.rightPanelContent.y = height / 2;
-        this.rightPanel.height = height;
+        this.rightPanel.setUpChildren(width, height);
+        this.rightPanel.pivot.x = this.rightPanel.width;
         this.rightPanel.x = width;
     }
 
     private showRightPanelWithGun(gun: Gun) {
-        this.rightPanelContent.removeElements();
-        this.rightPanelContent.addElement(new PIXI.Text(l(gun.name),
-            { fontSize: 38, fontStyle: "bold", wordWrap: true, wordWrapWidth: this.rightPanel.width }));
-        const textStyle = { wordWrap: true, wordWrapWidth: this.rightPanel.width };
-        this.rightPanelContent.addElement(new PIXI.Text(`${l("type")}: ${l(gun.typeName)}`, textStyle));
-        this.rightPanelContent.addElement(
-            new PIXI.Text(`${l("shotCost")}: ${gun.shotCost} ${l("ap")}`, textStyle));
-        this.rightPanelContent.addElement(new PIXI.Text(`${l("Damage")}: ${gun.damage}`, textStyle));
-        this.rightPanelContent.addElement(new PIXI.Text(`${l("radius")}: ${gun.radius}`, textStyle));
-        this.rightPanelContent.pivot.set(this.rightPanelContent.width / 2, this.rightPanelContent.height / 2);
+        this.rightPanel.updateContent(gun);
         if (this.rightPanel.parent != this) {
             this.addChild(this.rightPanel);
         }

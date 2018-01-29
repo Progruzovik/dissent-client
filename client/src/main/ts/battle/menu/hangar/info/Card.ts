@@ -1,4 +1,4 @@
-import InteractiveContainer from "../../ui/InteractiveContainer";
+import InteractiveContainer from "../../../ui/InteractiveContainer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 

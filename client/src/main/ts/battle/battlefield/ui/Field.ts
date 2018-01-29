@@ -29,6 +29,7 @@ export default class Field extends druid.Field {
         const bg = new druid.Rectangle(size.x * Field.CELL_SIZE.x + Field.LINE_WIDTH,
             size.y * Field.CELL_SIZE.y + Field.LINE_WIDTH);
         const space = new PIXI.Sprite(PIXI.loader.resources["space"].texture);
+        space.alpha = 0.8;
         const spaceRatio = Math.min(bg.width / space.width, bg.height / space.height);
         space.scale.set(spaceRatio, spaceRatio);
         space.anchor.set(0.5, 0.5);
