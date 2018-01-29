@@ -8,24 +8,36 @@ export default class Controls extends ScalableVerticalLayout {
     static readonly MISSIONS = "missions";
     static readonly PVP = "pvp";
 
-    private readonly btnHangar = new druid.Button(l("hangar"));
-    private readonly btnMissions = new druid.Button(l("missions"));
-    private readonly btnPvp = new druid.Button(l("pvp"));
+    private readonly buttonGroup: druid.ButtonGroup;
 
     constructor() {
         super(6, 15);
-        this.addElement(this.btnHangar);
-        this.addElement(this.btnMissions);
-        this.addElement(this.btnPvp);
+        const buttons: druid.Button[] = [
+            new druid.Button(l("hangar")),
+            new druid.Button(l("missions")),
+            new druid.Button(l("pvp"))
+        ];
+        this.buttonGroup = new druid.ButtonGroup(buttons);
+        for (const button of buttons) {
+            this.addElement(button);
+        }
 
-        this.btnHangar.on(druid.Button.TRIGGERED, () => this.emit(Controls.HANGAR));
-        this.btnMissions.on(druid.Button.TRIGGERED, () => this.emit(Controls.MISSIONS));
-        this.btnPvp.on(druid.Button.TRIGGERED, () => this.emit(Controls.PVP));
+        this.buttonGroup.on(druid.Button.TRIGGERED, (i: number) => {
+            if (i == 0) {
+                this.emit(Controls.HANGAR);
+            } else if (i == 1) {
+                this.emit(Controls.MISSIONS);
+            } else if (i == 2) {
+                this.emit(Controls.PVP);
+            }
+        });
     }
 
-    lockButtons(isLocked: boolean) {
-        this.btnHangar.isEnabled = !isLocked;
-        this.btnMissions.isEnabled = !isLocked;
-        this.btnPvp.isEnabled = !isLocked;
+    get isEnabled(): boolean {
+        return this.buttonGroup.isEnabled;
+    }
+
+    set isEnabled(value: boolean) {
+        this.buttonGroup.isEnabled = value;
     }
 }

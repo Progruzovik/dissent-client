@@ -30,10 +30,10 @@ export default class MenuRoot extends druid.AbstractBranch {
         webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
             this.pvpBranch.status = status;
             if (status == Status.Idle) {
-                this.controls.lockButtons(false);
+                this.controls.isEnabled = true;
             } else if (status == Status.Queued) {
                 this.currentBranch = this.pvpBranch;
-                this.controls.lockButtons(true);
+                this.controls.isEnabled = false;
             } else if (status == Status.InBattle) {
                 this.emit(Hangar.BATTLE);
             }
