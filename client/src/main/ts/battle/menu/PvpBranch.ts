@@ -6,18 +6,18 @@ import * as druid from "pixi-druid";
 export default class PvpBranch extends druid.AbstractBranch {
 
     private _status: Status;
-    private readonly btnQueue = new druid.Button();
+    private readonly btnQueue = new druid.ToggleButton();
 
     constructor(webSocketClient: WebSocketClient) {
         super();
         this.btnQueue.pivot.set(this.btnQueue.width / 2, this.btnQueue.height / 2);
         this.addChild(this.btnQueue);
 
-        this.btnQueue.on(druid.Button.TRIGGERED, () => {
-            if (this.status == Status.Queued) {
-                webSocketClient.removeFromQueue();
-            } else {
+        this.btnQueue.on(druid.ToggleButton.TOGGLE, (isToggled: boolean) => {
+            if (isToggled) {
                 webSocketClient.addToQueue();
+            } else {
+                webSocketClient.removeFromQueue();
             }
         });
     }
@@ -29,8 +29,10 @@ export default class PvpBranch extends druid.AbstractBranch {
     set status(value: Status) {
         this._status = value;
         if (value == Status.Idle) {
+            this.btnQueue.isToggled = false;
             this.btnQueue.text = l("enterQueue");
         } else if (value == Status.Queued) {
+            this.btnQueue.isToggled = true;
             this.btnQueue.text = l("leaveQueue");
         }
     }

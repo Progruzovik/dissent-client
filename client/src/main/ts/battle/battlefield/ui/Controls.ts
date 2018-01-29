@@ -18,8 +18,8 @@ export default class Controls extends druid.AbstractBranch {
     private readonly barStrength = new druid.ProgressBar(0,
         0, 0xff0000, druid.BarTextConfig.Default);
 
-    private readonly btnFirstGun = new druid.Button();
-    private readonly btnSecondGun = new druid.Button();
+    private readonly btnFirstGun = new GunButton(this.unitService);
+    private readonly btnSecondGun = new GunButton(this.unitService);
     private readonly btnNextTurn = new druid.Button(l("endTurn"));
     private readonly layoutButtons = new ScalableVerticalLayout(3);
 
@@ -53,10 +53,6 @@ export default class Controls extends druid.AbstractBranch {
             this.updateInterface();
         });
         unitService.on(ActionType.NextTurn, () => this.updateInterface());
-        this.btnFirstGun.on(druid.Button.TRIGGERED, () =>
-            unitService.activeUnit.preparedGunId = unitService.activeUnit.ship.firstGun.id);
-        this.btnSecondGun.on(druid.Button.TRIGGERED, () =>
-            unitService.activeUnit.preparedGunId = unitService.activeUnit.ship.secondGun.id);
         this.btnNextTurn.on(druid.Button.TRIGGERED, () => webSocketClient.endTurn());
     }
 
@@ -100,19 +96,41 @@ export default class Controls extends druid.AbstractBranch {
         this.frameUnit.color = activeUnit.frameColor;
         this.barStrength.maximum = activeUnit.ship.hull.strength;
         this.barStrength.value = activeUnit.strength;
-        this.updateBtnGun(this.btnFirstGun, activeUnit.ship.firstGun);
-        this.updateBtnGun(this.btnSecondGun, activeUnit.ship.secondGun);
+        this.btnFirstGun.gun = activeUnit.ship.firstGun;
+        this.btnSecondGun.gun = activeUnit.ship.secondGun;
         this.btnNextTurn.isEnabled = this.unitService.isCurrentPlayerTurn;
     }
+}
 
-    private updateBtnGun(btnGun: druid.Button, gun: Gun) {
-        if (gun) {
-            btnGun.isEnabled = this.unitService.isCurrentPlayerTurn
-                && this.unitService.activeUnit.actionPoints >= gun.shotCost;
-            btnGun.text = `${l(gun.name)}\n(${gun.shotCost} ${l("ap")})`;
+class GunButton extends druid.ToggleButton {
+
+    private _gun: Gun;
+
+    constructor(private readonly unitService: UnitService) {
+        super();
+        this.on(druid.ToggleButton.TOGGLE, (isToggled: boolean) => {
+            if (isToggled && this.gun) {
+                unitService.activeUnit.preparedGunId = this.gun.id;
+            } else {
+                unitService.activeUnit.preparedGunId = Unit.NO_GUN_ID;
+            }
+        });
+    }
+
+    get gun(): Gun {
+        return this._gun;
+    }
+
+    set gun(value: Gun) {
+        this.isToggled = false;
+        this._gun = value;
+        if (value) {
+            this.isEnabled = this.unitService.isCurrentPlayerTurn
+                && this.unitService.activeUnit.actionPoints >= value.shotCost;
+            this.text = `${l(value.name)}\n(${value.shotCost} ${l("ap")})`;
         } else {
-            btnGun.isEnabled = false;
-            btnGun.text = `[${l("empty")}]`;
+            this.isEnabled = false;
+            this.text = `[${l("empty")}]`;
         }
     }
 }

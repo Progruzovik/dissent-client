@@ -73,7 +73,7 @@ export default class Unit extends druid.AbstractActor {
     }
 
     set preparedGunId(value: number) {
-        if (this.preparedGunId == value || value == Unit.NO_GUN_ID) {
+        if (value == Unit.NO_GUN_ID) {
             this._preparedGunId = Unit.NO_GUN_ID;
             this.emit(Unit.NOT_PREPARE_TO_SHOT);
         } else if (value == this.ship.firstGun.id || value == this.ship.secondGun.id) {
