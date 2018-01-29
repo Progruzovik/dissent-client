@@ -3,24 +3,18 @@ import { l } from "../../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class RightPanel extends druid.AbstractBranch {
+export default class RightPanel extends druid.Rectangle implements druid.SizeAware {
 
     private readonly content = new druid.HorizontalLayout(druid.Alignment.Center);
-    private readonly bg = new druid.Rectangle(0, 0, 0xffffff);
 
     constructor() {
-        super();
-        this.bg.addChild(this.content);
-        this.addChild(this.bg);
-    }
-
-    get width(): number {
-        return this.bg.width;
+        super(0, 0, 0xffffff);
+        this.addChild(this.content);
     }
 
     setUpChildren(width: number, height: number): void {
-        this.bg.width = width / 6;
-        this.bg.height = height;
+        this.width = width / 6;
+        this.height = height;
         this.content.position.set(this.width / 2, this.height / 2);
     }
 

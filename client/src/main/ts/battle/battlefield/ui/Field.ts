@@ -7,7 +7,7 @@ import { ActionType, PathNode } from "../../util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
-export default class Field extends druid.Field {
+export default class Field extends druid.ScrollContainer {
 
     static readonly CELL_SIZE = new druid.Point(64, 48);
     static readonly LINE_WIDTH = 1.5;
