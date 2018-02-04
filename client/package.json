@@ -3,11 +3,17 @@
   "version": "0.0.1",
   "dependencies": {
     "axios": "^0.16.2",
-    "pixi-druid": "^1.0.46"
+    "mithril": "^1.1.6",
+    "pixi-druid": "^1.0.46",
+    "skeleton-css": "^2.0.4"
   },
   "devDependencies": {
+    "@types/mithril": "^1.1.12",
     "@types/pixi.js": "^4.6.3",
     "awesome-typescript-loader": "^3.4.1",
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
     "clean-webpack-plugin": "^0.1.17",
     "copy-webpack-plugin": "^4.3.1",
     "typescript": "^2.6.2",

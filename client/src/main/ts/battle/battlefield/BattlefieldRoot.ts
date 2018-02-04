@@ -6,7 +6,7 @@ import ProjectileService from "./projectile/ProjectileService";
 import PopUp from "./ui/PopUp";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
-import WebSocketClient from "../WebSocketClient";
+import WebSocketClient from "../../WebSocketClient";
 import { ActionType, LogEntry, Side } from "../util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";

@@ -1,4 +1,4 @@
-import WebSocketClient from "../WebSocketClient";
+import WebSocketClient from "../../WebSocketClient";
 import { Status } from "../util";
 import { l } from "../../localizer";
 import * as druid from "pixi-druid";

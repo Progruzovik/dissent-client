@@ -2,7 +2,7 @@ import Projectile from "../projectile/Projectile";
 import ProjectileService from "../projectile/ProjectileService";
 import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
-import WebSocketClient from "../../WebSocketClient";
+import WebSocketClient from "../../../WebSocketClient";
 import { ActionType, PathNode } from "../../util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";

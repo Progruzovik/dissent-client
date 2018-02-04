@@ -1,4 +1,4 @@
-import { LogEntry, PathNode, ShipData, Side, Texture } from "./util";
+import { LogEntry, PathNode, ShipData, Side, Texture } from "./battle/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -6,12 +6,13 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
 
     static readonly STATUS = "status";
 
-    private connection: WebSocketConnection;
+    private readonly connection: WebSocketConnection;
 
-    createConnection(url: string) {
+    constructor(url: string) {
+        super();
         this.connection = new WebSocketConnection(url);
-        this.connection.on(WebSocketConnection.MESSAGE, (message: Message) =>
-            this.emit(message.subject, message.data));
+        this.connection.on(WebSocketConnection.MESSAGE,
+            (message: Message) => this.emit(message.subject, message.data));
     }
 
     requestTextures(callback: (textures: Texture[]) => void) {
