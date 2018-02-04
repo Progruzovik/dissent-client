@@ -1,15 +1,16 @@
 import Field from "./Field";
+import Log from "./Log";
 import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
-import WebSocketClient from "../../WebSocketClient";
-import { ActionType, Gun } from "../../util";
 import ScalableVerticalLayout from "../../ui/ScalableVerticalLayout";
+import WebSocketClient from "../../WebSocketClient";
+import { ActionType, Gun, LogEntry } from "../../util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
 export default class Controls extends druid.AbstractBranch {
 
-    private readonly txtLog = new PIXI.Text("", { fill: "white", fontSize: 18, wordWrap: true });
+    private readonly log: Log;
 
     private readonly spriteHull = new PIXI.Sprite();
     private readonly frameUnit = new druid.Frame();
@@ -20,13 +21,13 @@ export default class Controls extends druid.AbstractBranch {
 
     private readonly btnFirstGun = new GunButton(this.unitService);
     private readonly btnSecondGun = new GunButton(this.unitService);
-    private readonly btnNextTurn = new druid.Button(l("endTurn"));
+    private readonly btnEndTurn = new druid.Button(l("endTurn"));
     private readonly layoutButtons = new ScalableVerticalLayout(3);
 
-    constructor(private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
+    constructor(log: LogEntry[], private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
         super();
-        this.txtLog.anchor.y = 1;
-        this.addChild(this.txtLog);
+        this.log = new Log(log);
+        this.addChild(this.log);
 
         this.spriteHull.anchor.set(0.5, 0.5);
         this.bgHull.addChild(this.spriteHull);
@@ -41,19 +42,18 @@ export default class Controls extends druid.AbstractBranch {
         this.layoutButtons.addElement(this.btnFirstGun);
         this.layoutButtons.addElement(this.btnSecondGun);
         this.layoutButtons.addElement(new druid.Rectangle());
-        this.btnNextTurn.txtMain.style = new PIXI.TextStyle({ align: "center",
+        this.btnEndTurn.txtMain.style = new PIXI.TextStyle({ align: "center",
             fill: "white", fontSize: 32, fontWeight: "bold", stroke: "red", strokeThickness: 1.4 });
-        this.layoutButtons.addElement(this.btnNextTurn);
+        this.layoutButtons.addElement(this.btnEndTurn);
         this.addChild(this.layoutButtons);
 
         unitService.on(ActionType.Move, () => this.updateInterface());
-        unitService.on(ActionType.Shot, (unit: Unit, gun: Gun, target: Unit, damage: number) => {
-            this.txtLog.text = `${target.ship.hull.name} ${l("hitBy")} ${unit.ship.hull.name} ${l("with")} `
-                + `${l(gun.name)} ${l("for")} ${damage} ${l("damage")}`;
+        unitService.on(ActionType.Shot, (damage: number, gun: Gun, unit: Unit, target: Unit) => {
+            this.log.addEntry(damage, gun.name, unit.ship.hull.name, target.ship.hull.name);
             this.updateInterface();
         });
         unitService.on(ActionType.NextTurn, () => this.updateInterface());
-        this.btnNextTurn.on(druid.Button.TRIGGERED, () => webSocketClient.endTurn());
+        this.btnEndTurn.on(druid.Button.TRIGGERED, () => webSocketClient.endTurn());
     }
 
     get buttonsHeight(): number {
@@ -61,20 +61,17 @@ export default class Controls extends druid.AbstractBranch {
     }
 
     get fullBottomHeight(): number {
-        return this.txtLog.height + this.layoutButtons.height;
+        return this.log.height + this.layoutButtons.height;
     }
 
     lockButtons() {
         this.btnFirstGun.isEnabled = false;
         this.btnSecondGun.isEnabled = false;
-        this.btnNextTurn.isEnabled = false;
+        this.btnEndTurn.isEnabled = false;
     }
 
     setUpChildren(width: number, height: number) {
         this.layoutButtons.setUpChildren(width, height);
-        this.txtLog.style.wordWrapWidth = this.layoutButtons.elementWidth;
-        this.txtLog.x = this.layoutButtons.elementWidth * (this.layoutButtons.elementsCount - 1);
-        this.txtLog.y = height - this.buttonsHeight - druid.INDENT / 2;
 
         const shipRatio = this.bgHull.height / Field.CELL_SIZE.y;
         this.spriteHull.scale.set(shipRatio, shipRatio);
@@ -88,6 +85,11 @@ export default class Controls extends druid.AbstractBranch {
 
         this.layoutButtons.pivot.y = this.layoutButtons.height;
         this.layoutButtons.y = height;
+
+        const freeHeight = height - this.buttonsHeight - druid.INDENT / 2;
+        this.log.setUpChildren(this.layoutButtons.elementWidth, freeHeight);
+        this.log.pivot.y = this.log.height;
+        this.log.position.set(this.btnEndTurn.x, freeHeight);
     }
 
     private updateInterface() {
@@ -98,7 +100,7 @@ export default class Controls extends druid.AbstractBranch {
         this.barStrength.value = activeUnit.strength;
         this.btnFirstGun.gun = activeUnit.ship.firstGun;
         this.btnSecondGun.gun = activeUnit.ship.secondGun;
-        this.btnNextTurn.isEnabled = this.unitService.isCurrentPlayerTurn;
+        this.btnEndTurn.isEnabled = this.unitService.isCurrentPlayerTurn;
     }
 }
 

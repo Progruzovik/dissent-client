@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "axios": "^0.16.2",
-    "pixi-druid": "^1.0.44"
+    "pixi-druid": "^1.0.46"
   },
   "devDependencies": {
     "@types/pixi.js": "^4.6.3",

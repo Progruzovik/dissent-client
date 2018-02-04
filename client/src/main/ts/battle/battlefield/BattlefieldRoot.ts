@@ -7,7 +7,7 @@ import PopUp from "./ui/PopUp";
 import Unit from "./unit/Unit";
 import UnitService from "./unit/UnitService";
 import WebSocketClient from "../WebSocketClient";
-import { ActionType, Side } from "../util";
+import { ActionType, LogEntry, Side } from "../util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -22,7 +22,7 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
 
     private unitPopUp: PopUp;
 
-    constructor(fieldSize: druid.Point, playerSide: Side, units: Unit[], asteroids: druid.Point[],
+    constructor(fieldSize: druid.Point, playerSide: Side, log: LogEntry[], units: Unit[], asteroids: druid.Point[],
                 clouds: druid.Point[], projectileService: ProjectileService, webSocketClient: WebSocketClient) {
         super();
         const unitService = new UnitService(playerSide, units, webSocketClient);
@@ -31,7 +31,7 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
         this.addChild(this.field);
         this.leftPanel = new LeftPanel(units, unitService);
         this.addChild(this.leftPanel);
-        this.controls = new Controls(unitService, webSocketClient);
+        this.controls = new Controls(log, unitService, webSocketClient);
         this.addChild(this.controls);
         unitService.emit(ActionType.NextTurn);
         const actionReceiver = new ActionReceiver(this.field, this.controls, unitService, webSocketClient);

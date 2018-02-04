@@ -1,9 +1,8 @@
 import Field from "../ui/Field";
 import ProjectileService from "../projectile/ProjectileService";
 import Ship from "../../Ship";
-import { ActionType, Gun, Hull, Move, Shot, Side } from "../../util";
+import { ActionType, Gun, Move, Shot, Side } from "../../util";
 import * as druid from "pixi-druid";
-import * as PIXI from "pixi.js";
 
 export default class Unit extends druid.AbstractActor {
 
@@ -114,7 +113,7 @@ export default class Unit extends druid.AbstractActor {
             this.preparedGunId = Unit.NO_GUN_ID;
             target.strength -= shot.damage;
             target.emit(Unit.UPDATE_STATS);
-            this.emit(ActionType.Shot, activeGun, target, shot.damage);
+            this.emit(ActionType.Shot, shot.damage, activeGun, target);
         });
     }
 

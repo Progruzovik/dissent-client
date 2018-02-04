@@ -1,4 +1,4 @@
-import { PathNode, ShipData, Side, Texture } from "./util";
+import { LogEntry, PathNode, ShipData, Side, Texture } from "./util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -42,7 +42,7 @@ export default class WebSocketClient extends PIXI.utils.EventEmitter {
         this.connection.prepareMessage(new Message("startMission", { missionIndex: missionIndex }));
     }
 
-    requestBattleData(callback: (data: { playerSide: Side, fieldSize: druid.Point,
+    requestBattleData(callback: (data: { playerSide: Side, fieldSize: druid.Point, log: LogEntry[],
         asteroids: druid.Point[], clouds: druid.Point[], units: Unit[], destroyedUnits: Unit[] }) => void) {
         this.makeRequest("battleData", callback);
     }

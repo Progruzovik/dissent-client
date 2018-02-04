@@ -8,6 +8,7 @@ import net.progruzovik.dissent.model.Message;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.battle.model.util.Cell;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Observable;
@@ -23,6 +24,8 @@ public final class Battle extends Observable {
 
     private final String leftCaptainId;
     private final String rightCaptainId;
+
+    private final List<LogEntry> log = new ArrayList<>();
 
     private final UnitQueue unitQueue;
     private final Field field;
@@ -43,8 +46,8 @@ public final class Battle extends Observable {
     }
 
     public BattleData getBattleData(String captainId) {
-        return new BattleData(getCaptainSide(captainId), field.getSize(), field.getAsteroids(),
-                field.getClouds(), unitQueue.getUnits(), field.getDestroyedUnits());
+        return new BattleData(getCaptainSide(captainId), field.getSize(), log,
+                field.getAsteroids(), field.getClouds(), unitQueue.getUnits(), field.getDestroyedUnits());
     }
 
     public List<List<PathNode>> getPaths() {
@@ -102,6 +105,8 @@ public final class Battle extends Observable {
 
             final int damage = unitQueue.getCurrentUnit().shoot(gunId, target);
             field.updateActiveUnit();
+            log.add(new LogEntry(damage, unitQueue.getCurrentUnit().getShip().findGunById(gunId),
+                    unitQueue.getCurrentUnit().getShip().getHull(), target.getShip().getHull()));
             notifyObservers(new Message<>("shot", new Shot(gunId, damage, target.getFirstCell())));
             if (target.getShip().getStrength() == 0) {
                 unitQueue.getUnits().remove(target);

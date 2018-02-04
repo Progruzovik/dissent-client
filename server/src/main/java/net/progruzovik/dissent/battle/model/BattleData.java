@@ -9,16 +9,19 @@ public final class BattleData {
     private final Side playerSide;
     private final Cell fieldSize;
 
+    private final List<LogEntry> log;
+
     private final List<Cell> asteroids;
     private final List<Cell> clouds;
 
     private final List<Unit> units;
     private final List<Unit> destroyedUnits;
 
-    BattleData(Side playerSide, Cell fieldSize, List<Cell> asteroids,
+    BattleData(Side playerSide, Cell fieldSize, List<LogEntry> log, List<Cell> asteroids,
                List<Cell> clouds, List<Unit> units, List<Unit> destroyedUnits) {
         this.playerSide = playerSide;
         this.fieldSize = fieldSize;
+        this.log = log;
         this.asteroids = asteroids;
         this.clouds = clouds;
         this.units = units;
@@ -31,6 +34,10 @@ public final class BattleData {
 
     public Cell getFieldSize() {
         return fieldSize;
+    }
+
+    public List<LogEntry> getLog() {
+        return log;
     }
 
     public List<Cell> getAsteroids() {
