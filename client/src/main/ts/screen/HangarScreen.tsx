@@ -1,12 +1,11 @@
-import WebSocketClient from "../WebSocketClient";
-import { MenuComponent, ShipData } from "../util";
+import Hangar from "../ship/Hangar";
+import { MenuComponent } from "../util";
+import * as druid from "pixi-druid";
 import * as m from "mithril";
 
-export default class Hangar extends MenuComponent {
+export default class HangarScreen extends MenuComponent {
 
-    readonly ships = new Array<ShipData>(0);
-
-    constructor(private readonly webSocketClient: WebSocketClient) {
+    constructor(private readonly hangar: Hangar) {
         super(m);
     }
 
@@ -18,10 +17,10 @@ export default class Hangar extends MenuComponent {
                 </div>
                 <div class="container u-centered">
                     <h2><b>Hangar</b></h2>
-                    {this.ships.map((s, i) => {
+                    {this.hangar.ships.map((s, i) => {
                         return (
                             <a href={`/mithril/#!/hangar/ship/${i}/`}>
-                                <img src={`../img/${s.hull.texture.name}.png`} class="ship-icon" />
+                                <img src={`../img/${s.hull.texture.name}.png`} class="icon-ship" />
                             </a>
                         )
                     })}
@@ -31,10 +30,10 @@ export default class Hangar extends MenuComponent {
     }
 
     oninit() {
-        this.webSocketClient.requestShips(s => {
-            this.ships.length = 0;
-            this.ships.push(...s);
-            m.redraw();
-        });
+        this.hangar.on(druid.Event.UPDATE, () => m.redraw());
+    }
+
+    onremove() {
+        this.hangar.off(druid.Event.UPDATE);
     }
 };

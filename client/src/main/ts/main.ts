@@ -1,6 +1,7 @@
 import BattleApp from "./Battle/BattleApp";
-import Hangar from "./menu/Hangar";
-import Ship from "./menu/Ship";
+import HangarScreen from "./screen/HangarScreen";
+import ShipScreen from "./screen/ShipScreen";
+import Hangar from "./ship/Hangar";
 import WebSocketClient from "./WebSocketClient";
 import { initClient } from "./battle/request";
 import { updateLocalizedData } from "./localizer";
@@ -15,8 +16,8 @@ initClient("en", s => {
     if (document.body.className == "mithril") {
         const hangar = new Hangar(webSocketClient);
         m.route(document.body, "/hangar/", {
-            "/hangar/": hangar,
-            "/hangar/ship/:id/": new Ship(hangar)
+            "/hangar/": new HangarScreen(hangar),
+            "/hangar/ship/:id/": new ShipScreen(hangar)
         });
     } else {
         const resolution: number = window.devicePixelRatio || 1;

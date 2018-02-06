@@ -1,6 +1,6 @@
 import Field from "../ui/Field";
 import ProjectileService from "../projectile/ProjectileService";
-import Ship from "../../Ship";
+import Ship from "../../../ship/Ship";
 import { ActionType, Gun, Move, Shot, Side } from "../../../util";
 import * as druid from "pixi-druid";
 

@@ -28,7 +28,7 @@ html {
 }
 
 .bar {
-    height: 15px;
+    height: 18px;
 }
 
 .block {
@@ -45,7 +45,7 @@ html {
     justify-content: center;
 }
 
-.flex-block {
+.flex-page {
     height: 100%;
 }
 
@@ -70,12 +70,18 @@ html {
     margin: 0 4px;
 }
 
-.ship-icon {
+.icon-ship {
     cursor: pointer;
     margin: 0 6px;
 }
 
-.ship-icon:hover {
+.icon-ship:hover {
     outline: 1px solid yellow;
     outline-offset: -1px;
+}
+
+.block-gun {
+    background-color: grey;
+    width: 200px;
+    height: 200px;
 }

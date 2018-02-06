@@ -1,6 +1,6 @@
 import ShipInfo from "./info/ShipInfo";
 import InteractiveContainer from "../../ui/InteractiveContainer";
-import Ship from "../../Ship";
+import Ship from "../../../ship/Ship";
 import { ShipData } from "../../../util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";

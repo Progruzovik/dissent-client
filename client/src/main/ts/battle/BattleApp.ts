@@ -4,7 +4,7 @@ import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import Menu from "./menu/hangar/Hangar";
 import MenuRoot from "./menu/MenuRoot";
-import Ship from "./Ship";
+import Ship from "../ship/Ship";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 

@@ -1,8 +1,9 @@
-import Hangar from "./Hangar";
+import Hangar from "../ship/Hangar";
 import { MenuComponent, ShipData } from "../util";
+import * as druid from "pixi-druid";
 import * as m from "mithril";
 
-export default class Ship extends MenuComponent {
+export default class ShipScreen extends MenuComponent {
 
     constructor(private readonly hangar: Hangar) {
         super(m);
@@ -10,12 +11,14 @@ export default class Ship extends MenuComponent {
 
     view(vnode: m.CVnode<any>): m.Children {
         const ship: ShipData = this.hangar.ships[vnode.attrs.id];
+        if (!ship) return null;
+
         const imgShip = new Image();
         imgShip.src = `../img/${ship.hull.texture.name}.png`;
         imgShip.width *= 2;
         imgShip.height *= 2;
         return (
-            <div class="flex flex-block">
+            <div class="flex flex-page">
                 <div>
                     <div class="u-centered">
                         <h3><b>{ship.hull.name}</b></h3>
@@ -35,5 +38,13 @@ export default class Ship extends MenuComponent {
                 </div>
             </div>
         );
+    }
+
+    oninit() {
+        this.hangar.on(druid.Event.UPDATE, () => m.redraw());
+    }
+
+    onremove() {
+        this.hangar.off(druid.Event.UPDATE);
     }
 }
