@@ -17,10 +17,14 @@ export default class ShipScreen extends MenuComponent {
 
         const imgShip = new Image();
         imgShip.src = `../img/${ship.hull.texture.name}.png`;
-        imgShip.width *= 2;
-        imgShip.height *= 2;
+        if (imgShip.complete) {
+            imgShip.width *= 2;
+            imgShip.height *= 2;
+        } else {
+            imgShip.onload = () => m.redraw();
+        }
         return (
-            <div class="flex flex-page">
+            <div class="page flex">
                 <div>
                     <div class="u-centered">
                         <h3><b>{ship.hull.name}</b></h3>

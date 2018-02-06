@@ -76,3 +76,12 @@ export abstract class MenuComponent implements m.ClassComponent {
 
     abstract view(vnode?: CVnode): m.Children;
 }
+
+export class Page implements m.RouteResolver {
+
+    constructor(private readonly layout: MenuComponent, private readonly content: MenuComponent) {}
+
+    render(vnode: CVnode) {
+        return m(this.layout, m(this.content, vnode.attrs));
+    }
+}
