@@ -1,17 +1,18 @@
+import Controls from "./Controls";
+import { CurrentScreen, HyperNode, MenuComponent } from "./util";
 import Hangar from "../ship/Hangar";
 import Ship from "../ship/Ship";
 import { l } from "../localizer";
-import { MenuComponent } from "../util";
 import * as druid from "pixi-druid";
-import * as m from "mithril";
+import * as mithril from "mithril";
 
 export default class ShipScreen extends MenuComponent {
 
-    constructor(private readonly hangar: Hangar) {
-        super(m);
+    constructor(private readonly hangar: Hangar, private readonly controls: Controls) {
+        super(mithril);
     }
 
-    view(vnode: m.CVnode<any>): m.Children {
+    view(vnode: mithril.CVnode<any>): mithril.Children {
         const ship: Ship = this.hangar.ships[vnode.attrs.id];
         if (!ship) return null;
 
@@ -21,8 +22,17 @@ export default class ShipScreen extends MenuComponent {
             imgShip.width *= 2;
             imgShip.height *= 2;
         } else {
-            imgShip.onload = () => m.redraw();
+            imgShip.onload = () => mithril.redraw();
         }
+
+        const btnBack: HyperNode  = {
+            attrs: {
+                onclick: () => {
+                    window.location.href = "/mithril/#!/hangar/"
+                }
+            }
+        };
+
         return (
             <div class="page flex">
                 <div>
@@ -34,7 +44,7 @@ export default class ShipScreen extends MenuComponent {
                     </div>
                     <div class="flex block">
                         <div class="block">
-                            {m.trust(imgShip.outerHTML)}
+                            {mithril.trust(imgShip.outerHTML)}
                             <div class="flex red bar">{`${ship.strength}/${ship.hull.strength}`}</div>
                         </div>
                         {ship.guns.map(g => {
@@ -49,7 +59,7 @@ export default class ShipScreen extends MenuComponent {
                         })}
                     </div>
                     <div>
-                        <a href="/mithril/#!/hangar/" class="button">{l("back")}</a>
+                        <button type="button" {...btnBack.attrs}>{l("back")}</button>
                     </div>
                 </div>
             </div>
@@ -57,7 +67,8 @@ export default class ShipScreen extends MenuComponent {
     }
 
     oninit() {
-        this.hangar.on(druid.Event.UPDATE, () => m.redraw());
+        this.controls.currentScreen = CurrentScreen.Hangar;
+        this.hangar.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 
     onremove() {

@@ -14,13 +14,20 @@ body, html, .page {
     height: 100%;
 }
 
-button, .button {
+button, button:focus, input[type=submit], input[type=submit]:focus, .button, .button:focus {
+    border-color: darkgrey;
+    color: white;
+    margin-right: 0.7rem;
+}
+
+button:hover, input[type=submit]:hover, .button:hover {
+    background-color: darkgrey;
     color: white;
 }
 
-button:hover, .button:hover {
-    background-color: darkgrey;
-    color: white;
+button:disabled, button:disabled:hover, input[type=submit]:disabled, input[type=submit]:disabled:hover {
+    background: grey;
+    border-color: grey;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -46,6 +53,10 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
 }
 
+.flex-column {
+    flex-direction: column;
+}
+
 .red {
     background-color: red;
 }
@@ -65,6 +76,14 @@ h1, h2, h3, h4, h5, h6 {
     color: black;
     font-size: medium;
     margin: 0 4px;
+}
+
+.controls {
+    padding: 1rem;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
 }
 
 .icon-ship {

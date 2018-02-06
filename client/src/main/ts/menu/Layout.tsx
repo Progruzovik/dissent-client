@@ -1,20 +1,21 @@
-import { MenuComponent } from "../util";
-import * as m from "mithril";
-import { l } from "../localizer";
+import Controls from "./Controls";
+import { MenuComponent } from "./util";
+import * as mithril from "mithril";
 
 export default class Layout extends MenuComponent {
 
-    constructor() {
-        super(m);
+    constructor(private readonly controls: Controls) {
+        super(mithril);
     }
 
-    view(vnode: m.CVnode): m.Children {
+    view(vnode: mithril.CVnode): mithril.Children {
         return (
             <div class="page">
                 <div class="flex title">
                     <i class="text-title">Dissent [tech demo]</i>
                 </div>
                 {vnode.children}
+                {this.controls.view()}
             </div>
         );
     }

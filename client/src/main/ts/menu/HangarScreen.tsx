@@ -1,32 +1,40 @@
+import Controls from "./Controls";
 import Hangar from "../ship/Hangar";
 import { l } from "../localizer";
-import { MenuComponent } from "../util";
+import { CurrentScreen, HyperNode, MenuComponent } from "./util";
 import * as druid from "pixi-druid";
-import * as m from "mithril";
+import * as mithril from "mithril";
 
 export default class HangarScreen extends MenuComponent {
 
-    constructor(private readonly hangar: Hangar) {
-        super(m);
+    constructor(private readonly hangar: Hangar, private readonly controls: Controls) {
+        super(mithril);
     }
 
-    view(): m.Children {
+    view(): mithril.Children {
+        const ships: HyperNode = {
+            children: this.hangar.ships.map((s, i) => {
+                const imgShip: HyperNode = {
+                    attrs: {
+                        onclick: () => {
+                            window.location.href = `/mithril/#!/hangar/ship/${i}/`;
+                        }
+                    }
+                };
+                return <img src={`../img/${s.hull.texture.name}.png`} class="block icon-ship" {...imgShip.attrs} />;
+            })
+        };
         return (
             <div class="container u-centered">
                 <h2><b>{l("hangar")}</b></h2>
-                {this.hangar.ships.map((s, i) => {
-                    return (
-                        <a href={`/mithril/#!/hangar/ship/${i}/`} class="block">
-                            <img src={`../img/${s.hull.texture.name}.png`} class="icon-ship" />
-                        </a>
-                    );
-                })}
+                {ships.children}
             </div>
         );
     }
 
     oninit() {
-        this.hangar.on(druid.Event.UPDATE, () => m.redraw());
+        this.controls.currentScreen = CurrentScreen.Hangar;
+        this.hangar.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 
     onremove() {

@@ -1,6 +1,4 @@
 import * as druid from "pixi-druid";
-import * as m from "mithril";
-import { CVnode } from "mithril";
 
 export const enum ActionType {
     Move = "move",
@@ -15,7 +13,7 @@ export const enum GunType {
     Shell = "shell"
 }
 
-export enum Status {
+export const enum Status {
     Idle, Queued, InBattle
 }
 
@@ -68,20 +66,4 @@ export interface LogEntry {
 
 export interface Texture {
     readonly id: number, readonly name: string;
-}
-
-export abstract class MenuComponent implements m.ClassComponent {
-
-    constructor(m: m.Hyperscript) {}
-
-    abstract view(vnode?: CVnode): m.Children;
-}
-
-export class Page implements m.RouteResolver {
-
-    constructor(private readonly layout: MenuComponent, private readonly content: MenuComponent) {}
-
-    render(vnode: CVnode) {
-        return m(this.layout, m(this.content, vnode.attrs));
-    }
 }
