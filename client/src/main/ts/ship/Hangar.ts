@@ -1,17 +1,19 @@
+import Ship from "./Ship";
 import WebSocketClient from "../WebSocketClient";
-import { ShipData } from "../util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
 export default class Hangar extends PIXI.utils.EventEmitter {
 
-    readonly ships = new Array<ShipData>(0);
+    readonly ships: Ship[] = [];
 
     constructor(webSocketClient: WebSocketClient) {
         super();
-        webSocketClient.requestShips(s => {
+        webSocketClient.requestShips(sd => {
             this.ships.length = 0;
-            this.ships.push(...s);
+            for (const data of sd) {
+                this.ships.push(new Ship(data));
+            }
             this.emit(druid.Event.UPDATE);
         });
     }

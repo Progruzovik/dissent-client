@@ -1,5 +1,7 @@
 import Hangar from "../ship/Hangar";
-import { MenuComponent, ShipData } from "../util";
+import Ship from "../ship/Ship";
+import { l } from "../localizer";
+import { MenuComponent } from "../util";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
 
@@ -10,7 +12,7 @@ export default class ShipScreen extends MenuComponent {
     }
 
     view(vnode: m.CVnode<any>): m.Children {
-        const ship: ShipData = this.hangar.ships[vnode.attrs.id];
+        const ship: Ship = this.hangar.ships[vnode.attrs.id];
         if (!ship) return null;
 
         const imgShip = new Image();
@@ -24,16 +26,26 @@ export default class ShipScreen extends MenuComponent {
                         <h3><b>{ship.hull.name}</b></h3>
                     </div>
                     <div>
-                        <h5>AP: {ship.hull.actionPoints}</h5>
+                        <h5>{l("ap")}: {ship.hull.actionPoints}</h5>
                     </div>
                     <div class="flex block">
-                        <div>
+                        <div class="block">
                             {m.trust(imgShip.outerHTML)}
                             <div class="flex red bar">{`${ship.strength}/${ship.hull.strength}`}</div>
                         </div>
+                        {ship.guns.map(g => {
+                            return (
+                                <div class="flex block">
+                                    <div class="block-gun u-centered">
+                                        <h5>{l(g.name)}</h5>
+                                        <img src={`../img/${g.texture.name}.png`} width="50%" height="50%" />
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                     <div>
-                        <a href="/mithril/#!/hangar/" class="button">Назад</a>
+                        <a href="/mithril/#!/hangar/" class="button">{l("back")}</a>
                     </div>
                 </div>
             </div>

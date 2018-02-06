@@ -20,7 +20,7 @@ button:hover, .button:hover {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
 }
 
 html {
@@ -32,7 +32,8 @@ html {
 }
 
 .block {
-    padding-bottom: 1rem;
+    margin-right: 1.2rem;
+    margin-bottom: 1.2rem;
 }
 
 .container {
@@ -72,7 +73,6 @@ html {
 
 .icon-ship {
     cursor: pointer;
-    margin: 0 6px;
 }
 
 .icon-ship:hover {
@@ -82,6 +82,6 @@ html {
 
 .block-gun {
     background-color: grey;
-    width: 200px;
-    height: 200px;
+    width: 120px;
+    height: 120px;
 }

@@ -1,4 +1,5 @@
 import Hangar from "../ship/Hangar";
+import { l } from "../localizer";
 import { MenuComponent } from "../util";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
@@ -16,13 +17,13 @@ export default class HangarScreen extends MenuComponent {
                     <i class="text-title">Dissent [tech demo]</i>
                 </div>
                 <div class="container u-centered">
-                    <h2><b>Hangar</b></h2>
+                    <h2><b>{l("hangar")}</b></h2>
                     {this.hangar.ships.map((s, i) => {
                         return (
-                            <a href={`/mithril/#!/hangar/ship/${i}/`}>
+                            <a href={`/mithril/#!/hangar/ship/${i}/`} class="block">
                                 <img src={`../img/${s.hull.texture.name}.png`} class="icon-ship" />
                             </a>
-                        )
+                        );
                     })}
                 </div>
             </div>
