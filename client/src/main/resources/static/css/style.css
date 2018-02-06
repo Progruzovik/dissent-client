@@ -1,19 +1,73 @@
 body {
     background-color: black;
     cursor: default;
+    color: white;
     margin: 0;
     overflow: hidden;
     padding: 0;
     image-rendering: pixelated;
     user-select: none;
+    height: 100%;
 }
 
-h1, h2, h3, h4, h5, h6, p {
+button, .button {
     color: white;
+}
+
+button:hover, .button:hover {
+    background-color: darkgrey;
+    color: white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 1rem;
+}
+
+html {
+    height: 100%;
+}
+
+.bar {
+    height: 15px;
+}
+
+.block {
+    padding-bottom: 1rem;
 }
 
 .container {
     margin-top: 30px;
+}
+
+.flex {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.flex-block {
+    height: 100%;
+}
+
+.red {
+    background-color: red;
+}
+
+.u-centered {
+    text-align: center;
+}
+
+.title {
+    background-color: lightgrey;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.text-title {
+    color: black;
+    font-size: medium;
+    margin: 0 4px;
 }
 
 .ship-icon {
@@ -24,22 +78,4 @@ h1, h2, h3, h4, h5, h6, p {
 .ship-icon:hover {
     outline: 1px solid yellow;
     outline-offset: -1px;
-}
-
-.title {
-    background-color: lightgrey;
-    display: flex;
-    justify-content: flex-start;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.title-text {
-    font-size: medium;
-    margin: 0 4px;
-}
-
-.u-centered {
-    text-align: center;
 }

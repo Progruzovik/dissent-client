@@ -1,4 +1,4 @@
-import { Gun } from "../../../util";
+import { Gun } from "../../../../util";
 import { l } from "../../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";

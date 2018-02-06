@@ -1,4 +1,4 @@
-import { LogEntry, PathNode, ShipData, Side, Texture } from "./battle/util";
+import { LogEntry, PathNode, ShipData, Side, Texture } from "./util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 

@@ -4,7 +4,7 @@ import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
 import ScalableVerticalLayout from "../../ui/ScalableVerticalLayout";
 import WebSocketClient from "../../../WebSocketClient";
-import { ActionType, Gun, LogEntry } from "../../util";
+import { ActionType, Gun, LogEntry } from "../../../util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 

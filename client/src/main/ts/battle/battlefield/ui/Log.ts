@@ -1,4 +1,4 @@
-import { LogEntry } from "../../util";
+import { LogEntry } from "../../../util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";

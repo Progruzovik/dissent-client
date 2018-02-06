@@ -1,7 +1,7 @@
 import Card from "./Card";
 import RightPanel from "./RightPanel";
 import Ship from "../../../Ship";
-import { Gun } from "../../../util";
+import { Gun } from "../../../../util";
 import { l } from "../../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";

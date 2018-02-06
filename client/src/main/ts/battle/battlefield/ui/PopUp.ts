@@ -1,5 +1,5 @@
 import Unit from "../unit/Unit";
-import { Side } from "../../util";
+import { Side } from "../../../util";
 import * as druid from "pixi-druid";
 
 export default class PopUp extends druid.AbstractBranch {
