@@ -17,7 +17,7 @@ export default class HangarScreen extends MenuComponent {
                 const imgShip: HyperNode = {
                     attrs: {
                         onclick: () => {
-                            window.location.href = `/mithril/#!/hangar/ship/${i}/`;
+                            window.location.href = `#!/hangar/ship/${i}/`;
                         }
                     }
                 };

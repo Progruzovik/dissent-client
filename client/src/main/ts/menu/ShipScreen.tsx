@@ -28,7 +28,7 @@ export default class ShipScreen extends MenuComponent {
         const btnBack: HyperNode  = {
             attrs: {
                 onclick: () => {
-                    window.location.href = "/mithril/#!/hangar/"
+                    window.location.href = "#!/hangar/"
                 }
             }
         };

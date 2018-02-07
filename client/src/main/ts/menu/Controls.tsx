@@ -24,7 +24,7 @@ export default class Controls extends MenuComponent {
             attrs: {
                 disabled: this._currentScreen == CurrentScreen.Hangar ? "disabled" : "",
                 onclick: () => {
-                    window.location.href = "/mithril/#!/hangar/"
+                    window.location.href = "#!/hangar/"
                 }
             }
         };
@@ -32,7 +32,7 @@ export default class Controls extends MenuComponent {
             attrs: {
                 disabled: this._currentScreen == CurrentScreen.Missions ? "disabled" : "",
                 onclick: () => {
-                    window.location.href = "/mithril/#!/missions/"
+                    window.location.href = "#!/missions/"
                 }
             }
         };
@@ -40,7 +40,7 @@ export default class Controls extends MenuComponent {
             attrs: {
                 disabled: this._currentScreen == CurrentScreen.Pvp ? "disabled" : "",
                 onclick: () => {
-                    window.location.href = "/mithril/#!/pvp/"
+                    window.location.href = "#!/pvp/"
                 }
             }
         };
