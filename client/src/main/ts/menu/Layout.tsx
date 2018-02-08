@@ -16,7 +16,7 @@ export default class Layout extends MenuComponent {
                 </div>
                 <div class="page flex flex-column flex-space">
                     {vnode.children}
-                    {this.controls.view()}
+                    {mithril(this.controls)}
                 </div>
             </div>
         );

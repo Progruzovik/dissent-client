@@ -4,25 +4,16 @@ import * as mithril from "mithril";
 
 export default class Controls extends MenuComponent {
 
-    private _currentScreen: CurrentScreen;
+    currentScreen: CurrentScreen;
 
     constructor() {
         super(mithril);
     }
 
-    get currentScreen(): CurrentScreen {
-        return this._currentScreen;
-    }
-
-    set currentScreen(value: CurrentScreen) {
-        this._currentScreen = value;
-        mithril.redraw();
-    }
-
     view(): mithril.Children {
         const btnHangar: HyperNode = {
             attrs: {
-                disabled: this._currentScreen == CurrentScreen.Hangar ? "disabled" : "",
+                disabled: this.currentScreen == CurrentScreen.Hangar ? "disabled" : "",
                 onclick: () => {
                     window.location.href = "#!/hangar/"
                 }
@@ -30,7 +21,7 @@ export default class Controls extends MenuComponent {
         };
         const btnMissions: HyperNode = {
             attrs: {
-                disabled: this._currentScreen == CurrentScreen.Missions ? "disabled" : "",
+                disabled: this.currentScreen == CurrentScreen.Missions ? "disabled" : "",
                 onclick: () => {
                     window.location.href = "#!/missions/"
                 }
@@ -38,7 +29,7 @@ export default class Controls extends MenuComponent {
         };
         const btnPvp: HyperNode = {
             attrs: {
-                disabled: this._currentScreen == CurrentScreen.Pvp ? "disabled" : "",
+                disabled: this.currentScreen == CurrentScreen.Pvp ? "disabled" : "",
                 onclick: () => {
                     window.location.href = "#!/pvp/"
                 }
