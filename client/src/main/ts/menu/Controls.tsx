@@ -3,6 +3,7 @@ import { MenuComponent, HyperNode, CurrentScreen } from "./util";
 import { Status } from "../model/util";
 import { l } from "../localizer";
 import * as mithril from "mithril";
+import * as druid from "pixi-druid";
 
 export default class Controls extends MenuComponent {
 
@@ -13,15 +14,17 @@ export default class Controls extends MenuComponent {
     }
 
     oninit() {
-        if (this.statusStorage.currentStatus == Status.InBattle) {
-            window.location.href = "#!/battle/";
-        }
+        console.log("aaa");
+        this.statusStorage.on(druid.Event.UPDATE, () => mithril.redraw());
+    }
+
+    onremove() {
+        this.statusStorage.off(druid.Event.UPDATE);
     }
 
     view(): mithril.Children {
         if (this.statusStorage.currentStatus == Status.InBattle) {
             window.location.href = "#!/battle/";
-            return null;
         }
 
         const isDisabled: boolean = this.statusStorage.currentStatus == Status.Queued;
@@ -49,7 +52,6 @@ export default class Controls extends MenuComponent {
                 }
             }
         };
-
         return (
             <div class="controls u-centered">
                 <button type="button" {...btnHangar.attrs}>{l("hangar")}</button>

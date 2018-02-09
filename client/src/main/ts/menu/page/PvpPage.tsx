@@ -16,11 +16,6 @@ export default class PvpPage extends MenuComponent {
 
     oninit() {
         this.controls.currentScreen = CurrentScreen.Pvp;
-        this.statusStorage.on(druid.Event.UPDATE, () => mithril.redraw());
-    }
-
-    onremove() {
-        this.statusStorage.off(druid.Event.UPDATE);
     }
 
     view(): mithril.Children {

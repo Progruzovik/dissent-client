@@ -20,7 +20,8 @@ export default class BattlePage extends MenuComponent {
             this.battle = new BattleApp(resolution, window.innerWidth, window.innerHeight, this.webSocketClient);
 
             window.onresize = () => this.battle.resize(window.innerWidth, window.innerHeight);
-            this.statusStorage.on(druid.Event.UPDATE, (status: Status) => this.checkPlayerInBattle());
+            this.statusStorage.on(druid.Event.UPDATE, () => this.checkPlayerInBattle());
+            this.battle.once(druid.Event.DONE, () => this.webSocketClient.updateStatus());
         }
     }
 
