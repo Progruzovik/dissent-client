@@ -15,6 +15,16 @@ export default class ShipPage extends MenuComponent {
         super(mithril);
     }
 
+    oninit() {
+        this.controls.currentScreen = CurrentScreen.Hangar;
+        this.hangar.on(druid.Event.UPDATE, () => mithril.redraw());
+    }
+
+    onremove() {
+        this.selectedGun = null;
+        this.hangar.off(druid.Event.UPDATE);
+    }
+
     view(vnode: mithril.CVnode<any>): mithril.Children {
         const ship: Ship = this.hangar.ships[vnode.attrs.id];
         if (!ship) return null;
@@ -89,15 +99,5 @@ export default class ShipPage extends MenuComponent {
                 </div>
             </div>
         );
-    }
-
-    oninit() {
-        this.controls.currentScreen = CurrentScreen.Hangar;
-        this.hangar.on(druid.Event.UPDATE, () => mithril.redraw());
-    }
-
-    onremove() {
-        this.selectedGun = null;
-        this.hangar.off(druid.Event.UPDATE);
     }
 }

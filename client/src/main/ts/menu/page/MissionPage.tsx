@@ -12,6 +12,15 @@ export default class MissionPage extends MenuComponent {
         super(mithril);
     }
 
+    oninit() {
+        this.webSocketClient.requestMissions(m => {
+            this.missions.length = 0;
+            this.missions.push(...m);
+            mithril.redraw();
+        });
+        this.controls.currentScreen = CurrentScreen.Missions;
+    }
+
     view(): mithril.Children {
         return (
             <div class="page flex flex-column">
@@ -27,14 +36,5 @@ export default class MissionPage extends MenuComponent {
                 })}
             </div>
         );
-    }
-
-    oninit() {
-        this.webSocketClient.requestMissions(m => {
-            this.missions.length = 0;
-            this.missions.push(...m);
-            mithril.redraw();
-        });
-        this.controls.currentScreen = CurrentScreen.Missions;
     }
 }

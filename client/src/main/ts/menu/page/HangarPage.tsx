@@ -11,6 +11,15 @@ export default class HangarPage extends MenuComponent {
         super(mithril);
     }
 
+    oninit() {
+        this.controls.currentScreen = CurrentScreen.Hangar;
+        this.hangar.on(druid.Event.UPDATE, () => mithril.redraw());
+    }
+
+    onremove() {
+        this.hangar.off(druid.Event.UPDATE);
+    }
+
     view(): mithril.Children {
         const ships: HyperNode = {
             children: this.hangar.ships.map((s, i) => {
@@ -31,14 +40,5 @@ export default class HangarPage extends MenuComponent {
                 {ships.children}
             </div>
         );
-    }
-
-    oninit() {
-        this.controls.currentScreen = CurrentScreen.Hangar;
-        this.hangar.on(druid.Event.UPDATE, () => mithril.redraw());
-    }
-
-    onremove() {
-        this.hangar.off(druid.Event.UPDATE);
     }
 };
