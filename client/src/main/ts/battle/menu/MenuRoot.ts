@@ -3,7 +3,7 @@ import Controls from "./Controls";
 import MissionBranch from "./MissionBranch";
 import PvpBranch from "./PvpBranch";
 import WebSocketClient from "../../WebSocketClient";
-import { Status } from "../../util";
+import { Status } from "../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 

@@ -1,4 +1,4 @@
-import { Gun, Hull, ShipData } from "../util";
+import { Gun, Hull, ShipData } from "./util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 

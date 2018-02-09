@@ -4,7 +4,7 @@ import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import Menu from "./menu/hangar/Hangar";
 import MenuRoot from "./menu/MenuRoot";
-import Ship from "../ship/Ship";
+import Ship from "../model/Ship";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -17,7 +17,7 @@ export default class BattleApp extends druid.App {
         super(resolution, width, height);
         this.webSocketClient.requestTextures(textures => {
             for (const texture of textures) {
-                PIXI.loader.add(texture.name, `img/${texture.name}.png`);
+                PIXI.loader.add(texture.name, `../img/${texture.name}.png`);
             }
             PIXI.loader.load(() => {
                 this.menuRoot = new MenuRoot(this.webSocketClient);

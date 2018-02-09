@@ -1,5 +1,5 @@
 import WebSocketClient from "../../WebSocketClient";
-import { Status } from "../../util";
+import { Status } from "../../model/util";
 import { l } from "../../localizer";
 import * as druid from "pixi-druid";
 

@@ -1,11 +1,11 @@
-import Controls from "./Controls";
-import Hangar from "../ship/Hangar";
-import { l } from "../localizer";
-import { CurrentScreen, HyperNode, MenuComponent } from "./util";
+import Controls from "../Controls";
+import Hangar from "../../model/Hangar";
+import { l } from "../../localizer";
+import { CurrentScreen, HyperNode, MenuComponent } from "../util";
 import * as druid from "pixi-druid";
 import * as mithril from "mithril";
 
-export default class HangarScreen extends MenuComponent {
+export default class HangarPage extends MenuComponent {
 
     constructor(private readonly hangar: Hangar, private readonly controls: Controls) {
         super(mithril);

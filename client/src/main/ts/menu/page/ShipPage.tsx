@@ -1,13 +1,13 @@
-import Controls from "./Controls";
-import { CurrentScreen, HyperNode, MenuComponent } from "./util";
-import Hangar from "../ship/Hangar";
-import Ship from "../ship/Ship";
-import { l } from "../localizer";
-import { Gun } from "../util";
+import Controls from "../Controls";
+import { CurrentScreen, HyperNode, MenuComponent } from "../util";
+import Hangar from "../../model/Hangar";
+import Ship from "../../model/Ship";
+import { l } from "../../localizer";
+import { Gun } from "../../model/util";
 import * as druid from "pixi-druid";
 import * as mithril from "mithril";
 
-export default class ShipScreen extends MenuComponent {
+export default class ShipPage extends MenuComponent {
 
     private selectedGun: Gun;
 

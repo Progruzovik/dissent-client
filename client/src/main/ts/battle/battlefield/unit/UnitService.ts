@@ -1,6 +1,6 @@
 import Unit from "./Unit";
 import WebSocketClient from "../../../WebSocketClient";
-import { ActionType, Gun, Side } from "../../../util";
+import { ActionType, Gun, Side } from "../../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 

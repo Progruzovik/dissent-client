@@ -1,7 +1,7 @@
 import Field from "./Field";
 import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
-import { ActionType } from "../../../util";
+import { ActionType } from "../../../model/util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";

@@ -1,7 +1,7 @@
 import Field from "../ui/Field";
 import ProjectileService from "../projectile/ProjectileService";
-import Ship from "../../../ship/Ship";
-import { ActionType, Gun, Move, Shot, Side } from "../../../util";
+import Ship from "../../../model/Ship";
+import { ActionType, Gun, Move, Shot, Side } from "../../../model/util";
 import * as druid from "pixi-druid";
 
 export default class Unit extends druid.AbstractActor {

@@ -1,7 +1,7 @@
 import Shell from "./Shell";
 import Beam from "./Beam";
 import Projectile from "./Projectile";
-import { Gun, GunType } from "../../../util";
+import { Gun, GunType } from "../../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
