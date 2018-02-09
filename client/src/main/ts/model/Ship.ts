@@ -31,6 +31,17 @@ export default class Ship implements ShipData {
         }
     }
 
+    get guns(): Gun[] {
+        const result: Gun[] = [];
+        if (this.firstGun) {
+            result.push(this.firstGun);
+        }
+        if (this.secondGun) {
+            result.push(this.secondGun);
+        }
+        return result;
+    }
+
     createSprite(): PIXI.Sprite {
         return new PIXI.Sprite(PIXI.loader.resources[this.hull.texture.name].texture);
     }

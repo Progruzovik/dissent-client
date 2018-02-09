@@ -75,7 +75,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     @Override
     public void addToBattle(Side side, Battle battle) {
         if (getStatus() == Status.IN_BATTLE) {
-            onBattleFinish();;
+            onBattleFinish();
             messageSender.send(new Message<>("battleFinish"));
         }
         super.addToBattle(side, battle);

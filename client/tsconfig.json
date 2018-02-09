@@ -1,9 +1,24 @@
 {
   "compilerOptions": {
-    "module": "es2015",
+    "jsx": "preserve",
+    "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "./target/es2015/",
+    "outDir": "./target/es6/",
     "sourceMap": true,
     "target": "es5"
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "useBabel": true,
+    "babelOptions": {
+      "babelrc": false,
+      "presets": [
+        ["env", {
+          "targets": { "browsers": ["last 2 versions", "ie 11"] }
+        }]
+      ],
+      "plugins": [
+        ["transform-react-jsx", { "pragma": "mithril" }]
+      ]
+    }
   }
 }

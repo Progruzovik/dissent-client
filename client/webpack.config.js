@@ -5,6 +5,13 @@ const webpack = require("webpack");
 module.exports = env => {
     const isProduction = env && env.production;
     const buildDir = "./target/classes/static/";
+
+    const copyPluginPaths = [{ from: "./node_modules/skeleton-css/css/", to: buildDir + 'css/' }];
+    if (!isProduction) {
+        copyPluginPaths.push({ from: './src/main/resources/static/', to: buildDir });
+    }
+    const copyPlugin = new CopyWebpackPlugin(copyPluginPaths);
+
     return {
         devtool: "source-map",
         entry: "./src/main/ts/main.ts",
@@ -12,7 +19,7 @@ module.exports = env => {
             loaders: [
                 {
                     loader: "awesome-typescript-loader",
-                    test: /\.ts/
+                    test: /\.tsx?$/
                 }
             ]
         },
@@ -20,13 +27,12 @@ module.exports = env => {
             filename: buildDir + "js/app.js"
         },
         plugins: isProduction ? [
-            new webpack.optimize.UglifyJsPlugin({ comments: false })
+            new webpack.optimize.UglifyJsPlugin({ comments: false }), copyPlugin
         ] : [
-            new CleanWebpackPlugin(buildDir),
-            new CopyWebpackPlugin([{ from: "./src/main/resources/static/", to: buildDir }])
+            new CleanWebpackPlugin(buildDir), copyPlugin,
         ],
         resolve: {
-            extensions: [".js", ".ts"]
+            extensions: [".js", ".jsx", ".ts", ".tsx"]
         }
     }
 };

@@ -13,7 +13,7 @@ export const enum GunType {
     Shell = "shell"
 }
 
-export enum Status {
+export const enum Status {
     Idle, Queued, InBattle
 }
 
