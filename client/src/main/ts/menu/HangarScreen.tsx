@@ -21,7 +21,8 @@ export default class HangarScreen extends MenuComponent {
                         }
                     }
                 };
-                return <img src={`../img/${s.hull.texture.name}.png`} class="block icon-ship" {...imgShip.attrs} />;
+                return <img src={`../img/${s.hull.texture.name}.png`}
+                            class="interactive block border-yellow" {...imgShip.attrs} />;
             })
         };
         return (

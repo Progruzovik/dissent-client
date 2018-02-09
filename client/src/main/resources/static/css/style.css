@@ -31,7 +31,12 @@ button:disabled, button:disabled:hover, input[type=submit]:disabled, input[type=
 }
 
 h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.1rem;
+}
+
+hr {
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .bar {
@@ -43,8 +48,13 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1.2rem;
 }
 
+.border-yellow:hover {
+    outline: 1px solid yellow;
+    outline-offset: -1px;
+}
+
 .container {
-    margin-top: 30px;
+    margin-top: 2rem;
 }
 
 .flex {
@@ -59,6 +69,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .flex-space {
     justify-content: space-between;
+}
+
+.interactive {
+    cursor: pointer;
+}
+
+.grey {
+    background-color: grey;
 }
 
 .red {
@@ -86,17 +104,15 @@ h1, h2, h3, h4, h5, h6 {
     padding: 1rem;
 }
 
-.icon-ship {
-    cursor: pointer;
-}
-
-.icon-ship:hover {
-    outline: 1px solid yellow;
-    outline-offset: -1px;
-}
-
-.block-gun {
-    background-color: grey;
+.block-module {
     width: 120px;
     height: 120px;
+}
+
+.block-module-info {
+    padding: 0.5rem;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0;
 }
