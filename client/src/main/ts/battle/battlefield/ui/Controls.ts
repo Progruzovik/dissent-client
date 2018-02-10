@@ -60,10 +60,6 @@ export default class Controls extends druid.AbstractBranch {
         return this.layoutButtons.height;
     }
 
-    get fullBottomHeight(): number {
-        return this.log.height + this.layoutButtons.height;
-    }
-
     lockButtons() {
         this.btnFirstGun.isEnabled = false;
         this.btnSecondGun.isEnabled = false;
@@ -88,8 +84,7 @@ export default class Controls extends druid.AbstractBranch {
 
         const freeHeight = height - this.buttonsHeight - druid.INDENT / 2;
         this.log.setUpChildren(this.layoutButtons.elementWidth, freeHeight);
-        this.log.pivot.y = this.log.height;
-        this.log.position.set(this.btnEndTurn.x, freeHeight);
+        this.log.x = this.btnEndTurn.x;
     }
 
     private updateInterface() {

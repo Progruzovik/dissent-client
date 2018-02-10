@@ -14,7 +14,6 @@ export default class Controls extends MenuComponent {
     }
 
     oninit() {
-        console.log("aaa");
         this.statusStorage.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 

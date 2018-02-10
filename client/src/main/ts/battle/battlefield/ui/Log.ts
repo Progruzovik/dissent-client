@@ -18,10 +18,12 @@ export default class Log extends druid.AbstractBranch {
 
     setUpChildren(width: number, height: number): void {
         this.txtLastEntry.style.wordWrapWidth = width;
+        this.txtLastEntry.y = height;
     }
 
     addEntry(damage: number, gunName: string, unitHullName: string, targetHullName: string) {
         this.txtLastEntry.text = `${targetHullName} ${l("hitBy")} ${unitHullName} ${l("with")} `
             + `${l(gunName)} ${l("for")} ${damage} ${l("damage")}`;
+        this.txtLastEntry.anchor.y = 1;
     }
 }
