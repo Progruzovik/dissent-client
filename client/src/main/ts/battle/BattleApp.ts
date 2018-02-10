@@ -18,7 +18,7 @@ export default class BattleApp extends druid.App {
             }
             PIXI.loader.load(() => {
                 this.webSocketClient.requestBattleData(d => {
-                    const unitsArray = new Array<Unit>(0);
+                    const unitsArray: Unit[] = [];
                     for (const unitData of d.units) {
                         unitsArray.push(new Unit(unitData.actionPoints, d.playerSide, unitData.side,
                             unitData.firstCell, new Ship(unitData.ship), this.projectileService));

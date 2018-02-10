@@ -91,7 +91,7 @@ class WebSocketConnection extends PIXI.utils.EventEmitter {
 
     static readonly MESSAGE = "message";
 
-    private readonly messagesToSend = new Array<Message>(0);
+    private readonly messagesToSend: Message[] = [];
     private readonly webSocket: WebSocket;
 
     constructor(url: string) {

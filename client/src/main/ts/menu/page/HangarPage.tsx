@@ -1,5 +1,5 @@
 import Controls from "../Controls";
-import Hangar from "../../model/Hangar";
+import MenuStorage from "../../model/MenuStorage";
 import { l } from "../../localizer";
 import { CurrentScreen, HyperNode, MenuComponent } from "../util";
 import * as druid from "pixi-druid";
@@ -7,22 +7,22 @@ import * as mithril from "mithril";
 
 export default class HangarPage extends MenuComponent {
 
-    constructor(private readonly hangar: Hangar, private readonly controls: Controls) {
+    constructor(private readonly menuStorage: MenuStorage, private readonly controls: Controls) {
         super(mithril);
     }
 
     oninit() {
         this.controls.currentScreen = CurrentScreen.Hangar;
-        this.hangar.on(druid.Event.UPDATE, () => mithril.redraw());
+        this.menuStorage.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 
     onremove() {
-        this.hangar.off(druid.Event.UPDATE);
+        this.menuStorage.off(druid.Event.UPDATE);
     }
 
     view(): mithril.Children {
         const ships: HyperNode = {
-            children: this.hangar.ships.map((s, i) => {
+            children: this.menuStorage.ships.map((s, i) => {
                 const imgShip: HyperNode = {
                     attrs: {
                         onclick: () => {

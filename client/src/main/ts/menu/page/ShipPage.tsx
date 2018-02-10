@@ -1,6 +1,6 @@
 import Controls from "../Controls";
 import { CurrentScreen, HyperNode, MenuComponent } from "../util";
-import Hangar from "../../model/Hangar";
+import MenuStorage from "../../model/MenuStorage";
 import Ship from "../../model/Ship";
 import { l } from "../../localizer";
 import { Gun } from "../../model/util";
@@ -11,22 +11,22 @@ export default class ShipPage extends MenuComponent {
 
     private selectedGun: Gun;
 
-    constructor(private readonly hangar: Hangar, private readonly controls: Controls) {
+    constructor(private readonly menuStorage: MenuStorage, private readonly controls: Controls) {
         super(mithril);
     }
 
     oninit() {
         this.controls.currentScreen = CurrentScreen.Hangar;
-        this.hangar.on(druid.Event.UPDATE, () => mithril.redraw());
+        this.menuStorage.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 
     onremove() {
         this.selectedGun = null;
-        this.hangar.off(druid.Event.UPDATE);
+        this.menuStorage.off(druid.Event.UPDATE);
     }
 
     view(vnode: mithril.CVnode<any>): mithril.Children {
-        const ship: Ship = this.hangar.ships[vnode.attrs.id];
+        const ship: Ship = this.menuStorage.ships[vnode.attrs.id];
         if (!ship) return null;
 
         const imgShip = new Image();

@@ -8,9 +8,9 @@ import * as PIXI from "pixi.js";
 export default class ActionReceiver extends PIXI.utils.EventEmitter {
 
     private isProcessingAction = false;
-    private readonly remainingMoves = new Array<Move>(0);
-    private readonly remainingShots = new Array<Shot>(0);
-    private readonly remainingActions = new Array<ActionType>(0);
+    private readonly remainingMoves: Move[] = [];
+    private readonly remainingShots: Shot[] = [];
+    private readonly remainingActions: ActionType[] = [];
 
     constructor(private readonly field: Field, private readonly controls: Controls,
                 private readonly unitService: UnitService, webSocketClient: WebSocketClient) {

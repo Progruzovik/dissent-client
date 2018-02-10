@@ -5,7 +5,7 @@ import PvpPage from "./menu/page/PvpPage";
 import ShipPage from "./menu/page/ShipPage";
 import Controls from "./menu/Controls";
 import Layout from "./menu/Layout";
-import Hangar from "./model/Hangar";
+import MenuStorage from "./model/MenuStorage";
 import StatusStorage from "./model/StatusStorage";
 import WebSocketClient from "./WebSocketClient";
 import { Page } from "./menu/util";
@@ -22,14 +22,14 @@ initClient("en", s => {
 
     const webSocketClient = new WebSocketClient(`ws://${window.location.href.split("/")[2]}/app/`);
     const statusStorage = new StatusStorage(webSocketClient);
-    const hangar = new Hangar(webSocketClient);
+    const menuStorage = new MenuStorage(statusStorage, webSocketClient);
     const controls = new Controls(statusStorage);
     const layout = new Layout(controls);
     mithril.route(document.body, "/hangar/", {
         "/battle/": new BattlePage(statusStorage, webSocketClient),
-        "/hangar/": new Page(layout, new HangarPage(hangar, controls)),
-        "/hangar/ship/:id/": new Page(layout, new ShipPage(hangar, controls)),
-        "/missions/": new Page(layout, new MissionPage(webSocketClient, controls)),
+        "/hangar/": new Page(layout, new HangarPage(menuStorage, controls)),
+        "/hangar/ship/:id/": new Page(layout, new ShipPage(menuStorage, controls)),
+        "/missions/": new Page(layout, new MissionPage(menuStorage, webSocketClient, controls)),
         "/pvp/": new Page(layout, new PvpPage(statusStorage, webSocketClient, controls))
     });
 });

@@ -11,9 +11,9 @@ export default class UnitService extends PIXI.utils.EventEmitter {
     static readonly SHOT_CELL = "shotCell";
     static readonly TARGET_CELL = "targetCell";
 
-    private readonly unitQueue = new Array<Unit>(0);
+    private readonly unitQueue: Unit[] = [];
     private targetCells: druid.Point[];
-    private readonly currentTargets = new Array<Unit>(0);
+    private readonly currentTargets: Unit[] = [];
 
     constructor(private readonly playerSide: Side, units: Unit[],
                 private readonly webSocketClient: WebSocketClient) {

@@ -191,7 +191,7 @@ const enum Direction {
 
 class MarksContainer extends PIXI.Container {
 
-    private readonly marks = new Array<Mark>(0);
+    private readonly marks: Mark[] = [];
 
     constructor(readonly cell: druid.Point, width: number, height: number) {
         super();
