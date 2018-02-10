@@ -66,7 +66,7 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
 
         this.leftPanel.setUpChildren(Field.CELL_SIZE.x, this.contentHeight);
         this.field.x = this.leftPanel.width;
-        this.field.setUpChildren(width - this.field.x, height - this.controls.fullBottomHeight);
+        this.field.setUpChildren(width - this.field.x, height - this.controls.buttonsHeight);
         if (this.unitPopUp) {
             this.unitPopUp.setUpChildren(this.contentWidth, this.contentHeight);
         }
