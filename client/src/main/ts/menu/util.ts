@@ -1,9 +1,5 @@
 import * as mithril from "mithril";
 
-export const enum CurrentScreen {
-    Hangar, Missions, Pvp
-}
-
 export interface HyperNode {
     readonly attrs?: object, children?: string | mithril.Children;
 }

@@ -1,20 +1,17 @@
-import Controls from "../Controls";
-import MenuStorage from "../../model/MenuStorage";
+import MenuStorage from "../model/MenuStorage";
 import WebSocketClient from "../../WebSocketClient";
-import { CurrentScreen, HyperNode, MenuComponent } from "../util";
+import { HyperNode, MenuComponent } from "../util";
 import { l } from "../../localizer";
 import * as druid from "pixi-druid";
 import * as mithril from "mithril";
 
 export default class MissionPage extends MenuComponent {
 
-    constructor(private readonly menuStorage: MenuStorage,
-                private readonly webSocketClient: WebSocketClient, private readonly controls: Controls) {
+    constructor(private readonly menuStorage: MenuStorage, private readonly webSocketClient: WebSocketClient) {
         super(mithril);
     }
 
     oninit() {
-        this.controls.currentScreen = CurrentScreen.Missions;
         this.menuStorage.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 

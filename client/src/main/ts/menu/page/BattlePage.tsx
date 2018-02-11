@@ -1,4 +1,4 @@
-import StatusStorage from "../../model/StatusStorage";
+import StatusStorage from "../model/StatusStorage";
 import BattleApp from "../../battle/BattleApp";
 import WebSocketClient from "../../WebSocketClient";
 import { Status } from "../../model/util";

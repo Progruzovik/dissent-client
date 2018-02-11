@@ -1,27 +1,23 @@
-import Controls from "../Controls";
-import { CurrentScreen, HyperNode, MenuComponent } from "../util";
-import MenuStorage from "../../model/MenuStorage";
+import MenuStorage from "../model/MenuStorage";
+import Layout from "../Layout";
 import Ship from "../../model/Ship";
+import { HyperNode, MenuComponent } from "../util";
 import { l } from "../../localizer";
-import { Gun } from "../../model/util";
 import * as druid from "pixi-druid";
 import * as mithril from "mithril";
 
 export default class ShipPage extends MenuComponent {
 
-    private selectedGun: Gun;
-
-    constructor(private readonly menuStorage: MenuStorage, private readonly controls: Controls) {
+    constructor(private readonly menuStorage: MenuStorage) {
         super(mithril);
     }
 
     oninit() {
-        this.controls.currentScreen = CurrentScreen.Hangar;
         this.menuStorage.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 
     onremove() {
-        this.selectedGun = null;
+        this.menuStorage.rightPanelContent = null;
         this.menuStorage.off(druid.Event.UPDATE);
     }
 
@@ -37,21 +33,6 @@ export default class ShipPage extends MenuComponent {
         } else {
             imgShip.onload = () => mithril.redraw();
         }
-
-        const blockModuleInfo: HyperNode = {
-            children: this.selectedGun ? [
-                <div class="grey flex block-module-info">
-                    <div class="u-centered">
-                        <h4><b>{l(this.selectedGun.name)}</b></h4>
-                        <hr />
-                        <h5>{`${l("type")}: ${l(this.selectedGun.typeName)}`}</h5>
-                        <h5>{`${l("shotCost")}: ${this.selectedGun.shotCost} ${l("ap")}`}</h5>
-                        <h5>{`${l("Damage")}: ${this.selectedGun.damage}`}</h5>
-                        <h5>{`${l("radius")}: ${this.selectedGun.radius}`}</h5>
-                    </div>
-                </div>
-            ] : []
-        };
 
         const btnBack: HyperNode = {
             attrs: {
@@ -78,9 +59,23 @@ export default class ShipPage extends MenuComponent {
                         {ship.guns.map(g => {
                             const blockGun: HyperNode = {
                                 attrs: {
-                                    onclick: () => this.selectedGun = g
+                                    onclick: () => {
+                                        this.menuStorage.rightPanelContent = (
+                                            <div class="grey page flex u-centered">
+                                                <div class="panel-module-info">
+                                                    <h4><b>{l(g.name)}</b></h4>
+                                                    <hr />
+                                                    <h5>{`${l("type")}: ${l(g.typeName)}`}</h5>
+                                                    <h5>{`${l("shotCost")}: ${g.shotCost} ${l("ap")}`}</h5>
+                                                    <h5>{`${l("Damage")}: ${g.damage}`}</h5>
+                                                    <h5>{`${l("radius")}: ${g.radius}`}</h5>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
                                 }
                             };
+
                             return (
                                 <div class="flex block">
                                     <div class="grey interactive block-module border-yellow u-centered"
@@ -92,7 +87,6 @@ export default class ShipPage extends MenuComponent {
                             );
                         })}
                     </div>
-                    {blockModuleInfo.children}
                     <div>
                         <button type="button" {...btnBack.attrs}>{l("back")}</button>
                     </div>

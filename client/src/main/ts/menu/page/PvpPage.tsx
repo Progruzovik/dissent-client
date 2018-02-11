@@ -1,21 +1,14 @@
-import Controls from "../Controls";
-import StatusStorage from "../../model/StatusStorage";
+import StatusStorage from "../model/StatusStorage";
 import WebSocketClient from "../../WebSocketClient";
-import { CurrentScreen, HyperNode, MenuComponent } from "../util";
+import { HyperNode, MenuComponent } from "../util";
 import { Status } from "../../model/util";
 import { l } from "../../localizer";
-import * as druid from "pixi-druid";
 import * as mithril from "mithril";
 
 export default class PvpPage extends MenuComponent {
 
-    constructor(private readonly statusStorage: StatusStorage,
-                private readonly webSocketClient: WebSocketClient, private readonly controls: Controls) {
+    constructor(private readonly statusStorage: StatusStorage, private readonly webSocketClient: WebSocketClient) {
         super(mithril);
-    }
-
-    oninit() {
-        this.controls.currentScreen = CurrentScreen.Pvp;
     }
 
     view(): mithril.Children {

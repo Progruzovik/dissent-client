@@ -1,18 +1,16 @@
-import Controls from "../Controls";
-import MenuStorage from "../../model/MenuStorage";
+import MenuStorage from "../model/MenuStorage";
 import { l } from "../../localizer";
-import { CurrentScreen, HyperNode, MenuComponent } from "../util";
+import { HyperNode, MenuComponent } from "../util";
 import * as druid from "pixi-druid";
 import * as mithril from "mithril";
 
 export default class HangarPage extends MenuComponent {
 
-    constructor(private readonly menuStorage: MenuStorage, private readonly controls: Controls) {
+    constructor(private readonly menuStorage: MenuStorage) {
         super(mithril);
     }
 
     oninit() {
-        this.controls.currentScreen = CurrentScreen.Hangar;
         this.menuStorage.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 

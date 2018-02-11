@@ -54,7 +54,7 @@ hr {
 }
 
 .container {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
 }
 
 .flex {
@@ -67,16 +67,16 @@ hr {
     flex-direction: column;
 }
 
-.flex-space {
-    justify-content: space-between;
-}
-
 .interactive {
     cursor: pointer;
 }
 
 .grey {
     background-color: grey;
+}
+
+.light-grey {
+    background-color: lightgrey;
 }
 
 .red {
@@ -88,20 +88,37 @@ hr {
 }
 
 .title {
-    background-color: lightgrey;
+    padding: 0 4px;
     position: absolute;
     top: 0;
     left: 0;
 }
 
-.text-title {
+.title-text {
     color: black;
     font-size: medium;
-    margin: 0 4px;
+}
+
+.main-menu {
+    display: grid;
+    grid-template-columns: 1fr 6fr 1fr;
+    grid-template-rows: 1fr auto;
+    height: 100vh;
+}
+
+.content {
+    grid-column: 2;
+    grid-row: 1;
 }
 
 .controls {
-    padding: 1rem;
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.right-panel {
+    grid-column: 3;
+    grid-row: 1 / 3;
 }
 
 .block-module {
@@ -109,10 +126,7 @@ hr {
     height: 120px;
 }
 
-.block-module-info {
-    padding: 0.5rem;
-    position: absolute;
-    height: 100%;
-    top: 0;
-    right: 0;
+.panel-module-info {
+    padding: 0.3rem;
+    width: 100%;
 }
