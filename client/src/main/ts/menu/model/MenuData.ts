@@ -1,21 +1,21 @@
 import Ship from "../../model/Ship";
-import StatusStorage from "./StatusStorage";
+import StatusData from "./StatusData";
 import WebSocketClient from "../../WebSocketClient";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 import * as mithril from "mithril";
 
-export default class MenuStorage extends PIXI.utils.EventEmitter {
+export default class MenuData extends PIXI.utils.EventEmitter {
 
     readonly ships: Ship[] = [];
     readonly missions: string[] = [];
 
     private _rightPanelContent: mithril.Children;
 
-    constructor(private readonly statusStorage: StatusStorage, private readonly webSocketClient: WebSocketClient) {
+    constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {
         super();
         this.updateData();
-        this.statusStorage.on(StatusStorage.BATTLE_FINISH, () => this.updateData());
+        this.statusData.on(StatusData.BATTLE_FINISH, () => this.updateData());
     }
 
     get rightPanelContent(): mithril.Children {

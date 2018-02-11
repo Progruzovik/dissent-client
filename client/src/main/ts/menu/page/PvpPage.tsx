@@ -1,4 +1,4 @@
-import StatusStorage from "../model/StatusStorage";
+import StatusData from "../model/StatusData";
 import WebSocketClient from "../../WebSocketClient";
 import { HyperNode, MenuComponent } from "../util";
 import { Status } from "../../model/util";
@@ -7,7 +7,7 @@ import * as mithril from "mithril";
 
 export default class PvpPage extends MenuComponent {
 
-    constructor(private readonly statusStorage: StatusStorage, private readonly webSocketClient: WebSocketClient) {
+    constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {
         super(mithril);
     }
 
@@ -15,14 +15,14 @@ export default class PvpPage extends MenuComponent {
         const btnPvp: HyperNode = {
             attrs: {
                 onclick: () => {
-                    if (this.statusStorage.currentStatus == Status.Idle) {
+                    if (this.statusData.currentStatus == Status.Idle) {
                         this.webSocketClient.addToQueue();
-                    } else if (this.statusStorage.currentStatus == Status.Queued) {
+                    } else if (this.statusData.currentStatus == Status.Queued) {
                         this.webSocketClient.removeFromQueue();
                     }
                 }
             },
-            children: this.statusStorage.currentStatus == Status.Idle ? l("enterQueue") : l("leaveQueue")
+            children: this.statusData.currentStatus == Status.Idle ? l("enterQueue") : l("leaveQueue")
         };
         return (
             <div class="page flex flex-column">

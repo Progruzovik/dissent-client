@@ -1,4 +1,4 @@
-import MenuStorage from "../model/MenuStorage";
+import MenuData from "../model/MenuData";
 import Layout from "../Layout";
 import Ship from "../../model/Ship";
 import { HyperNode, MenuComponent } from "../util";
@@ -8,21 +8,21 @@ import * as mithril from "mithril";
 
 export default class ShipPage extends MenuComponent {
 
-    constructor(private readonly menuStorage: MenuStorage) {
+    constructor(private readonly menuData: MenuData) {
         super(mithril);
     }
 
     oninit() {
-        this.menuStorage.on(druid.Event.UPDATE, () => mithril.redraw());
+        this.menuData.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 
     onremove() {
-        this.menuStorage.rightPanelContent = null;
-        this.menuStorage.off(druid.Event.UPDATE);
+        this.menuData.rightPanelContent = null;
+        this.menuData.off(druid.Event.UPDATE);
     }
 
     view(vnode: mithril.CVnode<any>): mithril.Children {
-        const ship: Ship = this.menuStorage.ships[vnode.attrs.id];
+        const ship: Ship = this.menuData.ships[vnode.attrs.id];
         if (!ship) return null;
 
         const imgShip = new Image();
@@ -60,7 +60,7 @@ export default class ShipPage extends MenuComponent {
                             const blockGun: HyperNode = {
                                 attrs: {
                                     onclick: () => {
-                                        this.menuStorage.rightPanelContent = (
+                                        this.menuData.rightPanelContent = (
                                             <div class="grey page flex u-centered">
                                                 <div class="panel-module-info">
                                                     <h4><b>{l(g.name)}</b></h4>

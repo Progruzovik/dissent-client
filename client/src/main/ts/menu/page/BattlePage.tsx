@@ -1,4 +1,4 @@
-import StatusStorage from "../model/StatusStorage";
+import StatusData from "../model/StatusData";
 import BattleApp from "../../battle/BattleApp";
 import WebSocketClient from "../../WebSocketClient";
 import { Status } from "../../model/util";
@@ -10,7 +10,7 @@ export default class BattlePage extends MenuComponent {
 
     private battle: BattleApp;
 
-    constructor(private readonly statusStorage: StatusStorage, private readonly webSocketClient: WebSocketClient) {
+    constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {
         super(mithril);
     }
 
@@ -21,7 +21,7 @@ export default class BattlePage extends MenuComponent {
                 window.innerWidth, window.innerHeight, canvas, this.webSocketClient);
 
             window.onresize = () => this.battle.resize(window.innerWidth, window.innerHeight);
-            this.statusStorage.on(druid.Event.UPDATE, () => this.checkPlayerInBattle());
+            this.statusData.on(druid.Event.UPDATE, () => this.checkPlayerInBattle());
             this.battle.once(druid.Event.DONE, () => this.webSocketClient.updateStatus());
         }
     }
@@ -33,7 +33,7 @@ export default class BattlePage extends MenuComponent {
         }
 
         window.onresize = null;
-        this.statusStorage.off(druid.Event.UPDATE);
+        this.statusData.off(druid.Event.UPDATE);
     }
 
     view(): mithril.Children {
@@ -41,7 +41,7 @@ export default class BattlePage extends MenuComponent {
     }
 
     private checkPlayerInBattle(): boolean {
-        if (this.statusStorage.currentStatus == Status.InBattle) {
+        if (this.statusData.currentStatus == Status.InBattle) {
             return true;
         } else {
             window.location.href = "#/hangar/";

@@ -1,5 +1,5 @@
-import MenuStorage from "./model/MenuStorage";
-import StatusStorage from "./model/StatusStorage";
+import MenuData from "./model/MenuData";
+import StatusData from "./model/StatusData";
 import { HyperNode, MenuComponent } from "./util";
 import { l } from "../localizer";
 import { Status } from "../model/util";
@@ -8,25 +8,25 @@ import * as mithril from "mithril";
 
 export default class Layout extends MenuComponent {
 
-    constructor(private readonly menuStorage: MenuStorage, private readonly statusStorage: StatusStorage) {
+    constructor(private readonly menuData: MenuData, private readonly statusData: StatusData) {
         super(mithril);
     }
 
     oninit() {
-        this.statusStorage.on(druid.Event.UPDATE, () => mithril.redraw());
+        this.statusData.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 
     onremove() {
-        this.statusStorage.off(druid.Event.UPDATE);
+        this.statusData.off(druid.Event.UPDATE);
     }
 
     view(vnode: mithril.CVnode): mithril.Children {
-        if (this.statusStorage.currentStatus == Status.InBattle) {
+        if (this.statusData.currentStatus == Status.InBattle) {
             window.location.href = "#!/battle/";
             return null;
         }
 
-        const isDisabled: boolean = this.statusStorage.currentStatus == Status.Queued;
+        const isDisabled: boolean = this.statusData.currentStatus == Status.Queued;
         const location: string = window.location.href;
         const btnHangar: HyperNode = {
             attrs: {
@@ -55,9 +55,9 @@ export default class Layout extends MenuComponent {
 
         const rightPanel: HyperNode = {
             attrs: {
-                class: this.menuStorage.rightPanelContent ? "right-panel" : ""
+                class: this.menuData.rightPanelContent ? "right-panel" : ""
             },
-            children: this.menuStorage.rightPanelContent
+            children: this.menuData.rightPanelContent
         };
 
         return (
