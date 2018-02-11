@@ -15,7 +15,7 @@ export abstract class MenuComponent implements mithril.ClassComponent {
     abstract view(vnode?: mithril.CVnode): mithril.Children;
 }
 
-export class Page implements mithril.RouteResolver {
+export class PageWrapper implements mithril.RouteResolver {
 
     constructor(private readonly layout: MenuComponent, private readonly content: MenuComponent) {}
 

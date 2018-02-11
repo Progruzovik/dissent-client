@@ -10,8 +10,9 @@ export default class BattleApp extends druid.App {
 
     private readonly projectileService = new ProjectileService();
 
-    constructor(resolution: number, width: number, height: number, private readonly webSocketClient: WebSocketClient) {
-        super(resolution, width, height);
+    constructor(resolution: number, width: number, height: number, canvas: HTMLCanvasElement,
+                private readonly webSocketClient: WebSocketClient) {
+        super(resolution, width, height, canvas);
         this.webSocketClient.requestTextures(textures => {
             for (const texture of textures) {
                 PIXI.loader.add(texture.name, `/img/${texture.name}.png`);

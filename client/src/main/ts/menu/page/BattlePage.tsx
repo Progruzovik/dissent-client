@@ -14,10 +14,11 @@ export default class BattlePage extends MenuComponent {
         super(mithril);
     }
 
-    oninit() {
+    oncreate() {
         if (this.checkPlayerInBattle()) {
-            const resolution: number = window.devicePixelRatio || 1;
-            this.battle = new BattleApp(resolution, window.innerWidth, window.innerHeight, this.webSocketClient);
+            const canvas = document.getElementById("battle") as HTMLCanvasElement;
+            this.battle = new BattleApp(window.devicePixelRatio || 1,
+                window.innerWidth, window.innerHeight, canvas, this.webSocketClient);
 
             window.onresize = () => this.battle.resize(window.innerWidth, window.innerHeight);
             this.statusStorage.on(druid.Event.UPDATE, () => this.checkPlayerInBattle());
@@ -25,15 +26,8 @@ export default class BattlePage extends MenuComponent {
         }
     }
 
-    oncreate() {
-        if (this.battle) {
-            document.body.appendChild(this.battle.view);
-        }
-    }
-
     onremove() {
         if (this.battle) {
-            document.body.removeChild(this.battle.view);
             this.battle.destroy();
             this.battle = null;
         }
@@ -43,7 +37,7 @@ export default class BattlePage extends MenuComponent {
     }
 
     view(): mithril.Children {
-        return null;
+        return <canvas id="battle" />;
     }
 
     private checkPlayerInBattle(): boolean {
