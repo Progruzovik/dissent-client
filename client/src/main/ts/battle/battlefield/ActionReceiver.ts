@@ -13,7 +13,7 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
     private readonly remainingActions: ActionType[] = [];
 
     constructor(private readonly field: Field, private readonly controls: Controls,
-                private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
+                private readonly unitService: UnitService, private readonly webSocketClient: WebSocketClient) {
         super();
         unitService.on(ActionType.Move, () => this.finishActionProcessing());
         unitService.on(ActionType.Shot, () => this.finishActionProcessing());
@@ -28,6 +28,13 @@ export default class ActionReceiver extends PIXI.utils.EventEmitter {
         });
         webSocketClient.on(ActionType.NextTurn, () => this.addAction(ActionType.NextTurn));
         webSocketClient.on(ActionType.BattleFinish, () => this.addAction(ActionType.BattleFinish));
+    }
+
+    destroy() {
+        this.webSocketClient.off(ActionType.Move);
+        this.webSocketClient.off(ActionType.Shot);
+        this.webSocketClient.off(ActionType.NextTurn);
+        this.webSocketClient.off(ActionType.BattleFinish);
     }
 
     private addAction(actionType: ActionType) {

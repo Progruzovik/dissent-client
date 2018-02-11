@@ -20,6 +20,8 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
     private readonly leftPanel: LeftPanel;
     private readonly controls: Controls;
 
+    private readonly actionReceiver: ActionReceiver;
+
     private unitPopUp: PopUp;
 
     constructor(fieldSize: druid.Point, playerSide: Side, log: LogEntry[], units: Unit[], asteroids: druid.Point[],
@@ -34,7 +36,7 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
         this.controls = new Controls(log, unitService, webSocketClient);
         this.addChild(this.controls);
         unitService.emit(ActionType.NextTurn);
-        const actionReceiver = new ActionReceiver(this.field, this.controls, unitService, webSocketClient);
+        this.actionReceiver = new ActionReceiver(this.field, this.controls, unitService, webSocketClient);
 
         unitService.on(UnitService.UNIT_MOUSE_OVER, (mousePos: PIXI.Point, unit: Unit) => {
             if (this.unitPopUp) {
@@ -56,7 +58,12 @@ export default class BattlefieldRoot extends druid.AbstractBranch {
                 this.unitPopUp = null;
             }
         });
-        actionReceiver.once(ActionType.BattleFinish, () => this.emit(druid.Event.DONE));
+        this.actionReceiver.once(ActionType.BattleFinish, () => this.emit(druid.Event.DONE));
+    }
+
+    destroy(options?: PIXI.DestroyOptions | boolean) {
+        this.actionReceiver.destroy();
+        super.destroy(options);
     }
 
     setUpChildren(width: number, height: number) {
