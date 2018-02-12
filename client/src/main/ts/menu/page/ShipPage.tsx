@@ -60,28 +60,34 @@ export default class ShipPage extends MenuComponent {
                             <div class="flex red bar">{`${ship.strength}/${ship.hull.strength}`}</div>
                         </div>
                         {ship.guns.map(g => {
-                            const blockGun: HyperNode = {
-                                attrs: {
-                                    class: "grey interactive block-module interactive-yellow u-centered",
-                                    onclick: () => {
-                                        this.selectedGunId = g.id;
-                                        this.menuData.rightPanelContent = (
-                                            <div class="grey page flex u-centered">
-                                                <div class="panel-module-info">
-                                                    <h4><b>{l(g.name)}</b></h4>
-                                                    <hr />
-                                                    <h5>{`${l("type")}: ${l(g.typeName)}`}</h5>
-                                                    <h5>{`${l("shotCost")}: ${g.shotCost} ${l("ap")}`}</h5>
-                                                    <h5>{`${l("Damage")}: ${g.damage}`}</h5>
-                                                    <h5>{`${l("radius")}: ${g.radius}`}</h5>
-                                                </div>
-                                            </div>
-                                        );
-                                    }
-                                }
-                            };
+                            let blockGun: HyperNode;
                             if (this.selectedGunId == g.id) {
-                                blockGun.attrs.class += " border-yellow";
+                                blockGun = {
+                                    attrs: {
+                                        class: "grey block-module border-yellow u-centered",
+                                    }
+                                };
+                            } else {
+                                blockGun = {
+                                    attrs: {
+                                        class: "grey interactive block-module interactive-yellow u-centered",
+                                        onclick: () => {
+                                            this.selectedGunId = g.id;
+                                            this.menuData.rightPanelContent = (
+                                                <div class="grey page flex u-centered">
+                                                    <div class="panel-module-info">
+                                                        <h4><b>{l(g.name)}</b></h4>
+                                                        <hr/>
+                                                        <h5>{`${l("type")}: ${l(g.typeName)}`}</h5>
+                                                        <h5>{`${l("shotCost")}: ${g.shotCost} ${l("ap")}`}</h5>
+                                                        <h5>{`${l("Damage")}: ${g.damage}`}</h5>
+                                                        <h5>{`${l("radius")}: ${g.radius}`}</h5>
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
+                                    }
+                                };
                             }
 
                             return (
