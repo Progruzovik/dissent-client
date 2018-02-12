@@ -1,7 +1,7 @@
 import * as mithril from "mithril";
 
 export interface HyperNode {
-    readonly attrs?: object, children?: string | mithril.Children;
+    readonly attrs?: any, children?: string | mithril.Children;
 }
 
 export abstract class MenuComponent implements mithril.ClassComponent {

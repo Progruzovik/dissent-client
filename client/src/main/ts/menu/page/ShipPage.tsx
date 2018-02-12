@@ -8,6 +8,8 @@ import * as mithril from "mithril";
 
 export default class ShipPage extends MenuComponent {
 
+    private selectedGunId = 0;
+
     constructor(private readonly menuData: MenuData) {
         super(mithril);
     }
@@ -17,6 +19,7 @@ export default class ShipPage extends MenuComponent {
     }
 
     onremove() {
+        this.selectedGunId = 0;
         this.menuData.rightPanelContent = null;
         this.menuData.off(druid.Event.UPDATE);
     }
@@ -59,7 +62,9 @@ export default class ShipPage extends MenuComponent {
                         {ship.guns.map(g => {
                             const blockGun: HyperNode = {
                                 attrs: {
+                                    class: "grey interactive block-module interactive-yellow u-centered",
                                     onclick: () => {
+                                        this.selectedGunId = g.id;
                                         this.menuData.rightPanelContent = (
                                             <div class="grey page flex u-centered">
                                                 <div class="panel-module-info">
@@ -75,11 +80,13 @@ export default class ShipPage extends MenuComponent {
                                     }
                                 }
                             };
+                            if (this.selectedGunId == g.id) {
+                                blockGun.attrs.class += " border-yellow";
+                            }
 
                             return (
                                 <div class="flex block">
-                                    <div class="grey interactive block-module border-yellow u-centered"
-                                         {...blockGun.attrs}>
+                                    <div {...blockGun.attrs}>
                                         <h5>{l(g.name)}</h5>
                                         <img src={`../img/${g.texture.name}.png`} width="50%" height="50%" />
                                     </div>

@@ -29,7 +29,7 @@ export default class HangarPage extends MenuComponent {
                     }
                 };
                 return <img src={`../img/${s.hull.texture.name}.png`}
-                            class="interactive block border-yellow" {...imgShip.attrs} />;
+                            class="interactive block interactive-yellow" {...imgShip.attrs} />;
             })
         };
         return (

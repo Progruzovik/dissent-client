@@ -48,11 +48,6 @@ hr {
     margin-bottom: 1.2rem;
 }
 
-.border-yellow:hover {
-    outline: 1px solid yellow;
-    outline-offset: -1px;
-}
-
 .container {
     margin-top: 2.5rem;
 }
@@ -81,6 +76,16 @@ hr {
 
 .red {
     background-color: red;
+}
+
+.border-yellow {
+    outline: 1px solid yellow;
+    outline-offset: -1px;
+}
+
+.interactive-yellow:hover {
+    outline: 1px solid yellow;
+    outline-offset: -1px;
 }
 
 .u-centered {
