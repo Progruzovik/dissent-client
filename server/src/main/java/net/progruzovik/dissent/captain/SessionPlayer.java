@@ -84,20 +84,21 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
 
     @Override
     public void addToQueue() {
+        if (getStatus() != Status.IDLE) return;
         queue.add(this);
-        if (queue.isQueued(this)) {
-            sendCurrentStatus();
-        }
+        sendCurrentStatus();
     }
 
     @Override
     public void removeFromQueue() {
+        if (getStatus() != Status.QUEUED) return;
         queue.remove(this);
         sendCurrentStatus();
     }
 
     @Override
     public void startMission(int missionIndex) {
+        if (getStatus() != Status.IDLE) return;
         missionDigest.startMission(this, missionIndex);
     }
 
