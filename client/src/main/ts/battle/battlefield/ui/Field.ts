@@ -37,15 +37,15 @@ export default class Field extends druid.ScrollContainer {
         bg.addChild(space);
         const lines = new PIXI.Graphics();
         lines.lineStyle(Field.LINE_WIDTH, 0x777777);
+        for (let i = 0; i <= size.x; i++) {
+            const lineX = i * Field.CELL_SIZE.x + lines.lineWidth / 2;
+            lines.moveTo(lineX, 0);
+            lines.lineTo(lineX, bg.height);
+        }
         for (let i = 0; i <= size.y; i++) {
             const lineY = i * Field.CELL_SIZE.y + lines.lineWidth / 2;
             lines.moveTo(0, lineY);
             lines.lineTo(bg.width, lineY);
-        }
-        for (let i = 0; i <= size.y; i++) {
-            const lineX = i * Field.CELL_SIZE.x + lines.lineWidth / 2;
-            lines.moveTo(lineX, 0);
-            lines.lineTo(lineX, bg.height);
         }
         bg.addChild(lines);
         this.content.addChild(bg);

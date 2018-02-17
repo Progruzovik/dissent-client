@@ -28,19 +28,21 @@ INSERT INTO texture(id, name) VALUES
   (1, 'hull-2-2'),
   (2, 'hull-3-1'),
   (3, 'hull-4-2'),
-  (4, 'hull-7-1'),
-  (5, 'gun-1'),
-  (6, 'gun-2'),
-  (7, 'gun-3'),
-  (8, 'space'),
-  (9, 'asteroid'),
-  (10, 'cloud');
+  (4, 'hull-6-1'),
+  (5, 'hull-7-1'),
+  (6, 'gun-1'),
+  (7, 'gun-2'),
+  (8, 'gun-3'),
+  (9, 'space'),
+  (10, 'asteroid'),
+  (11, 'cloud');
 
 INSERT INTO hull(id, name, actionPoints, strength, width, height, textureId) VALUES
-  (1, 'Trainhauler', 4, 4, 1, 1, 1),
-  (2, 'Pointer', 4, 6, 1, 1, 2),
-  (3, 'Catfish', 3, 9, 1, 1, 3),
-  (4, 'Chrome', 5, 9, 2, 1, 4);
+  (2, 'Trainhauler', 4, 4, 1, 1, 1),
+  (3, 'Pointer', 4, 4, 1, 1, 2),
+  (4, 'Catfish', 3, 9, 1, 1, 3),
+  (6, 'Cheeki-Breeki', 4, 6, 1, 1, 4),
+  (7, 'Chrome', 5, 9, 2, 1, 5);
 
 INSERT INTO gunType(id, name) VALUES
   (1, 'artillery'),
@@ -48,6 +50,6 @@ INSERT INTO gunType(id, name) VALUES
   (3, 'shell');
 
 INSERT INTO gun(id, name, shotCost, damage, radius, gunTypeId, textureId) VALUES
-  (1, 'shrapnel', 1, 2, 6, 3, 5),
-  (2, 'artillery', 2, 3, 12, 1, 6),
-  (3, 'laser', 2, 3, 10, 2, 7);
+  (1, 'shrapnel', 1, 2, 6, 3, 6),
+  (2, 'artillery', 2, 3, 12, 1, 7),
+  (3, 'laser', 2, 3, 10, 2, 8);

@@ -34,11 +34,11 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     public SessionPlayer(HttpSession session, ObjectMapper mapper, PlayerQueue queue,
                          MissionDigest missionDigest, HullDao hullDao, GunDao gunDao) {
         id = session.getId();
-        final Hull basicHull = hullDao.getHull(1);
+        final Hull pointerHull = hullDao.getHull(3);
         final Gun shrapnel = gunDao.getGun(1);
-        getShips().add(new Ship(basicHull, shrapnel, null));
-        getShips().add(new Ship(hullDao.getHull(4), shrapnel, gunDao.getGun(3)));
-        getShips().add(new Ship(basicHull, shrapnel, null));
+        getShips().add(new Ship(pointerHull, shrapnel, null));
+        getShips().add(new Ship(hullDao.getHull(7), shrapnel, gunDao.getGun(3)));
+        getShips().add(new Ship(pointerHull, shrapnel, null));
         this.queue = queue;
         this.missionDigest = missionDigest;
         messageSender = new MessageSender(mapper);
