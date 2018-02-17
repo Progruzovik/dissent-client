@@ -1,8 +1,8 @@
-import StatusData from "../model/StatusData";
-import BattleApp from "../../battle/BattleApp";
-import WebSocketClient from "../../WebSocketClient";
-import { Status } from "../../model/util";
-import { MenuComponent } from "../util";
+import StatusData from "./model/StatusData";
+import BattleApp from "../battle/BattleApp";
+import WebSocketClient from "../WebSocketClient";
+import { Status } from "../model/util";
+import { MenuComponent } from "./util";
 import * as druid from "pixi-druid";
 import * as mithril from "mithril";
 

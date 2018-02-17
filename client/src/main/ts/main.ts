@@ -1,13 +1,13 @@
-import BattlePage from "./menu/page/BattlePage";
-import HangarPage from "./menu/page/HangarPage";
-import MissionPage from "./menu/page/MissionPage";
-import PvpPage from "./menu/page/PvpPage";
-import ShipPage from "./menu/page/ShipPage";
-import Layout from "./menu/Layout";
-import MenuData from "./menu/model/MenuData";
-import StatusData from "./menu/model/StatusData";
+import BattlePage from "./page/BattlePage";
+import IndexPage from "./page/menu/IndexPage";
+import MissionPage from "./page/menu/MissionPage";
+import PvpPage from "./page/menu/PvpPage";
+import ShipPage from "./page/menu/ShipPage";
+import Layout from "./page/Layout";
+import MenuData from "./page/menu/model/MenuData";
+import StatusData from "./page/model/StatusData";
 import WebSocketClient from "./WebSocketClient";
-import { PageWrapper } from "./menu/util";
+import { PageWrapper } from "./page/util";
 import { initClient } from "./request";
 import { updateLocalizedData } from "./localizer";
 import * as mithril from "mithril";
@@ -25,7 +25,7 @@ initClient("en", s => {
     const layout = new Layout(menuData, statusData);
     mithril.route(document.body, "/hangar/", {
         "/battle/": new BattlePage(statusData, webSocketClient),
-        "/hangar/": new PageWrapper(layout, new HangarPage(menuData)),
+        "/hangar/": new PageWrapper(layout, new IndexPage(menuData)),
         "/hangar/ship/:id/": new PageWrapper(layout, new ShipPage(menuData)),
         "/missions/": new PageWrapper(layout, new MissionPage(menuData, webSocketClient)),
         "/pvp/": new PageWrapper(layout, new PvpPage(statusData, webSocketClient))

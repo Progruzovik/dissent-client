@@ -1,6 +1,6 @@
-import Ship from "../../model/Ship";
-import StatusData from "./StatusData";
-import WebSocketClient from "../../WebSocketClient";
+import Ship from "../../../model/Ship";
+import StatusData from "../../model/StatusData";
+import WebSocketClient from "../../../WebSocketClient";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 import * as mithril from "mithril";

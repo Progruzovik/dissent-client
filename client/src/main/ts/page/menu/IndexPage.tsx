@@ -1,10 +1,10 @@
-import MenuData from "../model/MenuData";
+import MenuData from "./model/MenuData";
 import { l } from "../../localizer";
 import { HyperNode, MenuComponent } from "../util";
 import * as druid from "pixi-druid";
 import * as mithril from "mithril";
 
-export default class HangarPage extends MenuComponent {
+export default class IndexPage extends MenuComponent {
 
     constructor(private readonly menuData: MenuData) {
         super(mithril);

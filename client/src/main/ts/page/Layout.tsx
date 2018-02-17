@@ -1,4 +1,4 @@
-import MenuData from "./model/MenuData";
+import MenuData from "./menu/model/MenuData";
 import StatusData from "./model/StatusData";
 import { HyperNode, MenuComponent } from "./util";
 import { l } from "../localizer";

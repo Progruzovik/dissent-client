@@ -1,4 +1,4 @@
-import MenuData from "../model/MenuData";
+import MenuData from "./model/MenuData";
 import Layout from "../Layout";
 import Ship from "../../model/Ship";
 import { HyperNode, MenuComponent } from "../util";

@@ -1,4 +1,4 @@
-import MenuData from "../model/MenuData";
+import MenuData from "./model/MenuData";
 import WebSocketClient from "../../WebSocketClient";
 import { HyperNode, MenuComponent } from "../util";
 import { l } from "../../localizer";
