@@ -2,8 +2,8 @@ package net.progruzovik.dissent.model;
 
 public class Message<T> {
 
-    private String subject;
-    private T data;
+    private final String subject;
+    private final T data;
 
     public Message(String subject, T data) {
         this.subject = subject;
@@ -11,10 +11,8 @@ public class Message<T> {
     }
 
     public Message(String subject) {
-        this.subject = subject;
+        this(subject, null);
     }
-
-    public Message() { }
 
     public String getSubject() {
         return subject;

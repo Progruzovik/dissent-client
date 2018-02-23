@@ -10,8 +10,6 @@ public final class GunCells {
     private final List<Cell> shotCells = new ArrayList<>();
     private final List<Cell> targetCells = new ArrayList<>();
 
-    GunCells() { }
-
     public List<Cell> getShotCells() {
         return shotCells;
     }
