@@ -13,9 +13,15 @@ export abstract class MenuComponent implements mithril.ClassComponent {
 
 export class PageWrapper implements mithril.RouteResolver {
 
-    constructor(private readonly layout: MenuComponent, private readonly content: MenuComponent) {}
+    constructor(private readonly layout: MenuComponent,
+                private readonly content: MenuComponent, private readonly location?: string) {}
 
-    render(vnode: mithril.CVnode) {
-        return mithril(this.layout, mithril(this.content, vnode.attrs));
+    render(vnode: mithril.CVnode<any>) {
+        if (this.location) {
+            vnode.attrs.location = this.location;
+        } else {
+            vnode.attrs.location = window.location.href.split("/")[4];
+        }
+        return mithril(this.layout, vnode.attrs, mithril(this.content, vnode.attrs));
     }
 }

@@ -20,17 +20,16 @@ export default class Layout extends MenuComponent {
         this.statusData.off(druid.Event.UPDATE);
     }
 
-    view(vnode: mithril.CVnode): mithril.Children {
+    view(vnode: mithril.CVnode<any>): mithril.Children {
         if (this.statusData.currentStatus == Status.InBattle) {
             window.location.href = "#!/battle/";
             return null;
         }
 
         const isDisabled: boolean = this.statusData.currentStatus == Status.Queued;
-        const location: string = window.location.href;
         const btnHangar: HyperNode = {
             attrs: {
-                disabled: isDisabled || location.indexOf("hangar") != -1 ? "disabled" : "",
+                disabled: isDisabled || vnode.attrs.location == "hangar" ? "disabled" : "",
                 onclick: () => {
                     window.location.href = "#!/hangar/"
                 }
@@ -38,7 +37,7 @@ export default class Layout extends MenuComponent {
         };
         const btnMissions: HyperNode = {
             attrs: {
-                disabled: isDisabled || location.indexOf("missions") != -1 ? "disabled" : "",
+                disabled: isDisabled || vnode.attrs.location == "missions" ? "disabled" : "",
                 onclick: () => {
                     window.location.href = "#!/missions/"
                 }
@@ -46,7 +45,7 @@ export default class Layout extends MenuComponent {
         };
         const btnPvp: HyperNode = {
             attrs: {
-                disabled: isDisabled || location.indexOf("pvp") != -1 ? "disabled" : "",
+                disabled: isDisabled || vnode.attrs.location == "pvp" ? "disabled" : "",
                 onclick: () => {
                     window.location.href = "#!/pvp/"
                 }
