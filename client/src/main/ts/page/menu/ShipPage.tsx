@@ -57,7 +57,7 @@ export default class ShipPage extends MenuComponent {
                     <div class="flex block">
                         <div class="block">
                             {mithril.trust(imgShip.outerHTML)}
-                            <div class="flex red bar">{`${ship.strength}/${ship.hull.strength}`}</div>
+                            <div class="flex red bar">{ship.strength}/{ship.hull.strength}</div>
                         </div>
                         {ship.guns.map(g => {
                             let blockGun: HyperNode;
@@ -78,10 +78,10 @@ export default class ShipPage extends MenuComponent {
                                                     <div class="panel-module-info">
                                                         <h4><b>{l(g.name)}</b></h4>
                                                         <hr/>
-                                                        <h5>{`${l("type")}: ${l(g.typeName)}`}</h5>
-                                                        <h5>{`${l("shotCost")}: ${g.shotCost} ${l("ap")}`}</h5>
-                                                        <h5>{`${l("Damage")}: ${g.damage}`}</h5>
-                                                        <h5>{`${l("radius")}: ${g.radius}`}</h5>
+                                                        <h5>{l("type")}: {l(g.typeName)}</h5>
+                                                        <h5>{l("shotCost")}: {g.shotCost} {l("ap")}</h5>
+                                                        <h5>{l("Damage")}: {g.damage}</h5>
+                                                        <h5>{l("radius")}: {g.radius}</h5>
                                                     </div>
                                                 </div>
                                             );
