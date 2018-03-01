@@ -17,10 +17,12 @@
     "clean-webpack-plugin": "^0.1.18",
     "copy-webpack-plugin": "^4.4.2",
     "typescript": "^2.7.2",
-    "webpack": "^3.11.0"
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.9",
+    "webpack-merge": "^4.1.2"
   },
   "scripts": {
-    "start": "./node_modules/.bin/webpack --config webpack.config.js --env.production",
-    "webpack": "./node_modules/.bin/webpack --config webpack.config.js"
+    "start": "./node_modules/.bin/webpack --config webpack.prod.js --mode production",
+    "webpack": "./node_modules/.bin/webpack --config webpack.dev.js --mode development"
   }
 }
