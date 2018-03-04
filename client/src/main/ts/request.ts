@@ -1,8 +1,9 @@
-import axios from "axios";
+import * as m from "mithril";
 
-export function initClient(locale: string, callback: (strings: string[], id: number) => void) {
-    axios.all([
-        axios.get(`/json/strings.${locale}.json`),
-        axios.get("/api/player/id")
-    ]).then(axios.spread(((strings, id) => callback(strings.data, id.data))));
+export function initClient(locale: string, callback: (strings: string[]) => void) {
+    m.request("/api/player/id").then(() => {
+        m.request(`/json/strings.${locale}.json`).then((strings: string[]) => {
+            callback(strings);
+        });
+    });
 }
