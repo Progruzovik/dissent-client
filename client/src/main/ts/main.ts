@@ -1,13 +1,13 @@
-import BattlePage from "./page/BattlePage";
-import IndexPage from "./page/menu/IndexPage";
-import MissionPage from "./page/menu/MissionPage";
-import PvpPage from "./page/menu/PvpPage";
-import ShipPage from "./page/menu/ShipPage";
-import Layout from "./page/Layout";
-import MenuData from "./page/menu/model/MenuData";
-import StatusData from "./page/model/StatusData";
+import BattlePage from "./menu/BattlePage";
+import IndexPage from "./menu/hangar/IndexPage";
+import MissionPage from "./menu/hangar/MissionPage";
+import PvpPage from "./menu/hangar/PvpPage";
+import ShipPage from "./menu/hangar/ShipPage";
+import Layout from "./menu/Layout";
+import HangarData from "./menu/hangar/model/HangarData";
+import StatusData from "./menu/model/StatusData";
 import WebSocketClient from "./WebSocketClient";
-import { PageWrapper } from "./page/util";
+import { PageWrapper } from "./menu/util";
 import { initClient } from "./request";
 import { updateLocalizedData } from "./localizer";
 import * as mithril from "mithril";
@@ -21,13 +21,13 @@ initClient("en", s => {
 
     const webSocketClient = new WebSocketClient(`ws://${window.location.href.split("/")[2]}/app/`);
     const statusData = new StatusData(webSocketClient);
-    const menuData = new MenuData(statusData, webSocketClient);
-    const layout = new Layout(menuData, statusData);
+    const hangarData = new HangarData(statusData, webSocketClient);
+    const layout = new Layout(hangarData, statusData);
     mithril.route(document.body, "/hangar/", {
         "/battle/": new BattlePage(statusData, webSocketClient),
-        "/hangar/": new PageWrapper(layout, new IndexPage(menuData)),
-        "/hangar/ship/:id/": new PageWrapper(layout, new ShipPage(menuData)),
-        "/missions/": new PageWrapper(layout, new MissionPage(menuData, webSocketClient)),
+        "/hangar/": new PageWrapper(layout, new IndexPage(hangarData)),
+        "/hangar/ship/:id/": new PageWrapper(layout, new ShipPage(hangarData)),
+        "/missions/": new PageWrapper(layout, new MissionPage(hangarData, webSocketClient)),
         "/pvp/": new PageWrapper(layout, new PvpPage(statusData, webSocketClient))
     });
 });

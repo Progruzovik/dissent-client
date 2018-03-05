@@ -1,4 +1,4 @@
-import MenuData from "./menu/model/MenuData";
+import HangarData from "./hangar/model/HangarData";
 import StatusData from "./model/StatusData";
 import { HyperNode, MenuComponent } from "./util";
 import { l } from "../localizer";
@@ -8,7 +8,7 @@ import * as mithril from "mithril";
 
 export default class Layout extends MenuComponent {
 
-    constructor(private readonly menuData: MenuData, private readonly statusData: StatusData) {
+    constructor(private readonly hangarData: HangarData, private readonly statusData: StatusData) {
         super(mithril);
     }
 
@@ -20,7 +20,7 @@ export default class Layout extends MenuComponent {
         this.statusData.off(druid.Event.UPDATE);
     }
 
-    view(vnode: mithril.CVnode<any>): mithril.Children {
+    view(vnode: mithril.Vnode<any>): mithril.Children {
         if (this.statusData.currentStatus == Status.InBattle) {
             window.location.href = "#!/battle/";
             return null;
@@ -54,9 +54,9 @@ export default class Layout extends MenuComponent {
 
         const rightPanel: HyperNode = {
             attrs: {
-                class: this.menuData.rightPanelContent ? "right-panel" : ""
+                class: this.hangarData.rightPanelContent ? "right-panel" : ""
             },
-            children: this.menuData.rightPanelContent
+            children: this.hangarData.rightPanelContent
         };
 
         return (

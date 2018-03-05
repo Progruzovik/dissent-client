@@ -1,4 +1,4 @@
-import MenuData from "./model/MenuData";
+import HangarData from "./model/HangarData";
 import { l } from "../../localizer";
 import { HyperNode, MenuComponent } from "../util";
 import * as druid from "pixi-druid";
@@ -6,21 +6,21 @@ import * as mithril from "mithril";
 
 export default class IndexPage extends MenuComponent {
 
-    constructor(private readonly menuData: MenuData) {
+    constructor(private readonly hangarData: HangarData) {
         super(mithril);
     }
 
     oninit() {
-        this.menuData.on(druid.Event.UPDATE, () => mithril.redraw());
+        this.hangarData.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 
     onremove() {
-        this.menuData.off(druid.Event.UPDATE);
+        this.hangarData.off(druid.Event.UPDATE);
     }
 
     view(): mithril.Children {
         const ships: HyperNode = {
-            children: this.menuData.ships.map((s, i) => {
+            children: this.hangarData.ships.map((s, i) => {
                 const imgShip: HyperNode = {
                     attrs: {
                         onclick: () => {

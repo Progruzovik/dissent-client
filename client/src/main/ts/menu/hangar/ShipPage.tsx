@@ -1,5 +1,4 @@
-import MenuData from "./model/MenuData";
-import Layout from "../Layout";
+import HangarData from "./model/HangarData";
 import Ship from "../../model/Ship";
 import { HyperNode, MenuComponent } from "../util";
 import { l } from "../../localizer";
@@ -10,22 +9,22 @@ export default class ShipPage extends MenuComponent {
 
     private selectedGunId = 0;
 
-    constructor(private readonly menuData: MenuData) {
+    constructor(private readonly hangarData: HangarData) {
         super(mithril);
     }
 
     oninit() {
-        this.menuData.on(druid.Event.UPDATE, () => mithril.redraw());
+        this.hangarData.on(druid.Event.UPDATE, () => mithril.redraw());
     }
 
     onremove() {
         this.selectedGunId = 0;
-        this.menuData.rightPanelContent = null;
-        this.menuData.off(druid.Event.UPDATE);
+        this.hangarData.rightPanelContent = null;
+        this.hangarData.off(druid.Event.UPDATE);
     }
 
-    view(vnode: mithril.CVnode<any>): mithril.Children {
-        const ship: Ship = this.menuData.ships[vnode.attrs.id];
+    view(vnode: mithril.Vnode<any>): mithril.Children {
+        const ship: Ship = this.hangarData.ships[vnode.attrs.id];
         if (!ship) return null;
 
         const imgShip = new Image();
@@ -73,7 +72,7 @@ export default class ShipPage extends MenuComponent {
                                         class: "grey interactive block-module interactive-yellow u-centered",
                                         onclick: () => {
                                             this.selectedGunId = g.id;
-                                            this.menuData.rightPanelContent = (
+                                            this.hangarData.rightPanelContent = (
                                                 <div class="grey page flex u-centered">
                                                     <div class="panel-module-info">
                                                         <h4><b>{l(g.name)}</b></h4>

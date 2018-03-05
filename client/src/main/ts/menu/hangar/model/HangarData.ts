@@ -5,7 +5,7 @@ import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 import * as mithril from "mithril";
 
-export default class MenuData extends PIXI.utils.EventEmitter {
+export default class HangarData extends PIXI.utils.EventEmitter {
 
     readonly ships: Ship[] = [];
     readonly missions: string[] = [];
