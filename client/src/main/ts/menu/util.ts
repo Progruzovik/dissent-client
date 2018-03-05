@@ -19,8 +19,6 @@ export class PageWrapper implements mithril.RouteResolver {
     render(vnode: mithril.Vnode<any>) {
         if (this.location) {
             vnode.attrs.location = this.location;
-        } else {
-            vnode.attrs.location = window.location.href.split("/")[4];
         }
         return mithril(this.layout, vnode.attrs, mithril(this.page, vnode.attrs));
     }

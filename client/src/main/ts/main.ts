@@ -16,18 +16,19 @@ import * as PIXI from "pixi.js";
 document.title = "Dissent";
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
+
 initClient("en", s => {
     updateLocalizedData(s);
-
     const webSocketClient = new WebSocketClient(`ws://${window.location.href.split("/")[2]}/app/`);
     const statusData = new StatusData(webSocketClient);
     const hangarData = new HangarData(statusData, webSocketClient);
+
     const layout = new Layout(hangarData, statusData);
     mithril.route(document.body, "/hangar/", {
         "/battle/": new BattlePage(statusData, webSocketClient),
-        "/hangar/": new PageWrapper(layout, new IndexPage(hangarData)),
-        "/hangar/ship/:id/": new PageWrapper(layout, new ShipPage(hangarData)),
-        "/missions/": new PageWrapper(layout, new MissionPage(hangarData, webSocketClient)),
-        "/pvp/": new PageWrapper(layout, new PvpPage(statusData, webSocketClient))
+        "/hangar/": new PageWrapper(layout, new IndexPage(hangarData), "hangar"),
+        "/hangar/ship/:id/": new PageWrapper(layout, new ShipPage(hangarData), "hangar"),
+        "/missions/": new PageWrapper(layout, new MissionPage(hangarData, webSocketClient), "missions"),
+        "/pvp/": new PageWrapper(layout, new PvpPage(statusData, webSocketClient), "pvp")
     });
 });
