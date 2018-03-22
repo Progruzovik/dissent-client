@@ -21,6 +21,7 @@ export default class Controls extends druid.AbstractBranch {
 
     private readonly btnFirstGun = new GunButton(this.unitService);
     private readonly btnSecondGun = new GunButton(this.unitService);
+
     private readonly btnEndTurn = new druid.Button(l("endTurn"));
     private readonly layoutButtons = new ScalableVerticalLayout(3);
 
@@ -53,6 +54,8 @@ export default class Controls extends druid.AbstractBranch {
             this.updateInterface();
         });
         unitService.on(ActionType.NextTurn, () => this.updateInterface());
+        this.btnFirstGun.on(druid.ToggleButton.TOGGLE, () => this.btnSecondGun.isToggled = false);
+        this.btnSecondGun.on(druid.ToggleButton.TOGGLE, () => this.btnFirstGun.isToggled = false);
         this.btnEndTurn.on(druid.Button.TRIGGERED, () => webSocketClient.endTurn());
     }
 
