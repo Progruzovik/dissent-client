@@ -8,17 +8,6 @@
     "target": "es5"
   },
   "awesomeTypescriptLoaderOptions": {
-    "useBabel": true,
-    "babelOptions": {
-      "babelrc": false,
-      "presets": [
-        ["env", {
-          "targets": { "browsers": ["last 2 versions", "ie 11"] }
-        }]
-      ],
-      "plugins": [
-        ["transform-react-jsx", { "pragma": "mithril" }]
-      ]
-    }
+    "useBabel": true
   }
 }
