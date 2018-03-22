@@ -1,12 +1,20 @@
 const common = require("./webpack.common");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const path = require("path");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const merge = require("webpack-merge");
 
 module.exports = merge(common, {
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: "css-loader"
+                })
+            }
+        ]
+    },
     plugins: [
-        new CopyWebpackPlugin(
-            [{ from: "./node_modules/skeleton-css/css/", to: path.resolve(common.output.path, "css") }]
-        )
+        new ExtractTextPlugin("css/style.css")
     ]
 });

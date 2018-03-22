@@ -33,7 +33,7 @@ export default class IndexPage extends MenuComponent {
             })
         };
         return (
-            <div class="container u-centered">
+            <div class="container centered">
                 <h2><b>{l("hangar")}</b></h2>
                 {ships.children}
             </div>

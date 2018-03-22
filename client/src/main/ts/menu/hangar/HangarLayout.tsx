@@ -1,12 +1,13 @@
-import HangarData from "./hangar/model/HangarData";
-import StatusData from "./model/StatusData";
-import { HyperNode, MenuComponent } from "./util";
-import { l } from "../localizer";
-import { Status } from "../model/util";
+import HangarData from "./model/HangarData";
+import StatusData from "../model/StatusData";
+import { HyperNode, MenuComponent } from "../util";
+import { l } from "../../localizer";
+import { Status } from "../../model/util";
+import * as css from "../../../css/hangar.css";
 import * as druid from "pixi-druid";
 import * as mithril from "mithril";
 
-export default class Layout extends MenuComponent {
+export default class HangarLayout extends MenuComponent {
 
     constructor(private readonly hangarData: HangarData, private readonly statusData: StatusData) {
         super(mithril);
@@ -54,19 +55,19 @@ export default class Layout extends MenuComponent {
 
         const rightPanel: HyperNode = {
             attrs: {
-                class: this.hangarData.rightPanelContent ? "right-panel" : ""
+                class: this.hangarData.rightPanelContent ? css.rightPanel : ""
             },
             children: this.hangarData.rightPanelContent
         };
 
         return (
             <div>
-                <div class="light-grey title u-centered">
+                <div class="light-grey title centered">
                     <i class="title-text">Dissent [tech demo]</i>
                 </div>
-                <div class="main-menu">
-                    <div class="content">{vnode.children}</div>
-                    <div class="controls u-centered">
+                <div class={css.grid}>
+                    <div class={css.content}>{vnode.children}</div>
+                    <div class={`${css.controls} centered`}>
                         <button type="button" {...btnHangar.attrs}>{l("hangar")}</button>
                         <button type="button" {...btnMissions.attrs}>{l("missions")}</button>
                         <button type="button" {...btnPvp.attrs}>{l("pvp")}</button>

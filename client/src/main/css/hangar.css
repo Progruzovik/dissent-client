@@ -1,0 +1,31 @@
+:local(.grid) {
+    display: grid;
+    grid-template-columns: 1fr 6fr 1fr;
+    grid-template-rows: 1fr auto;
+    height: 100vh;
+}
+
+:local(.content) {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+:local(.controls) {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+:local(.rightPanel) {
+    grid-column: 3;
+    grid-row: 1 / 3;
+}
+
+:local(.blockModule) {
+    width: 120px;
+    height: 120px;
+}
+
+:local(.panelModuleInfo) {
+    padding: 0.3rem;
+    width: 100%;
+}

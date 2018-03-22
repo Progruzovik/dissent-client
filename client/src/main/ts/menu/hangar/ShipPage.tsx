@@ -2,6 +2,7 @@ import HangarData from "./model/HangarData";
 import Ship from "../../model/Ship";
 import { HyperNode, MenuComponent } from "../util";
 import { l } from "../../localizer";
+import * as css from "../../../css/hangar.css";
 import * as druid from "pixi-druid";
 import * as mithril from "mithril";
 
@@ -47,7 +48,7 @@ export default class ShipPage extends MenuComponent {
         return (
             <div class="page flex">
                 <div>
-                    <div class="u-centered">
+                    <div class="centered">
                         <h3><b>{ship.hull.name}</b></h3>
                     </div>
                     <div>
@@ -63,18 +64,18 @@ export default class ShipPage extends MenuComponent {
                             if (this.selectedGunId == g.id) {
                                 blockGun = {
                                     attrs: {
-                                        class: "grey block-module border-yellow u-centered",
+                                        class: `${css.blockModule} grey border-yellow centered`,
                                     }
                                 };
                             } else {
                                 blockGun = {
                                     attrs: {
-                                        class: "grey interactive block-module interactive-yellow u-centered",
+                                        class: `${css.blockModule} grey interactive interactive-yellow centered`,
                                         onclick: () => {
                                             this.selectedGunId = g.id;
                                             this.hangarData.rightPanelContent = (
-                                                <div class="grey page flex u-centered">
-                                                    <div class="panel-module-info">
+                                                <div class="grey page flex centered">
+                                                    <div class={css.panelModuleInfo}>
                                                         <h4><b>{l(g.name)}</b></h4>
                                                         <hr/>
                                                         <h5>{l("type")}: {l(g.typeName)}</h5>
