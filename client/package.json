@@ -3,21 +3,21 @@
   "version": "0.0.1",
   "dependencies": {
     "mithril": "^1.1.6",
-    "pixi-druid": "^1.0.48",
+    "pixi-druid": "^1.0.50",
     "skeleton-css": "^2.0.4"
   },
   "devDependencies": {
     "@types/mithril": "^1.1.12",
-    "@types/pixi.js": "^4.7.1",
+    "@types/pixi.js": "^4.7.2",
     "awesome-typescript-loader": "^3.5.0",
     "babel-core": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
-    "clean-webpack-plugin": "^0.1.18",
-    "copy-webpack-plugin": "^4.4.2",
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.1",
     "typescript": "^2.7.2",
-    "webpack": "^4.0.1",
-    "webpack-cli": "^2.0.9",
+    "webpack": "^4.2.0",
+    "webpack-cli": "^2.0.13",
     "webpack-merge": "^4.1.2"
   },
   "scripts": {
