@@ -1,10 +1,10 @@
 import * as druid from "pixi-druid";
 
-export default abstract class Projectile extends druid.AbstractActor {
+export abstract class AbstractProjectile extends druid.AbstractActor {
 
     static readonly NEW_SHOT = "newShot";
 
-    constructor(readonly shotsCount: number, private timeToLive: number = 0) {
+    protected constructor(readonly shotsCount: number, private timeToLive: number = 0) {
         super();
     }
 

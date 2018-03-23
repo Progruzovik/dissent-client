@@ -1,7 +1,7 @@
-import Projectile from "./Projectile";
+import { AbstractProjectile } from "./AbstractProjectile";
 import * as druid from "pixi-druid";
 
-export default class Shell extends Projectile {
+export class Shell extends AbstractProjectile {
 
     private static readonly SPEED = 33;
 
@@ -43,6 +43,6 @@ export default class Shell extends Projectile {
 
     private emitNextShot() {
         this.isNextShotReady = true;
-        this.emit(Projectile.NEW_SHOT);
+        this.emit(AbstractProjectile.NEW_SHOT);
     }
 }

@@ -1,4 +1,4 @@
-import Projectile from "../projectile/Projectile";
+import { AbstractProjectile } from "../projectile/AbstractProjectile";
 import ProjectileService from "../projectile/ProjectileService";
 import Unit from "../unit/Unit";
 import UnitService from "../unit/UnitService";
@@ -85,7 +85,7 @@ export default class Field extends druid.ScrollContainer {
             this.addCurrentPathMarks();
         });
         unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
-        projectileService.on(Projectile.NEW_SHOT, (projectile: Projectile) => this.content.addChild(projectile));
+        projectileService.on(AbstractProjectile.NEW_SHOT, (projectile: AbstractProjectile) => this.content.addChild(projectile));
     }
 
     removePathsAndMarksExceptCurrent() {

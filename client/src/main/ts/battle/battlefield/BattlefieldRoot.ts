@@ -11,7 +11,7 @@ import { ActionType, LogEntry, Side } from "../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class BattlefieldRoot extends druid.AbstractBranch {
+export class BattlefieldRoot extends druid.AbstractBranch {
 
     private contentWidth = 0;
     private contentHeight = 0;

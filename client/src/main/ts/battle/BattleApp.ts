@@ -1,5 +1,5 @@
 import WebSocketClient from "../WebSocketClient";
-import BattlefieldRoot from "./battlefield/BattlefieldRoot";
+import { BattlefieldRoot } from "./battlefield/BattlefieldRoot";
 import ProjectileService from "./battlefield/projectile/ProjectileService";
 import Unit from "./battlefield/unit/Unit";
 import Ship from "../model/Ship";

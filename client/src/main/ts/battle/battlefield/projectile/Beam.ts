@@ -1,7 +1,7 @@
-import Projectile from "./Projectile";
+import { AbstractProjectile } from "./AbstractProjectile";
 import * as druid from "pixi-druid";
 
-export default class Beam extends Projectile {
+export class Beam extends AbstractProjectile {
 
     constructor(from: druid.Point, to: druid.Point) {
         super(1, 12);
