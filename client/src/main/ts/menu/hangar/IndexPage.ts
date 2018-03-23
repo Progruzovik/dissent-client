@@ -31,7 +31,7 @@ export default class IndexPage implements m.ClassComponent {
             })
         };
         return m(".container.centered",
-            m("h2", m("b", l("hangar"))),
+            m("h2", m("b", l("Hangar"))),
             m("", ships.children)
         );
     }

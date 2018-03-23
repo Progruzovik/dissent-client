@@ -66,9 +66,9 @@ export default class HangarLayout implements m.ClassComponent {
             m(`.${css.grid}`,
                 m(`.${css.content}`, vnode.children),
                 m(`.${css.controls}.centered`,
-                    m("button", btnHangar.attrs, l("hangar")),
-                    m("button", btnMissions.attrs, l("missions")),
-                    m("button", btnPvp.attrs, l("pvp"))
+                    m("button", btnHangar.attrs, l("Hangar")),
+                    m("button", btnMissions.attrs, l("Missions")),
+                    m("button", btnPvp.attrs, l("PVP"))
                 ),
                 m("", rightPanel.attrs, rightPanel.children)
             )

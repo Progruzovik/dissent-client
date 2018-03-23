@@ -54,10 +54,10 @@ export default class ShipPage implements m.ClassComponent {
                                         m(`.${css.panemModuleInfo}`,
                                             m("h4", m("b", l(g.name))),
                                             m("hr"),
-                                            m("h5", `${l("type")}: ${l(g.typeName)}`),
-                                            m("h5", `${l("shotCost")}: ${g.shotCost}`),
+                                            m("h5", `${l("Type")}: ${l(g.typeName)}`),
+                                            m("h5", `${l("ShotCost")}: ${g.shotCost}`),
                                             m("h5", `${l("Damage")}: ${g.damage}`),
-                                            m("h5", `${l("radius")}: ${g.radius}`)
+                                            m("h5", `${l("Radius")}: ${g.radius}`)
                                         )
                                     )
                                 );
@@ -86,7 +86,7 @@ export default class ShipPage implements m.ClassComponent {
         return m(".page.flex",
             m("",
                 m(".centered", m("h3", m("b", ship.hull.name))),
-                m("", m("h5", `${l("ap")}: ${ship.hull.actionPoints}`)),
+                m("", m("h5", `${l("AP")}: ${ship.hull.actionPoints}`)),
                 m(".flex.block",
                     m(".block",
                         m.trust(imgShip.outerHTML),
@@ -94,7 +94,7 @@ export default class ShipPage implements m.ClassComponent {
                     ),
                     blockGuns.children
                 ),
-                m("", m("button", btnBack.attrs, l("back")))
+                m("", m("button", btnBack.attrs, l("Back")))
             )
         );
     }

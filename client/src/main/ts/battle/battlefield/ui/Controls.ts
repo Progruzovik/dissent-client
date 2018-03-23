@@ -22,7 +22,7 @@ export default class Controls extends druid.AbstractBranch {
     private readonly btnFirstGun = new GunButton(this.unitService);
     private readonly btnSecondGun = new GunButton(this.unitService);
 
-    private readonly btnEndTurn = new druid.Button(l("endTurn"));
+    private readonly btnEndTurn = new druid.Button(l("EndTurn"));
     private readonly layoutButtons = new ScalableVerticalLayout(3);
 
     constructor(log: LogEntry[], private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
@@ -127,7 +127,7 @@ class GunButton extends druid.ToggleButton {
         if (value) {
             this.isEnabled = this.unitService.isCurrentPlayerTurn
                 && this.unitService.activeUnit.actionPoints >= value.shotCost;
-            this.text = `${l(value.name)}\n(${value.shotCost} ${l("ap")})`;
+            this.text = `${l(value.name)}\n(${value.shotCost} ${l("AP")})`;
         } else {
             this.isEnabled = false;
             this.text = `[${l("empty")}]`;

@@ -173,7 +173,7 @@ export default class Field extends druid.ScrollContainer {
                 this.pathLayer.addChild(pathLine);
                 cell = previousCell;
             }
-            const moveCost = `${this.paths[marks.cell.x][marks.cell.y].movementCost.toLocaleString()} ${l("ap")}`;
+            const moveCost = `${this.paths[marks.cell.x][marks.cell.y].movementCost.toLocaleString()} ${l("AP")}`;
             const txtMoveCost = new PIXI.Text(moveCost, { fill: "white", fontSize: 12 });
             txtMoveCost.position.set(marks.x + Field.LINE_WIDTH, marks.y + Field.LINE_WIDTH);
             this.pathLayer.addChild(txtMoveCost);

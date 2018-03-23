@@ -59,7 +59,7 @@ export default class LeftPanel extends druid.AbstractBranch {
     }
 
     private updateActionPointsValue() {
-        this.txtActionPoints.text = `${l("ap")}\n${this.unitService.activeUnit.actionPoints}`
+        this.txtActionPoints.text = `${l("AP")}\n${this.unitService.activeUnit.actionPoints}`
             + `/${this.unitService.activeUnit.ship.hull.actionPoints}`;
     }
 

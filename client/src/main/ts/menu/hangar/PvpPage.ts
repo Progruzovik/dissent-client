@@ -21,7 +21,7 @@ export default class PvpPage implements m.ClassComponent {
                     }
                 }
             },
-            children: this.statusData.currentStatus == Status.Idle ? l("enterQueue") : l("LeaveQueue")
+            children: this.statusData.currentStatus == Status.Idle ? l("EnterQueue") : l("LeaveQueue")
         };
         return m(".page.flex.flex-column", m("button", btnPvp.attrs, btnPvp.children));
     }
