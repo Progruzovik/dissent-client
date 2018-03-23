@@ -2,17 +2,14 @@ import StatusData from "./model/StatusData";
 import BattleApp from "../battle/BattleApp";
 import WebSocketClient from "../WebSocketClient";
 import { Status } from "../model/util";
-import { MenuComponent } from "./util";
 import * as druid from "pixi-druid";
-import * as mithril from "mithril";
+import * as m from "mithril";
 
-export default class BattlePage extends MenuComponent {
+export default class BattlePage implements m.ClassComponent {
 
     private battle: BattleApp;
 
-    constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {
-        super(mithril);
-    }
+    constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {}
 
     oncreate() {
         if (this.checkPlayerInBattle()) {
@@ -36,8 +33,8 @@ export default class BattlePage extends MenuComponent {
         this.statusData.off(druid.Event.UPDATE);
     }
 
-    view(): mithril.Children {
-        return <canvas id="battle" />;
+    view(): m.Children {
+        return m("canvas#battle");
     }
 
     private checkPlayerInBattle(): boolean {

@@ -13,7 +13,7 @@ import { updateLocalizedData } from "./localizer";
 import "skeleton-css/css/normalize.css";
 import "skeleton-css/css/skeleton.css";
 import "../css/main.css";
-import * as mithril from "mithril";
+import * as m from "mithril";
 import * as PIXI from "pixi.js";
 
 document.title = "Dissent";
@@ -27,7 +27,7 @@ initClient("en", s => {
     const hangarData = new HangarData(statusData, webSocketClient);
 
     const hangarLayout = new HangarLayout(hangarData, statusData);
-    mithril.route(document.body, "/hangar/", {
+    m.route(document.body, "/hangar/", {
         "/battle/": new BattlePage(statusData, webSocketClient),
         "/hangar/": new PageWrapper(hangarLayout, new IndexPage(hangarData), "hangar"),
         "/hangar/ship/:id/": new PageWrapper(hangarLayout, new ShipPage(hangarData), "hangar"),

@@ -4,7 +4,6 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const merge = require("webpack-merge");
 
 module.exports = merge(common, {
-    devtool: 'inline-source-map',
     module: {
         rules: [
             {
@@ -23,8 +22,6 @@ module.exports = merge(common, {
     },
     plugins: [
         new CleanWebpackPlugin(common.output.path),
-        new CopyWebpackPlugin(
-            [{ from: './src/main/resources/static/', to: common.output.path }]
-        )
+        new CopyWebpackPlugin([{ from: './src/main/resources/static/', to: common.output.path }])
     ]
 });

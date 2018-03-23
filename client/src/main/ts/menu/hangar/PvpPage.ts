@@ -1,19 +1,18 @@
 import StatusData from "../model/StatusData";
 import WebSocketClient from "../../WebSocketClient";
-import { HyperNode, MenuComponent } from "../util";
+import { HyperNode } from "../util";
 import { Status } from "../../model/util";
 import { l } from "../../localizer";
-import * as mithril from "mithril";
+import * as m from "mithril";
 
-export default class PvpPage extends MenuComponent {
+export default class PvpPage implements m.ClassComponent {
 
-    constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {
-        super(mithril);
-    }
+    constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {}
 
-    view(): mithril.Children {
+    view(): m.Children {
         const btnPvp: HyperNode = {
             attrs: {
+                type: "button",
                 onclick: () => {
                     if (this.statusData.currentStatus == Status.Idle) {
                         this.webSocketClient.addToQueue();
@@ -22,12 +21,8 @@ export default class PvpPage extends MenuComponent {
                     }
                 }
             },
-            children: this.statusData.currentStatus == Status.Idle ? l("enterQueue") : l("leaveQueue")
+            children: this.statusData.currentStatus == Status.Idle ? l("enterQueue") : l("LeaveQueue")
         };
-        return (
-            <div class="page flex flex-column">
-                <button type="button" {...btnPvp.attrs}>{btnPvp.children}</button>
-            </div>
-        );
+        return m(".page.flex.flex-column", m("button", btnPvp.attrs, btnPvp.children));
     }
 }

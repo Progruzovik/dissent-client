@@ -3,14 +3,14 @@ import StatusData from "../../model/StatusData";
 import WebSocketClient from "../../../WebSocketClient";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
-import * as mithril from "mithril";
+import * as m from "mithril";
 
 export default class HangarData extends PIXI.utils.EventEmitter {
 
     readonly ships: Ship[] = [];
     readonly missions: string[] = [];
 
-    private _rightPanelContent: mithril.Children;
+    private _rightPanelContent: m.Children;
 
     constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {
         super();
@@ -18,13 +18,13 @@ export default class HangarData extends PIXI.utils.EventEmitter {
         this.statusData.on(StatusData.BATTLE_FINISH, () => this.updateData());
     }
 
-    get rightPanelContent(): mithril.Children {
+    get rightPanelContent(): m.Children {
         return this._rightPanelContent;
     }
 
-    set rightPanelContent(value: mithril.Children) {
+    set rightPanelContent(value: m.Children) {
         this._rightPanelContent = value;
-        mithril.redraw();
+        m.redraw();
     }
 
     private updateData() {
@@ -35,9 +35,9 @@ export default class HangarData extends PIXI.utils.EventEmitter {
             }
             this.emit(druid.Event.UPDATE);
         });
-        this.webSocketClient.requestMissions(m => {
+        this.webSocketClient.requestMissions(md => {
             this.missions.length = 0;
-            this.missions.push(...m);
+            this.missions.push(...md);
             this.emit(druid.Event.UPDATE);
         });
     }

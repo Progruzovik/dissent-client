@@ -1,25 +1,18 @@
-import * as mithril from "mithril";
+import * as m from "mithril";
 
 export interface HyperNode {
-    readonly attrs?: any, readonly children?: string | mithril.Children;
+    readonly attrs?: any, readonly children?: string | m.Children;
 }
 
-export abstract class MenuComponent implements mithril.ClassComponent {
+export class PageWrapper implements m.RouteResolver {
 
-    constructor(m: mithril.Hyperscript) {}
+    constructor(private readonly layout: m.ClassComponent,
+                private readonly page: m.ClassComponent, private readonly location?: string) {}
 
-    abstract view(vnode?: mithril.Vnode): mithril.Children;
-}
-
-export class PageWrapper implements mithril.RouteResolver {
-
-    constructor(private readonly layout: MenuComponent,
-                private readonly page: MenuComponent, private readonly location?: string) {}
-
-    render(vnode: mithril.Vnode<any>) {
+    render(vnode: m.Vnode<any>): m.Children {
         if (this.location) {
             vnode.attrs.location = this.location;
         }
-        return mithril(this.layout, vnode.attrs, mithril(this.page, vnode.attrs));
+        return m(this.layout, vnode.attrs, m(this.page, vnode.attrs));
     }
 }

@@ -1,27 +1,25 @@
 import HangarData from "./model/HangarData";
 import StatusData from "../model/StatusData";
-import { HyperNode, MenuComponent } from "../util";
+import { HyperNode } from "../util";
 import { l } from "../../localizer";
 import { Status } from "../../model/util";
 import * as css from "../../../css/hangar.css";
 import * as druid from "pixi-druid";
-import * as mithril from "mithril";
+import * as m from "mithril";
 
-export default class HangarLayout extends MenuComponent {
+export default class HangarLayout implements m.ClassComponent {
 
-    constructor(private readonly hangarData: HangarData, private readonly statusData: StatusData) {
-        super(mithril);
-    }
+    constructor(private readonly hangarData: HangarData, private readonly statusData: StatusData) {}
 
     oninit() {
-        this.statusData.on(druid.Event.UPDATE, () => mithril.redraw());
+        this.statusData.on(druid.Event.UPDATE, () => m.redraw());
     }
 
     onremove() {
         this.statusData.off(druid.Event.UPDATE);
     }
 
-    view(vnode: mithril.Vnode<any>): mithril.Children {
+    view(vnode: m.Vnode<any>): m.Children {
         if (this.statusData.currentStatus == Status.InBattle) {
             window.location.href = "#!/battle/";
             return null;
@@ -31,6 +29,7 @@ export default class HangarLayout extends MenuComponent {
         const btnHangar: HyperNode = {
             attrs: {
                 disabled: isDisabled || vnode.attrs.location == "hangar" ? "disabled" : "",
+                type: "button",
                 onclick: () => {
                     window.location.href = "#!/hangar/"
                 }
@@ -39,6 +38,7 @@ export default class HangarLayout extends MenuComponent {
         const btnMissions: HyperNode = {
             attrs: {
                 disabled: isDisabled || vnode.attrs.location == "missions" ? "disabled" : "",
+                type: "button",
                 onclick: () => {
                     window.location.href = "#!/missions/"
                 }
@@ -47,6 +47,7 @@ export default class HangarLayout extends MenuComponent {
         const btnPvp: HyperNode = {
             attrs: {
                 disabled: isDisabled || vnode.attrs.location == "pvp" ? "disabled" : "",
+                type: "button",
                 onclick: () => {
                     window.location.href = "#!/pvp/"
                 }
@@ -60,21 +61,17 @@ export default class HangarLayout extends MenuComponent {
             children: this.hangarData.rightPanelContent
         };
 
-        return (
-            <div>
-                <div class="light-grey title centered">
-                    <i class="title-text">Dissent [tech demo]</i>
-                </div>
-                <div class={css.grid}>
-                    <div class={css.content}>{vnode.children}</div>
-                    <div class={`${css.controls} centered`}>
-                        <button type="button" {...btnHangar.attrs}>{l("hangar")}</button>
-                        <button type="button" {...btnMissions.attrs}>{l("missions")}</button>
-                        <button type="button" {...btnPvp.attrs}>{l("pvp")}</button>
-                    </div>
-                    <div {...rightPanel.attrs}>{rightPanel.children}</div>
-                </div>
-            </div>
+        return m("",
+            m(".light-grey.title.centered", m("i.title-text", "Dissent [tech demo]")),
+            m(`.${css.grid}`,
+                m(`.${css.content}`, vnode.children),
+                m(`.${css.controls}.centered`,
+                    m("button", btnHangar.attrs, l("hangar")),
+                    m("button", btnMissions.attrs, l("missions")),
+                    m("button", btnPvp.attrs, l("pvp"))
+                ),
+                m("", rightPanel.attrs, rightPanel.children)
+            )
         );
     }
 }
