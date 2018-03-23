@@ -1,11 +1,11 @@
-import BattlePage from "./menu/BattlePage";
-import IndexPage from "./menu/hangar/IndexPage";
-import MissionPage from "./menu/hangar/MissionPage";
-import PvpPage from "./menu/hangar/PvpPage";
-import ShipPage from "./menu/hangar/ShipPage";
-import HangarLayout from "./menu/hangar/HangarLayout";
-import HangarData from "./menu/hangar/model/HangarData";
-import StatusData from "./menu/model/StatusData";
+import { BattlePage } from "./menu/BattlePage";
+import { IndexPage } from "./menu/hangar/IndexPage";
+import { MissionPage } from "./menu/hangar/MissionPage";
+import { PvpPage } from "./menu/hangar/PvpPage";
+import { ShipPage } from "./menu/hangar/ShipPage";
+import { HangarLayout } from "./menu/hangar/HangarLayout";
+import { HangarService } from "./menu/hangar/service/HangarService";
+import { StatusService } from "./menu/service/StatusService";
 import WebSocketClient from "./WebSocketClient";
 import { PageWrapper } from "./menu/util";
 import { initClient } from "./request";
@@ -23,8 +23,8 @@ PIXI.utils.skipHello();
 initClient("en", s => {
     updateLocalizedData(s);
     const webSocketClient = new WebSocketClient(`ws://${window.location.href.split("/")[2]}/app/`);
-    const statusData = new StatusData(webSocketClient);
-    const hangarData = new HangarData(statusData, webSocketClient);
+    const statusData = new StatusService(webSocketClient);
+    const hangarData = new HangarService(statusData, webSocketClient);
 
     const hangarLayout = new HangarLayout(hangarData, statusData);
     m.route(document.body, "/hangar/", {

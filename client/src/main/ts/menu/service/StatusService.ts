@@ -3,7 +3,7 @@ import { Status } from "../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class StatusData extends PIXI.utils.EventEmitter {
+export class StatusService extends PIXI.utils.EventEmitter {
 
     static readonly BATTLE_FINISH = "battleFinish";
 
@@ -14,7 +14,7 @@ export default class StatusData extends PIXI.utils.EventEmitter {
         webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
             if (this.currentStatus != status) {
                 if (this.currentStatus == Status.InBattle) {
-                    this.emit(StatusData.BATTLE_FINISH);
+                    this.emit(StatusService.BATTLE_FINISH);
                 }
                 this._currentStatus = status;
                 this.emit(druid.Event.UPDATE);

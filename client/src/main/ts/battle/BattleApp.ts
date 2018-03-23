@@ -6,7 +6,7 @@ import Ship from "../model/Ship";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class BattleApp extends druid.App {
+export class BattleApp extends druid.App {
 
     private readonly projectileService = new ProjectileService();
 

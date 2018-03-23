@@ -1,15 +1,15 @@
-import StatusData from "./model/StatusData";
-import BattleApp from "../battle/BattleApp";
+import { StatusService } from "./service/StatusService";
+import { BattleApp } from "../battle/BattleApp";
 import WebSocketClient from "../WebSocketClient";
 import { Status } from "../model/util";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
 
-export default class BattlePage implements m.ClassComponent {
+export class BattlePage implements m.ClassComponent {
 
     private battle: BattleApp;
 
-    constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {}
+    constructor(private readonly statusData: StatusService, private readonly webSocketClient: WebSocketClient) {}
 
     oncreate() {
         if (this.checkPlayerInBattle()) {

@@ -1,4 +1,4 @@
-import HangarData from "./model/HangarData";
+import { HangarService } from "./service/HangarService";
 import Ship from "../../model/Ship";
 import { HyperNode } from "../util";
 import { l } from "../../localizer";
@@ -6,11 +6,11 @@ import * as css from "../../../css/hangar.css";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
 
-export default class ShipPage implements m.ClassComponent {
+export class ShipPage implements m.ClassComponent {
 
     private selectedGunId = 0;
 
-    constructor(private readonly hangarData: HangarData) {}
+    constructor(private readonly hangarData: HangarService) {}
 
     oninit() {
         this.hangarData.on(druid.Event.UPDATE, () => m.redraw());
@@ -68,7 +68,8 @@ export default class ShipPage implements m.ClassComponent {
                 return m(".flex.block",
                     m("", blockGun.attrs,
                         m("h5", l(g.name)),
-                        m("img", { src: `../img/${g.texture.name}.png`, width: "50%", height: "50%" })
+                        m("img",
+                            { src: `../img/${g.texture.name}.png`, width: "50%", height: "50%" })
                     )
                 );
             })

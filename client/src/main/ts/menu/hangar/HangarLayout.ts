@@ -1,5 +1,5 @@
-import HangarData from "./model/HangarData";
-import StatusData from "../model/StatusData";
+import { HangarService } from "./service/HangarService";
+import { StatusService } from "../service/StatusService";
 import { HyperNode } from "../util";
 import { l } from "../../localizer";
 import { Status } from "../../model/util";
@@ -7,9 +7,9 @@ import * as css from "../../../css/hangar.css";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
 
-export default class HangarLayout implements m.ClassComponent {
+export class HangarLayout implements m.ClassComponent {
 
-    constructor(private readonly hangarData: HangarData, private readonly statusData: StatusData) {}
+    constructor(private readonly hangarData: HangarService, private readonly statusData: StatusService) {}
 
     oninit() {
         this.statusData.on(druid.Event.UPDATE, () => m.redraw());

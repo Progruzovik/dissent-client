@@ -1,12 +1,12 @@
-import HangarData from "./model/HangarData";
+import { HangarService } from "./service/HangarService";
 import { l } from "../../localizer";
 import { HyperNode } from "../util";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
 
-export default class IndexPage implements m.ClassComponent {
+export class IndexPage implements m.ClassComponent {
 
-    constructor(private readonly hangarData: HangarData) {}
+    constructor(private readonly hangarData: HangarService) {}
 
     oninit() {
         this.hangarData.on(druid.Event.UPDATE, () => m.redraw());

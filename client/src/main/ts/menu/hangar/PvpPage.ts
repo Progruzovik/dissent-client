@@ -1,13 +1,13 @@
-import StatusData from "../model/StatusData";
+import { StatusService } from "../service/StatusService";
 import WebSocketClient from "../../WebSocketClient";
 import { HyperNode } from "../util";
 import { Status } from "../../model/util";
 import { l } from "../../localizer";
 import * as m from "mithril";
 
-export default class PvpPage implements m.ClassComponent {
+export class PvpPage implements m.ClassComponent {
 
-    constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {}
+    constructor(private readonly statusData: StatusService, private readonly webSocketClient: WebSocketClient) {}
 
     view(): m.Children {
         const btnPvp: HyperNode = {

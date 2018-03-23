@@ -1,21 +1,21 @@
 import Ship from "../../../model/Ship";
-import StatusData from "../../model/StatusData";
+import { StatusService } from "../../service/StatusService";
 import WebSocketClient from "../../../WebSocketClient";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 import * as m from "mithril";
 
-export default class HangarData extends PIXI.utils.EventEmitter {
+export class HangarService extends PIXI.utils.EventEmitter {
 
     readonly ships: Ship[] = [];
     readonly missions: string[] = [];
 
     private _rightPanelContent: m.Children;
 
-    constructor(private readonly statusData: StatusData, private readonly webSocketClient: WebSocketClient) {
+    constructor(private readonly statusData: StatusService, private readonly webSocketClient: WebSocketClient) {
         super();
         this.updateData();
-        this.statusData.on(StatusData.BATTLE_FINISH, () => this.updateData());
+        this.statusData.on(StatusService.BATTLE_FINISH, () => this.updateData());
     }
 
     get rightPanelContent(): m.Children {
