@@ -1,13 +1,13 @@
 import { AbstractProjectile } from "../projectile/AbstractProjectile";
-import ProjectileService from "../projectile/ProjectileService";
-import Unit from "../unit/Unit";
-import UnitService from "../unit/UnitService";
-import WebSocketClient from "../../../WebSocketClient";
+import { ProjectileService } from "../projectile/ProjectileService";
+import { Unit } from "../unit/Unit";
+import { UnitService } from "../unit/UnitService";
+import { WebSocketClient } from "../../../WebSocketClient";
 import { ActionType, PathNode } from "../../../model/util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
-export default class Field extends druid.ScrollContainer {
+export class Field extends druid.ScrollContainer {
 
     static readonly CELL_SIZE = new druid.Point(64, 48);
     static readonly LINE_WIDTH = 1.5;

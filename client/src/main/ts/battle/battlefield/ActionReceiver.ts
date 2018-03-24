@@ -1,11 +1,11 @@
-import Controls from "./ui/Controls";
-import Field from "./ui/Field";
-import UnitService from "./unit/UnitService";
-import WebSocketClient from "../../WebSocketClient";
+import { Controls } from "./ui/Controls";
+import { Field } from "./ui/Field";
+import { UnitService } from "./unit/UnitService";
+import { WebSocketClient } from "../../WebSocketClient";
 import { ActionType, Move, Shot } from "../../model/util";
 import * as PIXI from "pixi.js";
 
-export default class ActionReceiver extends PIXI.utils.EventEmitter {
+export class ActionReceiver extends PIXI.utils.EventEmitter {
 
     private isProcessingAction = false;
     private readonly remainingMoves: Move[] = [];

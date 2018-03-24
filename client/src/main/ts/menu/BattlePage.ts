@@ -1,6 +1,6 @@
 import { StatusService } from "./service/StatusService";
 import { BattleApp } from "../battle/BattleApp";
-import WebSocketClient from "../WebSocketClient";
+import { WebSocketClient } from "../WebSocketClient";
 import { Status } from "../model/util";
 import * as druid from "pixi-druid";
 import * as m from "mithril";

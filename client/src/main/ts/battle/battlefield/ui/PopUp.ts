@@ -1,8 +1,8 @@
-import Unit from "../unit/Unit";
+import { Unit } from "../unit/Unit";
 import { Side } from "../../../model/util";
 import * as druid from "pixi-druid";
 
-export default class PopUp extends druid.AbstractBranch {
+export class PopUp extends druid.AbstractBranch {
 
     static readonly WIDTH = 200;
     static readonly HEIGHT = 100;

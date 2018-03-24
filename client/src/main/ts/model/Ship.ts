@@ -2,7 +2,7 @@ import { Gun, Hull, ShipData } from "./util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class Ship implements ShipData {
+export class Ship implements ShipData {
 
     private _strength: number;
 

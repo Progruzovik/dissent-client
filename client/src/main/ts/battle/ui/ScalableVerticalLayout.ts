@@ -1,6 +1,6 @@
 import * as druid from "pixi-druid";
 
-export default class ScalableVerticalLayout extends druid.VerticalLayout implements druid.SizeAware {
+export class ScalableVerticalLayout extends druid.VerticalLayout implements druid.SizeAware {
 
     private _elementWidth = 0;
     private _elementHeight = 0;

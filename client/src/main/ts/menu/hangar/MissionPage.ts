@@ -1,5 +1,5 @@
 import { HangarService } from "./service/HangarService";
-import WebSocketClient from "../../WebSocketClient";
+import { WebSocketClient } from "../../WebSocketClient";
 import { HyperNode } from "../util";
 import { l } from "../../localizer";
 import * as druid from "pixi-druid";

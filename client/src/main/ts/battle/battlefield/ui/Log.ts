@@ -3,7 +3,7 @@ import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class Log extends druid.AbstractBranch {
+export class Log extends druid.AbstractBranch {
 
     private readonly txtLastEntry = new PIXI.Text("", { fill: "white", fontSize: 18, wordWrap: true });
 

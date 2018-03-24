@@ -1,7 +1,7 @@
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class InteractiveContainer extends PIXI.Container {
+export class InteractiveContainer extends PIXI.Container {
 
     private readonly frame: druid.Frame;
 

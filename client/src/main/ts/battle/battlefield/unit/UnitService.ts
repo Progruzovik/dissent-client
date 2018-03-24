@@ -1,10 +1,10 @@
-import Unit from "./Unit";
-import WebSocketClient from "../../../WebSocketClient";
+import { Unit } from "./Unit";
+import { WebSocketClient } from "../../../WebSocketClient";
 import { ActionType, Gun, Side } from "../../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class UnitService extends PIXI.utils.EventEmitter {
+export class UnitService extends PIXI.utils.EventEmitter {
 
     static readonly UNIT_MOUSE_OVER = "unitMouseOver";
     static readonly UNIT_MOUSE_OUT = "unitMouseOut";

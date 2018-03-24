@@ -1,14 +1,14 @@
-import Field from "./Field";
-import Log from "./Log";
-import Unit from "../unit/Unit";
-import UnitService from "../unit/UnitService";
-import ScalableVerticalLayout from "../../ui/ScalableVerticalLayout";
-import WebSocketClient from "../../../WebSocketClient";
+import { Field } from "./Field";
+import { Log } from "./Log";
+import { Unit } from "../unit/Unit";
+import { UnitService } from "../unit/UnitService";
+import { ScalableVerticalLayout } from "../../ui/ScalableVerticalLayout";
+import { WebSocketClient } from "../../../WebSocketClient";
 import { ActionType, Gun, LogEntry } from "../../../model/util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
-export default class Controls extends druid.AbstractBranch {
+export class Controls extends druid.AbstractBranch {
 
     private readonly log: Log;
 

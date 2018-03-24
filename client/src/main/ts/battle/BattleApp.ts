@@ -1,8 +1,8 @@
-import WebSocketClient from "../WebSocketClient";
+import { WebSocketClient } from "../WebSocketClient";
 import { BattlefieldRoot } from "./battlefield/BattlefieldRoot";
-import ProjectileService from "./battlefield/projectile/ProjectileService";
-import Unit from "./battlefield/unit/Unit";
-import Ship from "../model/Ship";
+import { ProjectileService } from "./battlefield/projectile/ProjectileService";
+import { Unit } from "./battlefield/unit/Unit";
+import { Ship } from "../model/Ship";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 

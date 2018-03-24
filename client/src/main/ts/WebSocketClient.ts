@@ -2,7 +2,7 @@ import { LogEntry, PathNode, ShipData, Side, Texture } from "./model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class WebSocketClient extends PIXI.utils.EventEmitter {
+export class WebSocketClient extends PIXI.utils.EventEmitter {
 
     static readonly STATUS = "status";
 

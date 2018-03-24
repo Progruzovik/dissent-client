@@ -1,5 +1,5 @@
 import { HangarService } from "./service/HangarService";
-import Ship from "../../model/Ship";
+import { Ship } from "../../model/Ship";
 import { HyperNode } from "../util";
 import { l } from "../../localizer";
 import * as css from "../../../css/hangar.css";

@@ -6,7 +6,7 @@ import { ShipPage } from "./menu/hangar/ShipPage";
 import { HangarLayout } from "./menu/hangar/HangarLayout";
 import { HangarService } from "./menu/hangar/service/HangarService";
 import { StatusService } from "./menu/service/StatusService";
-import WebSocketClient from "./WebSocketClient";
+import { WebSocketClient } from "./WebSocketClient";
 import { PageWrapper } from "./menu/util";
 import { initClient } from "./request";
 import { updateLocalizedData } from "./localizer";

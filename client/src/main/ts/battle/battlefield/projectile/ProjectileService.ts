@@ -5,7 +5,7 @@ import { Gun, GunType } from "../../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export default class ProjectileService extends PIXI.utils.EventEmitter {
+export class ProjectileService extends PIXI.utils.EventEmitter {
 
     private static createProjectile(gun: Gun, from: druid.Point, to: druid.Point): AbstractProjectile {
         switch (gun.typeName) {

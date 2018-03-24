@@ -1,10 +1,10 @@
-import Field from "../ui/Field";
-import ProjectileService from "../projectile/ProjectileService";
-import Ship from "../../../model/Ship";
+import { Field } from "../ui/Field";
+import { ProjectileService } from "../projectile/ProjectileService";
+import { Ship } from "../../../model/Ship";
 import { ActionType, Gun, Move, Shot, Side } from "../../../model/util";
 import * as druid from "pixi-druid";
 
-export default class Unit extends druid.AbstractActor {
+export class Unit extends druid.AbstractActor {
 
     static readonly ALPHA_DESTROYED = 0.5;
     static readonly NO_GUN_ID = -1;
