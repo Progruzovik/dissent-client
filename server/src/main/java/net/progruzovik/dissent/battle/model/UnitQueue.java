@@ -1,10 +1,10 @@
 package net.progruzovik.dissent.battle.model;
 
-import net.progruzovik.dissent.battle.exception.EmptyCellException;
 import net.progruzovik.dissent.battle.model.util.Cell;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public final class UnitQueue {
 
@@ -26,13 +26,13 @@ public final class UnitQueue {
         queue.offer(unit);
     }
 
-    Unit findUnitOnCell(Cell cell) {
+    Optional<Unit> findUnitOnCell(Cell cell) {
         for (final Unit unit : queue) {
             if (unit.isOccupyCell(cell)) {
-                return unit;
+                return Optional.of(unit);
             }
         }
-        throw new EmptyCellException(cell);
+        return Optional.empty();
     }
 
     void nextTurn() {
