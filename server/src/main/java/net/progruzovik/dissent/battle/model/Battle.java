@@ -1,17 +1,14 @@
 package net.progruzovik.dissent.battle.model;
 
+import net.progruzovik.dissent.battle.exception.InvalidShotException;
 import net.progruzovik.dissent.battle.model.field.Field;
 import net.progruzovik.dissent.battle.model.field.GunCells;
 import net.progruzovik.dissent.battle.model.field.PathNode;
-import net.progruzovik.dissent.battle.exception.InvalidShotException;
+import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.model.Message;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.battle.model.util.Cell;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Observable;
+import java.util.*;
 
 import static net.progruzovik.dissent.battle.model.field.Field.BORDER_INDENT;
 import static net.progruzovik.dissent.battle.model.field.Field.UNIT_INDENT;
@@ -100,8 +97,8 @@ public final class Battle extends Observable {
 
     public void shootWithCurrentUnit(String captainId, int gunId, Cell cell) {
         if (isIdBelongsToCurrentCaptain(captainId) && field.canActiveUnitHitCell(gunId, cell)) {
-            final Unit target = unitQueue.findUnitOnCell(cell);
-            if (target == null) throw new InvalidShotException(String.format("There is no target on cell %s!", cell));
+            final Unit target = unitQueue.findUnitOnCell(cell).orElseThrow(() ->
+                    new InvalidShotException(String.format("There is no target on cell %s!", cell)));
 
             final int damage = unitQueue.getCurrentUnit().shoot(gunId, target);
             field.updateActiveUnit();

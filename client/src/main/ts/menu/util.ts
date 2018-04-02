@@ -10,9 +10,7 @@ export class PageWrapper implements m.RouteResolver {
                 private readonly page: m.ClassComponent, private readonly location?: string) {}
 
     render(vnode: m.Vnode<any>): m.Children {
-        if (this.location) {
-            vnode.attrs.location = this.location;
-        }
+        vnode.attrs.location = this.location;
         return m(this.layout, vnode.attrs, m(this.page, vnode.attrs));
     }
 }

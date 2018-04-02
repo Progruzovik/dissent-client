@@ -109,7 +109,7 @@ public final class Field {
             final Queue<Cell> cellQueue = new LinkedList<>();
             cellQueue.offer(activeUnit.getFirstCell());
             while (!cellQueue.isEmpty()) {
-                final Cell cell = cellQueue.poll();
+                final Cell cell = cellQueue.remove();
                 final int distanceToCell = paths.get(cell.getX()).get(cell.getY()).getMovementCost();
                 for (final Cell neighbor : findNeighborsForCell(cell)) {
                     final int distanceToNeighbor = distanceToCell + map.findMovementCost(neighbor, width, height);
