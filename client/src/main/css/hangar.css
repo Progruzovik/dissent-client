@@ -1,31 +1,31 @@
-:local(.grid) {
+:local .grid {
     display: grid;
     grid-template-columns: 1fr 6fr 1fr;
     grid-template-rows: 1fr auto;
     height: 100vh;
 }
 
-:local(.content) {
+:local .content {
     grid-column: 2;
     grid-row: 1;
 }
 
-:local(.controls) {
+:local .controls {
     grid-column: 2;
     grid-row: 2;
 }
 
-:local(.rightPanel) {
+:local .right-panel {
     grid-column: 3;
     grid-row: 1 / 3;
 }
 
-:local(.blockModule) {
+:local .block-module {
     width: 120px;
     height: 120px;
 }
 
-:local(.panelModuleInfo) {
+:local .panel-module-info {
     padding: 0.3rem;
     width: 100%;
 }

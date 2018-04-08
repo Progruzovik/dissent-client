@@ -48,6 +48,10 @@ hr {
     margin-bottom: 1.2rem;
 }
 
+.centered {
+    text-align: center;
+}
+
 .container {
     margin-top: 2.5rem;
 }
@@ -86,10 +90,6 @@ hr {
 .interactive-yellow:hover {
     outline: 1px solid yellow;
     outline-offset: -1px;
-}
-
-.centered {
-    text-align: center;
 }
 
 .title {

@@ -19,7 +19,7 @@ export class HangarLayout implements m.ClassComponent {
         this.statusData.off(druid.Event.UPDATE);
     }
 
-    view(vnode: m.Vnode<any>): m.Children {
+    view(vnode: m.CVnode<any>): m.Children {
         if (this.statusData.currentStatus == Status.InBattle) {
             window.location.href = "#!/battle/";
             return null;

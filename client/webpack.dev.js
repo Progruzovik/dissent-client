@@ -15,7 +15,13 @@ module.exports = merge(common, {
                             sourceMap: true
                         }
                     },
-                    { loader: "css-loader" }
+                    {
+                        loader: "css-loader",
+                        options: {
+                            camelCase: true,
+                            url: false
+                        }
+                    }
                 ]
             }
         ]

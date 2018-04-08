@@ -12,7 +12,7 @@ import { initClient } from "./request";
 import { updateLocalizedData } from "./localizer";
 import "skeleton-css/css/normalize.css";
 import "skeleton-css/css/skeleton.css";
-import "../css/main.css";
+import "../css/global.css";
 import * as m from "mithril";
 import * as PIXI from "pixi.js";
 

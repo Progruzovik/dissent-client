@@ -22,7 +22,7 @@ export class ShipPage implements m.ClassComponent {
         this.hangarData.off(druid.Event.UPDATE);
     }
 
-    view(vnode: m.Vnode<any>): m.Children {
+    view(vnode: m.CVnode<any>): m.Children {
         const ship: Ship = this.hangarData.ships[vnode.attrs.id];
         if (!ship) return null;
 
