@@ -10,6 +10,7 @@ import net.progruzovik.dissent.socket.model.IncomingMessage;
 import net.progruzovik.dissent.model.Message;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.socket.model.Reader;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -22,10 +23,11 @@ import java.util.Map;
 @Component
 public final class MessageHandler extends TextWebSocketHandler {
 
-    private final ObjectMapper mapper;
-    private final Map<String, Reader> readers = new HashMap<>();
+    private final @NonNull ObjectMapper mapper;
+    private final @NonNull Map<String, Reader> readers = new HashMap<>();
 
-    public MessageHandler(ObjectMapper mapper, MissionDigest missionDigest, TextureDao textureDao) {
+    public MessageHandler(@NonNull ObjectMapper mapper,
+                          @NonNull MissionDigest missionDigest, @NonNull TextureDao textureDao) {
         this.mapper = mapper;
         readers.put("requestTextures", (p, d) ->
                 p.getMessageSender().send(new Message<>("textures", textureDao.getTextures())));

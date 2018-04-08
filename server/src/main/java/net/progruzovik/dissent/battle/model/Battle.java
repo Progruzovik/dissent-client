@@ -7,6 +7,8 @@ import net.progruzovik.dissent.battle.model.field.PathNode;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.model.Message;
 import net.progruzovik.dissent.model.entity.Ship;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.util.*;
 
@@ -19,15 +21,16 @@ public final class Battle extends Observable {
 
     private boolean isRunning = true;
 
-    private final String leftCaptainId;
-    private final String rightCaptainId;
+    private final @NonNull String leftCaptainId;
+    private final @NonNull String rightCaptainId;
 
-    private final List<LogEntry> log = new ArrayList<>();
+    private final @NonNull List<LogEntry> log = new ArrayList<>();
 
-    private final UnitQueue unitQueue;
-    private final Field field;
+    private final @NonNull UnitQueue unitQueue;
+    private final @NonNull Field field;
 
-    public Battle(String leftCaptainId, String rightCaptainId, UnitQueue unitQueue, Field field) {
+    public Battle(@NonNull String leftCaptainId, @NonNull String rightCaptainId,
+                  @NonNull UnitQueue unitQueue, @NonNull Field field) {
         this.leftCaptainId = leftCaptainId;
         this.rightCaptainId = rightCaptainId;
         this.unitQueue = unitQueue;
@@ -38,19 +41,23 @@ public final class Battle extends Observable {
         return isRunning;
     }
 
+    @NonNull
     public Unit getCurrentUnit() {
         return unitQueue.getCurrentUnit();
     }
 
+    @NonNull
     public BattleData getBattleData(String captainId) {
         return new BattleData(getCaptainSide(captainId), field.getSize(), log,
                 field.getAsteroids(), field.getClouds(), unitQueue.getUnits(), field.getDestroyedUnits());
     }
 
+    @NonNull
     public List<List<PathNode>> getPaths() {
         return field.getPaths();
     }
 
+    @NonNull
     public List<Cell> getReachableCells() {
         return field.getReachableCells();
     }
@@ -59,6 +66,7 @@ public final class Battle extends Observable {
         return Objects.equals(getCurrentCaptainId(), id);
     }
 
+    @NonNull
     public GunCells getGunCells(int gunId) {
         return field.getGunCells(gunId);
     }
@@ -126,12 +134,14 @@ public final class Battle extends Observable {
         }
     }
 
+    @NonNull
     private Side getCaptainSide(String captainId) {
         if (leftCaptainId.equals(captainId)) return Side.LEFT;
         if (rightCaptainId.equals(captainId)) return Side.RIGHT;
         return Side.NONE;
     }
 
+    @Nullable
     private String getCurrentCaptainId() {
         if (!isRunning) return null;
         switch (unitQueue.getCurrentUnit().getSide()) {

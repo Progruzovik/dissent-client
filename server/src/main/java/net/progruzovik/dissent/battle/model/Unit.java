@@ -6,16 +6,17 @@ import net.progruzovik.dissent.battle.model.field.LocationStatus;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.battle.model.util.Cell;
+import org.springframework.lang.NonNull;
 
 public final class Unit {
 
     private int actionPoints = 0;
-    private Cell firstCell;
+    private @NonNull Cell firstCell;
 
-    private final Side side;
-    private final Ship ship;
+    private final @NonNull Side side;
+    private final @NonNull Ship ship;
 
-    public Unit(Cell firstCell, Side side, Ship ship) {
+    Unit(@NonNull Cell firstCell, @NonNull Side side, @NonNull Ship ship) {
         this.firstCell = firstCell;
         this.side = side;
         this.ship = ship;
@@ -33,10 +34,12 @@ public final class Unit {
         return ship.getHull().getHeight();
     }
 
+    @NonNull
     public Side getSide() {
         return side;
     }
 
+    @NonNull
     public Cell getFirstCell() {
         return firstCell;
     }
@@ -49,6 +52,7 @@ public final class Unit {
         }
     }
 
+    @NonNull
     public Ship getShip() {
         return ship;
     }

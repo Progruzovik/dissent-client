@@ -1,5 +1,8 @@
 package net.progruzovik.dissent.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,7 +15,7 @@ public final class Gun {
     private int id;
 
     @Column(nullable = false)
-    private String name;
+    private @NonNull String name;
 
     @Column(nullable = false)
     private int shotCost;
@@ -25,25 +28,33 @@ public final class Gun {
 
     @ManyToOne
     @JoinColumn(name = "gunTypeId", nullable = false)
-    private GunType type;
+    private @NonNull GunType type;
 
     @ManyToOne
     @JoinColumn(name = "textureId", nullable = false)
-    private Texture texture;
+    private @NonNull Texture texture;
 
-    public Gun(int shotCost, int radius, GunType type, Texture texture) {
+    public Gun(@JsonProperty("id") int id,
+               @JsonProperty("name") @NonNull String name,
+               @JsonProperty("shotCost") int shotCost,
+               @JsonProperty("damage") int damage,
+               @JsonProperty("radius") int radius,
+               @JsonProperty("type") @NonNull GunType type,
+               @JsonProperty("texture") @NonNull Texture texture) {
+        this.id = id;
+        this.name = name;
         this.shotCost = shotCost;
+        this.damage = damage;
         this.radius = radius;
         this.type = type;
         this.texture = texture;
     }
 
-    public Gun() { }
-
     public int getId() {
         return id;
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
@@ -60,10 +71,12 @@ public final class Gun {
         return radius;
     }
 
+    @NonNull
     public String getTypeName() {
         return type.getName();
     }
 
+    @NonNull
     public Texture getTexture() {
         return texture;
     }

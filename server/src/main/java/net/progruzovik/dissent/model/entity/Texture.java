@@ -1,5 +1,8 @@
 package net.progruzovik.dissent.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,19 +13,19 @@ public final class Texture {
     private int id;
 
     @Column(nullable = false)
-    private String name;
+    private @NonNull String name;
 
-    public Texture(int id, String name) {
+    public Texture(@JsonProperty("id") int id,
+                   @JsonProperty("name") @NonNull String name) {
         this.id = id;
         this.name = name;
     }
-
-    public Texture() { }
 
     public int getId() {
         return id;
     }
 
+    @NonNull
     public String getName() {
         return name;
     }

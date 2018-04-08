@@ -1,8 +1,10 @@
 package net.progruzovik.dissent.battle.exception;
 
+import org.springframework.lang.NonNull;
+
 public final class InvalidShotException extends RuntimeException {
 
-    public InvalidShotException(String message) {
+    public InvalidShotException(@NonNull String message) {
         super(message);
     }
 }
