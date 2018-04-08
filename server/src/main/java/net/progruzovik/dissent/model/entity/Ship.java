@@ -1,6 +1,5 @@
 package net.progruzovik.dissent.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import net.progruzovik.dissent.battle.exception.InvalidGunIdException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -13,10 +12,7 @@ public final class Ship {
     private @Nullable Gun firstGun;
     private @Nullable Gun secondGun;
 
-    public Ship(@JsonProperty("strength") int strength,
-                @JsonProperty("hull") @NonNull Hull hull,
-                @JsonProperty("firstGun") @Nullable Gun firstGun,
-                @JsonProperty("secondGun") @Nullable Gun secondGun) {
+    public Ship(int strength, @NonNull Hull hull, @Nullable Gun firstGun, @Nullable Gun secondGun) {
         this.strength = strength;
         this.hull = hull;
         this.firstGun = firstGun;

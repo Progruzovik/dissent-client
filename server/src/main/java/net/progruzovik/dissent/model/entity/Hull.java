@@ -1,6 +1,5 @@
 package net.progruzovik.dissent.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ public final class Hull {
     private int id;
 
     @Column(nullable = false)
-    private @NonNull String name;
+    private String name;
 
     @Column(nullable = false)
     private int actionPoints;
@@ -29,15 +28,9 @@ public final class Hull {
 
     @ManyToOne
     @JoinColumn(name = "textureId", nullable = false)
-    private @NonNull Texture texture;
+    private Texture texture;
 
-    public Hull(@JsonProperty("id") int id,
-                @JsonProperty("name") @NonNull String name,
-                @JsonProperty("actionPoints") int actionPoints,
-                @JsonProperty("strength") int strength,
-                @JsonProperty("width") int width,
-                @JsonProperty("height") int height,
-                @JsonProperty("texture") @NonNull Texture texture) {
+    public Hull(int id, @NonNull String name, int actionPoints, int strength, int width, int height, Texture texture) {
         this.id = id;
         this.name = name;
         this.actionPoints = actionPoints;
@@ -46,6 +39,8 @@ public final class Hull {
         this.height = height;
         this.texture = texture;
     }
+
+    Hull() { }
 
     public int getId() {
         return id;

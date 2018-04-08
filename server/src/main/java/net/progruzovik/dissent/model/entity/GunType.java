@@ -1,6 +1,5 @@
 package net.progruzovik.dissent.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -13,13 +12,14 @@ public final class GunType {
     private int id;
 
     @Column(nullable = false)
-    private @NonNull String name;
+    private String name;
 
-    public GunType(@JsonProperty("id") int id,
-                   @JsonProperty("name") @NonNull String name) {
+    public GunType(int id, @NonNull String name) {
         this.id = id;
         this.name = name;
     }
+
+    GunType() { }
 
     public int getId() {
         return id;
