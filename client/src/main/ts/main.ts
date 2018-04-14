@@ -22,7 +22,8 @@ PIXI.utils.skipHello();
 
 initClient("en", s => {
     updateLocalizedData(s);
-    const webSocketClient = new WebSocketClient(`ws://${window.location.href.split("/")[2]}/app/`);
+    const url: string = window.location.origin.replace("http", "ws");
+    const webSocketClient = new WebSocketClient(`${url}/app/`);
     const statusData = new StatusService(webSocketClient);
     const hangarData = new HangarService(statusData, webSocketClient);
 
