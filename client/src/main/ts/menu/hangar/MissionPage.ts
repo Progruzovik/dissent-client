@@ -22,11 +22,10 @@ export class MissionPage implements m.ClassComponent {
             this.hangarData.missions.map((md, i) => {
                 const btnMission: HyperNode = {
                     attrs: {
-                        type: "button",
                         onclick: () => this.webSocketClient.startMission(i)
                     }
                 };
-                return m("button", btnMission.attrs, l(md));
+                return m("button[type=button]", btnMission.attrs, l(md));
             })
         );
     }

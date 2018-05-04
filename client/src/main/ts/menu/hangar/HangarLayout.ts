@@ -28,8 +28,7 @@ export class HangarLayout implements m.ClassComponent {
         const isDisabled: boolean = this.statusData.currentStatus == Status.Queued;
         const btnHangar: HyperNode = {
             attrs: {
-                disabled: isDisabled || vnode.attrs.location == "hangar" ? "disabled" : "",
-                type: "button",
+                disabled: isDisabled || vnode.attrs.location == "hangar",
                 onclick: () => {
                     window.location.href = "#!/hangar/"
                 }
@@ -37,8 +36,7 @@ export class HangarLayout implements m.ClassComponent {
         };
         const btnMissions: HyperNode = {
             attrs: {
-                disabled: isDisabled || vnode.attrs.location == "missions" ? "disabled" : "",
-                type: "button",
+                disabled: isDisabled || vnode.attrs.location == "missions",
                 onclick: () => {
                     window.location.href = "#!/missions/"
                 }
@@ -46,8 +44,7 @@ export class HangarLayout implements m.ClassComponent {
         };
         const btnPvp: HyperNode = {
             attrs: {
-                disabled: isDisabled || vnode.attrs.location == "pvp" ? "disabled" : "",
-                type: "button",
+                disabled: isDisabled || vnode.attrs.location == "pvp",
                 onclick: () => {
                     window.location.href = "#!/pvp/"
                 }
@@ -66,9 +63,9 @@ export class HangarLayout implements m.ClassComponent {
             m(`.${css.grid}`,
                 m(`.${css.content}`, vnode.children),
                 m(`.${css.controls}.centered`,
-                    m("button", btnHangar.attrs, l("Hangar")),
-                    m("button", btnMissions.attrs, l("Missions")),
-                    m("button", btnPvp.attrs, l("PVP"))
+                    m("button[type=button]", btnHangar.attrs, l("Hangar")),
+                    m("button[type=button]", btnMissions.attrs, l("Missions")),
+                    m("button[type=button]", btnPvp.attrs, l("PVP"))
                 ),
                 m("", rightPanel.attrs, rightPanel.children)
             )

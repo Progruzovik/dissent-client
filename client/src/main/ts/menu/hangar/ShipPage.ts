@@ -77,7 +77,6 @@ export class ShipPage implements m.ClassComponent {
 
         const btnBack: HyperNode = {
             attrs: {
-                type: "button",
                 onclick: () => {
                     window.location.href = "#!/hangar/"
                 }
@@ -95,7 +94,7 @@ export class ShipPage implements m.ClassComponent {
                     ),
                     blockGuns.children
                 ),
-                m("", m("button", btnBack.attrs, l("Back")))
+                m("", m("button[type=button]", btnBack.attrs, l("Back")))
             )
         );
     }

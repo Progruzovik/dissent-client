@@ -12,7 +12,6 @@ export class PvpPage implements m.ClassComponent {
     view(): m.Children {
         const btnPvp: HyperNode = {
             attrs: {
-                type: "button",
                 onclick: () => {
                     if (this.statusData.currentStatus == Status.Idle) {
                         this.webSocketClient.addToQueue();
@@ -23,6 +22,6 @@ export class PvpPage implements m.ClassComponent {
             },
             children: this.statusData.currentStatus == Status.Idle ? l("EnterQueue") : l("LeaveQueue")
         };
-        return m(".page.flex.flex-column", m("button", btnPvp.attrs, btnPvp.children));
+        return m(".page.flex.flex-column", m("button[type=button]", btnPvp.attrs, btnPvp.children));
     }
 }
