@@ -68,8 +68,7 @@ export class ShipPage implements m.ClassComponent {
                 return m(".flex.block",
                     m("", blockGun.attrs,
                         m("h5", l(g.name)),
-                        m("img",
-                            { src: `../img/${g.texture.name}.png`, width: "50%", height: "50%" })
+                        m("img[width=50%][height=50%]", { src: `../img/${g.texture.name}.png` })
                     )
                 );
             })
