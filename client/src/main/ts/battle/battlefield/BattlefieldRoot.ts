@@ -33,7 +33,7 @@ export class BattlefieldRoot extends druid.AbstractBranch {
         this.addChild(this.field);
         this.leftPanel = new LeftPanel(units, unitService);
         this.addChild(this.leftPanel);
-        this.controls = new Controls(log, unitService, webSocketClient);
+        this.controls = new Controls(playerSide, log, unitService, webSocketClient);
         this.addChild(this.controls);
         unitService.emit(ActionType.NextTurn);
         this.actionReceiver = new ActionReceiver(this.field, this.controls, unitService, webSocketClient);

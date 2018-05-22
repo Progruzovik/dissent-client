@@ -4,7 +4,7 @@ import { Unit } from "../unit/Unit";
 import { UnitService } from "../unit/UnitService";
 import { ScalableVerticalLayout } from "../../ui/ScalableVerticalLayout";
 import { WebSocketClient } from "../../../WebSocketClient";
-import { ActionType, Gun, LogEntry } from "../../../model/util";
+import { ActionType, Gun, LogEntry, Side } from "../../../model/util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
@@ -24,9 +24,10 @@ export class Controls extends druid.AbstractBranch {
     private readonly btnEndTurn = new druid.Button(l("EndTurn"));
     private readonly layoutButtons = new ScalableVerticalLayout(3);
 
-    constructor(log: LogEntry[], private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
+    constructor(playerSide: Side, log: LogEntry[],
+                private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
         super();
-        this.log = new Log(log);
+        this.log = new Log(playerSide, log);
         this.addChild(this.log);
 
         this.spriteHull.anchor.set(0.5, 0.5);
@@ -50,7 +51,7 @@ export class Controls extends druid.AbstractBranch {
 
         unitService.on(ActionType.Move, () => this.updateInterface());
         unitService.on(ActionType.Shot, (damage: number, gun: Gun, unit: Unit, target: Unit) => {
-            this.log.addEntry(damage, gun.name, unit.ship.hull.name, target.ship.hull.name);
+            this.log.addEntry(new LogEntry(damage, unit.side, gun.name, unit.ship.hull.name, target.ship.hull.name));
             this.updateInterface();
         });
         unitService.on(ActionType.NextTurn, () => this.updateInterface());

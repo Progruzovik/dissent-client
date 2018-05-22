@@ -1,4 +1,4 @@
-import { LogEntry } from "../../../model/util";
+import { LogEntry, Side } from "../../../model/util";
 import { l } from "../../../localizer";
 import * as css  from "../../../../css/battle.css";
 import * as druid from "pixi-druid";
@@ -10,19 +10,20 @@ export class Log extends druid.AbstractBranch {
 
     private readonly divLog: HTMLDivElement = document.createElement("div");
     private readonly bg = new druid.Rectangle();
-    private readonly txtLastEntry = new PIXI.Text("", { fill: "white", fontSize: 18, wordWrap: true });
+    private readonly txtLastEntry = new PIXI.Text("", { fontSize: 18, wordWrap: true });
     private readonly btnTurnLog = new druid.Button();
 
-    constructor(log: LogEntry[]) {
+    constructor(private readonly playerSide: Side, log: LogEntry[]) {
         super();
         this.interactive = true;
+        this.visible = false;
         this.divLog.className = css.log;
         this.bg.alpha = 0.75;
         this.addChild(this.bg);
         this.btnTurnLog.pivot.y = this.btnTurnLog.height;
         this.addChild(this.btnTurnLog);
         for (const entry of log) {
-            this.addEntry(entry.damage, entry.gunName, entry.unitHullName, entry.targetHullName);
+            this.addEntry(entry);
         }
         this.updateChildren();
 
@@ -45,10 +46,19 @@ export class Log extends druid.AbstractBranch {
         this.updateBg();
     }
 
-    addEntry(damage: number, gunName: string, unitHullName: string, targetHullName: string) {
-        const text = `${targetHullName} ${l("hitBy")} ${unitHullName} `
-            + `${l("with")} ${l(gunName)} ${l("for")} ${damage} ${l("damage")}`;
-        this.divLog.innerText += `${text}\n\n`;
+    addEntry(entry: LogEntry) {
+        this.visible = true;
+        const color = this.playerSide == entry.side ? "green" : "red";
+        const text = `${entry.targetHullName} ${l("hitBy")} ${entry.unitHullName} `
+            + `${l("with")} ${l(entry.gunName)} ${l("for")} ${entry.damage} ${l("damage")}`;
+
+        const pEntry = document.createElement("p");
+        pEntry.className = css.logEntry;
+        pEntry.style.color = color;
+        pEntry.innerText = text;
+        this.divLog.appendChild(pEntry);
+
+        this.txtLastEntry.style.fill = color;
         this.txtLastEntry.text = text;
         this.txtLastEntry.anchor.y = 1;
         this.updateBg();

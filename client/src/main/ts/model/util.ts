@@ -60,10 +60,11 @@ export interface Shot {
     readonly gunId: number, readonly damage: number, readonly cell: druid.Point;
 }
 
-export interface LogEntry {
-    readonly damage: number, readonly gunName: string, readonly unitHullName: string, readonly targetHullName: string;
-}
-
 export interface Texture {
     readonly id: number, readonly name: string;
+}
+
+export class LogEntry {
+    constructor(readonly damage: number, readonly side: Side, readonly gunName: string,
+                readonly unitHullName: string, readonly targetHullName: string) {}
 }

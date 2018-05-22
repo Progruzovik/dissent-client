@@ -3,3 +3,8 @@
     overflow-y: auto;
     position: absolute;
 }
+
+:local .log-entry {
+    line-height: 1.25;
+    margin: 0.5rem 0;
+}

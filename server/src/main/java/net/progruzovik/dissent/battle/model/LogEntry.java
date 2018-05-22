@@ -7,13 +7,15 @@ import org.springframework.lang.NonNull;
 public final class LogEntry {
 
     private final int damage;
+    private final @NonNull Side side;
 
     private final @NonNull Gun gun;
     private final @NonNull Hull unitHull;
     private final @NonNull Hull targetHull;
 
-    LogEntry(int damage, @NonNull Gun gun, @NonNull Hull unitHull, @NonNull Hull targetHull) {
+    LogEntry(int damage, @NonNull Side side, @NonNull Gun gun, @NonNull Hull unitHull, @NonNull Hull targetHull) {
         this.damage = damage;
+        this.side = side;
         this.gun = gun;
         this.unitHull = unitHull;
         this.targetHull = targetHull;
@@ -21,6 +23,11 @@ public final class LogEntry {
 
     public int getDamage() {
         return damage;
+    }
+
+    @NonNull
+    public Side getSide() {
+        return side;
     }
 
     @NonNull
