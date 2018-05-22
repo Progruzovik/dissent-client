@@ -16,8 +16,7 @@ export class Controls extends druid.AbstractBranch {
     private readonly frameUnit = new druid.Frame();
     private readonly bgHull = new druid.Rectangle(0, 0, 0x333333);
 
-    private readonly barStrength = new druid.ProgressBar(0,
-        0, 0xff0000, druid.BarTextConfig.Default);
+    private readonly barStrength = new druid.ProgressBar(0, 0, 0xff0000, druid.BarTextConfig.Default);
 
     private readonly btnFirstGun = new GunButton(this.unitService);
     private readonly btnSecondGun = new GunButton(this.unitService);
@@ -36,6 +35,7 @@ export class Controls extends druid.AbstractBranch {
         this.layoutButtons.addElement(this.bgHull);
 
         const bgStats = new druid.Rectangle();
+        bgStats.alpha = 0.75;
         this.barStrength.txtMain.style = new PIXI.TextStyle({ fill: "white", fontSize: 26, fontWeight: "bold" });
         bgStats.addChild(this.barStrength);
         this.layoutButtons.addElement(bgStats);
@@ -85,9 +85,8 @@ export class Controls extends druid.AbstractBranch {
         this.layoutButtons.pivot.y = this.layoutButtons.height;
         this.layoutButtons.y = height;
 
-        const freeHeight = height - this.buttonsHeight - druid.INDENT / 2;
-        this.log.setUpChildren(this.layoutButtons.elementWidth, freeHeight);
         this.log.x = this.btnEndTurn.x;
+        this.log.setUpChildren(this.layoutButtons.elementWidth, height - this.buttonsHeight);
     }
 
     private updateInterface() {

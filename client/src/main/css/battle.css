@@ -1,0 +1,5 @@
+:local .log {
+    font-size: 18px;
+    overflow-y: auto;
+    position: absolute;
+}

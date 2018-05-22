@@ -38,8 +38,7 @@ export class PopUp extends druid.AbstractBranch {
             this.bgPopUp.x = width - this.bgPopUp.width - druid.INDENT / 2;
         }
         this.bgPopUp.y = druid.INDENT / 2;
-        this.lineToWindow.directTo(this.bgPopUp.x + this.bgPopUp.width / 2,
-            this.bgPopUp.y + this.bgPopUp.height);
+        this.lineToWindow.directTo(this.bgPopUp.x + this.bgPopUp.width / 2, this.bgPopUp.y + this.bgPopUp.height);
     }
 
     destroy(options?: PIXI.DestroyOptions | boolean ) {
