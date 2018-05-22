@@ -20,34 +20,33 @@ export class HangarLayout implements m.ClassComponent {
     }
 
     view(vnode: m.CVnode<any>): m.Children {
-        if (this.statusData.currentStatus == Status.InBattle) {
+        if (this.statusData.currentStatus == Status.Queued) {
+            if (vnode.attrs.location != "pvp") {
+                window.location.href = "#!/pvp/";
+                return null;
+            }
+        } else if (this.statusData.currentStatus == Status.InBattle) {
             window.location.href = "#!/battle/";
             return null;
         }
 
-        const isDisabled: boolean = this.statusData.currentStatus == Status.Queued;
+        const isNavigationDisabled: boolean = this.statusData.currentStatus == Status.Queued;
         const btnHangar: HyperNode = {
             attrs: {
-                disabled: isDisabled || vnode.attrs.location == "hangar",
-                onclick: () => {
-                    window.location.href = "#!/hangar/"
-                }
+                disabled: isNavigationDisabled || vnode.attrs.location == "hangar",
+                onclick: () => window.location.href = "#!/hangar/"
             }
         };
         const btnMissions: HyperNode = {
             attrs: {
-                disabled: isDisabled || vnode.attrs.location == "missions",
-                onclick: () => {
-                    window.location.href = "#!/missions/"
-                }
+                disabled: isNavigationDisabled || vnode.attrs.location == "missions",
+                onclick: () => window.location.href = "#!/missions/"
             }
         };
         const btnPvp: HyperNode = {
             attrs: {
-                disabled: isDisabled || vnode.attrs.location == "pvp",
-                onclick: () => {
-                    window.location.href = "#!/pvp/"
-                }
+                disabled: isNavigationDisabled || vnode.attrs.location == "pvp",
+                onclick: () => window.location.href = "#!/pvp/"
             }
         };
 
