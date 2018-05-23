@@ -71,7 +71,7 @@ export class Controls extends druid.AbstractBranch {
         this.btnEndTurn.isEnabled = false;
     }
 
-    onResize() {
+    protected onResize() {
         this.layoutButtons.resize(this.width, this.height);
 
         const shipRatio = this.bgHull.height / Field.CELL_SIZE.y;

@@ -52,7 +52,7 @@ export class LeftPanel extends druid.AbstractBranch {
         });
     }
 
-    onResize() {
+    protected onResize() {
         this.freeHeight = this.height;
         this.txtActionPoints.x = this.width / 2;
         this.updateLayoutQueuePosition();

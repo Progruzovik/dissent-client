@@ -61,7 +61,12 @@ export class BattlefieldRoot extends druid.AbstractBranch {
         this.actionReceiver.once(ActionType.BattleFinish, () => this.emit(druid.Event.DONE));
     }
 
-    onResize() {
+    destroy(options?: PIXI.DestroyOptions | boolean) {
+        this.actionReceiver.destroy();
+        super.destroy(options);
+    }
+
+    protected onResize() {
         this.controls.resize(this.width, this.height);
         this.contentWidth = this.width;
         this.contentHeight = this.height - this.controls.buttonsHeight;
@@ -72,11 +77,6 @@ export class BattlefieldRoot extends druid.AbstractBranch {
         if (this.unitPopUp) {
             this.unitPopUp.resize(this.freeWidth, this.contentHeight);
         }
-    }
-
-    destroy(options?: PIXI.DestroyOptions | boolean) {
-        this.actionReceiver.destroy();
-        super.destroy(options);
     }
 
     private get freeWidth(): number {

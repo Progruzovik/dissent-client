@@ -45,17 +45,6 @@ export class Log extends druid.AbstractBranch {
         return this._isExpanded;
     }
 
-    onResize(): void {
-        this.btnTurnLog.y = this.height - druid.INDENT;
-        const freeHeight: number = this.btnTurnLog.y - this.btnTurnLog.height;
-        this.divLogContainer.style.width = `${this.width}px`;
-        this.divLogContainer.style.height = `${freeHeight}px`;
-        this.divLogContainer.style.left = `${this.x}px`;
-        this.txtLastEntry.style.wordWrapWidth = this.width;
-        this.txtLastEntry.y = freeHeight;
-        this.updateBg();
-    }
-
     addEntry(entry: LogEntry) {
         this.visible = true;
         const color = this.playerSide == entry.side ? "green" : "red";
@@ -74,6 +63,17 @@ export class Log extends druid.AbstractBranch {
         this.txtLastEntry.style.fill = color;
         this.txtLastEntry.text = text;
         this.txtLastEntry.anchor.y = 1;
+        this.updateBg();
+    }
+
+    protected onResize() {
+        this.btnTurnLog.y = this.height - druid.INDENT;
+        const freeHeight: number = this.btnTurnLog.y - this.btnTurnLog.height;
+        this.divLogContainer.style.width = `${this.width}px`;
+        this.divLogContainer.style.height = `${freeHeight}px`;
+        this.divLogContainer.style.left = `${this.x}px`;
+        this.txtLastEntry.style.wordWrapWidth = this.width;
+        this.txtLastEntry.y = freeHeight;
         this.updateBg();
     }
 

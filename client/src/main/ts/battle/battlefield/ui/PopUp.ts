@@ -31,7 +31,12 @@ export class PopUp extends druid.AbstractBranch {
         unit.on(Unit.UPDATE_STATS, () => this.updateStats());
     }
 
-    onResize() {
+    destroy(options?: PIXI.DestroyOptions | boolean ) {
+        this.unit.off(Unit.UPDATE_STATS);
+        super.destroy(options);
+    }
+
+    protected onResize() {
         if (this.unit.side == Side.Left) {
             this.bgPopUp.x = druid.INDENT / 2;
         } else if (this.unit.side == Side.Right) {
@@ -39,11 +44,6 @@ export class PopUp extends druid.AbstractBranch {
         }
         this.bgPopUp.y = druid.INDENT / 2;
         this.lineToWindow.directTo(this.bgPopUp.x + this.bgPopUp.width / 2, this.bgPopUp.y + this.bgPopUp.height);
-    }
-
-    destroy(options?: PIXI.DestroyOptions | boolean ) {
-        this.unit.off(Unit.UPDATE_STATS);
-        super.destroy(options);
     }
 
     private updateStats() {
