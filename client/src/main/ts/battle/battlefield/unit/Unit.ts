@@ -25,7 +25,7 @@ export class Unit extends druid.AbstractActor {
         this.interactive = true;
         this.frameColor = playerSide == this.side ? 0x00ff00 : 0xff0000;
 
-        const sprite = ship.createSprite();
+        const sprite: PIXI.Sprite = ship.createSprite();
         if (side == Side.Right) {
             sprite.scale.x = -1;
             sprite.anchor.x = 1;
@@ -34,6 +34,10 @@ export class Unit extends druid.AbstractActor {
         const frameWidth = ship.hull.width * Field.CELL_SIZE.x, frameHeight = ship.hull.height * Field.CELL_SIZE.y;
         this.addChild(new druid.Frame(frameWidth, frameHeight, this.frameColor, 0.75));
         this.updatePosition();
+    }
+
+    get isDestroyed(): boolean {
+        return this.strength == 0;
     }
 
     get actionPoints(): number {
@@ -46,7 +50,7 @@ export class Unit extends druid.AbstractActor {
 
     set strength(value: number) {
         this.ship.strength = value;
-        if (this.ship.strength == 0) {
+        if (this.isDestroyed) {
             this.alpha = Unit.ALPHA_DESTROYED;
             this.emit(Unit.DESTROY);
         }

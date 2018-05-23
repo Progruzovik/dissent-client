@@ -1,5 +1,5 @@
 const common = require("./webpack.common");
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const merge = require("webpack-merge");
 
 module.exports = merge(common, {

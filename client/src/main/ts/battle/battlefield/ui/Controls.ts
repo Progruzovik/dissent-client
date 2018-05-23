@@ -10,7 +10,7 @@ import * as druid from "pixi-druid";
 
 export class Controls extends druid.AbstractBranch {
 
-    private readonly log: Log;
+    readonly log: Log;
 
     private readonly spriteHull = new PIXI.Sprite();
     private readonly frameUnit = new druid.Frame();
@@ -51,7 +51,8 @@ export class Controls extends druid.AbstractBranch {
 
         unitService.on(ActionType.Move, () => this.updateInterface());
         unitService.on(ActionType.Shot, (damage: number, gun: Gun, unit: Unit, target: Unit) => {
-            this.log.addEntry(new LogEntry(damage, unit.side, gun.name, unit.ship.hull.name, target.ship.hull.name));
+            this.log.addEntry(new LogEntry(unit.side, damage, target.isDestroyed,
+                gun.name, unit.ship.hull.name, target.ship.hull.name));
             this.updateInterface();
         });
         unitService.on(ActionType.NextTurn, () => this.updateInterface());

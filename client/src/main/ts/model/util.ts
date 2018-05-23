@@ -65,6 +65,6 @@ export interface Texture {
 }
 
 export class LogEntry {
-    constructor(readonly damage: number, readonly side: Side, readonly gunName: string,
-                readonly unitHullName: string, readonly targetHullName: string) {}
+    constructor(readonly side: Side, readonly damage: number, readonly isTargetDestroyed: boolean,
+                readonly gunName: string, readonly unitHullName: string, readonly targetHullName: string) {}
 }

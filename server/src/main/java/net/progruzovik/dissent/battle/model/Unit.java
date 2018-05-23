@@ -22,6 +22,10 @@ public final class Unit {
         this.ship = ship;
     }
 
+    public boolean isDestroyed() {
+        return ship.getStrength() == 0;
+    }
+
     public int getActionPoints() {
         return actionPoints;
     }

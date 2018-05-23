@@ -42,7 +42,9 @@ export class BattlefieldRoot extends druid.AbstractBranch {
             if (this.unitPopUp) {
                 this.unitPopUp.destroy({ children: true });
             }
-            this.unitPopUp = new PopUp(this.contentWidth, this.contentHeight, unit);
+            const freeWidth: number = this.controls.log.isExpanded
+                ? this.contentWidth - this.controls.log.width : this.contentWidth;
+            this.unitPopUp = new PopUp(freeWidth, this.contentHeight, unit);
             this.addChild(this.unitPopUp);
         });
         unitService.on(UnitService.UNIT_MOUSE_OUT, (unit: Unit) => {

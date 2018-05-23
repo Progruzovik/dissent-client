@@ -111,7 +111,8 @@ public final class Battle extends Observable {
 
             final int damage = currentUnit.shoot(gunId, target);
             field.updateActiveUnit();
-            log.add(new LogEntry(damage, currentUnit.getSide(), currentUnit.getShip().findGunById(gunId),
+            log.add(new LogEntry(currentUnit.getSide(), damage,
+                    target.isDestroyed(), currentUnit.getShip().findGunById(gunId),
                     currentUnit.getShip().getHull(), target.getShip().getHull()));
             notifyObservers(new Message<>("shot", new Shot(gunId, damage, target.getFirstCell())));
             if (target.getShip().getStrength() == 0) {
