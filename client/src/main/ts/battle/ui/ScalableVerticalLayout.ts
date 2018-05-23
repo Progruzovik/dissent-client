@@ -17,7 +17,7 @@ export class ScalableVerticalLayout extends druid.VerticalLayout implements drui
         return this._elementHeight;
     }
 
-    setUpChildren(width: number, height: number): void {
+    resize(width: number, height: number): void {
         this._elementWidth = width / this.elementsCount;
         this._elementHeight = this.elementWidth / this.elementRatio;
         for (const element of this.elements) {

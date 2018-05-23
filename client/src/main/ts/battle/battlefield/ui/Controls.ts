@@ -71,8 +71,8 @@ export class Controls extends druid.AbstractBranch {
         this.btnEndTurn.isEnabled = false;
     }
 
-    setUpChildren(width: number, height: number) {
-        this.layoutButtons.setUpChildren(width, height);
+    onResize() {
+        this.layoutButtons.resize(this.width, this.height);
 
         const shipRatio = this.bgHull.height / Field.CELL_SIZE.y;
         this.spriteHull.scale.set(shipRatio, shipRatio);
@@ -85,10 +85,10 @@ export class Controls extends druid.AbstractBranch {
         this.barStrength.y = this.layoutButtons.elementHeight / 3;
 
         this.layoutButtons.pivot.y = this.layoutButtons.height;
-        this.layoutButtons.y = height;
+        this.layoutButtons.y = this.height;
 
         this.log.x = this.btnEndTurn.x;
-        this.log.setUpChildren(this.layoutButtons.elementWidth, height - this.buttonsHeight);
+        this.log.resize(this.layoutButtons.elementWidth, this.height - this.buttonsHeight);
     }
 
     private updateInterface() {

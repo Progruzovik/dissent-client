@@ -45,13 +45,13 @@ export class Log extends druid.AbstractBranch {
         return this._isExpanded;
     }
 
-    setUpChildren(width: number, height: number): void {
-        this.btnTurnLog.y = height - druid.INDENT;
+    onResize(): void {
+        this.btnTurnLog.y = this.height - druid.INDENT;
         const freeHeight: number = this.btnTurnLog.y - this.btnTurnLog.height;
-        this.divLogContainer.style.width = `${width}px`;
+        this.divLogContainer.style.width = `${this.width}px`;
         this.divLogContainer.style.height = `${freeHeight}px`;
         this.divLogContainer.style.left = `${this.x}px`;
-        this.txtLastEntry.style.wordWrapWidth = width;
+        this.txtLastEntry.style.wordWrapWidth = this.width;
         this.txtLastEntry.y = freeHeight;
         this.updateBg();
     }

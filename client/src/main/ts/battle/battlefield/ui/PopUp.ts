@@ -26,16 +26,16 @@ export class PopUp extends druid.AbstractBranch {
         const frame = new druid.Frame(this.bgPopUp.width, this.bgPopUp.height, unit.frameColor);
         this.bgPopUp.addChild(frame);
         this.addChild(this.bgPopUp);
-        this.setUpChildren(rootWidth, rootHeight);
+        this.resize(rootWidth, rootHeight);
 
         unit.on(Unit.UPDATE_STATS, () => this.updateStats());
     }
 
-    setUpChildren(width: number, height: number) {
+    onResize() {
         if (this.unit.side == Side.Left) {
             this.bgPopUp.x = druid.INDENT / 2;
         } else if (this.unit.side == Side.Right) {
-            this.bgPopUp.x = width - this.bgPopUp.width - druid.INDENT / 2;
+            this.bgPopUp.x = this.width - this.bgPopUp.width - druid.INDENT / 2;
         }
         this.bgPopUp.y = druid.INDENT / 2;
         this.lineToWindow.directTo(this.bgPopUp.x + this.bgPopUp.width / 2, this.bgPopUp.y + this.bgPopUp.height);

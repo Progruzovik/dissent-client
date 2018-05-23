@@ -42,9 +42,7 @@ export class BattlefieldRoot extends druid.AbstractBranch {
             if (this.unitPopUp) {
                 this.unitPopUp.destroy({ children: true });
             }
-            const freeWidth: number = this.controls.log.isExpanded
-                ? this.contentWidth - this.controls.log.width : this.contentWidth;
-            this.unitPopUp = new PopUp(freeWidth, this.contentHeight, unit);
+            this.unitPopUp = new PopUp(this.freeWidth, this.contentHeight, unit);
             this.addChild(this.unitPopUp);
         });
         unitService.on(UnitService.UNIT_MOUSE_OUT, (unit: Unit) => {
@@ -63,21 +61,25 @@ export class BattlefieldRoot extends druid.AbstractBranch {
         this.actionReceiver.once(ActionType.BattleFinish, () => this.emit(druid.Event.DONE));
     }
 
+    onResize() {
+        this.controls.resize(this.width, this.height);
+        this.contentWidth = this.width;
+        this.contentHeight = this.height - this.controls.buttonsHeight;
+
+        this.leftPanel.resize(Field.CELL_SIZE.x, this.contentHeight);
+        this.field.x = this.leftPanel.width;
+        this.field.resize(this.width - this.field.x, this.height - this.controls.buttonsHeight);
+        if (this.unitPopUp) {
+            this.unitPopUp.resize(this.freeWidth, this.contentHeight);
+        }
+    }
+
     destroy(options?: PIXI.DestroyOptions | boolean) {
         this.actionReceiver.destroy();
         super.destroy(options);
     }
 
-    setUpChildren(width: number, height: number) {
-        this.controls.setUpChildren(width, height);
-        this.contentWidth = width;
-        this.contentHeight = height - this.controls.buttonsHeight;
-
-        this.leftPanel.setUpChildren(Field.CELL_SIZE.x, this.contentHeight);
-        this.field.x = this.leftPanel.width;
-        this.field.setUpChildren(width - this.field.x, height - this.controls.buttonsHeight);
-        if (this.unitPopUp) {
-            this.unitPopUp.setUpChildren(this.contentWidth, this.contentHeight);
-        }
+    private get freeWidth(): number {
+        return this.controls.log.isExpanded ? this.contentWidth - this.controls.log.width : this.contentWidth;
     }
 }
