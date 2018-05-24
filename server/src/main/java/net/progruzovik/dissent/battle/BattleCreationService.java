@@ -4,8 +4,8 @@ import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
 import net.progruzovik.dissent.battle.model.UnitQueue;
 import net.progruzovik.dissent.battle.model.field.Field;
-import net.progruzovik.dissent.captain.Captain;
 import net.progruzovik.dissent.battle.model.util.Cell;
+import net.progruzovik.dissent.captain.Captain;
 import org.springframework.stereotype.Service;
 
 import static net.progruzovik.dissent.battle.model.field.Field.BORDER_INDENT;

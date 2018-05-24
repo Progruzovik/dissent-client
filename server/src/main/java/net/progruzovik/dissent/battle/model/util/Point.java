@@ -42,8 +42,8 @@ public class Point<T> {
         return getX().equals(cell.getX()) && getY().equals(cell.getY());
     }
 
-    @Override
     @NonNull
+    @Override
     public String toString() {
         return String.format("[%s; %s]", x.toString(), y.toString());
     }
