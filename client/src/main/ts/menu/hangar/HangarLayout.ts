@@ -9,44 +9,40 @@ import * as m from "mithril";
 
 export class HangarLayout implements m.ClassComponent {
 
-    constructor(private readonly hangarData: HangarService, private readonly statusData: StatusService) {}
+    constructor(private readonly hangarData: HangarService, private readonly statusService: StatusService) {}
 
     oninit() {
-        this.statusData.on(druid.Event.UPDATE, () => m.redraw());
+        this.statusService.on(druid.Event.UPDATE, (status: Status) => {
+            if (status == Status.InBattle) {
+                m.route.set("/battle/");
+            } else {
+                m.redraw();
+            }
+        });
     }
 
     onremove() {
-        this.statusData.off(druid.Event.UPDATE);
+        this.statusService.off(druid.Event.UPDATE);
     }
 
     view(vnode: m.CVnode<any>): m.Children {
-        if (this.statusData.currentStatus == Status.Queued) {
-            if (vnode.attrs.location != "pvp") {
-                window.location.href = "#!/pvp/";
-                return null;
-            }
-        } else if (this.statusData.currentStatus == Status.InBattle) {
-            window.location.href = "#!/battle/";
-            return null;
-        }
-
-        const isNavigationDisabled: boolean = this.statusData.currentStatus == Status.Queued;
+        const isNavigationDisabled: boolean = this.statusService.currentStatus == Status.Queued;
         const btnHangar: HyperNode = {
             attrs: {
                 disabled: isNavigationDisabled || vnode.attrs.location == "hangar",
-                onclick: () => window.location.href = "#!/hangar/"
+                onclick: () => m.route.set("/hangar/")
             }
         };
         const btnMissions: HyperNode = {
             attrs: {
                 disabled: isNavigationDisabled || vnode.attrs.location == "missions",
-                onclick: () => window.location.href = "#!/missions/"
+                onclick: () => m.route.set("/missions/")
             }
         };
         const btnPvp: HyperNode = {
             attrs: {
-                disabled: isNavigationDisabled || vnode.attrs.location == "pvp",
-                onclick: () => window.location.href = "#!/pvp/"
+                disabled: isNavigationDisabled || vnode.attrs.location == "queue",
+                onclick: () => m.route.set("/queue/")
             }
         };
 

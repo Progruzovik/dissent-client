@@ -12,10 +12,10 @@ export class HangarService extends PIXI.utils.EventEmitter {
 
     private _rightPanelContent: m.Children;
 
-    constructor(private readonly statusData: StatusService, private readonly webSocketClient: WebSocketClient) {
+    constructor(private readonly statusService: StatusService, private readonly webSocketClient: WebSocketClient) {
         super();
         this.updateData();
-        this.statusData.on(StatusService.BATTLE_FINISH, () => this.updateData());
+        this.statusService.on(StatusService.BATTLE_FINISH, () => this.updateData());
     }
 
     get rightPanelContent(): m.Children {

@@ -76,9 +76,7 @@ export class ShipPage implements m.ClassComponent {
 
         const btnBack: HyperNode = {
             attrs: {
-                onclick: () => {
-                    window.location.href = "#!/hangar/";
-                }
+                onclick: () => m.route.set("/hangar/")
             }
         };
 

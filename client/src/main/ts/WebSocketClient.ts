@@ -1,4 +1,4 @@
-import { LogEntry, PathNode, ShipData, Side, Texture } from "./model/util";
+import { LogEntry, PathNode, ShipData, Side, Status, Texture } from "./model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -11,8 +11,8 @@ export class WebSocketClient extends PIXI.utils.EventEmitter {
     constructor(url: string) {
         super();
         this.connection = new WebSocketConnection(url);
-        this.connection.on(WebSocketConnection.MESSAGE,
-            (message: Message) => this.emit(message.subject, message.data));
+        this.connection.on(WebSocketConnection.MESSAGE, (message: Message) =>
+            this.emit(message.subject, message.data));
     }
 
     requestTextures(callback: (textures: Texture[]) => void) {
@@ -27,8 +27,10 @@ export class WebSocketClient extends PIXI.utils.EventEmitter {
         this.makeRequest("missions", callback);
     }
 
-    updateStatus() {
-        this.makeRequest("status");
+    updateStatus(): Promise<Status> {
+        return new Promise<Status>((resolve) => {
+            this.makeRequest("status", (status: Status) => resolve(status));
+        });
     }
 
     addToQueue() {

@@ -22,9 +22,7 @@ export class IndexPage implements m.ClassComponent {
                 const imgShip: HyperNode = {
                     attrs: {
                         src: `../img/${s.hull.texture.name}.png`,
-                        onclick: () => {
-                            window.location.href = `#!/hangar/ship/${i}/`;
-                        }
+                        onclick: () => m.route.set(`/hangar/ship/${i}/`)
                     }
                 };
                 return m("img.interactive.block.interactive-yellow", imgShip.attrs);
@@ -35,4 +33,4 @@ export class IndexPage implements m.ClassComponent {
             m("", ships.children)
         );
     }
-};
+}

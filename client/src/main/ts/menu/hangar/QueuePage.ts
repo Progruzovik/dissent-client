@@ -5,22 +5,22 @@ import { Status } from "../../model/util";
 import { l } from "../../localizer";
 import * as m from "mithril";
 
-export class PvpPage implements m.ClassComponent {
+export class QueuePage implements m.ClassComponent {
 
-    constructor(private readonly statusData: StatusService, private readonly webSocketClient: WebSocketClient) {}
+    constructor(private readonly statusService: StatusService, private readonly webSocketClient: WebSocketClient) {}
 
     view(): m.Children {
         const btnPvp: HyperNode = {
             attrs: {
                 onclick: () => {
-                    if (this.statusData.currentStatus == Status.Idle) {
+                    if (this.statusService.currentStatus == Status.Idle) {
                         this.webSocketClient.addToQueue();
-                    } else if (this.statusData.currentStatus == Status.Queued) {
+                    } else if (this.statusService.currentStatus == Status.Queued) {
                         this.webSocketClient.removeFromQueue();
                     }
                 }
             },
-            children: this.statusData.currentStatus == Status.Idle ? l("EnterQueue") : l("LeaveQueue")
+            children: this.statusService.currentStatus == Status.Idle ? l("EnterQueue") : l("LeaveQueue")
         };
         return m(".page.flex.flex-column", m("button[type=button]", btnPvp.attrs, btnPvp.children));
     }

@@ -5,7 +5,7 @@ import { l } from "../../localizer";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
 
-export class MissionPage implements m.ClassComponent {
+export class MissionsPage implements m.ClassComponent {
 
     constructor(private readonly hangarData: HangarService, private readonly webSocketClient: WebSocketClient) {}
 

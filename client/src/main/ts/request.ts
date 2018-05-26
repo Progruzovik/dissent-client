@@ -1,9 +1,9 @@
 import * as m from "mithril";
 
-export function initClient(locale: string, callback: (strings: string[]) => void) {
-    m.request("/api/player/id").then(() => {
-        m.request(`/json/strings.${locale}.json`).then((strings: string[]) => {
-            callback(strings);
-        });
-    });
+export function initClient(): Promise<void> {
+    return m.request("/api/player/id");
+}
+
+export function getStrings(locale: string): Promise<string[]> {
+    return m.request<string[]>(`/json/strings.${locale}.json`);
 }

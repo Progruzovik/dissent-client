@@ -9,7 +9,7 @@ export class StatusService extends PIXI.utils.EventEmitter {
 
     private _currentStatus: Status;
 
-    constructor(webSocketClient: WebSocketClient) {
+    constructor(private readonly webSocketClient: WebSocketClient) {
         super();
         webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
             if (this.currentStatus != status) {
@@ -17,13 +17,16 @@ export class StatusService extends PIXI.utils.EventEmitter {
                     this.emit(StatusService.BATTLE_FINISH);
                 }
                 this._currentStatus = status;
-                this.emit(druid.Event.UPDATE);
+                this.emit(druid.Event.UPDATE, status);
             }
         });
-        webSocketClient.updateStatus();
     }
 
     get currentStatus(): Status {
         return this._currentStatus;
+    }
+
+    reload(): Promise<Status> {
+        return this.webSocketClient.updateStatus();
     }
 }

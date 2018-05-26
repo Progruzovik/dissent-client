@@ -9,18 +9,22 @@ export class BattlePage implements m.ClassComponent {
 
     private battle: BattleApp;
 
-    constructor(private readonly statusData: StatusService, private readonly webSocketClient: WebSocketClient) {}
+    constructor(private readonly statusService: StatusService, private readonly webSocketClient: WebSocketClient) {}
+
+    oninit() {
+        this.statusService.on(druid.Event.UPDATE, (status: Status) => {
+            if (status != Status.InBattle) {
+                m.route.set("/hangar/");
+            }
+        });
+    }
 
     oncreate() {
-        if (this.checkPlayerInBattle()) {
-            const canvas = document.getElementById("battle") as HTMLCanvasElement;
-            this.battle = new BattleApp(window.devicePixelRatio || 1,
-                window.innerWidth, window.innerHeight, canvas, this.webSocketClient);
-
-            window.onresize = () => this.battle.resize(window.innerWidth, window.innerHeight);
-            this.statusData.on(druid.Event.UPDATE, () => this.checkPlayerInBattle());
-            this.battle.once(druid.Event.DONE, () => this.webSocketClient.updateStatus());
-        }
+        const canvas = document.getElementById("battle") as HTMLCanvasElement;
+        this.battle = new BattleApp(window.devicePixelRatio || 1,
+            window.innerWidth, window.innerHeight, canvas, this.webSocketClient);
+        window.onresize = () => this.battle.resize(window.innerWidth, window.innerHeight);
+        this.battle.once(druid.Event.DONE, () => this.webSocketClient.updateStatus());
     }
 
     onremove() {
@@ -28,21 +32,11 @@ export class BattlePage implements m.ClassComponent {
             this.battle.destroy();
             this.battle = null;
         }
-
         window.onresize = null;
-        this.statusData.off(druid.Event.UPDATE);
+        this.statusService.off(druid.Event.UPDATE);
     }
 
     view(): m.Children {
         return m("canvas#battle");
-    }
-
-    private checkPlayerInBattle(): boolean {
-        if (this.statusData.currentStatus == Status.InBattle) {
-            return true;
-        } else {
-            window.location.href = "#/hangar/";
-            return false;
-        }
     }
 }
