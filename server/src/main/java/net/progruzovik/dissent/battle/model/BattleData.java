@@ -1,50 +1,66 @@
 package net.progruzovik.dissent.battle.model;
 
-import net.progruzovik.dissent.model.util.Cell;
+import net.progruzovik.dissent.battle.model.util.Cell;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
 public final class BattleData {
 
-    private final Side playerSide;
-    private final Cell fieldSize;
+    private final @NonNull Side playerSide;
+    private final @NonNull Cell fieldSize;
 
-    private final List<Cell> asteroids;
-    private final List<Cell> clouds;
+    private final @NonNull List<LogEntry> log;
 
-    private final List<Unit> units;
-    private final List<Unit> destroyedUnits;
+    private final @NonNull List<Cell> asteroids;
+    private final @NonNull List<Cell> clouds;
 
-    BattleData(Side playerSide, Cell fieldSize, List<Cell> asteroids,
-               List<Cell> clouds, List<Unit> units, List<Unit> destroyedUnits) {
+    private final @NonNull List<Unit> units;
+    private final @NonNull List<Unit> destroyedUnits;
+
+    BattleData(@NonNull Side playerSide, @NonNull Cell fieldSize, @NonNull List<LogEntry> log,
+               @NonNull List<Cell> asteroids, @NonNull List<Cell> clouds,
+               @NonNull List<Unit> units, @NonNull List<Unit> destroyedUnits) {
         this.playerSide = playerSide;
         this.fieldSize = fieldSize;
+        this.log = log;
         this.asteroids = asteroids;
         this.clouds = clouds;
         this.units = units;
         this.destroyedUnits = destroyedUnits;
     }
 
+    @NonNull
     public Side getPlayerSide() {
         return playerSide;
     }
 
+    @NonNull
     public Cell getFieldSize() {
         return fieldSize;
     }
 
+    @NonNull
+    public List<LogEntry> getLog() {
+        return log;
+    }
+
+    @NonNull
     public List<Cell> getAsteroids() {
         return asteroids;
     }
 
+    @NonNull
     public List<Cell> getClouds() {
         return clouds;
     }
 
+    @NonNull
     public List<Unit> getUnits() {
         return units;
     }
 
+    @NonNull
     public List<Unit> getDestroyedUnits() {
         return destroyedUnits;
     }

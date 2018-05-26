@@ -1,16 +1,16 @@
 package net.progruzovik.dissent.battle.model;
 
+import net.progruzovik.dissent.battle.exception.InvalidShotException;
 import net.progruzovik.dissent.battle.model.field.Field;
 import net.progruzovik.dissent.battle.model.field.GunCells;
 import net.progruzovik.dissent.battle.model.field.PathNode;
-import net.progruzovik.dissent.exception.InvalidShotException;
+import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.model.Message;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.util.Cell;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Observable;
+import java.util.*;
 
 import static net.progruzovik.dissent.battle.model.field.Field.BORDER_INDENT;
 import static net.progruzovik.dissent.battle.model.field.Field.UNIT_INDENT;
@@ -21,13 +21,16 @@ public final class Battle extends Observable {
 
     private boolean isRunning = true;
 
-    private final String leftCaptainId;
-    private final String rightCaptainId;
+    private final @NonNull String leftCaptainId;
+    private final @NonNull String rightCaptainId;
 
-    private final UnitQueue unitQueue;
-    private final Field field;
+    private final @NonNull List<LogEntry> log = new ArrayList<>();
 
-    public Battle(String leftCaptainId, String rightCaptainId, UnitQueue unitQueue, Field field) {
+    private final @NonNull UnitQueue unitQueue;
+    private final @NonNull Field field;
+
+    public Battle(@NonNull String leftCaptainId, @NonNull String rightCaptainId,
+                  @NonNull UnitQueue unitQueue, @NonNull Field field) {
         this.leftCaptainId = leftCaptainId;
         this.rightCaptainId = rightCaptainId;
         this.unitQueue = unitQueue;
@@ -38,19 +41,23 @@ public final class Battle extends Observable {
         return isRunning;
     }
 
+    @NonNull
     public Unit getCurrentUnit() {
         return unitQueue.getCurrentUnit();
     }
 
+    @NonNull
     public BattleData getBattleData(String captainId) {
-        return new BattleData(getCaptainSide(captainId), field.getSize(), field.getAsteroids(),
-                field.getClouds(), unitQueue.getUnits(), field.getDestroyedUnits());
+        return new BattleData(getCaptainSide(captainId), field.getSize(), log,
+                field.getAsteroids(), field.getClouds(), unitQueue.getUnits(), field.getDestroyedUnits());
     }
 
+    @NonNull
     public List<List<PathNode>> getPaths() {
         return field.getPaths();
     }
 
+    @NonNull
     public List<Cell> getReachableCells() {
         return field.getReachableCells();
     }
@@ -59,6 +66,7 @@ public final class Battle extends Observable {
         return Objects.equals(getCurrentCaptainId(), id);
     }
 
+    @NonNull
     public GunCells getGunCells(int gunId) {
         return field.getGunCells(gunId);
     }
@@ -97,17 +105,22 @@ public final class Battle extends Observable {
 
     public void shootWithCurrentUnit(String captainId, int gunId, Cell cell) {
         if (isIdBelongsToCurrentCaptain(captainId) && field.canActiveUnitHitCell(gunId, cell)) {
-            final Unit target = unitQueue.findUnitOnCell(cell);
-            if (target == null) throw new InvalidShotException();
+            final Unit currentUnit = unitQueue.getCurrentUnit();
+            final Unit target = unitQueue.findUnitOnCell(cell).orElseThrow(() ->
+                    new InvalidShotException(String.format("There is no target on cell %s!", cell)));
 
-            final int damage = unitQueue.getCurrentUnit().shoot(gunId, target);
+            final int damage = currentUnit.shoot(gunId, target);
             field.updateActiveUnit();
+            log.add(new LogEntry(currentUnit.getSide(), damage,
+                    target.isDestroyed(), currentUnit.getShip().findGunById(gunId),
+                    currentUnit.getShip().getHull(), target.getShip().getHull()));
             notifyObservers(new Message<>("shot", new Shot(gunId, damage, target.getFirstCell())));
             if (target.getShip().getStrength() == 0) {
                 unitQueue.getUnits().remove(target);
                 field.destroyUnit(target);
                 if (!unitQueue.hasUnitsOnBothSides()) {
                     isRunning = false;
+                    field.resetActiveUnit();
                     notifyObservers(new Message<>("battleFinish"));
                     deleteObservers();
                 }
@@ -123,12 +136,14 @@ public final class Battle extends Observable {
         }
     }
 
+    @NonNull
     private Side getCaptainSide(String captainId) {
         if (leftCaptainId.equals(captainId)) return Side.LEFT;
         if (rightCaptainId.equals(captainId)) return Side.RIGHT;
         return Side.NONE;
     }
 
+    @Nullable
     private String getCurrentCaptainId() {
         if (!isRunning) return null;
         switch (unitQueue.getCurrentUnit().getSide()) {

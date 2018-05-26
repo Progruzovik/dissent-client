@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 
@@ -33,19 +33,24 @@ public final class Gun {
     @JoinColumn(name = "textureId", nullable = false)
     private Texture texture;
 
-    public Gun(int shotCost, int radius, GunType type, Texture texture) {
+    public Gun(int id, @NonNull String name, int shotCost, int damage,
+               int radius, @NonNull GunType type, @NonNull Texture texture) {
+        this.id = id;
+        this.name = name;
         this.shotCost = shotCost;
+        this.damage = damage;
         this.radius = radius;
         this.type = type;
         this.texture = texture;
     }
 
-    public Gun() { }
+    Gun() { }
 
     public int getId() {
         return id;
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
@@ -54,20 +59,20 @@ public final class Gun {
         return shotCost;
     }
 
-    @JsonIgnore
     public int getDamage() {
         return damage;
     }
 
-    @JsonIgnore
     public int getRadius() {
         return radius;
     }
 
+    @NonNull
     public String getTypeName() {
         return type.getName();
     }
 
+    @NonNull
     public Texture getTexture() {
         return texture;
     }

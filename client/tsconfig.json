@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.promise"
+    ],
+    "module": "es2015",
+    "moduleResolution": "node",
+    "outDir": "./target/es5/",
+    "sourceMap": true,
+    "target": "es5"
+  }
+}

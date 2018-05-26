@@ -1,0 +1,15 @@
+:local .logContainer {
+    overflow: hidden;
+    position: absolute;
+}
+
+:local .log {
+    font-size: 15px;
+    overflow-y: auto;
+    height: 100%;
+}
+
+:local .logEntry {
+    line-height: 1.25;
+    margin: 0.5rem 0;
+}

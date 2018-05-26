@@ -1,7 +1,7 @@
-import Projectile from "./Projectile";
-import * as game from "../../../game";
+import { AbstractProjectile } from "./AbstractProjectile";
+import * as druid from "pixi-druid";
 
-export default class Shell extends Projectile {
+export class Shell extends AbstractProjectile {
 
     private static readonly SPEED = 33;
 
@@ -9,12 +9,12 @@ export default class Shell extends Projectile {
     private passedTime = 0;
 
     constructor(private readonly shotDelay: number, shotsCount: number,
-                width: number, height: number, from: game.Point, private readonly target: game.Point) {
+                width: number, height: number, from: druid.Point, private readonly target: druid.Point) {
         super(shotsCount);
         const dx: number = target.x - from.x, dy: number = target.y - from.y;
         this.resetTimer(Math.sqrt(dx * dx + dy * dy) / Shell.SPEED);
 
-        this.addChild(new game.Rectangle(width, height, 0xffff00));
+        this.addChild(new druid.Rectangle(width, height, 0xffff00));
         this.rotation = Math.atan2(dy, dx);
         this.pivot.x = this.width / 2;
         this.pivot.y = this.height / 2;
@@ -27,7 +27,7 @@ export default class Shell extends Projectile {
             if (!this.isNextShotReady) {
                 this.emitNextShot();
             }
-            this.emit(game.Event.DONE);
+            this.emit(druid.Event.DONE);
             this.destroy({ children: true });
         } else {
             if (!this.isNextShotReady) {
@@ -43,6 +43,6 @@ export default class Shell extends Projectile {
 
     private emitNextShot() {
         this.isNextShotReady = true;
-        this.emit(Projectile.NEW_SHOT);
+        this.emit(AbstractProjectile.NEW_SHOT);
     }
 }

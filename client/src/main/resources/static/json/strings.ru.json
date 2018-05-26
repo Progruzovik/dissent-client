@@ -1,11 +1,9 @@
 {
-  "ap": "ОД",
-  "back": "Назад",
+  "AP": "ОД",
+  "Back": "Назад",
   "empty": "пусто",
-  "endTurn": "Конец хода",
-  "fromQueue": "Из очереди",
-  "yourStatus": "Ваш статус",
-  "yourFleet": "Ваш флот",
+  "EndTurn": "Конец хода",
+  "LeaveQueue": "Из очереди",
 
   "laser": "Лазер",
   "shrapnel": "Оскол. орудие"

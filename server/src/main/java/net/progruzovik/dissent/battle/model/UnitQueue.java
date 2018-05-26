@@ -1,40 +1,45 @@
 package net.progruzovik.dissent.battle.model;
 
-import net.progruzovik.dissent.model.util.Cell;
+import net.progruzovik.dissent.battle.model.util.Cell;
+import org.springframework.lang.NonNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public final class UnitQueue {
 
-    private final LinkedList<Unit> queue = new LinkedList<>();
+    private final @NonNull LinkedList<Unit> queue = new LinkedList<>();
 
-    public boolean hasUnitsOnBothSides() {
+    boolean hasUnitsOnBothSides() {
         return queue.stream().anyMatch(u -> u.getSide() != getCurrentUnit().getSide());
     }
 
-    public Unit getCurrentUnit() {
+    @NonNull
+    Unit getCurrentUnit() {
         return queue.element();
     }
 
-    public List<Unit> getUnits() {
+    @NonNull
+    List<Unit> getUnits() {
         return queue;
     }
 
-    public void addUnit(Unit unit) {
+    void addUnit(@NonNull Unit unit) {
         queue.offer(unit);
     }
 
-    public Unit findUnitOnCell(Cell cell) {
+    @NonNull
+    Optional<Unit> findUnitOnCell(Cell cell) {
         for (final Unit unit : queue) {
             if (unit.isOccupyCell(cell)) {
-                return unit;
+                return Optional.of(unit);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public void nextTurn() {
+    void nextTurn() {
         queue.offer(queue.poll());
     }
 }

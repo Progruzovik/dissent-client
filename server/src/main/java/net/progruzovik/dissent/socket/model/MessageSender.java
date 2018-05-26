@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -13,14 +15,14 @@ public final class MessageSender {
 
     private final static Logger log = LoggerFactory.getLogger(MessageSender.class);
 
-    private WebSocketSession session;
-    private final ObjectMapper mapper;
+    private @Nullable WebSocketSession session;
+    private final @NonNull ObjectMapper mapper;
 
-    public MessageSender(ObjectMapper mapper) {
+    public MessageSender(@NonNull ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
-    public void setSession(WebSocketSession session) {
+    public void setSession(@NonNull WebSocketSession session) {
         this.session = session;
     }
 

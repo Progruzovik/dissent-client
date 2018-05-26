@@ -1,5 +1,7 @@
 package net.progruzovik.dissent.model.entity;
 
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
 
 @Entity
@@ -28,7 +30,7 @@ public final class Hull {
     @JoinColumn(name = "textureId", nullable = false)
     private Texture texture;
 
-    public Hull(int id, String name, int actionPoints, int strength, int width, int height, Texture texture) {
+    public Hull(int id, @NonNull String name, int actionPoints, int strength, int width, int height, Texture texture) {
         this.id = id;
         this.name = name;
         this.actionPoints = actionPoints;
@@ -38,12 +40,13 @@ public final class Hull {
         this.texture = texture;
     }
 
-    public Hull() { }
+    Hull() { }
 
     public int getId() {
         return id;
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
@@ -64,6 +67,7 @@ public final class Hull {
         return height;
     }
 
+    @NonNull
     public Texture getTexture() {
         return texture;
     }

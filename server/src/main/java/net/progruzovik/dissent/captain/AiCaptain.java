@@ -9,7 +9,7 @@ import net.progruzovik.dissent.model.Message;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.model.util.Cell;
+import net.progruzovik.dissent.battle.model.util.Cell;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -22,10 +22,10 @@ import java.util.Random;
 public final class AiCaptain extends AbstractCaptain {
 
     public AiCaptain(HullDao hullDao, GunDao gunDao) {
-        final Hull aiHull = hullDao.getHull(3);
+        final Hull aiHull = hullDao.getHull(6);
         final Gun artillery = gunDao.getGun(2);
         getShips().add(new Ship(aiHull, artillery, null));
-        getShips().add(new Ship(hullDao.getHull(2), gunDao.getGun(3), null));
+        getShips().add(new Ship(hullDao.getHull(4), gunDao.getGun(3), null));
         getShips().add(new Ship(aiHull, artillery, null));
     }
 
