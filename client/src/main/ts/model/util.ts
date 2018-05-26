@@ -64,6 +64,10 @@ export interface Texture {
     readonly id: number, readonly name: string;
 }
 
+export interface Unit {
+    readonly actionPoints: number, readonly side: Side, readonly firstCell: druid.Point, readonly ship: ShipData;
+}
+
 export class LogEntry {
     constructor(readonly side: Side, readonly damage: number, readonly isTargetDestroyed: boolean,
                 readonly gunName: string, readonly unitHullName: string, readonly targetHullName: string) {}

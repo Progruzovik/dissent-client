@@ -1,4 +1,4 @@
-import { LogEntry, PathNode, ShipData, Side, Status, Texture } from "./model/util";
+import { LogEntry, PathNode, ShipData, Side, Status, Texture, Unit } from "./model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -15,22 +15,20 @@ export class WebSocketClient extends PIXI.utils.EventEmitter {
             this.emit(message.subject, message.data));
     }
 
-    requestTextures(callback: (textures: Texture[]) => void) {
-        this.makeRequest("textures", callback);
+    requestTextures(): Promise<Texture[]> {
+        return this.createRequest("textures");
     }
 
-    requestShips(callback: (ships: ShipData[]) => void) {
-        this.makeRequest("ships", callback);
+    requestShips(): Promise<ShipData[]> {
+        return this.createRequest("ships");
     }
 
-    requestMissions(callback: (missions: string[]) => void) {
-        this.makeRequest("missions", callback);
+    requestMissions(): Promise<string[]> {
+        return this.createRequest("missions");
     }
 
-    updateStatus(): Promise<Status> {
-        return new Promise<Status>((resolve) => {
-            this.makeRequest("status", (status: Status) => resolve(status));
-        });
+    requestStatus(): Promise<Status> {
+        return this.createRequest(WebSocketClient.STATUS);
     }
 
     addToQueue() {
@@ -45,18 +43,16 @@ export class WebSocketClient extends PIXI.utils.EventEmitter {
         this.connection.prepareMessage(new Message("startMission", { missionIndex: missionIndex }));
     }
 
-    requestBattleData(callback: (data: { playerSide: Side, fieldSize: druid.Point, log: LogEntry[],
-        asteroids: druid.Point[], clouds: druid.Point[], units: Unit[], destroyedUnits: Unit[] }) => void) {
-        this.makeRequest("battleData", callback);
+    requestBattleData(): Promise<BattleData> {
+        return this.createRequest("battleData");
     }
 
-    requestPathsAndReachableCells(callback: (data: { paths: PathNode[][], reachableCells: druid.Point[] }) => void) {
-        this.makeRequest("pathsAndReachableCells", callback);
+    requestPathsAndReachableCells(): Promise<{ paths: PathNode[][], reachableCells: druid.Point[] }> {
+        return this.createRequest("pathsAndReachableCells");
     }
 
-    requestGunCells(gunId: number,
-                    callback: (data: { shotCells: druid.Point[], targetCells: druid.Point[] }) => void) {
-        this.makeRequest("gunCells", callback, { gunId: gunId });
+    requestGunCells(gunId: number): Promise<{ shotCells: druid.Point[], targetCells: druid.Point[] }> {
+        return this.createRequest("gunCells", { gunId: gunId });
     }
 
     moveCurrentUnit(cell: druid.Point) {
@@ -64,25 +60,30 @@ export class WebSocketClient extends PIXI.utils.EventEmitter {
     }
 
     shootWithCurrentUnit(gunId: number, cell: druid.Point) {
-        this.connection.prepareMessage(new Message("shootWithCurrentUnit",
-            { gunId: gunId, x: cell.x, y: cell.y }));
+        this.connection.prepareMessage(new Message("shootWithCurrentUnit", { gunId: gunId, x: cell.x, y: cell.y }));
     }
 
     endTurn() {
         this.connection.prepareMessage(new Message("endTurn"));
     }
 
-    private makeRequest(name: string, callback?: (data: any) => void, data?: any) {
-        const request = "request" + name.charAt(0).toUpperCase() + name.slice(1);
-        this.connection.prepareMessage(new Message(request, data));
-        if (callback) {
-            this.once(name, callback);
-        }
+    private createRequest<T>(name: string, data?: any): Promise<T> {
+        return new Promise<T>(resolve => {
+            const requestName = `request${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+            this.connection.prepareMessage(new Message(requestName, data));
+            this.once(name, resolve);
+        });
     }
 }
 
-interface Unit {
-    readonly actionPoints: number, readonly side: Side, readonly firstCell: druid.Point, readonly ship: ShipData;
+interface BattleData {
+    readonly playerSide: Side;
+    readonly fieldSize: druid.Point;
+    readonly log: LogEntry[];
+    readonly asteroids: druid.Point[];
+    readonly clouds: druid.Point[];
+    readonly units: Unit[];
+    readonly destroyedUnits: Unit[];
 }
 
 class Message {
@@ -99,7 +100,6 @@ class WebSocketConnection extends PIXI.utils.EventEmitter {
     constructor(url: string) {
         super();
         this.webSocket = new WebSocket(url);
-
         this.webSocket.onopen = () => {
             for (const message of this.messagesToSend) {
                 this.sendMessage(message);

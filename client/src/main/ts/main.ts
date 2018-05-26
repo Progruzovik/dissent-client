@@ -20,24 +20,26 @@ document.title = "Dissent";
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
 
-const url: string = window.location.origin.replace("http", "ws");
-const webSocketClient = new WebSocketClient(`${url}/app/`);
-const statusService = new StatusService(webSocketClient);
-Promise.all([
-    getStrings("en"),
-    initClient(),
-    statusService.reload()
-]).then(data => {
-    updateLocalizedData(data[0]);
-    const hangarService = new HangarService(statusService, webSocketClient);
-    const hangarLayout = new HangarLayout(hangarService, statusService);
-    const missionsPage = new MissionsPage(hangarService, webSocketClient);
-    m.route(document.body, "/hangar/", {
-        "/battle/": new DissentResolver(statusService, new BattlePage(statusService, webSocketClient)),
-        "/hangar/": new PageWrapper(statusService, hangarLayout, new IndexPage(hangarService), "hangar"),
-        "/hangar/ship/:id/": new PageWrapper(statusService, hangarLayout, new ShipPage(hangarService), "hangar"),
-        "/missions/": new PageWrapper(statusService, hangarLayout, missionsPage, "missions"),
-        "/queue/": new PageWrapper(statusService, hangarLayout, new QueuePage(statusService, webSocketClient), "queue")
+initClient().then(() => {
+    const url: string = window.location.origin.replace("http", "ws");
+    const webSocketClient = new WebSocketClient(`${url}/app/`);
+    const statusService = new StatusService(webSocketClient);
+    Promise.all([
+        getStrings("en"),
+        statusService.reload()
+    ]).then(data => {
+        updateLocalizedData(data[0]);
+        const hangarService = new HangarService(statusService, webSocketClient);
+        const hangarLayout = new HangarLayout(hangarService, statusService);
+        const missionsPage = new MissionsPage(hangarService, webSocketClient);
+        const queuePage = new QueuePage(statusService, webSocketClient);
+        m.route(document.body, "/hangar/", {
+            "/battle/": new DissentResolver(statusService, new BattlePage(statusService, webSocketClient)),
+            "/hangar/": new PageWrapper(statusService, hangarLayout, new IndexPage(hangarService), "hangar"),
+            "/hangar/ship/:id/": new PageWrapper(statusService, hangarLayout, new ShipPage(hangarService), "hangar"),
+            "/missions/": new PageWrapper(statusService, hangarLayout, missionsPage, "missions"),
+            "/queue/": new PageWrapper(statusService, hangarLayout, queuePage, "queue")
+        });
     });
 });
 

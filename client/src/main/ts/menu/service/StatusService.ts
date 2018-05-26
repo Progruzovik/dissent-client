@@ -27,6 +27,6 @@ export class StatusService extends PIXI.utils.EventEmitter {
     }
 
     reload(): Promise<Status> {
-        return this.webSocketClient.updateStatus();
+        return this.webSocketClient.requestStatus();
     }
 }

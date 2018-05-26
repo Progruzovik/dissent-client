@@ -28,16 +28,16 @@ export class HangarService extends PIXI.utils.EventEmitter {
     }
 
     private updateData() {
-        this.webSocketClient.requestShips(sd => {
+        Promise.all([
+            this.webSocketClient.requestShips(),
+            this.webSocketClient.requestMissions()
+        ]).then(data => {
             this.ships.length = 0;
-            for (const data of sd) {
-                this.ships.push(new Ship(data));
+            for (const shipData of data[0]) {
+                this.ships.push(new Ship(shipData));
             }
-            this.emit(druid.Event.UPDATE);
-        });
-        this.webSocketClient.requestMissions(md => {
             this.missions.length = 0;
-            this.missions.push(...md);
+            this.missions.push(...data[1]);
             this.emit(druid.Event.UPDATE);
         });
     }

@@ -36,7 +36,7 @@ export class UnitService extends PIXI.utils.EventEmitter {
                     this.tryToEndTurn();
                 });
                 unit.on(Unit.PREPARE_TO_SHOT, () => {
-                    webSocketClient.requestGunCells(unit.preparedGunId, g => {
+                    webSocketClient.requestGunCells(unit.preparedGunId).then(g => {
                         this.emit(Unit.PREPARE_TO_SHOT);
                         for (const cell of g.shotCells) {
                             this.emit(UnitService.SHOT_CELL, cell);

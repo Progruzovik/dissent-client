@@ -1,7 +1,6 @@
 import { StatusService } from "./service/StatusService";
 import { BattleApp } from "../battle/BattleApp";
 import { WebSocketClient } from "../WebSocketClient";
-import { Status } from "../model/util";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
 
@@ -12,11 +11,7 @@ export class BattlePage implements m.ClassComponent {
     constructor(private readonly statusService: StatusService, private readonly webSocketClient: WebSocketClient) {}
 
     oninit() {
-        this.statusService.on(druid.Event.UPDATE, (status: Status) => {
-            if (status != Status.InBattle) {
-                m.route.set("/hangar/");
-            }
-        });
+        this.statusService.on(StatusService.BATTLE_FINISH, () => m.route.set("/hangar/"));
     }
 
     oncreate() {
@@ -24,7 +19,7 @@ export class BattlePage implements m.ClassComponent {
         this.battle = new BattleApp(window.devicePixelRatio || 1,
             window.innerWidth, window.innerHeight, canvas, this.webSocketClient);
         window.onresize = () => this.battle.resize(window.innerWidth, window.innerHeight);
-        this.battle.once(druid.Event.DONE, () => this.webSocketClient.updateStatus());
+        this.battle.once(druid.Event.DONE, () => this.webSocketClient.requestStatus());
     }
 
     onremove() {

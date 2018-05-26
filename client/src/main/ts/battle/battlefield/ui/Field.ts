@@ -100,7 +100,7 @@ export class Field extends druid.ScrollContainer {
         this.markCurrent.cell = this.unitService.activeUnit.cell;
         this.pathMarks.removeChildren();
         if (this.unitService.isCurrentPlayerTurn) {
-            this.webSocketClient.requestPathsAndReachableCells(d => {
+            this.webSocketClient.requestPathsAndReachableCells().then(d => {
                 const unitWidth: number = this.unitService.activeUnit.ship.hull.width;
                 const unitHeight: number = this.unitService.activeUnit.ship.hull.height;
                 const activeAreaOffset: druid.Point = this.unitService.activeUnit.findCenterCell();

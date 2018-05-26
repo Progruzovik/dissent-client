@@ -13,28 +13,28 @@ export class BattleApp extends druid.App {
     constructor(resolution: number, width: number, height: number, canvas: HTMLCanvasElement,
                 private readonly webSocketClient: WebSocketClient) {
         super(resolution, width, height, canvas);
-        this.webSocketClient.requestTextures(textures => {
-            for (const texture of textures) {
+        Promise.all([
+            this.webSocketClient.requestTextures(),
+            this.webSocketClient.requestBattleData()
+        ]).then(data => {
+            for (const texture of data[0]) {
                 PIXI.loader.add(texture.name, `/img/${texture.name}.png`);
             }
             PIXI.loader.load(() => {
-                this.webSocketClient.requestBattleData(d => {
-                    const unitsArray: Unit[] = [];
-                    for (const unitData of d.units) {
-                        unitsArray.push(new Unit(unitData.actionPoints, d.playerSide, unitData.side,
-                            unitData.firstCell, new Ship(unitData.ship), this.projectileService));
-                    }
-                    for (const unitData of d.destroyedUnits) {
-                        const unit = new Unit(unitData.actionPoints, d.playerSide,
-                            unitData.side, unitData.firstCell, new Ship(unitData.ship));
-                        unit.strength = 0;
-                        unitsArray.push(unit);
-                    }
-
-                    this.root = new BattlefieldRoot(d.fieldSize, d.playerSide, d.log,
-                        unitsArray, d.asteroids, d.clouds, this.projectileService, this.webSocketClient);
-                    this.root.once(druid.Event.DONE, () => this.emit(druid.Event.DONE));
-                });
+                const unitsArray: Unit[] = [];
+                for (const unitData of data[1].units) {
+                    unitsArray.push(new Unit(unitData.actionPoints, data[1].playerSide, unitData.side,
+                        unitData.firstCell, new Ship(unitData.ship), this.projectileService));
+                }
+                for (const unitData of data[1].destroyedUnits) {
+                    const unit = new Unit(unitData.actionPoints, data[1].playerSide,
+                        unitData.side, unitData.firstCell, new Ship(unitData.ship));
+                    unit.strength = 0;
+                    unitsArray.push(unit);
+                }
+                this.root = new BattlefieldRoot(data[1].fieldSize, data[1].playerSide, data[1].log,
+                    unitsArray, data[1].asteroids, data[1].clouds, this.projectileService, this.webSocketClient);
+                this.root.once(druid.Event.DONE, () => this.emit(druid.Event.DONE));
             });
         });
     }
