@@ -6,19 +6,19 @@ import * as m from "mithril";
 
 export class IndexPage implements m.ClassComponent {
 
-    constructor(private readonly hangarData: HangarService) {}
+    constructor(private readonly hangarService: HangarService) {}
 
     oninit() {
-        this.hangarData.on(druid.Event.UPDATE, () => m.redraw());
+        this.hangarService.on(druid.Event.UPDATE, () => m.redraw());
     }
 
     onremove() {
-        this.hangarData.off(druid.Event.UPDATE);
+        this.hangarService.off(druid.Event.UPDATE);
     }
 
     view(): m.Children {
         const ships: HyperNode = {
-            children: this.hangarData.ships.map((s, i) => {
+            children: this.hangarService.ships.map((s, i) => {
                 const imgShip: HyperNode = {
                     attrs: {
                         src: `../img/${s.hull.texture.name}.png`,

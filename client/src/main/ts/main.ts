@@ -6,8 +6,8 @@ import { ShipPage } from "./menu/hangar/ShipPage";
 import { HangarLayout } from "./menu/hangar/HangarLayout";
 import { HangarService } from "./menu/hangar/service/HangarService";
 import { StatusService } from "./menu/service/StatusService";
+import { Status } from "./model/util";
 import { WebSocketClient } from "./WebSocketClient";
-import { DissentResolver, PageWrapper } from "./menu/util";
 import { getStrings, initClient } from "./request";
 import { updateLocalizedData } from "./localizer";
 import "skeleton-css/css/normalize.css";
@@ -29,14 +29,44 @@ Promise.all([
     statusService.reload()
 ]).then(data => {
     updateLocalizedData(data[0]);
-    const hangarData = new HangarService(statusService, webSocketClient);
-    const hangarLayout = new HangarLayout(hangarData, statusService);
-    const missionsPage = new MissionsPage(hangarData, webSocketClient);
+    const hangarService = new HangarService(statusService, webSocketClient);
+    const hangarLayout = new HangarLayout(hangarService, statusService);
+    const missionsPage = new MissionsPage(hangarService, webSocketClient);
     m.route(document.body, "/hangar/", {
         "/battle/": new DissentResolver(statusService, new BattlePage(statusService, webSocketClient)),
-        "/hangar/": new PageWrapper(statusService, hangarLayout, new IndexPage(hangarData), "hangar"),
-        "/hangar/ship/:id/": new PageWrapper(statusService, hangarLayout, new ShipPage(hangarData), "hangar"),
+        "/hangar/": new PageWrapper(statusService, hangarLayout, new IndexPage(hangarService), "hangar"),
+        "/hangar/ship/:id/": new PageWrapper(statusService, hangarLayout, new ShipPage(hangarService), "hangar"),
         "/missions/": new PageWrapper(statusService, hangarLayout, missionsPage, "missions"),
         "/queue/": new PageWrapper(statusService, hangarLayout, new QueuePage(statusService, webSocketClient), "queue")
     });
 });
+
+class DissentResolver implements m.RouteResolver {
+
+    constructor(private readonly statusService: StatusService, private readonly page: m.ClassComponent) {}
+
+    onmatch(args: any, path: string): void | m.ClassComponent {
+        if (this.statusService.currentStatus == Status.Queued && path != "/queue/") {
+            m.route.set("/queue/");
+        } else if (this.statusService.currentStatus == Status.InBattle && path != "/battle/") {
+            m.route.set("/battle/");
+        } else if (this.statusService.currentStatus != Status.InBattle && path == "/battle/") {
+            m.route.set("/hangar/");
+        } else {
+            return this.page;
+        }
+    }
+}
+
+class PageWrapper extends DissentResolver {
+
+    constructor(statusService: StatusService, private readonly layout: m.ClassComponent,
+                page: m.ClassComponent, private readonly location: string) {
+        super(statusService, page);
+    }
+
+    render(vnode: m.CVnode<any>): m.Children {
+        vnode.attrs.location = this.location;
+        return m(this.layout, vnode.attrs, vnode);
+    }
+}

@@ -10,20 +10,20 @@ export class ShipPage implements m.ClassComponent {
 
     private selectedGunId = 0;
 
-    constructor(private readonly hangarData: HangarService) {}
+    constructor(private readonly hangarService: HangarService) {}
 
     oninit() {
-        this.hangarData.on(druid.Event.UPDATE, () => m.redraw());
+        this.hangarService.on(druid.Event.UPDATE, () => m.redraw());
     }
 
     onremove() {
         this.selectedGunId = 0;
-        this.hangarData.rightPanelContent = null;
-        this.hangarData.off(druid.Event.UPDATE);
+        this.hangarService.rightPanelContent = null;
+        this.hangarService.off(druid.Event.UPDATE);
     }
 
     view(vnode: m.CVnode<any>): m.Children {
-        const ship: Ship = this.hangarData.ships[vnode.attrs.id];
+        const ship: Ship = this.hangarService.ships[vnode.attrs.id];
         if (!ship) return null;
 
         const imgShip = new Image();
@@ -49,7 +49,7 @@ export class ShipPage implements m.ClassComponent {
                             class: `${css.blockModule} grey interactive interactive-yellow centered`,
                             onclick: () => {
                                 this.selectedGunId = g.id;
-                                this.hangarData.rightPanelContent = (
+                                this.hangarService.rightPanelContent = (
                                     m(".grey.page.flex.centered",
                                         m(`.${css.panemModuleInfo}`,
                                             m("h4", m("b", l(g.name))),

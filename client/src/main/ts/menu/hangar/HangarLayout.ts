@@ -9,7 +9,7 @@ import * as m from "mithril";
 
 export class HangarLayout implements m.ClassComponent {
 
-    constructor(private readonly hangarData: HangarService, private readonly statusService: StatusService) {}
+    constructor(private readonly hangarService: HangarService, private readonly statusService: StatusService) {}
 
     oninit() {
         this.statusService.on(druid.Event.UPDATE, (status: Status) => {
@@ -48,9 +48,9 @@ export class HangarLayout implements m.ClassComponent {
 
         const rightPanel: HyperNode = {
             attrs: {
-                class: this.hangarData.rightPanelContent ? css.rightPanel : ""
+                class: this.hangarService.rightPanelContent ? css.rightPanel : ""
             },
-            children: this.hangarData.rightPanelContent
+            children: this.hangarService.rightPanelContent
         };
 
         return m("",
