@@ -85,7 +85,8 @@ export class Field extends druid.ScrollContainer {
             this.addCurrentPathMarks();
         });
         unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
-        projectileService.on(AbstractProjectile.NEW_SHOT, (projectile: AbstractProjectile) => this.content.addChild(projectile));
+        projectileService.on(AbstractProjectile.NEW_SHOT, (projectile: AbstractProjectile) =>
+            this.content.addChild(projectile));
     }
 
     removePathsAndMarksExceptCurrent() {
