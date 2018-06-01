@@ -52,7 +52,7 @@ export class BattlefieldRoot extends druid.AbstractBranch {
                 this.unitPopUp = null;
             }
         });
-        this.field.on(druid.Event.MOUSE_DOWN, () => {
+        this.field.on(Field.INTERACTION, () => {
             if (this.unitPopUp) {
                 this.unitPopUp.destroy({ children: true });
                 this.unitPopUp = null;
