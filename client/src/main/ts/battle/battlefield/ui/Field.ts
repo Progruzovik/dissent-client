@@ -13,6 +13,7 @@ export class Field extends druid.ScrollContainer {
     static readonly LINE_WIDTH = 1.5;
     static readonly PATH_MARK_COLOR = 0x555500;
 
+    private wasInteracted = false;
     private paths: PathNode[][];
 
     private selectedMarks: MarksContainer;
@@ -87,6 +88,8 @@ export class Field extends druid.ScrollContainer {
         unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
         projectileService.on(AbstractProjectile.NEW_SHOT, (projectile: AbstractProjectile) =>
             this.content.addChild(projectile));
+        this.content.on(druid.Event.MOUSE_DOWN, () => this.wasInteracted = false);
+        this.on(Field.INTERACTION, () => this.wasInteracted = true);
     }
 
     removePathsAndMarksExceptCurrent() {
@@ -119,7 +122,11 @@ export class Field extends druid.ScrollContainer {
                     this.pathMarks.addChild(marks);
 
                     activeArea.on(druid.Event.MOUSE_OVER, () => this.showPath(marks));
-                    activeArea.on(druid.Event.CLICK, () => this.webSocketClient.moveCurrentUnit(cell));
+                    activeArea.on(druid.Event.MOUSE_UP, () => {
+                        if (!this.wasInteracted) {
+                            this.webSocketClient.moveCurrentUnit(cell);
+                        }
+                    });
                     activeArea.on(druid.Event.MOUSE_OUT, () => {
                         if (this.selectedMarks == marks) {
                             marks.resetMarks();
