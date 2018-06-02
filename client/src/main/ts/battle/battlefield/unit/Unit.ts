@@ -6,7 +6,6 @@ import * as druid from "pixi-druid";
 
 export class Unit extends druid.AbstractActor {
 
-    static readonly ALPHA_DESTROYED = 0.5;
     static readonly NO_GUN_ID = -1;
 
     static readonly UPDATE_STATS = "updateStats";
@@ -18,22 +17,18 @@ export class Unit extends druid.AbstractActor {
 
     private _preparedGunId: number = Unit.NO_GUN_ID;
     private _currentMove: Move;
+    private sprite: PIXI.Sprite;
 
     constructor(private _actionPoints: number, playerSide: Side, readonly side: Side, private _cell: druid.Point,
                 readonly ship: Ship, private readonly projectileService?: ProjectileService) {
         super();
         this.interactive = true;
         this.frameColor = playerSide == this.side ? 0x00ff00 : 0xff0000;
+        this.updatePosition();
 
-        const sprite: PIXI.Sprite = ship.createSprite();
-        if (side == Side.Right) {
-            sprite.scale.x = -1;
-            sprite.anchor.x = 1;
-        }
-        this.addChild(sprite);
+        this.updateSprite();
         const frameWidth = ship.hull.width * Field.CELL_SIZE.x, frameHeight = ship.hull.height * Field.CELL_SIZE.y;
         this.addChild(new druid.Frame(frameWidth, frameHeight, this.frameColor, 0.75));
-        this.updatePosition();
     }
 
     get isDestroyed(): boolean {
@@ -51,7 +46,10 @@ export class Unit extends druid.AbstractActor {
     set strength(value: number) {
         this.ship.strength = value;
         if (this.isDestroyed) {
-            this.alpha = Unit.ALPHA_DESTROYED;
+            this.updateSprite();
+            if (this.ship.hull.width != 1 || this.ship.hull.height != 1) {
+                this.alpha = 0.5;
+            }
             this.emit(Unit.DESTROY);
         }
     }
@@ -136,5 +134,17 @@ export class Unit extends druid.AbstractActor {
     private updatePosition() {
         this.x = this.cell.x * Field.CELL_SIZE.x + Field.LINE_WIDTH / 2;
         this.y = this.cell.y * Field.CELL_SIZE.y + Field.LINE_WIDTH / 2;
+    }
+
+    private updateSprite() {
+        if (this.sprite) {
+            this.removeChild(this.sprite);
+        }
+        this.sprite = this.ship.createSprite();
+        if (this.side == Side.Right) {
+            this.sprite.scale.x = -1;
+            this.sprite.anchor.x = 1;
+        }
+        this.addChildAt(this.sprite, 0);
     }
 }

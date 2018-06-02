@@ -25,24 +25,25 @@ CREATE TABLE gun(
   textureId INT NOT NULL REFERENCES texture(id));
 
 INSERT INTO texture(id, name) VALUES
-  (1, 'hull-2-2'),
-  (2, 'hull-3-1'),
-  (3, 'hull-4-2'),
-  (4, 'hull-6-1'),
-  (5, 'hull-7-1'),
-  (6, 'gun-1'),
-  (7, 'gun-2'),
-  (8, 'gun-3'),
-  (9, 'space'),
-  (10, 'asteroid'),
-  (11, 'cloud');
+  (1, 'hull-1-destroyed'),
+  (2, 'hull-2-2'),
+  (3, 'hull-3-1'),
+  (4, 'hull-4-2'),
+  (5, 'hull-6-1'),
+  (6, 'hull-7-1'),
+  (7, 'gun-1'),
+  (8, 'gun-2'),
+  (9, 'gun-3'),
+  (10, 'space'),
+  (11, 'asteroid'),
+  (12, 'cloud');
 
 INSERT INTO hull(id, name, actionPoints, strength, width, height, textureId) VALUES
-  (2, 'Trainhauler', 4, 4, 1, 1, 1),
-  (3, 'Pointer', 4, 4, 1, 1, 2),
-  (4, 'Catfish', 3, 9, 1, 1, 3),
-  (6, 'Cheeki-Breeki', 4, 6, 1, 1, 4),
-  (7, 'Chrome', 5, 9, 2, 1, 5);
+  (2, 'Trainhauler', 4, 4, 1, 1, 2),
+  (3, 'Pointer', 4, 4, 1, 1, 3),
+  (4, 'Catfish', 3, 9, 1, 1, 4),
+  (6, 'Cheeki-Breeki', 4, 6, 1, 1, 5),
+  (7, 'Chrome', 5, 9, 2, 1, 6);
 
 INSERT INTO gunType(id, name) VALUES
   (1, 'artillery'),
@@ -50,6 +51,6 @@ INSERT INTO gunType(id, name) VALUES
   (3, 'shell');
 
 INSERT INTO gun(id, name, shotCost, damage, radius, gunTypeId, textureId) VALUES
-  (1, 'shrapnel', 1, 2, 6, 3, 6),
-  (2, 'artillery', 2, 3, 12, 1, 7),
-  (3, 'laser', 2, 3, 10, 2, 8);
+  (1, 'shrapnel', 1, 2, 6, 3, 7),
+  (2, 'artillery', 2, 3, 12, 1, 8),
+  (3, 'laser', 2, 3, 10, 2, 9);
