@@ -36,7 +36,6 @@ export class Controls extends druid.AbstractBranch {
         this.layoutButtons.addElement(this.bgHull);
 
         const bgStats = new druid.Rectangle();
-        bgStats.alpha = 0.75;
         this.barStrength.txtMain.style = new PIXI.TextStyle({ fill: "white", fontSize: 26, fontWeight: "bold" });
         bgStats.addChild(this.barStrength);
         this.layoutButtons.addElement(bgStats);
