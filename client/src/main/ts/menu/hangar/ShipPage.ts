@@ -40,18 +40,18 @@ export class ShipPage implements m.ClassComponent {
                 if (this.selectedGunId == g.id) {
                     blockGun = {
                         attrs: {
-                            class: `${css.blockModule} grey border-yellow centered`,
+                            class: `${css.module} ${css.selectedModule} grey centered`,
                         }
                     };
                 } else {
                     blockGun = {
                         attrs: {
-                            class: `${css.blockModule} grey interactive interactive-yellow centered`,
+                            class: `${css.module} ${css.interactive} grey link centered`,
                             onclick: () => {
                                 this.selectedGunId = g.id;
                                 this.hangarService.rightPanelContent = (
-                                    m(".grey.page.flex.centered",
-                                        m(`.${css.panemModuleInfo}`,
+                                    m(".flex.page.grey",
+                                        m(".centered",
                                             m("h4", m("b", l(g.name))),
                                             m("hr"),
                                             m("h5", `${l("Type")}: ${l(g.typeName)}`),
@@ -87,7 +87,7 @@ export class ShipPage implements m.ClassComponent {
                 m(".flex.block",
                     m(".block",
                         m.trust(imgShip.outerHTML),
-                        m(".flex.red.bar", `${ship.strength}/${ship.hull.strength}`)
+                        m(`.flex.red.${css.bar}`, `${ship.strength}/${ship.hull.strength}`)
                     ),
                     blockGuns.children
                 ),

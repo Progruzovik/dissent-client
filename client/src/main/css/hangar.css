@@ -20,12 +20,21 @@
     grid-row: 1 / 3;
 }
 
-:local .block-module {
+:local .interactive:hover {
+    outline: 1px solid yellow;
+    outline-offset: -1px;
+}
+
+:local .bar {
+    height: 18px;
+}
+
+:local .module {
     width: 120px;
     height: 120px;
 }
 
-:local .panel-module-info {
-    padding: 0.3rem;
-    width: 100%;
+:local .selected-module {
+    outline: 1px solid yellow;
+    outline-offset: -1px;
 }

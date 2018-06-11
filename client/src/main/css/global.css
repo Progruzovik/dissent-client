@@ -39,10 +39,6 @@ hr {
     margin-bottom: 2rem;
 }
 
-.bar {
-    height: 18px;
-}
-
 .block {
     margin-right: 1.2rem;
     margin-bottom: 1.2rem;
@@ -66,10 +62,6 @@ hr {
     flex-direction: column;
 }
 
-.interactive {
-    cursor: pointer;
-}
-
 .grey {
     background-color: grey;
 }
@@ -78,18 +70,12 @@ hr {
     background-color: lightgrey;
 }
 
+.link {
+    cursor: pointer;
+}
+
 .red {
     background-color: red;
-}
-
-.border-yellow {
-    outline: 1px solid yellow;
-    outline-offset: -1px;
-}
-
-.interactive-yellow:hover {
-    outline: 1px solid yellow;
-    outline-offset: -1px;
 }
 
 .title {
