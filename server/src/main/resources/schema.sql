@@ -24,6 +24,11 @@ CREATE TABLE gun(
   gunTypeId INT NOT NULL REFERENCES gunType(id),
   textureId INT NOT NULL REFERENCES texture(id));
 
+CREATE TABLE mission(
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(30) NOT NULL
+);
+
 INSERT INTO texture(id, name) VALUES
   (1, 'hull-1-destroyed'),
   (2, 'hull-2-2'),
@@ -54,3 +59,6 @@ INSERT INTO gun(id, name, shotCost, damage, radius, gunTypeId, textureId) VALUES
   (1, 'shrapnel', 1, 2, 6, 3, 7),
   (2, 'artillery', 2, 3, 12, 1, 8),
   (3, 'laser', 2, 3, 10, 2, 9);
+
+INSERT INTO mission(id, name) VALUES
+  (1, 'borderPatrol');

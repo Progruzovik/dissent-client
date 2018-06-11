@@ -48,6 +48,10 @@ export interface ShipData {
     readonly secondGun: Gun;
 }
 
+export interface Mission {
+    readonly id: number, readonly name: string;
+}
+
 export interface Move {
     readonly cost: number, readonly cells: druid.Point[];
 }

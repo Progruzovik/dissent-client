@@ -98,9 +98,9 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     }
 
     @Override
-    public void startMission(int missionIndex) {
+    public void startMission(int missionId) {
         if (getStatus() != Status.IDLE) return;
-        missionDigest.startMission(this, missionIndex);
+        missionDigest.startMission(this, missionId);
     }
 
     private void onBattleFinish() {

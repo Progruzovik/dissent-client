@@ -19,13 +19,13 @@ export class MissionsPage implements m.ClassComponent {
 
     view(): m.Children {
         return m(".page.flex.flex-column",
-            this.hangarService.missions.map((md, i) => {
+            this.hangarService.missions.map(mission => {
                 const btnMission: HyperNode = {
                     attrs: {
-                        onclick: () => this.webSocketClient.startMission(i)
+                        onclick: () => this.webSocketClient.startMission(mission.id)
                     }
                 };
-                return m("button[type=button]", btnMission.attrs, l(md));
+                return m("button[type=button]", btnMission.attrs, l(mission.name));
             })
         );
     }

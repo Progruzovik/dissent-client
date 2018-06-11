@@ -2,15 +2,14 @@ package net.progruzovik.dissent.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.battle.model.field.GunCells;
+import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.captain.Player;
 import net.progruzovik.dissent.captain.SessionPlayer;
+import net.progruzovik.dissent.dao.MissionDao;
 import net.progruzovik.dissent.dao.TextureDao;
-import net.progruzovik.dissent.service.MissionDigest;
-import net.progruzovik.dissent.socket.model.IncomingMessage;
 import net.progruzovik.dissent.model.Message;
-import net.progruzovik.dissent.battle.model.util.Cell;
+import net.progruzovik.dissent.socket.model.IncomingMessage;
 import net.progruzovik.dissent.socket.model.Reader;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -23,11 +22,10 @@ import java.util.Map;
 @Component
 public final class MessageHandler extends TextWebSocketHandler {
 
-    private final @NonNull ObjectMapper mapper;
-    private final @NonNull Map<String, Reader> readers = new HashMap<>();
+    private final ObjectMapper mapper;
+    private final Map<String, Reader> readers = new HashMap<>();
 
-    public MessageHandler(@NonNull ObjectMapper mapper,
-                          @NonNull MissionDigest missionDigest, @NonNull TextureDao textureDao) {
+    public MessageHandler(ObjectMapper mapper, TextureDao textureDao, MissionDao missionDao) {
         this.mapper = mapper;
         readers.put("requestTextures", (p, d) ->
                 p.getMessageSender().send(new Message<>("textures", textureDao.getTextures())));
@@ -36,10 +34,10 @@ public final class MessageHandler extends TextWebSocketHandler {
                 p.getMessageSender().send(new Message<>("status", p.getStatus())));
         readers.put("requestShips", (p, d) -> p.getMessageSender().send(new Message<>("ships", p.getShips())));
         readers.put("requestMissions", (p, d) ->
-                p.getMessageSender().send(new Message<>("missions", missionDigest.getMissions())));
+                p.getMessageSender().send(new Message<>("missions", missionDao.getMissions())));
         readers.put("addToQueue", (p, d) -> p.addToQueue());
         readers.put("removeFromQueue", (p, d) -> p.removeFromQueue());
-        readers.put("startMission", (p, d) -> p.startMission(d.get("missionIndex")));
+        readers.put("startMission", (p, d) -> p.startMission(d.get("missionId")));
 
         readers.put("requestBattleData", (p, d) ->
                 p.getMessageSender().send(new Message<>("battleData", p.getBattle().getBattleData(p.getId()))));

@@ -1,4 +1,4 @@
-import { LogEntry, PathNode, ShipData, Side, Status, Texture, Unit } from "./model/util";
+import { LogEntry, Mission, PathNode, ShipData, Side, Status, Texture, Unit } from "./model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -23,7 +23,7 @@ export class WebSocketClient extends PIXI.utils.EventEmitter {
         return this.createRequest("ships");
     }
 
-    requestMissions(): Promise<string[]> {
+    requestMissions(): Promise<Mission[]> {
         return this.createRequest("missions");
     }
 
@@ -39,8 +39,8 @@ export class WebSocketClient extends PIXI.utils.EventEmitter {
         this.connection.prepareMessage(new Message("removeFromQueue"));
     }
 
-    startMission(missionIndex: number) {
-        this.connection.prepareMessage(new Message("startMission", { missionIndex: missionIndex }));
+    startMission(missionId: number) {
+        this.connection.prepareMessage(new Message("startMission", { missionId: missionId }));
     }
 
     requestBattleData(): Promise<BattleData> {

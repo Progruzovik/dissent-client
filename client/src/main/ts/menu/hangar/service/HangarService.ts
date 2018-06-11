@@ -4,11 +4,12 @@ import { WebSocketClient } from "../../../WebSocketClient";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 import * as m from "mithril";
+import { Mission } from "../../../model/util";
 
 export class HangarService extends PIXI.utils.EventEmitter {
 
     readonly ships: Ship[] = [];
-    readonly missions: string[] = [];
+    readonly missions: Mission[] = [];
 
     private _rightPanelContent: m.Children;
 
