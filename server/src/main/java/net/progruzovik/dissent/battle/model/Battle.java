@@ -12,9 +12,6 @@ import org.springframework.lang.Nullable;
 
 import java.util.*;
 
-import static net.progruzovik.dissent.battle.model.field.Field.BORDER_INDENT;
-import static net.progruzovik.dissent.battle.model.field.Field.UNIT_INDENT;
-
 public final class Battle extends Observable {
 
     public static final String TIME_TO_ACT = "timeToAct";
@@ -86,8 +83,9 @@ public final class Battle extends Observable {
     public void addShips(Side side, List<Ship> ships) {
         for (int i = 0; i < ships.size(); i++) {
             final Ship ship = ships.get(i);
-            final int column = side == Side.RIGHT ? field.getSize().getX() - ship.getHull().getWidth() : 0;
-            final Unit unit = new Unit(new Cell(column, i * UNIT_INDENT + BORDER_INDENT), side, ship);
+            final int x = side == Side.RIGHT ? field.getSize().getX() - ship.getHull().getWidth() : 0;
+            final int y = i * (Field.UNIT_INDENT + 1) + Field.BORDER_INDENT;
+            final Unit unit = new Unit(new Cell(x, y), side, ship);
             field.addUnit(unit);
             unitQueue.addUnit(unit);
         }

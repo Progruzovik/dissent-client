@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 
 public final class Field {
 
-    public static final int UNIT_INDENT = 3;
+    public static final int UNIT_INDENT = 2;
     public static final int BORDER_INDENT = 4;
 
     private final @NonNull Map map;
@@ -313,7 +313,7 @@ public final class Field {
             for (int j = 0; j < getSize().getY(); j++) {
                 final int randomInt = ThreadLocalRandom.current().nextInt(0, 4);
                 if (randomInt == 0) {
-                    if (asteroids.size() < getSize().getY()) {
+                    if (asteroids.size() < getSize().getY() - 1) {
                         final Cell asteroid = new Cell(i, j);
                         asteroids.add(asteroid);
                         map.createLocation(asteroid, LocationStatus.ASTEROID);
