@@ -21,6 +21,7 @@ CREATE TABLE gun(
   shotCost INT NOT NULL,
   damage INT NOT NULL,
   radius INT NOT NULL,
+  accuracy REAL NOT NULL,
   gunTypeId INT NOT NULL REFERENCES gunType(id),
   textureId INT NOT NULL REFERENCES texture(id));
 
@@ -55,10 +56,10 @@ INSERT INTO gunType(id, name) VALUES
   (2, 'beam'),
   (3, 'shell');
 
-INSERT INTO gun(id, name, shotCost, damage, radius, gunTypeId, textureId) VALUES
-  (1, 'shrapnel', 1, 2, 6, 3, 7),
-  (2, 'artillery', 2, 3, 12, 1, 8),
-  (3, 'laser', 2, 3, 10, 2, 9);
+INSERT INTO gun(id, name, shotCost, damage, radius, accuracy, gunTypeId, textureId) VALUES
+  (1, 'shrapnel', 2, 3, 10, 0.6, 3, 7),
+  (2, 'artillery', 2, 3, 12, 0.7, 1, 8),
+  (3, 'laser', 1, 2, 6, 0.8, 2, 9);
 
 INSERT INTO mission(id, name) VALUES
   (1, 'borderPatrol');

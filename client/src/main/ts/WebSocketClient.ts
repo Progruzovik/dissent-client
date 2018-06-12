@@ -1,4 +1,4 @@
-import { LogEntry, Mission, PathNode, ShipData, Side, Status, Texture, Unit } from "./model/util";
+import { LogEntry, Mission, PathNode, ShipData, Side, Status, Target, Texture, Unit } from "./model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -51,7 +51,7 @@ export class WebSocketClient extends PIXI.utils.EventEmitter {
         return this.createRequest("pathsAndReachableCells");
     }
 
-    requestGunCells(gunId: number): Promise<{ shotCells: druid.Point[], targetCells: druid.Point[] }> {
+    requestGunCells(gunId: number): Promise<{ targets: Target[], shotCells: druid.Point[] }> {
         return this.createRequest("gunCells", { gunId: gunId });
     }
 

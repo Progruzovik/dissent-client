@@ -1,6 +1,6 @@
 import { Unit } from "./Unit";
 import { WebSocketClient } from "../../../WebSocketClient";
-import { ActionType, Gun, Side } from "../../../model/util";
+import { ActionType, Gun, Side, Target } from "../../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -12,8 +12,7 @@ export class UnitService extends PIXI.utils.EventEmitter {
     static readonly TARGET_CELL = "targetCell";
 
     private readonly unitQueue: Unit[] = [];
-    private targetCells: druid.Point[];
-    private readonly currentTargets: Unit[] = [];
+    private readonly targets: Target[] = [];
 
     constructor(private readonly playerSide: Side, units: Unit[],
                 private readonly webSocketClient: WebSocketClient) {
@@ -22,9 +21,10 @@ export class UnitService extends PIXI.utils.EventEmitter {
             if (unit.strength > 0) {
                 this.unitQueue.push(unit);
                 unit.on(druid.Event.CLICK, () => {
-                    const index: number = this.currentTargets.indexOf(unit);
-                    if (index != -1) {
-                        webSocketClient.shootWithCurrentUnit(this.activeUnit.preparedGunId, this.targetCells[index]);
+                    const target: Target = this.findTargetForUnit(unit);
+                    if (target) {
+                        const gunId: number = this.activeUnit.preparedGunId;
+                        webSocketClient.shootWithCurrentUnit(gunId, target.cell);
                     }
                 });
                 unit.on(ActionType.Move, () => {
@@ -41,15 +41,17 @@ export class UnitService extends PIXI.utils.EventEmitter {
                         for (const cell of g.shotCells) {
                             this.emit(UnitService.SHOT_CELL, cell);
                         }
-                        this.targetCells = g.targetCells;
-                        this.currentTargets.length = 0;
-                        for (const cell of this.targetCells) {
-                            this.currentTargets.push(this.findUnitOnCell(cell));
-                            this.emit(UnitService.TARGET_CELL, cell);
+                        this.targets.length = 0;
+                        this.targets.push(...g.targets);
+                        for (const target of this.targets) {
+                            this.emit(UnitService.TARGET_CELL, target.cell);
                         }
                     });
                 });
-                unit.on(Unit.NOT_PREPARE_TO_SHOT, () => this.emit(Unit.NOT_PREPARE_TO_SHOT));
+                unit.on(Unit.NOT_PREPARE_TO_SHOT, () => {
+                    this.targets.length = 0;
+                    this.emit(Unit.NOT_PREPARE_TO_SHOT);
+                });
                 unit.once(Unit.DESTROY, () => {
                     this.unitQueue.splice(this.unitQueue.indexOf(unit), 1);
                     unit.off(druid.Event.CLICK);
@@ -61,11 +63,11 @@ export class UnitService extends PIXI.utils.EventEmitter {
             }
 
             unit.on(druid.Event.MOUSE_OVER, (e: PIXI.interaction.InteractionEvent) => {
-                if (this.activeUnit.preparedGunId != Unit.NO_GUN_ID
-                    && this.activeUnit.side != unit.side && unit.strength > 0) {
+                const target: Target = this.findTargetForUnit(unit);
+                if (target) {
                     unit.alpha = 0.75;
                 }
-                this.emit(UnitService.UNIT_MOUSE_OVER, e.data.global, unit);
+                this.emit(UnitService.UNIT_MOUSE_OVER, e.data.global, unit, target ? target.hittingChance : null);
             });
             unit.on(druid.Event.MOUSE_OUT, () => {
                 if (unit.strength > 0) {
@@ -92,6 +94,10 @@ export class UnitService extends PIXI.utils.EventEmitter {
         this.unitQueue.push(this.unitQueue.shift());
         this.activeUnit.activate();
         this.emit(ActionType.NextTurn);
+    }
+
+    private findTargetForUnit(unit: Unit): Target {
+        return this.targets.filter(t => t.cell.x == unit.cell.x && t.cell.y == unit.cell.y)[0];
     }
 
     private tryToEndTurn() {

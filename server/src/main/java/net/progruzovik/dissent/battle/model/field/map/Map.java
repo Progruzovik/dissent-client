@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.model.field;
+package net.progruzovik.dissent.battle.model.field.map;
 
 import net.progruzovik.dissent.battle.model.Unit;
 import net.progruzovik.dissent.battle.model.util.Cell;
@@ -7,12 +7,12 @@ import org.springframework.lang.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-final class Map {
+public final class Map {
 
     private final @NonNull Cell size;
     private final @NonNull List<List<Location>> locations;
 
-    Map(@NonNull Cell size) {
+    public Map(@NonNull Cell size) {
         this.size = size;
         locations = new ArrayList<>(size.getX());
         for (int i = 0; i < size.getX(); i++) {
@@ -24,11 +24,11 @@ final class Map {
     }
 
     @NonNull
-    Cell getSize() {
+    public Cell getSize() {
         return size;
     }
 
-    int findMovementCost(@NonNull Cell cell, int width, int height) {
+    public int findMovementCost(@NonNull Cell cell, int width, int height) {
         int result = 0;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -45,24 +45,24 @@ final class Map {
     }
 
     @NonNull
-    LocationStatus getLocationStatus(@NonNull Cell cell) {
-        return locations.get(cell.getX()).get(cell.getY()).getCurrentStatus();
-    }
-
-    @NonNull
-    LocationStatus getLocationStatus(int x, int y) {
+    public LocationStatus getLocationStatus(int x, int y) {
         return locations.get(x).get(y).getCurrentStatus();
     }
 
-    void createLocation(@NonNull Cell cell, @NonNull LocationStatus defaultStatus) {
+    @NonNull
+    public LocationStatus getLocationStatus(@NonNull Cell cell) {
+        return getLocationStatus(cell.getX(), cell.getY());
+    }
+
+    public void createLocation(@NonNull Cell cell, @NonNull LocationStatus defaultStatus) {
         locations.get(cell.getX()).set(cell.getY(), new Location(defaultStatus));
     }
 
-    void addUnit(@NonNull Unit unit) {
+    public void addUnit(@NonNull Unit unit) {
         setLocationsStatus(unit.getFirstCell(), unit.getWidth(), unit.getHeight(), unit.getLocationStatus());
     }
 
-    void moveUnit(@NonNull Unit unit, @NonNull Cell newCell) {
+    public void moveUnit(@NonNull Unit unit, @NonNull Cell newCell) {
         final Cell firstCell = unit.getFirstCell();
         for (int i = 0; i < unit.getWidth(); i++) {
             for (int j = 0; j < unit.getHeight(); j++) {
@@ -72,7 +72,7 @@ final class Map {
         setLocationsStatus(newCell, unit.getWidth(), unit.getHeight(), unit.getLocationStatus());
     }
 
-    void destroyUnit(@NonNull Unit unit) {
+    public void destroyUnit(@NonNull Unit unit) {
         final int width = unit.getWidth(), height = unit.getHeight();
         setLocationsStatus(unit.getFirstCell(), width, height, LocationStatus.UNIT_DESTROYED);
     }

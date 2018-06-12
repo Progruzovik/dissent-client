@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.model.field;
+package net.progruzovik.dissent.battle.model.field.map;
 
 import org.springframework.lang.NonNull;
 
@@ -21,7 +21,6 @@ final class Location {
     int getMovementCost() {
         switch (defaultStatus) {
             case ASTEROID: return IMPOSSIBLE_MOVEMENT_COST;
-            case CLOUD: return 2;
             default: return 1;
         }
     }

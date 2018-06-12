@@ -27,6 +27,7 @@ export interface Gun {
     readonly shotCost: number;
     readonly damage: number;
     readonly radius: number;
+    readonly accuracy: number;
     readonly typeName: GunType;
     readonly texture: Texture;
 }
@@ -46,6 +47,10 @@ export interface ShipData {
     readonly hull: Hull;
     readonly firstGun: Gun;
     readonly secondGun: Gun;
+}
+
+export interface Target {
+    readonly cell: druid.Point, readonly hittingChance: number;
 }
 
 export interface Mission {

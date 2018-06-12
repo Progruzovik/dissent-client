@@ -57,7 +57,8 @@ export class ShipPage implements m.ClassComponent {
                                             m("h5", `${l("Type")}: ${l(g.typeName)}`),
                                             m("h5", `${l("ShotCost")}: ${g.shotCost}`),
                                             m("h5", `${l("Damage")}: ${g.damage}`),
-                                            m("h5", `${l("Radius")}: ${g.radius}`)
+                                            m("h5", `${l("Radius")}: ${g.radius}`),
+                                            m("h5", `${l("Accuracy")}: ${g.accuracy * 100}%`)
                                         )
                                     )
                                 );

@@ -4,6 +4,12 @@ import net.progruzovik.dissent.battle.exception.InvalidMoveException;
 import net.progruzovik.dissent.battle.exception.InvalidUnitException;
 import net.progruzovik.dissent.battle.model.Side;
 import net.progruzovik.dissent.battle.model.Unit;
+import net.progruzovik.dissent.battle.model.field.gun.GunCells;
+import net.progruzovik.dissent.battle.model.field.gun.Target;
+import net.progruzovik.dissent.battle.model.field.map.LocationStatus;
+import net.progruzovik.dissent.battle.model.field.map.Map;
+import net.progruzovik.dissent.battle.model.field.move.Move;
+import net.progruzovik.dissent.battle.model.field.move.PathNode;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.battle.model.util.Point;
 import net.progruzovik.dissent.model.entity.Gun;
@@ -19,7 +25,8 @@ public final class Field {
     public static final int UNIT_INDENT = 2;
     public static final int BORDER_INDENT = 4;
 
-    private final @NonNull Map map;
+    private final @NonNull
+    net.progruzovik.dissent.battle.model.field.map.Map map;
     private final @NonNull List<Cell> asteroids = new ArrayList<>();
     private final @NonNull List<Cell> clouds = new ArrayList<>();
     private final @NonNull
@@ -29,7 +36,8 @@ public final class Field {
     private int preparedGunId = Gun.NO_GUN_ID;
     private final @NonNull List<List<PathNode>> paths;
     private @NonNull List<Cell> reachableCells = Collections.emptyList();
-    private final @NonNull GunCells gunCells = new GunCells();
+    private final @NonNull
+    GunCells gunCells = new GunCells();
 
     public Field(@NonNull Cell size) {
         map = new Map(size);
@@ -80,7 +88,7 @@ public final class Field {
     }
 
     public boolean canActiveUnitHitCell(int gunId, @NonNull Cell cell) {
-        return preparedGunId == gunId && gunCells.getTargetCells().contains(cell);
+        return preparedGunId == gunId && gunCells.getTargets().stream().anyMatch(t -> t.getCell().equals(cell));
     }
 
     public void addUnit(@NonNull Unit unit) {
@@ -155,26 +163,25 @@ public final class Field {
             if (activeUnit != null) {
                 final Cell unitCell = activeUnit.getFirstCell();
                 final int radius = activeUnit.getShip().findGunById(gunId).getRadius();
+                final Predicate<Cell> checkCellAvailable = c -> {
+                    for (int i = 0; i < activeUnit.getWidth(); i++) {
+                        for (int j = 0; j < activeUnit.getHeight(); j++) {
+                            final Cell cell = new Cell(unitCell.getX() + i, unitCell.getY() + j);
+                            if (cell.isInBorders(map.getSize()) && isCellCanBeShot(cell, c)) return true;
+                        }
+                    }
+                    return false;
+                };
                 final List<Cell> availableCells = findNeighborsInRadius(activeUnit.getFirstCell(),
-                        activeUnit.getWidth(), activeUnit.getHeight(), radius, c -> {
-                            for (int i = 0; i < activeUnit.getWidth(); i++) {
-                                for (int j = 0; j < activeUnit.getHeight(); j++) {
-                                    final Cell cell = new Cell(unitCell.getX() + i, unitCell.getY() + j);
-                                    if (cell.isInBorders(map.getSize()) && isCellCanBeShot(cell, c)) {
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
-                        });
+                        activeUnit.getWidth(), activeUnit.getHeight(), radius, checkCellAvailable);
                 final LocationStatus targetStatus = activeUnit.getLocationStatus() == LocationStatus.UNIT_LEFT
                         ? LocationStatus.UNIT_RIGHT : LocationStatus.UNIT_LEFT;
                 for (final Cell cell : availableCells) {
                     final LocationStatus locationStatus = map.getLocationStatus(cell);
-                    if (locationStatus == LocationStatus.EMPTY) {
+                    if (locationStatus == targetStatus) {
+                        gunCells.getTargets().add(new Target(cell, 1));
+                    } else if (locationStatus.isFree()) {
                         gunCells.getShotCells().add(cell);
-                    }  else if (locationStatus == targetStatus) {
-                        gunCells.getTargetCells().add(cell);
                     }
                 }
             }
@@ -185,20 +192,17 @@ public final class Field {
     public void destroyUnit(@NonNull Unit unit) {
         destroyedUnits.add(unit);
         map.destroyUnit(unit);
-        gunCells.getTargetCells().remove(unit.getFirstCell());
+        gunCells.getTargets().removeIf(t -> t.getCell().equals(unit.getFirstCell()));
     }
 
     private boolean isCellReachable(@NonNull Cell cell) {
         if (paths.get(cell.getX()).get(cell.getY()) == null) return false;
         assert activeUnit != null;
-
         for (int i = 0; i < activeUnit.getWidth(); i++) {
             for (int j = 0; j < activeUnit.getHeight(); j++) {
                 final Cell nextCell = new Cell(cell.getX() + i, cell.getY() + j);
-                if (!nextCell.isInBorders(map.getSize())) return false;
                 final LocationStatus status = map.getLocationStatus(nextCell);
-                if (status != LocationStatus.EMPTY
-                        && status != LocationStatus.CLOUD && !activeUnit.isOccupyCell(nextCell)) {
+                if (!nextCell.isInBorders(map.getSize()) || !status.isFree() && !activeUnit.isOccupyCell(nextCell)) {
                     return false;
                 }
             }
@@ -210,10 +214,8 @@ public final class Field {
         assert activeUnit != null;
         final List<Cell> cellsInBetween = findCellsInBetween(from, cell);
         for (int k = 1; k < cellsInBetween.size() - 1; k++) {
-            final LocationStatus locationStatus = map.getLocationStatus(cellsInBetween.get(k));
-            if (locationStatus != LocationStatus.EMPTY && !activeUnit.isOccupyCell(cellsInBetween.get(k))) {
-                return false;
-            }
+            final LocationStatus status = map.getLocationStatus(cellsInBetween.get(k));
+            if (!status.isFree() && !activeUnit.isOccupyCell(cellsInBetween.get(k))) return false;
         }
         return true;
     }
@@ -309,19 +311,28 @@ public final class Field {
     }
 
     private void generateEnvironment() {
+        generateAsteroids();
+        for (int i = getSize().getX() / 4; i < getSize().getX() * 3 / 4; i++) {
+            for (int j = 0; j < getSize().getY(); j++) {
+                if (map.getLocationStatus(i, j) != LocationStatus.ASTEROID) {
+                    if (ThreadLocalRandom.current().nextInt(0, 4) == 0) {
+                        final Cell cloud = new Cell(i, j);
+                        clouds.add(cloud);
+                        map.createLocation(cloud, LocationStatus.CLOUD);
+                    }
+                }
+            }
+        }
+    }
+
+    private void generateAsteroids() {
         for (int i = getSize().getX() / 3; i < getSize().getX() * 2 / 3; i++) {
             for (int j = 0; j < getSize().getY(); j++) {
-                final int randomInt = ThreadLocalRandom.current().nextInt(0, 4);
-                if (randomInt == 0) {
-                    if (asteroids.size() < getSize().getY() - 1) {
-                        final Cell asteroid = new Cell(i, j);
-                        asteroids.add(asteroid);
-                        map.createLocation(asteroid, LocationStatus.ASTEROID);
-                    }
-                } else if (randomInt == 1) {
-                    final Cell cloud = new Cell(i, j);
-                    clouds.add(cloud);
-                    map.createLocation(cloud, LocationStatus.CLOUD);
+                if (ThreadLocalRandom.current().nextInt(0, getSize().getX() / 3) == 0) {
+                    final Cell asteroid = new Cell(i, j);
+                    asteroids.add(asteroid);
+                    map.createLocation(asteroid, LocationStatus.ASTEROID);
+                    if (asteroids.size() == getSize().getY() - 1) return;
                 }
             }
         }

@@ -2,7 +2,7 @@ package net.progruzovik.dissent.captain;
 
 import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Unit;
-import net.progruzovik.dissent.battle.model.field.GunCells;
+import net.progruzovik.dissent.battle.model.field.gun.GunCells;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.Message;
@@ -46,7 +46,7 @@ public final class AiCaptain extends AbstractCaptain {
                             && canCurrentUnitMove) {
                         final int firstGunId = unit.getShip().getFirstGun().getId();
                         final GunCells gunCells = getBattle().getGunCells(firstGunId);
-                        if (gunCells.getTargetCells().isEmpty()) {
+                        if (gunCells.getTargets().isEmpty()) {
                             final List<Cell> reachableCells = getBattle().getReachableCells();
                             if (reachableCells.isEmpty()) {
                                 canCurrentUnitMove = false;
@@ -56,7 +56,7 @@ public final class AiCaptain extends AbstractCaptain {
                                         reachableCells.get(random.nextInt(reachableCells.size())));
                             }
                         } else {
-                            getBattle().shootWithCurrentUnit(getId(), firstGunId, gunCells.getTargetCells().get(0));
+                            getBattle().shootWithCurrentUnit(getId(), firstGunId, gunCells.getTargets().get(0).getCell());
                         }
                     }
                 }

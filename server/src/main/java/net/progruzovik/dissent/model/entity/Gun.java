@@ -25,6 +25,9 @@ public final class Gun {
     @Column(nullable = false)
     private int radius;
 
+    @Column(nullable = false)
+    private float accuracy;
+
     @ManyToOne
     @JoinColumn(name = "gunTypeId", nullable = false)
     private GunType type;
@@ -33,13 +36,14 @@ public final class Gun {
     @JoinColumn(name = "textureId", nullable = false)
     private Texture texture;
 
-    public Gun(int id, @NonNull String name, int shotCost, int damage,
-               int radius, @NonNull GunType type, @NonNull Texture texture) {
+    public Gun(int id, @NonNull String name, int shotCost, int damage, int radius,
+               float accuracy, @NonNull GunType type, @NonNull Texture texture) {
         this.id = id;
         this.name = name;
         this.shotCost = shotCost;
         this.damage = damage;
         this.radius = radius;
+        this.accuracy = accuracy;
         this.type = type;
         this.texture = texture;
     }
@@ -65,6 +69,10 @@ public final class Gun {
 
     public int getRadius() {
         return radius;
+    }
+
+    public float getAccuracy() {
+        return accuracy;
     }
 
     @NonNull

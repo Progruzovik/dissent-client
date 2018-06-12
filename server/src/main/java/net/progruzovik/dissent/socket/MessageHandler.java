@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.progruzovik.dissent.battle.model.field.GunCells;
+import net.progruzovik.dissent.battle.model.field.gun.GunCells;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.captain.Player;
 import net.progruzovik.dissent.captain.SessionPlayer;

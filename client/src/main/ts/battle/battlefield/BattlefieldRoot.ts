@@ -38,11 +38,11 @@ export class BattlefieldRoot extends druid.AbstractBranch {
         unitService.emit(ActionType.NextTurn);
         this.actionReceiver = new ActionReceiver(this.field, this.controls, unitService, webSocketClient);
 
-        unitService.on(UnitService.UNIT_MOUSE_OVER, (mousePos: PIXI.Point, unit: Unit) => {
+        unitService.on(UnitService.UNIT_MOUSE_OVER, (mousePos: PIXI.Point, unit: Unit, hittingChance?: number) => {
             if (this.unitPopUp) {
                 this.unitPopUp.destroy({ children: true });
             }
-            this.unitPopUp = new PopUp(this.freeWidth, this.contentHeight, unit);
+            this.unitPopUp = new PopUp(this.freeWidth, this.contentHeight, unit, hittingChance);
             this.addChild(this.unitPopUp);
         });
         unitService.on(UnitService.UNIT_MOUSE_OUT, (unit: Unit) => {

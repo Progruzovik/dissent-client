@@ -1,6 +1,7 @@
 import { Unit } from "../unit/Unit";
 import { Side } from "../../../model/util";
 import * as druid from "pixi-druid";
+import { l } from "../../../localizer";
 
 export class PopUp extends druid.AbstractBranch {
 
@@ -11,8 +12,9 @@ export class PopUp extends druid.AbstractBranch {
 
     private readonly bgPopUp = new druid.Rectangle(PopUp.WIDTH, PopUp.HEIGHT, 0x333333);
     private readonly barStrength = this.unit.ship.createStrengthBar(this.bgPopUp.width);
+    private readonly txtHittingChance: PIXI.Text;
 
-    constructor(rootWidth: number, rootHeight: number, readonly unit: Unit) {
+    constructor(rootWidth: number, rootHeight: number, readonly unit: Unit, hittingChance?: number) {
         super();
         const unitBounds: PIXI.Rectangle = unit.getBounds(true);
         this.lineToWindow.position.set(unitBounds.x + unitBounds.width / 2, unitBounds.y);
@@ -26,6 +28,11 @@ export class PopUp extends druid.AbstractBranch {
         const frame = new druid.Frame(this.bgPopUp.width, this.bgPopUp.height, unit.frameColor);
         this.bgPopUp.addChild(frame);
         this.addChild(this.bgPopUp);
+        if (hittingChance) {
+            const text = `${l("HittingChance")}: ${hittingChance * 100}%`;
+            this.txtHittingChance = new PIXI.Text(text, { fill: "white", fontSize: 14 });
+            this.addChild(this.txtHittingChance);
+        }
         this.resize(rootWidth, rootHeight);
 
         unit.on(Unit.UPDATE_STATS, () => this.updateStats());
@@ -43,6 +50,9 @@ export class PopUp extends druid.AbstractBranch {
             this.bgPopUp.x = this.width - this.bgPopUp.width - druid.INDENT / 2;
         }
         this.bgPopUp.y = druid.INDENT / 2;
+        if (this.txtHittingChance) {
+            this.txtHittingChance.position.set(this.bgPopUp.x, this.bgPopUp.y + this.bgPopUp.height);
+        }
         this.lineToWindow.directTo(this.bgPopUp.x + this.bgPopUp.width / 2, this.bgPopUp.y + this.bgPopUp.height);
     }
 

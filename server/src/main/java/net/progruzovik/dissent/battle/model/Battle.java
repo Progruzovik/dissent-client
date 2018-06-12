@@ -2,8 +2,8 @@ package net.progruzovik.dissent.battle.model;
 
 import net.progruzovik.dissent.battle.exception.InvalidShotException;
 import net.progruzovik.dissent.battle.model.field.Field;
-import net.progruzovik.dissent.battle.model.field.GunCells;
-import net.progruzovik.dissent.battle.model.field.PathNode;
+import net.progruzovik.dissent.battle.model.field.gun.GunCells;
+import net.progruzovik.dissent.battle.model.field.move.PathNode;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.model.Message;
 import net.progruzovik.dissent.model.entity.Ship;
