@@ -45,8 +45,13 @@ final class Map {
     }
 
     @NonNull
-    LocationStatus getLocationStatus(Cell cell) {
+    LocationStatus getLocationStatus(@NonNull Cell cell) {
         return locations.get(cell.getX()).get(cell.getY()).getCurrentStatus();
+    }
+
+    @NonNull
+    LocationStatus getLocationStatus(int x, int y) {
+        return locations.get(x).get(y).getCurrentStatus();
     }
 
     void createLocation(@NonNull Cell cell, @NonNull LocationStatus defaultStatus) {

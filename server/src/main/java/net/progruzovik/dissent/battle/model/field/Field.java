@@ -1,16 +1,17 @@
 package net.progruzovik.dissent.battle.model.field;
 
-import net.progruzovik.dissent.battle.model.Side;
-import net.progruzovik.dissent.battle.model.Unit;
 import net.progruzovik.dissent.battle.exception.InvalidMoveException;
 import net.progruzovik.dissent.battle.exception.InvalidUnitException;
-import net.progruzovik.dissent.model.entity.Gun;
+import net.progruzovik.dissent.battle.model.Side;
+import net.progruzovik.dissent.battle.model.Unit;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.battle.model.util.Point;
+import net.progruzovik.dissent.model.entity.Gun;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
 public final class Field {
@@ -21,7 +22,8 @@ public final class Field {
     private final @NonNull Map map;
     private final @NonNull List<Cell> asteroids = new ArrayList<>();
     private final @NonNull List<Cell> clouds = new ArrayList<>();
-    private final @NonNull List<Unit> destroyedUnits = new ArrayList<>();
+    private final @NonNull
+    List<Unit> destroyedUnits = new ArrayList<>();
 
     private @Nullable Unit activeUnit = null;
     private int preparedGunId = Gun.NO_GUN_ID;
@@ -35,23 +37,7 @@ public final class Field {
         for (int i = 0; i < size.getX(); i++) {
             paths.add(new ArrayList<>(Collections.nCopies(size.getY(), null)));
         }
-
-        asteroids.add(new Cell(5, 3));
-        asteroids.add(new Cell(5, 4));
-        asteroids.add(new Cell(5, 5));
-        asteroids.add(new Cell(6, 4));
-        asteroids.add(new Cell(6, 5));
-        for (final Cell asteroid : asteroids) {
-            map.createLocation(asteroid, LocationStatus.ASTEROID);
-        }
-        clouds.add(new Cell(getSize().getX() - 5, 3));
-        clouds.add(new Cell(getSize().getX() - 5, 4));
-        clouds.add(new Cell(getSize().getX() - 5, 5));
-        clouds.add(new Cell(getSize().getX() - 6, 4));
-        clouds.add(new Cell(getSize().getX() - 6, 5));
-        for (final Cell cloud : clouds) {
-            map.createLocation(cloud, LocationStatus.CLOUD);
-        }
+        generateEnvironment();
     }
 
     @NonNull
@@ -320,5 +306,24 @@ public final class Field {
             nextCell = new Cell(nextCell);
         }
         return result;
+    }
+
+    private void generateEnvironment() {
+        for (int i = getSize().getX() / 3; i < getSize().getX() * 2 / 3; i++) {
+            for (int j = 0; j < getSize().getY(); j++) {
+                final int randomInt = ThreadLocalRandom.current().nextInt(0, 4);
+                if (randomInt == 0) {
+                    if (asteroids.size() < getSize().getY()) {
+                        final Cell asteroid = new Cell(i, j);
+                        asteroids.add(asteroid);
+                        map.createLocation(asteroid, LocationStatus.ASTEROID);
+                    }
+                } else if (randomInt == 1) {
+                    final Cell cloud = new Cell(i, j);
+                    clouds.add(cloud);
+                    map.createLocation(cloud, LocationStatus.CLOUD);
+                }
+            }
+        }
     }
 }
