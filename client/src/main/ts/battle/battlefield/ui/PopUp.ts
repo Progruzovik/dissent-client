@@ -8,7 +8,7 @@ export class PopUp extends druid.AbstractBranch {
     static readonly WIDTH = 200;
     static readonly HEIGHT = 100;
 
-    private readonly lineToWindow = new druid.Line(1, this.unit.frameColor);
+    private readonly lineToWindow = new druid.Line(1, this.unit.frame.color);
 
     private readonly bgPopUp = new druid.Rectangle(PopUp.WIDTH, PopUp.HEIGHT, 0x333333);
     private readonly barStrength = this.unit.ship.createStrengthBar(this.bgPopUp.width);
@@ -16,7 +16,7 @@ export class PopUp extends druid.AbstractBranch {
 
     constructor(rootWidth: number, rootHeight: number, readonly unit: Unit, hittingChance?: number) {
         super();
-        const unitBounds: PIXI.Rectangle = unit.getBounds(true);
+        const unitBounds: PIXI.Rectangle = unit.getBounds();
         this.lineToWindow.position.set(unitBounds.x + unitBounds.width / 2, unitBounds.y);
         this.addChild(this.lineToWindow);
 
@@ -25,11 +25,11 @@ export class PopUp extends druid.AbstractBranch {
         layoutWindow.addElement(unit.ship.createSprite());
         layoutWindow.addElement(this.barStrength);
         this.bgPopUp.addChild(layoutWindow);
-        const frame = new druid.Frame(this.bgPopUp.width, this.bgPopUp.height, unit.frameColor);
+        const frame = new druid.Frame(this.bgPopUp.width, this.bgPopUp.height, unit.frame.color);
         this.bgPopUp.addChild(frame);
         this.addChild(this.bgPopUp);
         if (hittingChance) {
-            const text = `${l("HittingChance")}: ${hittingChance * 100}%`;
+            const text = `${l("HittingChance")}: ${Math.round(hittingChance * 100)}%`;
             this.txtHittingChance = new PIXI.Text(text, { fill: "white", fontSize: 14 });
             this.addChild(this.txtHittingChance);
         }

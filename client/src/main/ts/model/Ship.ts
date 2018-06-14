@@ -45,7 +45,11 @@ export class Ship implements ShipData {
     createSprite(): PIXI.Sprite {
         const textureName: string = this.strength == 0 && this.hull.width == 1 && this.hull.height == 1
             ? "hull-1-destroyed" : this.hull.texture.name;
-        return new PIXI.Sprite(PIXI.loader.resources[textureName].texture);
+        const sprite = new PIXI.Sprite(PIXI.loader.resources[textureName].texture);
+        if (this.strength == 0 && (this.hull.width != 1 || this.hull.height != 1)) {
+            sprite.alpha = 0.5;
+        }
+        return sprite;
     }
 
     createStrengthBar(width: number, height: number = 15, color: number = 0xff0000): druid.ProgressBar {

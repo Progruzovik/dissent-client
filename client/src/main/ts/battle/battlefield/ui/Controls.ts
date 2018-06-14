@@ -93,7 +93,7 @@ export class Controls extends druid.AbstractBranch {
     private updateInterface() {
         const activeUnit: Unit = this.unitService.activeUnit;
         this.spriteHull.texture = PIXI.loader.resources[activeUnit.ship.hull.texture.name].texture;
-        this.frameUnit.color = activeUnit.frameColor;
+        this.frameUnit.color = activeUnit.frame.color;
         this.barStrength.maximum = activeUnit.ship.hull.strength;
         this.barStrength.value = activeUnit.strength;
         this.btnFirstGun.gun = activeUnit.ship.firstGun;
@@ -112,7 +112,7 @@ class GunButton extends druid.ToggleButton {
             if (isToggled && this.gun) {
                 unitService.activeUnit.preparedGunId = this.gun.id;
             } else {
-                unitService.activeUnit.preparedGunId = Unit.NO_GUN_ID;
+                unitService.activeUnit.preparedGunId = Unit.NO_GUN;
             }
         });
     }

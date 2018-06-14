@@ -29,7 +29,7 @@ export class LeftPanel extends druid.AbstractBranch {
                 spriteUnit.anchor.set(0.5, 0.5);
                 spriteUnit.position.set(iconUnit.width / 2, iconUnit.height / 2);
                 iconUnit.addChild(spriteUnit);
-                iconUnit.addChild(new druid.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, units[i].frameColor));
+                iconUnit.addChild(new druid.Frame(Field.CELL_SIZE.x, Field.CELL_SIZE.y, units[i].frame.color));
                 this.layoutQueue.addElement(iconUnit);
 
                 units[i].on(Unit.DESTROY, () => {
