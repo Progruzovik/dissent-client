@@ -21,7 +21,7 @@ public final class Battle extends Observable {
     private final @NonNull String leftCaptainId;
     private final @NonNull String rightCaptainId;
 
-    private final @NonNull List<LogEntry> log = new ArrayList<>();
+    private final @NonNull List<LogEntry> battleLog = new ArrayList<>();
 
     private final @NonNull UnitQueue unitQueue;
     private final @NonNull Field field;
@@ -45,7 +45,7 @@ public final class Battle extends Observable {
 
     @NonNull
     public BattleData getBattleData(String captainId) {
-        return new BattleData(getCaptainSide(captainId), field.getSize(), log,
+        return new BattleData(getCaptainSide(captainId), field.getSize(), battleLog,
                 field.getAsteroids(), field.getClouds(), unitQueue.getUnits(), field.getDestroyedUnits());
     }
 
@@ -102,36 +102,35 @@ public final class Battle extends Observable {
     }
 
     public void shootWithCurrentUnit(String captainId, int gunId, Cell cell) {
-        if (isIdBelongsToCurrentCaptain(captainId) && field.canActiveUnitHitCell(gunId, cell)) {
-            final Unit currentUnit = unitQueue.getCurrentUnit();
-            final Unit target = unitQueue.findUnitOnCell(cell).orElseThrow(() ->
-                    new InvalidShotException(String.format("There is no target on cell %s!", cell)));
+        final double hittingChance = field.findHittingChance(gunId, cell);
+        if (!isIdBelongsToCurrentCaptain(captainId) || hittingChance == 0) return;
+        final Unit currentUnit = unitQueue.getCurrentUnit();
+        final Unit targetUnit = unitQueue.findUnitOnCell(cell)
+                .orElseThrow(() -> new InvalidShotException(String.format("There is no target on cell %s!", cell)));
 
-            final int damage = currentUnit.shoot(gunId, target);
-            field.updateActiveUnit();
-            log.add(new LogEntry(currentUnit.getSide(), damage,
-                    target.isDestroyed(), currentUnit.getShip().findGunById(gunId),
-                    currentUnit.getShip().getHull(), target.getShip().getHull()));
-            notifyObservers(new Message<>("shot", new Shot(gunId, damage, target.getFirstCell())));
-            if (target.getShip().getStrength() == 0) {
-                unitQueue.getUnits().remove(target);
-                field.destroyUnit(target);
-                if (!unitQueue.hasUnitsOnBothSides()) {
-                    isRunning = false;
-                    field.resetActiveUnit();
-                    notifyObservers(new Message<>("battleFinish"));
-                    deleteObservers();
-                }
+        final int damage = currentUnit.shoot(gunId, hittingChance, targetUnit);
+        field.updateActiveUnit();
+        battleLog.add(new LogEntry(currentUnit.getSide(), damage,
+                targetUnit.isDestroyed(), currentUnit.getShip().findGunById(gunId),
+                currentUnit.getShip().getHull(), targetUnit.getShip().getHull()));
+        notifyObservers(new Message<>("shot", new Shot(gunId, damage, targetUnit.getFirstCell())));
+        if (targetUnit.getShip().getStrength() == 0) {
+            unitQueue.getUnits().remove(targetUnit);
+            field.destroyUnit(targetUnit);
+            if (!unitQueue.hasUnitsOnBothSides()) {
+                isRunning = false;
+                field.resetActiveUnit();
+                notifyObservers(new Message<>("battleFinish"));
+                deleteObservers();
             }
         }
     }
 
     public void endTurn(String captainId) {
-        if (isIdBelongsToCurrentCaptain(captainId)) {
-            unitQueue.nextTurn();
-            notifyObservers(new Message<>("nextTurn"));
-            onNextTurn();
-        }
+        if (!isIdBelongsToCurrentCaptain(captainId)) return;
+        unitQueue.nextTurn();
+        notifyObservers(new Message<>("nextTurn"));
+        onNextTurn();
     }
 
     @NonNull

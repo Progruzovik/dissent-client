@@ -6,9 +6,9 @@ import org.springframework.lang.NonNull;
 public final class Target {
 
     private final @NonNull Cell cell;
-    private final float hittingChance;
+    private final double hittingChance;
 
-    public Target(@NonNull Cell cell, float hittingChance) {
+    public Target(@NonNull Cell cell, double hittingChance) {
         this.cell = cell;
         this.hittingChance = hittingChance;
     }
@@ -18,7 +18,7 @@ public final class Target {
         return cell;
     }
 
-    public float getHittingChance() {
+    public double getHittingChance() {
         return hittingChance;
     }
 }

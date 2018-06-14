@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.model.field.map;
+package net.progruzovik.dissent.battle.model.field.location;
 
 import net.progruzovik.dissent.battle.model.Unit;
 import net.progruzovik.dissent.battle.model.util.Cell;
@@ -7,12 +7,12 @@ import org.springframework.lang.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Map {
+public final class BattleMap {
 
     private final @NonNull Cell size;
     private final @NonNull List<List<Location>> locations;
 
-    public Map(@NonNull Cell size) {
+    public BattleMap(@NonNull Cell size) {
         this.size = size;
         locations = new ArrayList<>(size.getX());
         for (int i = 0; i < size.getX(); i++) {
@@ -28,20 +28,17 @@ public final class Map {
         return size;
     }
 
-    public int findMovementCost(@NonNull Cell cell, int width, int height) {
-        int result = 0;
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                final Cell nextCell = new Cell(cell.getX() + i, cell.getY() + j);
-                if (nextCell.isInBorders(size)) {
-                    final int movementCost = locations.get(nextCell.getX()).get(nextCell.getY()).getMovementCost();
-                    if (movementCost > result) {
-                        result = movementCost;
-                    }
+    public int findMovementCost(@NonNull Cell cell, int unitWidth, int unitHeight) {
+        int bestMovementCost = 0;
+        for (int i = 0; i < unitWidth; i++) {
+            for (int j = 0; j < unitHeight; j++) {
+                final int movementCost = locations.get(cell.getX() + i).get(cell.getY() + j).getMovementCost();
+                if (movementCost > bestMovementCost) {
+                    bestMovementCost = movementCost;
                 }
             }
         }
-        return result;
+        return bestMovementCost;
     }
 
     @NonNull

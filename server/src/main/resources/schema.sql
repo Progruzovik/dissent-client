@@ -57,8 +57,8 @@ INSERT INTO gunType(id, name) VALUES
   (3, 'shell');
 
 INSERT INTO gun(id, name, shotCost, damage, radius, accuracy, gunTypeId, textureId) VALUES
-  (1, 'shrapnel', 2, 3, 10, 0.6, 3, 7),
-  (2, 'artillery', 2, 3, 12, 0.7, 1, 8),
+  (1, 'shrapnel', 2, 3, 10, 0.66, 3, 7),
+  (2, 'artillery', 2, 3, 12, 0.66, 1, 8),
   (3, 'laser', 1, 2, 6, 0.8, 2, 9);
 
 INSERT INTO mission(id, name) VALUES

@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.battle.model.util;
 
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 public class Point<T> {
 
@@ -36,8 +37,8 @@ public class Point<T> {
     }
 
     @Override
-    public boolean equals(@NonNull Object obj) {
-        if (getClass() != obj.getClass()) return false;
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null || getClass() != obj.getClass()) return false;
         final Cell cell = (Cell) obj;
         return getX().equals(cell.getX()) && getY().equals(cell.getY());
     }

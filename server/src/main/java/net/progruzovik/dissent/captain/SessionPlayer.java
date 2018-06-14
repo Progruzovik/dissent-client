@@ -69,7 +69,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
             if (message.getSubject().equals("battleFinish")) {
                 onBattleFinish();
             }
-            messageSender.send((Message<?>) data);
+            messageSender.send(message);
         }
     }
 
