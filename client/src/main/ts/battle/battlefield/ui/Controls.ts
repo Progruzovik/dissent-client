@@ -1,5 +1,5 @@
 import { Field } from "./Field";
-import { Log } from "./Log";
+import { BattleLog } from "./BattleLog";
 import { Unit } from "../unit/Unit";
 import { UnitService } from "../unit/UnitService";
 import { ScalableVerticalLayout } from "../../ui/ScalableVerticalLayout";
@@ -10,7 +10,7 @@ import * as druid from "pixi-druid";
 
 export class Controls extends druid.AbstractBranch {
 
-    readonly log: Log;
+    readonly log: BattleLog;
 
     private readonly spriteHull = new PIXI.Sprite();
     private readonly frameUnit = new druid.Frame();
@@ -27,7 +27,7 @@ export class Controls extends druid.AbstractBranch {
     constructor(playerSide: Side, log: LogEntry[],
                 private readonly unitService: UnitService, webSocketClient: WebSocketClient) {
         super();
-        this.log = new Log(playerSide, log);
+        this.log = new BattleLog(playerSide, log);
         this.addChild(this.log);
 
         this.spriteHull.anchor.set(0.5, 0.5);

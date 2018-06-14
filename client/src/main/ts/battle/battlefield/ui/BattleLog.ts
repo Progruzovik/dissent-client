@@ -4,7 +4,7 @@ import * as css  from "../../../../css/battle.css";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export class Log extends druid.AbstractBranch {
+export class BattleLog extends druid.AbstractBranch {
 
     private _isExpanded = false;
 
@@ -15,7 +15,7 @@ export class Log extends druid.AbstractBranch {
     private readonly txtLastEntry = new PIXI.Text("", { fontSize: 15, wordWrap: true });
     private readonly btnTurnLog = new druid.Button();
 
-    constructor(private readonly playerSide: Side, log: LogEntry[]) {
+    constructor(private readonly playerSide: Side, logEntries: LogEntry[]) {
         super();
         this.interactive = true;
         this.visible = false;
@@ -28,7 +28,7 @@ export class Log extends druid.AbstractBranch {
         this.addChild(this.bg);
         this.btnTurnLog.pivot.y = this.btnTurnLog.height;
         this.addChild(this.btnTurnLog);
-        for (const entry of log) {
+        for (const entry of logEntries) {
             this.addEntry(entry);
         }
         this.updateChildren();
@@ -48,10 +48,15 @@ export class Log extends druid.AbstractBranch {
     addEntry(entry: LogEntry) {
         this.visible = true;
         const color = this.playerSide == entry.side ? "green" : "red";
-        let text = `${entry.targetHullName} ${l("hitBy")} ${entry.unitHullName} `
-            + `${l("with")} ${l(entry.gunName)} ${l("for")} ${entry.damage} ${l("damage")}`;
-        if (entry.isTargetDestroyed) {
-            text += `\n${entry.targetHullName} ${l("destroyed")}`;
+        let text = "";
+        if (entry.damage == 0) {
+            text = `${entry.unitHullName} ${l("missedThe")} ${entry.targetHullName} ${l("with")} ${l(entry.gunName)}`;
+        } else {
+            text = `${entry.targetHullName} ${l("hitBy")} ${entry.unitHullName} `
+                + `${l("with")} ${l(entry.gunName)} ${l("for")} ${entry.damage} ${l("damage")}`;
+            if (entry.isTargetDestroyed) {
+                text += `\n${entry.targetHullName} ${l("destroyed")}`;
+            }
         }
 
         const pEntry = document.createElement("p");
