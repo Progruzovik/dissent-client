@@ -33,19 +33,19 @@ public final class BattleMap {
     }
 
     public int findMovementCost(@NonNull Cell cell, int unitWidth, int unitHeight) {
-        int bestMovementCost = 0;
+        int minMovementCost = 0;
         for (int i = 0; i < unitWidth; i++) {
             for (int j = 0; j < unitHeight; j++) {
                 final Cell nextCell = new Cell(cell.getX() + i, cell.getY() + j);
                 if (isCellInBorders(nextCell)) {
                     final int movementCost = locations.get(nextCell.getX()).get(nextCell.getY()).getMovementCost();
-                    if (movementCost > bestMovementCost) {
-                        bestMovementCost = movementCost;
+                    if (movementCost < minMovementCost) {
+                        minMovementCost = movementCost;
                     }
                 }
             }
         }
-        return bestMovementCost;
+        return minMovementCost;
     }
 
     @NonNull

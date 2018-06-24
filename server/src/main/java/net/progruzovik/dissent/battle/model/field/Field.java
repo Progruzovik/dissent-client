@@ -142,20 +142,20 @@ public final class Field {
                 final LocationStatus targetStatus = activeUnit.getLocationStatus() == LocationStatus.UNIT_LEFT
                         ? LocationStatus.UNIT_RIGHT : LocationStatus.UNIT_LEFT;
                 for (final Cell neighbor : neighbors) {
-                    double bestHittingChance = 0;
+                    double maxHittingChance = 0;
                     for (int i = 0; i < activeUnit.getWidth(); i++) {
                         for (int j = 0; j < activeUnit.getHeight(); j++) {
                             final Cell cell = new Cell(unitCell.getX() + i, unitCell.getY() + j);
                             final double hittingChance = findHittingChance(cell, neighbor, gun);
-                            if (hittingChance > bestHittingChance) {
-                                bestHittingChance = hittingChance;
+                            if (hittingChance > maxHittingChance) {
+                                maxHittingChance = hittingChance;
                             }
                         }
                     }
-                    if (bestHittingChance != 0) {
+                    if (maxHittingChance != 0) {
                         final LocationStatus locationStatus = map.getLocationStatus(neighbor);
                         if (locationStatus == targetStatus) {
-                            gunCells.getTargets().add(new Target(neighbor, bestHittingChance));
+                            gunCells.getTargets().add(new Target(neighbor, maxHittingChance));
                         } else if (locationStatus.isFree()) {
                             gunCells.getShotCells().add(neighbor);
                         }
