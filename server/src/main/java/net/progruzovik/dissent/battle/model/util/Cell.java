@@ -12,7 +12,9 @@ public final class Cell extends Point<Integer> {
         super(cell);
     }
 
-    public Cell() { super(0, 0); }
+    public Cell() {
+        super(0, 0);
+    }
 
     public double distanceTo(@NonNull Cell cell) {
         final int dx = cell.getX() - getX();
