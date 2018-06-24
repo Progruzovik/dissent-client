@@ -112,7 +112,7 @@ public final class Field {
     @NonNull
     public Move moveActiveUnit(@NonNull Cell cell) {
         assert activeUnit != null;
-        if (cell.isOutOfBorders(map.getSize()) || isCellUnreachable(cell)) {
+        if (!map.isCellInBorders(cell) || isCellUnreachable(cell)) {
             throw new InvalidMoveException(activeUnit.getActionPoints(), activeUnit.getFirstCell(), cell);
         }
 
@@ -178,8 +178,8 @@ public final class Field {
         for (int i = 0; i < activeUnit.getWidth(); i++) {
             for (int j = 0; j < activeUnit.getHeight(); j++) {
                 final Cell nextCell = new Cell(cell.getX() + i, cell.getY() + j);
-                if (nextCell.isOutOfBorders(map.getSize())
-                        || (!map.getLocationStatus(nextCell).isFree() && !activeUnit.isOccupyCell(nextCell))) {
+                if (!map.isCellInBorders(nextCell)
+                        || !map.getLocationStatus(nextCell).isFree() && !activeUnit.isOccupyCell(nextCell)) {
                     return true;
                 }
             }
@@ -230,7 +230,7 @@ public final class Field {
                 neighbors.add(new Cell(start.getX() + j + centerWidth - 1, start.getY() + i));
             }
         }
-        neighbors.removeIf(c -> c.isOutOfBorders(map.getSize()));
+        neighbors.removeIf(c -> !map.isCellInBorders(c));
         return neighbors;
     }
 

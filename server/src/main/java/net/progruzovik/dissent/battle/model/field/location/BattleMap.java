@@ -28,12 +28,16 @@ public final class BattleMap {
         return size;
     }
 
+    public boolean isCellInBorders(@NonNull Cell cell) {
+        return cell.getX() > -1 && cell.getX() < size.getX() && cell.getY() > -1 && cell.getY() < size.getY();
+    }
+
     public int findMovementCost(@NonNull Cell cell, int unitWidth, int unitHeight) {
         int bestMovementCost = 0;
         for (int i = 0; i < unitWidth; i++) {
             for (int j = 0; j < unitHeight; j++) {
                 final Cell nextCell = new Cell(cell.getX() + i, cell.getY() + j);
-                if (!nextCell.isOutOfBorders(size)) {
+                if (isCellInBorders(nextCell)) {
                     final int movementCost = locations.get(nextCell.getX()).get(nextCell.getY()).getMovementCost();
                     if (movementCost > bestMovementCost) {
                         bestMovementCost = movementCost;

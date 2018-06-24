@@ -14,10 +14,6 @@ public final class Cell extends Point<Integer> {
 
     public Cell() { super(0, 0); }
 
-    public boolean isOutOfBorders(@NonNull Cell borders) {
-        return getX() <= -1 || getX() >= borders.getX() || getY() <= -1 || getY() >= borders.getY();
-    }
-
     public double distanceTo(@NonNull Cell cell) {
         final int dx = cell.getX() - getX();
         final int dy = cell.getY() - getY();
