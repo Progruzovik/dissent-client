@@ -32,9 +32,12 @@ public final class BattleMap {
         int bestMovementCost = 0;
         for (int i = 0; i < unitWidth; i++) {
             for (int j = 0; j < unitHeight; j++) {
-                final int movementCost = locations.get(cell.getX() + i).get(cell.getY() + j).getMovementCost();
-                if (movementCost > bestMovementCost) {
-                    bestMovementCost = movementCost;
+                final Cell nextCell = new Cell(cell.getX() + i, cell.getY() + j);
+                if (!nextCell.isOutOfBorders(size)) {
+                    final int movementCost = locations.get(nextCell.getX()).get(nextCell.getY()).getMovementCost();
+                    if (movementCost > bestMovementCost) {
+                        bestMovementCost = movementCost;
+                    }
                 }
             }
         }

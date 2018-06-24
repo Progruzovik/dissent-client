@@ -178,8 +178,8 @@ public final class Field {
         for (int i = 0; i < activeUnit.getWidth(); i++) {
             for (int j = 0; j < activeUnit.getHeight(); j++) {
                 final Cell nextCell = new Cell(cell.getX() + i, cell.getY() + j);
-                final LocationStatus status = map.getLocationStatus(nextCell);
-                if (nextCell.isOutOfBorders(map.getSize()) || !status.isFree() && !activeUnit.isOccupyCell(nextCell)) {
+                if (nextCell.isOutOfBorders(map.getSize())
+                        || (!map.getLocationStatus(nextCell).isFree() && !activeUnit.isOccupyCell(nextCell))) {
                     return true;
                 }
             }
