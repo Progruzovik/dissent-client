@@ -5,7 +5,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 
 @Entity
-public final class Texture {
+public class Texture {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

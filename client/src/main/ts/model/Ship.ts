@@ -53,8 +53,8 @@ export class Ship implements ShipData {
     }
 
     createStrengthBar(width: number, height: number = 15, color: number = 0xff0000): druid.ProgressBar {
-        const result = new druid.ProgressBar(width, height, color, druid.BarTextConfig.Default, this.hull.strength);
-        result.value = this.strength;
-        return result;
+        const bar = new druid.ProgressBar(width, height, color, druid.BarTextConfig.Default, this.hull.strength);
+        bar.value = this.strength;
+        return bar;
     }
 }

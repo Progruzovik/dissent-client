@@ -5,7 +5,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 
 @Entity
-public final class Gun {
+public class Gun {
 
     public static final int NO_GUN_ID = -1;
 

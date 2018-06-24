@@ -20,21 +20,21 @@ public class AppConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        final ObjectMapper result = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper();
         DefaultSerializerProvider serializerProvider = new DefaultSerializerProvider.Impl();
         serializerProvider.setNullValueSerializer(new NullValueSerializer());
-        result.setSerializerProvider(serializerProvider);
-        result.enable(SerializationFeature.WRITE_ENUMS_USING_INDEX);
-        return result;
+        mapper.setSerializerProvider(serializerProvider);
+        mapper.enable(SerializationFeature.WRITE_ENUMS_USING_INDEX);
+        return mapper;
     }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
-        final LocalContainerEntityManagerFactoryBean result = new LocalContainerEntityManagerFactoryBean();
-        result.setPackagesToScan("net.progruzovik.dissent");
-        result.setDataSource(dataSource);
-        result.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        return result;
+        final LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+        factoryBean.setPackagesToScan("net.progruzovik.dissent");
+        factoryBean.setDataSource(dataSource);
+        factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        return factoryBean;
     }
 
     @Bean

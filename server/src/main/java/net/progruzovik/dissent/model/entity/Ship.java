@@ -4,7 +4,7 @@ import net.progruzovik.dissent.battle.exception.InvalidGunIdException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-public final class Ship {
+public class Ship {
 
     private int strength;
 

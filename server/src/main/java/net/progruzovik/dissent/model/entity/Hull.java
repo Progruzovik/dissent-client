@@ -5,7 +5,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 
 @Entity
-public final class Hull {
+public class Hull {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

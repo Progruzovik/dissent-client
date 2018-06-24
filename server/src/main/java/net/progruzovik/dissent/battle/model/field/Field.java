@@ -209,29 +209,29 @@ public final class Field {
 
     @NonNull
     private List<Cell> findNeighborsInRadius(@NonNull Cell start, int centerWidth, int centerHeight, int radius) {
-        final List<Cell> result = new ArrayList<>();
+        final List<Cell> neighbors = new ArrayList<>();
         for (int i = 1; i <= radius; i++) {
             for (int j = 1; j <= radius - i; j++) {
-                result.add(new Cell(start.getX() - i, start.getY() - j));
-                result.add(new Cell(start.getX() - i, start.getY() + j + centerHeight  - 1));
-                result.add(new Cell(start.getX() + i + centerWidth - 1, start.getY() - j));
-                result.add(new Cell(start.getX() + i + centerWidth - 1, start.getY() + j + centerHeight - 1));
+                neighbors.add(new Cell(start.getX() - i, start.getY() - j));
+                neighbors.add(new Cell(start.getX() - i, start.getY() + j + centerHeight  - 1));
+                neighbors.add(new Cell(start.getX() + i + centerWidth - 1, start.getY() - j));
+                neighbors.add(new Cell(start.getX() + i + centerWidth - 1, start.getY() + j + centerHeight - 1));
             }
         }
         for (int i = 0; i < centerWidth; i++) {
             for (int j = 1; j <= radius; j++) {
-                result.add(new Cell(start.getX() + i, start.getY() - j));
-                result.add(new Cell(start.getX() + i, start.getY() + j + centerHeight - 1));
+                neighbors.add(new Cell(start.getX() + i, start.getY() - j));
+                neighbors.add(new Cell(start.getX() + i, start.getY() + j + centerHeight - 1));
             }
         }
         for (int i = 0; i < centerHeight; i++) {
             for (int j = 1; j <= radius; j++) {
-                result.add(new Cell(start.getX() - j, start.getY() + i));
-                result.add(new Cell(start.getX() + j + centerWidth - 1, start.getY() + i));
+                neighbors.add(new Cell(start.getX() - j, start.getY() + i));
+                neighbors.add(new Cell(start.getX() + j + centerWidth - 1, start.getY() + i));
             }
         }
-        result.removeIf(c -> c.isOutOfBorders(map.getSize()));
-        return result;
+        neighbors.removeIf(c -> c.isOutOfBorders(map.getSize()));
+        return neighbors;
     }
 
     @NonNull
@@ -243,10 +243,10 @@ public final class Field {
     private List<Cell> findCellsInBetween(@NonNull Cell firstCell, @NonNull Cell lastCell) {
         final int dx = lastCell.getX() - firstCell.getX(), dy = lastCell.getY() - firstCell.getY();
         if (dx > -2 && dx < 2 && dy > -2 && dy < 2) {
-            final List<Cell> result = new ArrayList<>(2);
-            result.add(firstCell);
-            result.add(lastCell);
-            return result;
+            final List<Cell> cells = new ArrayList<>(2);
+            cells.add(firstCell);
+            cells.add(lastCell);
+            return cells;
         }
 
         final Point<Float> center = firstCell.findCenter(lastCell);

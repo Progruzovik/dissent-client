@@ -5,7 +5,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 
 @Entity
-public final class GunType {
+public class GunType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

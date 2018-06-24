@@ -1,12 +1,10 @@
 package net.progruzovik.dissent.captain;
 
-import net.progruzovik.dissent.socket.model.MessageSender;
+import net.progruzovik.dissent.socket.Sender;
 
-public interface Player extends Captain {
+public interface Player extends Captain, Sender {
 
     Status getStatus();
-
-    MessageSender getMessageSender();
 
     void addToQueue();
 
