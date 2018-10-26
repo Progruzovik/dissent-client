@@ -20,7 +20,7 @@ public final class PlayerQueueService implements PlayerQueue {
     }
 
     @Override
-    public void add(Player player) {
+    public synchronized void add(Player player) {
         if (queuedPlayer == null) {
             queuedPlayer = player;
         } else if (queuedPlayer != player) {
@@ -30,7 +30,7 @@ public final class PlayerQueueService implements PlayerQueue {
     }
 
     @Override
-    public void remove(Player player) {
+    public synchronized void remove(Player player) {
         if (queuedPlayer == player) {
             queuedPlayer = null;
         }
