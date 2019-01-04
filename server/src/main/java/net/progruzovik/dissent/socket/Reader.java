@@ -6,7 +6,7 @@ import org.springframework.lang.NonNull;
 import java.util.Map;
 
 @FunctionalInterface
-interface Reader {
+public interface Reader {
 
     void read(@NonNull Player player, @NonNull Map<String, Integer> data);
 }

@@ -3,7 +3,7 @@ package net.progruzovik.dissent.battle.model.field;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import org.springframework.lang.NonNull;
 
-final class PathNode {
+public final class PathNode {
 
     private final int movementCost;
     private final @NonNull Cell cell;
@@ -13,12 +13,12 @@ final class PathNode {
         this.cell = cell;
     }
 
-    int getMovementCost() {
+    public int getMovementCost() {
         return movementCost;
     }
 
     @NonNull
-    Cell getCell() {
+    public Cell getCell() {
         return cell;
     }
 }
