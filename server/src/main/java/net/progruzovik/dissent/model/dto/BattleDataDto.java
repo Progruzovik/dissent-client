@@ -7,7 +7,6 @@ import org.springframework.lang.NonNull;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
 public final class BattleDataDto {
 
     private final @NonNull Side playerSide;

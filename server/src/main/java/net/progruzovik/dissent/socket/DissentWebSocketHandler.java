@@ -40,23 +40,40 @@ public final class DissentWebSocketHandler extends TextWebSocketHandler {
         readers.put(ClientSubject.REMOVE_FROM_QUEUE, (p, d) -> p.removeFromQueue());
         readers.put(ClientSubject.START_MISSION, (p, d) -> p.startMission(d.get("missionId")));
 
-        readers.put(ClientSubject.REQUEST_BATTLE_DATA, (p, d) ->
-                p.sendMessage(new ServerMessage<>(ServerSubject.BATTLE_DATA, p.getBattle().getBattleData(p.getId()))));
+        readers.put(ClientSubject.REQUEST_BATTLE_DATA, (p, d) -> {
+            if (p.getBattle() != null) {
+                p.sendMessage(new ServerMessage<>(ServerSubject.BATTLE_DATA, p.getBattle().getBattleData(p.getId())));
+            }
+        });
         readers.put(ClientSubject.REQUEST_PATHS_AND_REACHABLE_CELLS, (p, d) -> {
-            final Map<String, Object> pathsAndReachableCells = new HashMap<>(2);
-            pathsAndReachableCells.put("reachableCells", p.getBattle().getReachableCells());
-            pathsAndReachableCells.put("paths", p.getBattle().getPaths());
-            p.sendMessage(new ServerMessage<>(ServerSubject.PATHS_AND_REACHABLE_CELLS, pathsAndReachableCells));
+            if (p.getBattle() != null) {
+                final Map<String, Object> pathsAndReachableCells = new HashMap<>(2);
+                pathsAndReachableCells.put("reachableCells", p.getBattle().getReachableCells());
+                pathsAndReachableCells.put("paths", p.getBattle().getPaths());
+                p.sendMessage(new ServerMessage<>(ServerSubject.PATHS_AND_REACHABLE_CELLS, pathsAndReachableCells));
+            }
         });
-        readers.put(ClientSubject.MOVE_CURRENT_UNIT, (p, d) ->
-                p.getBattle().moveCurrentUnit(p.getId(), new Cell(d.get("x"), d.get("y"))));
+        readers.put(ClientSubject.MOVE_CURRENT_UNIT, (p, d) -> {
+            if (p.getBattle() != null) {
+                p.getBattle().moveCurrentUnit(p.getId(), new Cell(d.get("x"), d.get("y")));
+            }
+        });
         readers.put(ClientSubject.REQUEST_GUN_CELLS, (p, d) -> {
-            final GunCells gunCells = p.getBattle().getGunCells(d.get("gunId"));
-            p.sendMessage(new ServerMessage<>(ServerSubject.GUN_CELLS, gunCells));
+            if (p.getBattle() != null) {
+                final GunCells gunCells = p.getBattle().getGunCells(d.get("gunId"));
+                p.sendMessage(new ServerMessage<>(ServerSubject.GUN_CELLS, gunCells));
+            }
         });
-        readers.put(ClientSubject.SHOOT_WITH_CURRENT_UNIT, ((p, d) ->
-                p.getBattle().shootWithCurrentUnit(p.getId(), d.get("gunId"), new Cell(d.get("x"), d.get("y")))));
-        readers.put(ClientSubject.END_TURN, (p, d) -> p.getBattle().endTurn(p.getId()));
+        readers.put(ClientSubject.SHOOT_WITH_CURRENT_UNIT, ((p, d) -> {
+            if (p.getBattle() != null) {
+                p.getBattle().shootWithCurrentUnit(p.getId(), d.get("gunId"), new Cell(d.get("x"), d.get("y")));
+            }
+        }));
+        readers.put(ClientSubject.END_TURN, (p, d) -> {
+            if (p.getBattle() != null) {
+                p.getBattle().endTurn(p.getId());
+            }
+        });
     }
 
     @Override

@@ -9,8 +9,7 @@ import net.progruzovik.dissent.battle.model.field.gun.GunCells;
 import net.progruzovik.dissent.battle.model.field.gun.Target;
 import net.progruzovik.dissent.battle.model.field.location.LocationStatus;
 import net.progruzovik.dissent.battle.model.field.location.BattleMap;
-import net.progruzovik.dissent.battle.model.field.move.Move;
-import net.progruzovik.dissent.battle.model.field.move.PathNode;
+import net.progruzovik.dissent.model.dto.MoveDto;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.battle.model.util.Point;
 import net.progruzovik.dissent.model.entity.Gun;
@@ -110,7 +109,7 @@ public final class Field {
     }
 
     @NonNull
-    public Move moveActiveUnit(@NonNull Cell cell) {
+    public MoveDto moveActiveUnit(@NonNull Cell cell) {
         assert activeUnit != null;
         if (!map.isCellInBorders(cell) || isCellUnreachable(cell)) {
             throw new InvalidMoveException(activeUnit.getActionPoints(), activeUnit.getFirstCell(), cell);
@@ -126,7 +125,7 @@ public final class Field {
         }
         activeUnit.move(cell, movementCost);
         updateActiveUnit();
-        return new Move(movementCost, cells);
+        return new MoveDto(movementCost, cells);
     }
 
     @NonNull

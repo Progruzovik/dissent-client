@@ -3,7 +3,6 @@ package net.progruzovik.dissent.model.dto;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import org.springframework.lang.NonNull;
 
-@SuppressWarnings("unused")
 public final class ShotDto {
 
     private final int gunId;

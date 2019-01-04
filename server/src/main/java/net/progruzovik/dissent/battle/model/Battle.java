@@ -3,7 +3,7 @@ package net.progruzovik.dissent.battle.model;
 import net.progruzovik.dissent.battle.exception.InvalidShotException;
 import net.progruzovik.dissent.battle.model.field.Field;
 import net.progruzovik.dissent.battle.model.field.gun.GunCells;
-import net.progruzovik.dissent.battle.model.field.move.PathNode;
+import net.progruzovik.dissent.battle.model.field.PathNode;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.model.dto.BattleDataDto;
 import net.progruzovik.dissent.model.dto.LogEntryDto;

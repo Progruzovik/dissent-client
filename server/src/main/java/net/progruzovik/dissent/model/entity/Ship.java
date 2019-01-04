@@ -8,9 +8,9 @@ public class Ship {
 
     private int strength;
 
-    private @NonNull Hull hull;
-    private @Nullable Gun firstGun;
-    private @Nullable Gun secondGun;
+    private final @NonNull Hull hull;
+    private final @Nullable Gun firstGun;
+    private final @Nullable Gun secondGun;
 
     public Ship(int strength, @NonNull Hull hull, @Nullable Gun firstGun, @Nullable Gun secondGun) {
         this.strength = strength;

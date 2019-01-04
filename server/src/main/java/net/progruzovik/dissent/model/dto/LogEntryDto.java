@@ -6,7 +6,6 @@ import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import org.springframework.lang.NonNull;
 
-@SuppressWarnings("unused")
 public final class LogEntryDto {
 
     private final @NonNull
