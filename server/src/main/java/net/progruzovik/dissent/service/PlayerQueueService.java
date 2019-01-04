@@ -2,6 +2,7 @@ package net.progruzovik.dissent.service;
 
 import net.progruzovik.dissent.battle.BattleCreator;
 import net.progruzovik.dissent.captain.Player;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,12 +16,12 @@ public final class PlayerQueueService implements PlayerQueue {
     }
 
     @Override
-    public boolean isQueued(Player player) {
+    public boolean isQueued(@NonNull Player player) {
         return queuedPlayer == player;
     }
 
     @Override
-    public synchronized void add(Player player) {
+    public synchronized void add(@NonNull Player player) {
         if (queuedPlayer == null) {
             queuedPlayer = player;
         } else if (queuedPlayer != player) {
@@ -30,7 +31,7 @@ public final class PlayerQueueService implements PlayerQueue {
     }
 
     @Override
-    public synchronized void remove(Player player) {
+    public synchronized void remove(@NonNull Player player) {
         if (queuedPlayer == player) {
             queuedPlayer = null;
         }

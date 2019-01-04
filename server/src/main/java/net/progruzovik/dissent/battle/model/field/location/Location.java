@@ -4,7 +4,7 @@ import org.springframework.lang.NonNull;
 
 final class Location {
 
-    private static final int IMPOSSIBLE_MOVEMENT_COST = 1048576;
+    private static final int IMPOSSIBLE_MOVEMENT_COST = Integer.MAX_VALUE / 2;
 
     private @NonNull LocationStatus currentStatus;
     private final @NonNull LocationStatus defaultStatus;
@@ -19,10 +19,8 @@ final class Location {
     }
 
     int getMovementCost() {
-        switch (defaultStatus) {
-            case ASTEROID: return IMPOSSIBLE_MOVEMENT_COST;
-            default: return 1;
-        }
+        if (defaultStatus == LocationStatus.ASTEROID) return IMPOSSIBLE_MOVEMENT_COST;
+        return 1;
     }
 
     @NonNull

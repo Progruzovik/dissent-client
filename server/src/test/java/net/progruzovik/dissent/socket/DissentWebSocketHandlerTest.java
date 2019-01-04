@@ -17,15 +17,15 @@ import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
-public final class WebSocketHandlerTest {
+public final class DissentWebSocketHandlerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final WebSocketHandler webSocketHandler;
+    private final DissentWebSocketHandler webSocketHandler;
     private final WebSocketSession session = mock(WebSocketSession.class);
     private final Player player = mock(Player.class);
 
-    public WebSocketHandlerTest() {
-        webSocketHandler = new WebSocketHandler(mapper, mock(TextureDao.class), mock(MissionDao.class));
+    public DissentWebSocketHandlerTest() {
+        webSocketHandler = new DissentWebSocketHandler(mapper, mock(TextureDao.class), mock(MissionDao.class));
         final Map<String, Object> sessionAttributes = new HashMap<>(1);
         sessionAttributes.put("player", player);
         when(session.getAttributes()).thenReturn(sessionAttributes);

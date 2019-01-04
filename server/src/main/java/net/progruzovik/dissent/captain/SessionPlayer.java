@@ -10,11 +10,11 @@ import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.event.EventSubject;
+import net.progruzovik.dissent.model.message.Sender;
 import net.progruzovik.dissent.model.message.ServerMessage;
 import net.progruzovik.dissent.model.message.ServerSubject;
 import net.progruzovik.dissent.service.MissionDigest;
 import net.progruzovik.dissent.service.PlayerQueue;
-import net.progruzovik.dissent.model.message.Sender;
 import net.progruzovik.dissent.socket.WebSocketSender;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -28,7 +28,7 @@ import java.util.Observable;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public final class SessionPlayer extends AbstractCaptain implements Player {
 
-    private String id;
+    private @NonNull String id = "";
 
     private final PlayerQueue queue;
     private final MissionDigest missionDigest;
@@ -56,11 +56,13 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
         sender.setSession(session);
     }
 
+    @NonNull
     @Override
     public String getId() {
         return id;
     }
 
+    @NonNull
     @Override
     public Status getStatus() {
         if (getBattle() != null && getBattle().isRunning()) return Status.IN_BATTLE;
@@ -80,7 +82,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     }
 
     @Override
-    public void addToBattle(Side side, Battle battle) {
+    public void addToBattle(@NonNull Side side, @NonNull Battle battle) {
         if (getStatus() == Status.IN_BATTLE) {
             onBattleFinish();
             sendMessage(new ServerMessage<>(ServerSubject.BATTLE_FINISH));
@@ -110,7 +112,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     }
 
     @Override
-    public <T> void sendMessage(ServerMessage<T> message) {
+    public <T> void sendMessage(@NonNull ServerMessage<T> message) {
         sender.sendMessage(message);
     }
 

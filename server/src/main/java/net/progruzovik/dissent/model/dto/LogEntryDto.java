@@ -1,13 +1,16 @@
-package net.progruzovik.dissent.battle.model;
+package net.progruzovik.dissent.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import net.progruzovik.dissent.battle.model.Side;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import org.springframework.lang.NonNull;
 
-public final class LogEntry {
+@SuppressWarnings("unused")
+public final class LogEntryDto {
 
-    private final @NonNull Side side;
+    private final @NonNull
+    Side side;
     private final int damage;
     private final boolean isTargetDestroyed;
 
@@ -15,8 +18,8 @@ public final class LogEntry {
     private final @NonNull Hull unitHull;
     private final @NonNull Hull targetHull;
 
-    LogEntry(@NonNull Side side, int damage, boolean isTargetDestroyed,
-             @NonNull Gun gun, @NonNull Hull unitHull, @NonNull Hull targetHull) {
+    public LogEntryDto(@NonNull Side side, int damage, boolean isTargetDestroyed,
+                       @NonNull Gun gun, @NonNull Hull unitHull, @NonNull Hull targetHull) {
         this.side = side;
         this.damage = damage;
         this.isTargetDestroyed = isTargetDestroyed;

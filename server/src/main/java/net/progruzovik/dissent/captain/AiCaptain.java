@@ -11,6 +11,7 @@ import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.event.EventSubject;
 import org.springframework.context.annotation.Scope;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public final class AiCaptain extends AbstractCaptain {
         getShips().add(new Ship(aiHull, artillery, null));
     }
 
+    @NonNull
     @Override
     public String getId() {
         return "AI_CAPTAIN";
@@ -36,33 +38,32 @@ public final class AiCaptain extends AbstractCaptain {
 
     @Override
     public void update(Observable observable, Object data) {
-        if (getBattle().isIdBelongsToCurrentCaptain(getId())) {
-            final Event<?> message = (Event<?>) data;
-            if (message.getSubject().equals(EventSubject.NEW_TURN_START)) {
-                final Unit unit = getBattle().getCurrentUnit();
-                if (unit.getShip().getFirstGun() != null) {
-                    boolean canCurrentUnitMove = true;
-                    while (unit.getActionPoints() >= unit.getShip().getFirstGun().getShotCost()
-                            && canCurrentUnitMove) {
-                        final int firstGunId = unit.getShip().getFirstGun().getId();
-                        final GunCells gunCells = getBattle().getGunCells(firstGunId);
-                        if (gunCells.getTargets().isEmpty()) {
-                            final List<Cell> reachableCells = getBattle().getReachableCells();
-                            if (reachableCells.isEmpty()) {
-                                canCurrentUnitMove = false;
-                            } else {
-                                final Random random = new Random();
-                                getBattle().moveCurrentUnit(getId(),
-                                        reachableCells.get(random.nextInt(reachableCells.size())));
-                            }
+        final Event<?> message = (Event<?>) data;
+        if (message.getSubject().equals(EventSubject.NEW_TURN_START)
+                && getBattle() != null && getBattle().isIdBelongsToCurrentCaptain(getId())) {
+            final Unit unit = getBattle().getCurrentUnit();
+            if (unit.getShip().getFirstGun() != null) {
+                boolean canCurrentUnitMove = true;
+                while (unit.getActionPoints() >= unit.getShip().getFirstGun().getShotCost()
+                        && canCurrentUnitMove) {
+                    final int firstGunId = unit.getShip().getFirstGun().getId();
+                    final GunCells gunCells = getBattle().getGunCells(firstGunId);
+                    if (gunCells.getTargets().isEmpty()) {
+                        final List<Cell> reachableCells = getBattle().getReachableCells();
+                        if (reachableCells.isEmpty()) {
+                            canCurrentUnitMove = false;
                         } else {
-                            getBattle()
-                                    .shootWithCurrentUnit(getId(), firstGunId, gunCells.getTargets().get(0).getCell());
+                            final Random random = new Random();
+                            getBattle().moveCurrentUnit(getId(),
+                                    reachableCells.get(random.nextInt(reachableCells.size())));
                         }
+                    } else {
+                        getBattle()
+                                .shootWithCurrentUnit(getId(), firstGunId, gunCells.getTargets().get(0).getCell());
                     }
                 }
-                getBattle().endTurn(getId());
             }
+            getBattle().endTurn(getId());
         }
     }
 }

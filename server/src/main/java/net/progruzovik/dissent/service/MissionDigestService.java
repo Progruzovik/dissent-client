@@ -4,6 +4,7 @@ import net.progruzovik.dissent.battle.BattleCreator;
 import net.progruzovik.dissent.captain.AiCaptain;
 import net.progruzovik.dissent.captain.Captain;
 import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +19,7 @@ public final class MissionDigestService implements MissionDigest {
     }
 
     @Override
-    public void startMission(Captain captain, int missionId) {
+    public void startMission(@NonNull Captain captain, int missionId) {
         battleCreator.createBattle(captain, aiCaptainFactory.getObject());
     }
 }

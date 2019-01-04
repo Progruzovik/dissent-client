@@ -20,12 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public final class WebSocketHandler extends TextWebSocketHandler {
+public final class DissentWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper mapper;
     private final Map<ClientSubject, Reader> readers = new HashMap<>();
 
-    public WebSocketHandler(ObjectMapper mapper, TextureDao textureDao, MissionDao missionDao) {
+    public DissentWebSocketHandler(ObjectMapper mapper, TextureDao textureDao, MissionDao missionDao) {
         this.mapper = mapper;
         readers.put(ClientSubject.REQUEST_TEXTURES, (p, d) ->
                 p.sendMessage(new ServerMessage<>(ServerSubject.TEXTURES, textureDao.getTextures())));

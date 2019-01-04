@@ -34,7 +34,7 @@ public final class WebSocketSender implements Sender {
     }
 
     @Override
-    public <T> void sendMessage(ServerMessage<T> message)  {
+    public <T> void sendMessage(@NonNull ServerMessage<T> message)  {
         if (session == null) return;
         try {
             session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));

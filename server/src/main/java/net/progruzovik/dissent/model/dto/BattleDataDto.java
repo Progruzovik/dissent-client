@@ -1,16 +1,19 @@
-package net.progruzovik.dissent.battle.model;
+package net.progruzovik.dissent.model.dto;
 
+import net.progruzovik.dissent.battle.model.Side;
+import net.progruzovik.dissent.battle.model.Unit;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
 
-public final class BattleData {
+@SuppressWarnings("unused")
+public final class BattleDataDto {
 
     private final @NonNull Side playerSide;
     private final @NonNull Cell fieldSize;
 
-    private final @NonNull List<LogEntry> log;
+    private final @NonNull List<LogEntryDto> log;
 
     private final @NonNull List<Cell> asteroids;
     private final @NonNull List<Cell> clouds;
@@ -18,9 +21,9 @@ public final class BattleData {
     private final @NonNull List<Unit> units;
     private final @NonNull List<Unit> destroyedUnits;
 
-    BattleData(@NonNull Side playerSide, @NonNull Cell fieldSize, @NonNull List<LogEntry> log,
-               @NonNull List<Cell> asteroids, @NonNull List<Cell> clouds,
-               @NonNull List<Unit> units, @NonNull List<Unit> destroyedUnits) {
+    public BattleDataDto(@NonNull Side playerSide, @NonNull Cell fieldSize, @NonNull List<LogEntryDto> log,
+                         @NonNull List<Cell> asteroids, @NonNull List<Cell> clouds,
+                         @NonNull List<Unit> units, @NonNull List<Unit> destroyedUnits) {
         this.playerSide = playerSide;
         this.fieldSize = fieldSize;
         this.log = log;
@@ -41,7 +44,7 @@ public final class BattleData {
     }
 
     @NonNull
-    public List<LogEntry> getLog() {
+    public List<LogEntryDto> getLog() {
         return log;
     }
 

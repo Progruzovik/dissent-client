@@ -7,5 +7,5 @@ public interface Sender {
 
     void setSession(@NonNull WebSocketSession session);
 
-    <T> void sendMessage(ServerMessage<T> message);
+    <T> void sendMessage(@NonNull ServerMessage<T> message);
 }
