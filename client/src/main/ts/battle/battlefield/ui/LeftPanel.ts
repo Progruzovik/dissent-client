@@ -1,7 +1,7 @@
 import { Field } from "./Field";
 import { Unit } from "../unit/Unit";
 import { UnitService } from "../unit/UnitService";
-import { ActionType } from "../../../model/util";
+import { MessageSubject } from "../../../model/util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
@@ -40,9 +40,9 @@ export class LeftPanel extends druid.AbstractBranch {
         }
         this.addChild(this.layoutQueue);
 
-        unitService.on(ActionType.Move, () => this.updateActionPointsValue());
-        unitService.on(ActionType.Shot, () => this.updateActionPointsValue());
-        unitService.on(ActionType.NextTurn, () => {
+        unitService.on(MessageSubject.Move, () => this.updateActionPointsValue());
+        unitService.on(MessageSubject.Shot, () => this.updateActionPointsValue());
+        unitService.on(MessageSubject.NextTurn, () => {
             if (this.activeUnit) {
                 this.layoutQueue.addElementAt(this.activeUnit, 0);
             }

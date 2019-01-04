@@ -1,13 +1,17 @@
 package net.progruzovik.dissent.captain;
 
+import net.progruzovik.dissent.assembler.MessageAssembler;
 import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
-import net.progruzovik.dissent.model.Message;
+import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
+import net.progruzovik.dissent.model.event.EventSubject;
+import net.progruzovik.dissent.model.message.Message;
+import net.progruzovik.dissent.model.message.MessageSubject;
 import net.progruzovik.dissent.service.MissionDigest;
 import net.progruzovik.dissent.service.PlayerQueue;
 import net.progruzovik.dissent.socket.MessageSender;
@@ -29,8 +33,10 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     private final MissionDigest missionDigest;
     private final MessageSender sender;
 
-    public SessionPlayer(PlayerQueue queue, MissionDigest missionDigest,
-                         MessageSender sender, HullDao hullDao, GunDao gunDao) {
+    private final MessageAssembler messageAssembler;
+
+    public SessionPlayer(PlayerQueue queue, MissionDigest missionDigest, MessageSender sender,
+                         MessageAssembler messageAssembler, HullDao hullDao, GunDao gunDao) {
         final Hull pointerHull = hullDao.getHull(3);
         final Gun laser = gunDao.getGun(3);
         getShips().add(new Ship(pointerHull, laser, null));
@@ -40,6 +46,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
         this.queue = queue;
         this.missionDigest = missionDigest;
         this.sender = sender;
+        this.messageAssembler = messageAssembler;
     }
 
     @Override
@@ -62,12 +69,12 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
 
     @Override
     public void update(Observable battle, Object data) {
-        final Message<?> message = (Message<?>) data;
-        if (!message.getSubject().equals(Battle.TIME_TO_ACT)) {
-            if (message.getSubject().equals("battleFinish")) {
-                onBattleFinish();
-            }
-            sendMessage(message);
+        final Event<?> event = (Event<?>) data;
+        if (event.getSubject().equals(EventSubject.BATTLE_FINISH)) {
+            onBattleFinish();
+        }
+        if (event.getSubject().isPublic()) {
+            sendMessage(messageAssembler.apply(event));
         }
     }
 
@@ -75,7 +82,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     public void addToBattle(Side side, Battle battle) {
         if (getStatus() == Status.IN_BATTLE) {
             onBattleFinish();
-            sendMessage(new Message<>("battleFinish"));
+            sendMessage(new Message<>(MessageSubject.BATTLE_FINISH.toString()));
         }
         super.addToBattle(side, battle);
         sendCurrentStatus();

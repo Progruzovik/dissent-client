@@ -4,7 +4,7 @@ import { Unit } from "../unit/Unit";
 import { UnitService } from "../unit/UnitService";
 import { ScalableVerticalLayout } from "../../ui/ScalableVerticalLayout";
 import { WebSocketClient } from "../../../WebSocketClient";
-import { ActionType, Gun, LogEntry, Side } from "../../../model/util";
+import { MessageSubject, Gun, LogEntry, Side } from "../../../model/util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
@@ -48,13 +48,13 @@ export class Controls extends druid.AbstractBranch {
         this.layoutButtons.addElement(this.btnEndTurn);
         this.addChild(this.layoutButtons);
 
-        unitService.on(ActionType.Move, () => this.updateInterface());
-        unitService.on(ActionType.Shot, (damage: number, gun: Gun, unit: Unit, target: Unit) => {
+        unitService.on(MessageSubject.Move, () => this.updateInterface());
+        unitService.on(MessageSubject.Shot, (damage: number, gun: Gun, unit: Unit, target: Unit) => {
             this.log.addEntry(new LogEntry(unit.side, damage, target.isDestroyed,
                 gun.name, unit.ship.hull.name, target.ship.hull.name));
             this.updateInterface();
         });
-        unitService.on(ActionType.NextTurn, () => this.updateInterface());
+        unitService.on(MessageSubject.NextTurn, () => this.updateInterface());
         this.btnFirstGun.on(druid.ToggleButton.TOGGLE, () => this.btnSecondGun.isToggled = false);
         this.btnSecondGun.on(druid.ToggleButton.TOGGLE, () => this.btnFirstGun.isToggled = false);
         this.btnEndTurn.on(druid.Button.TRIGGERED, () => webSocketClient.endTurn());

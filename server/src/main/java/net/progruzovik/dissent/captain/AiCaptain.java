@@ -1,15 +1,15 @@
 package net.progruzovik.dissent.captain;
 
-import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Unit;
 import net.progruzovik.dissent.battle.model.field.gun.GunCells;
+import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
-import net.progruzovik.dissent.model.Message;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
-import net.progruzovik.dissent.battle.model.util.Cell;
+import net.progruzovik.dissent.model.event.Event;
+import net.progruzovik.dissent.model.event.EventSubject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -37,8 +37,8 @@ public final class AiCaptain extends AbstractCaptain {
     @Override
     public void update(Observable observable, Object data) {
         if (getBattle().isIdBelongsToCurrentCaptain(getId())) {
-            final Message<?> message = (Message<?>) data;
-            if (message.getSubject().equals(Battle.TIME_TO_ACT)) {
+            final Event<?> message = (Event<?>) data;
+            if (message.getSubject().equals(EventSubject.NEW_TURN_START)) {
                 final Unit unit = getBattle().getCurrentUnit();
                 if (unit.getShip().getFirstGun() != null) {
                     boolean canCurrentUnitMove = true;
@@ -56,7 +56,8 @@ public final class AiCaptain extends AbstractCaptain {
                                         reachableCells.get(random.nextInt(reachableCells.size())));
                             }
                         } else {
-                            getBattle().shootWithCurrentUnit(getId(), firstGunId, gunCells.getTargets().get(0).getCell());
+                            getBattle()
+                                    .shootWithCurrentUnit(getId(), firstGunId, gunCells.getTargets().get(0).getCell());
                         }
                     }
                 }

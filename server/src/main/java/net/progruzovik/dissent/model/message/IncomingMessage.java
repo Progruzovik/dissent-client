@@ -1,7 +1,6 @@
-package net.progruzovik.dissent.socket.model;
+package net.progruzovik.dissent.model.message;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.progruzovik.dissent.model.Message;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 

@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.model;
+package net.progruzovik.dissent.model.message;
 
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;

@@ -1,7 +1,7 @@
 import { Field } from "../ui/Field";
 import { ProjectileService } from "../projectile/ProjectileService";
 import { Ship } from "../../../model/Ship";
-import { ActionType, Gun, Move, Shot, Side } from "../../../model/util";
+import { MessageSubject, Gun, Move, Shot, Side } from "../../../model/util";
 import * as druid from "pixi-druid";
 
 export class Unit extends druid.AbstractActor {
@@ -128,7 +128,7 @@ export class Unit extends druid.AbstractActor {
             this.preparedGunId = Unit.NO_GUN;
             target.strength -= shot.damage;
             target.emit(Unit.UPDATE_STATS);
-            this.emit(ActionType.Shot, shot.damage, activeGun, target);
+            this.emit(MessageSubject.Shot, shot.damage, activeGun, target);
         });
     }
 
@@ -139,7 +139,7 @@ export class Unit extends druid.AbstractActor {
                 this.updatePosition();
             } else {
                 this.currentMove = null;
-                this.emit(ActionType.Move);
+                this.emit(MessageSubject.Move);
             }
         }
     }

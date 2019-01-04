@@ -5,16 +5,20 @@ import net.progruzovik.dissent.battle.model.field.Field;
 import net.progruzovik.dissent.battle.model.field.gun.GunCells;
 import net.progruzovik.dissent.battle.model.field.move.PathNode;
 import net.progruzovik.dissent.battle.model.util.Cell;
-import net.progruzovik.dissent.model.Message;
+import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.entity.Ship;
+import net.progruzovik.dissent.model.event.EventSubject;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Observable;
+
+import static net.progruzovik.dissent.model.event.EventSubject.*;
 
 public final class Battle extends Observable {
-
-    public static final String TIME_TO_ACT = "timeToAct";
 
     private boolean isRunning = true;
 
@@ -97,7 +101,7 @@ public final class Battle extends Observable {
 
     public void moveCurrentUnit(String captainId, Cell cell) {
         if (isIdBelongsToCurrentCaptain(captainId)) {
-            notifyObservers(new Message<>("move", field.moveActiveUnit(cell)));
+            notifyObservers(new Event<>(MOVE, field.moveActiveUnit(cell)));
         }
     }
 
@@ -113,14 +117,14 @@ public final class Battle extends Observable {
         battleLog.add(new LogEntry(currentUnit.getSide(), damage,
                 targetUnit.isDestroyed(), currentUnit.getShip().findGunById(gunId),
                 currentUnit.getShip().getHull(), targetUnit.getShip().getHull()));
-        notifyObservers(new Message<>("shot", new Shot(gunId, damage, targetUnit.getFirstCell())));
+        notifyObservers(new Event<>(EventSubject.SHOT, new Shot(gunId, damage, targetUnit.getFirstCell())));
         if (targetUnit.getShip().getStrength() == 0) {
             unitQueue.getUnits().remove(targetUnit);
             field.destroyUnit(targetUnit);
             if (!unitQueue.hasUnitsOnBothSides()) {
                 isRunning = false;
                 field.resetActiveUnit();
-                notifyObservers(new Message<>("battleFinish"));
+                notifyObservers(new Event<>(BATTLE_FINISH));
                 deleteObservers();
             }
         }
@@ -129,7 +133,7 @@ public final class Battle extends Observable {
     public void endTurn(String captainId) {
         if (!isIdBelongsToCurrentCaptain(captainId)) return;
         unitQueue.nextTurn();
-        notifyObservers(new Message<>("nextTurn"));
+        notifyObservers(new Event<>(NEXT_TURN));
         onNextTurn();
     }
 
@@ -153,6 +157,6 @@ public final class Battle extends Observable {
     private void onNextTurn() {
         unitQueue.getCurrentUnit().activate();
         field.setActiveUnit(unitQueue.getCurrentUnit());
-        notifyObservers(new Message<>(TIME_TO_ACT));
+        notifyObservers(new Event<>(NEW_TURN_START));
     }
 }

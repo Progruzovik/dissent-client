@@ -1,7 +1,6 @@
 package net.progruzovik.dissent.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import net.progruzovik.dissent.config.json.NullValueSerializer;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +23,6 @@ public class AppConfig {
         DefaultSerializerProvider serializerProvider = new DefaultSerializerProvider.Impl();
         serializerProvider.setNullValueSerializer(new NullValueSerializer());
         mapper.setSerializerProvider(serializerProvider);
-        mapper.enable(SerializationFeature.WRITE_ENUMS_USING_INDEX);
         return mapper;
     }
 

@@ -1,24 +1,24 @@
 import * as druid from "pixi-druid";
 
-export const enum ActionType {
-    Move = "move",
-    Shot = "shot",
-    NextTurn = "nextTurn",
-    BattleFinish = "battleFinish"
+export const enum MessageSubject {
+    Move = "MOVE",
+    Shot = "SHOT",
+    NextTurn = "NEXT_TURN",
+    BattleFinish = "BATTLE_FINISH"
 }
 
 export const enum GunType {
-    Artillery = "artillery",
-    Beam = "beam",
-    Shell = "shell"
+    Artillery = "ARTILLERY",
+    Beam = "BEAM",
+    Shell = "SHELL"
 }
 
 export const enum Status {
-    Idle, Queued, InBattle
+    Idle = "IDLE", Queued = "QUEUED", InBattle = "IN_BATTLE"
 }
 
 export const enum Side {
-    None, Left, Right
+    None = "NONE", Left = "LEFT", Right = "RIGHT"
 }
 
 export interface Gun {

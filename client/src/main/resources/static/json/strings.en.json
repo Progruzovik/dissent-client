@@ -25,10 +25,10 @@
 
   "borderPatrol": "Border patrol",
 
-  "artillery": "Artillery",
-  "beam": "Beam",
-  "shell": "Shell",
+  "ARTILLERY": "Artillery",
+  "BEAM": "Beam",
+  "SHELL": "Shell",
 
-  "laser": "Laser",
-  "shrapnel": "Shrapnel"
+  "LASER": "Laser",
+  "SHRAPNEL": "Shrapnel"
 }

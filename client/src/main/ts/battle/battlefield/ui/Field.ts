@@ -3,7 +3,7 @@ import { ProjectileService } from "../projectile/ProjectileService";
 import { Unit } from "../unit/Unit";
 import { UnitService } from "../unit/UnitService";
 import { WebSocketClient } from "../../../WebSocketClient";
-import { ActionType, PathNode, Target } from "../../../model/util";
+import { MessageSubject, PathNode, Target } from "../../../model/util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
@@ -74,8 +74,8 @@ export class Field extends druid.ScrollContainer {
         }
         this.content.addChild(unitsLayer);
 
-        unitService.on(ActionType.Move, () => this.updatePathsAndMarks());
-        unitService.on(ActionType.Shot, () => this.updatePathsAndMarks());
+        unitService.on(MessageSubject.Move, () => this.updatePathsAndMarks());
+        unitService.on(MessageSubject.Shot, () => this.updatePathsAndMarks());
         unitService.on(UnitService.SHOT_CELL, (cell: druid.Point) =>
             this.markLayer.addChild(new Mark(0x555555, cell)));
         unitService.on(UnitService.TARGET_CELL, (cell: druid.Point) =>
@@ -85,7 +85,7 @@ export class Field extends druid.ScrollContainer {
             this.removePathsAndMarksExceptCurrent();
             this.addCurrentPathMarks();
         });
-        unitService.on(ActionType.NextTurn, () => this.updatePathsAndMarks());
+        unitService.on(MessageSubject.NextTurn, () => this.updatePathsAndMarks());
         projectileService.on(AbstractProjectile.NEW_SHOT, (projectile: AbstractProjectile) =>
             this.content.addChild(projectile));
         this.content.on(druid.Event.MOUSE_DOWN, () => this.wasInteracted = false);

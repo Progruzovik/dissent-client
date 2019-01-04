@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.captain.Player;
 import net.progruzovik.dissent.dao.MissionDao;
 import net.progruzovik.dissent.dao.TextureDao;
-import net.progruzovik.dissent.model.Message;
+import net.progruzovik.dissent.model.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.socket.TextMessage;

@@ -52,14 +52,14 @@ INSERT INTO hull(id, name, actionPoints, strength, width, height, textureId) VAL
   (7, 'Chrome', 5, 9, 2, 1, 6);
 
 INSERT INTO gunType(id, name) VALUES
-  (1, 'artillery'),
-  (2, 'beam'),
-  (3, 'shell');
+  (1, 'ARTILLERY'),
+  (2, 'BEAM'),
+  (3, 'SHELL');
 
 INSERT INTO gun(id, name, shotCost, damage, radius, accuracy, gunTypeId, textureId) VALUES
-  (1, 'shrapnel', 2, 3, 10, 0.66, 3, 7),
-  (2, 'artillery', 2, 3, 12, 0.66, 1, 8),
-  (3, 'laser', 1, 2, 6, 0.8, 2, 9);
+  (1, 'SHRAPNEL', 2, 3, 10, 0.66, 3, 7),
+  (2, 'ARTILLERY', 2, 3, 12, 0.66, 1, 8),
+  (3, 'LASER', 1, 2, 6, 0.8, 2, 9);
 
 INSERT INTO mission(id, name) VALUES
   (1, 'borderPatrol');

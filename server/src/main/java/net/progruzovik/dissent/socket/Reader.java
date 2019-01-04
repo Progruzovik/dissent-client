@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.socket.model;
+package net.progruzovik.dissent.socket;
 
 import net.progruzovik.dissent.captain.Player;
 import org.springframework.lang.NonNull;
