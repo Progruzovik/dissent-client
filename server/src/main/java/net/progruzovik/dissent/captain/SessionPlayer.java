@@ -5,16 +5,17 @@ import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
 import net.progruzovik.dissent.dao.GunDao;
 import net.progruzovik.dissent.dao.HullDao;
-import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
+import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.event.EventSubject;
-import net.progruzovik.dissent.model.message.Message;
-import net.progruzovik.dissent.model.message.MessageSubject;
+import net.progruzovik.dissent.model.message.ServerMessage;
+import net.progruzovik.dissent.model.message.ServerSubject;
 import net.progruzovik.dissent.service.MissionDigest;
 import net.progruzovik.dissent.service.PlayerQueue;
-import net.progruzovik.dissent.socket.MessageSender;
+import net.progruzovik.dissent.model.message.Sender;
+import net.progruzovik.dissent.socket.WebSocketSender;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.lang.NonNull;
@@ -31,11 +32,11 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
 
     private final PlayerQueue queue;
     private final MissionDigest missionDigest;
-    private final MessageSender sender;
+    private final Sender sender;
 
     private final MessageAssembler messageAssembler;
 
-    public SessionPlayer(PlayerQueue queue, MissionDigest missionDigest, MessageSender sender,
+    public SessionPlayer(PlayerQueue queue, MissionDigest missionDigest, WebSocketSender sender,
                          MessageAssembler messageAssembler, HullDao hullDao, GunDao gunDao) {
         final Hull pointerHull = hullDao.getHull(3);
         final Gun laser = gunDao.getGun(3);
@@ -82,7 +83,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     public void addToBattle(Side side, Battle battle) {
         if (getStatus() == Status.IN_BATTLE) {
             onBattleFinish();
-            sendMessage(new Message<>(MessageSubject.BATTLE_FINISH.toString()));
+            sendMessage(new ServerMessage<>(ServerSubject.BATTLE_FINISH));
         }
         super.addToBattle(side, battle);
         sendCurrentStatus();
@@ -109,7 +110,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     }
 
     @Override
-    public <T> void sendMessage(Message<T> message) {
+    public <T> void sendMessage(ServerMessage<T> message) {
         sender.sendMessage(message);
     }
 
@@ -120,6 +121,6 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     }
 
     private void sendCurrentStatus() {
-        sendMessage(new Message<>("status", getStatus()));
+        sendMessage(new ServerMessage<>(ServerSubject.STATUS, getStatus()));
     }
 }

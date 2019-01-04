@@ -1,7 +1,8 @@
 package net.progruzovik.dissent.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.progruzovik.dissent.model.message.Message;
+import net.progruzovik.dissent.model.message.ServerMessage;
+import net.progruzovik.dissent.model.message.Sender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -16,14 +17,14 @@ import java.io.IOException;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public final class MessageSender implements Sender {
+public final class WebSocketSender implements Sender {
 
-    private static final Logger log = LoggerFactory.getLogger(MessageSender.class);
+    private static final Logger log = LoggerFactory.getLogger(WebSocketSender.class);
 
     private @Nullable WebSocketSession session;
     private final ObjectMapper mapper;
 
-    public MessageSender(ObjectMapper mapper) {
+    public WebSocketSender(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -33,7 +34,7 @@ public final class MessageSender implements Sender {
     }
 
     @Override
-    public <T> void sendMessage(Message<T> message)  {
+    public <T> void sendMessage(ServerMessage<T> message)  {
         if (session == null) return;
         try {
             session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));

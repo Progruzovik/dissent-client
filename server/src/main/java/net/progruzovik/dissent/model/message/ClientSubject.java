@@ -1,0 +1,19 @@
+package net.progruzovik.dissent.model.message;
+
+public enum ClientSubject {
+
+    REQUEST_TEXTURES,
+    REQUEST_STATUS,
+    REQUEST_SHIPS,
+    REQUEST_MISSIONS,
+    ADD_TO_QUEUE,
+    REMOVE_FROM_QUEUE,
+    START_MISSION,
+
+    REQUEST_BATTLE_DATA,
+    REQUEST_PATHS_AND_REACHABLE_CELLS,
+    MOVE_CURRENT_UNIT,
+    REQUEST_GUN_CELLS,
+    SHOOT_WITH_CURRENT_UNIT,
+    END_TURN
+}

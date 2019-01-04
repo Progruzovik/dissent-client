@@ -1,10 +1,8 @@
-import { LogEntry, Mission, PathNode, ShipData, Side, Status, Target, Texture, Unit } from "./model/util";
+import { LogEntry, Mission, PathNode, ShipData, Side, Status, Subject, Target, Texture, Unit } from "./model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
 export class WebSocketClient extends PIXI.utils.EventEmitter {
-
-    static readonly STATUS = "status";
 
     private readonly connection: WebSocketConnection;
 
@@ -16,60 +14,61 @@ export class WebSocketClient extends PIXI.utils.EventEmitter {
     }
 
     requestTextures(): Promise<Texture[]> {
-        return this.createRequest("textures");
+        return this.createRequest(Subject.Textures);
     }
 
     requestShips(): Promise<ShipData[]> {
-        return this.createRequest("ships");
+        return this.createRequest(Subject.Ships);
     }
 
     requestMissions(): Promise<Mission[]> {
-        return this.createRequest("missions");
+        return this.createRequest(Subject.Missions);
     }
 
     requestStatus(): Promise<Status> {
-        return this.createRequest(WebSocketClient.STATUS);
+        return this.createRequest(Subject.Status);
     }
 
     addToQueue() {
-        this.connection.prepareMessage(new Message("addToQueue"));
+        this.connection.prepareMessage(new Message(Subject.AddToQueue));
     }
 
     removeFromQueue() {
-        this.connection.prepareMessage(new Message("removeFromQueue"));
+        this.connection.prepareMessage(new Message(Subject.RemoveFromQueue));
     }
 
     startMission(missionId: number) {
-        this.connection.prepareMessage(new Message("startMission", { missionId: missionId }));
+        this.connection.prepareMessage(new Message(Subject.StartMission, { missionId: missionId }));
     }
 
     requestBattleData(): Promise<BattleData> {
-        return this.createRequest("battleData");
+        return this.createRequest(Subject.BattleData);
     }
 
     requestPathsAndReachableCells(): Promise<{ paths: PathNode[][], reachableCells: druid.Point[] }> {
-        return this.createRequest("pathsAndReachableCells");
+        return this.createRequest(Subject.PathsAndReachableCells);
     }
 
     requestGunCells(gunId: number): Promise<{ targets: Target[], shotCells: druid.Point[] }> {
-        return this.createRequest("gunCells", { gunId: gunId });
+        return this.createRequest(Subject.GunCells, { gunId: gunId });
     }
 
     moveCurrentUnit(cell: druid.Point) {
-        this.connection.prepareMessage(new Message("moveCurrentUnit", cell));
+        this.connection.prepareMessage(new Message(Subject.MoveCurrentUnit, cell));
     }
 
     shootWithCurrentUnit(gunId: number, cell: druid.Point) {
-        this.connection.prepareMessage(new Message("shootWithCurrentUnit", { gunId: gunId, x: cell.x, y: cell.y }));
+        const message = new Message(Subject.ShootWithCurrentUnit, { gunId: gunId, x: cell.x, y: cell.y });
+        this.connection.prepareMessage(message);
     }
 
     endTurn() {
-        this.connection.prepareMessage(new Message("endTurn"));
+        this.connection.prepareMessage(new Message(Subject.EndTurn));
     }
 
     private createRequest<T>(name: string, data?: any): Promise<T> {
         return new Promise<T>(resolve => {
-            const requestName = `request${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+            const requestName = `REQUEST_${name}`;
             this.connection.prepareMessage(new Message(requestName, data));
             this.once(name, resolve);
         });

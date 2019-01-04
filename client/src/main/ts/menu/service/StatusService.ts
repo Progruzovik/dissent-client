@@ -1,5 +1,5 @@
 import { WebSocketClient } from "../../WebSocketClient";
-import { Status } from "../../model/util";
+import { Subject, Status } from "../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -11,7 +11,7 @@ export class StatusService extends PIXI.utils.EventEmitter {
 
     constructor(private readonly webSocketClient: WebSocketClient) {
         super();
-        webSocketClient.on(WebSocketClient.STATUS, (status: Status) => {
+        webSocketClient.on(Subject.Status, (status: Status) => {
             if (this.currentStatus != status) {
                 if (this.currentStatus == Status.InBattle) {
                     this.emit(StatusService.BATTLE_FINISH);

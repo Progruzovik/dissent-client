@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.captain;
 
-import net.progruzovik.dissent.socket.Sender;
+import net.progruzovik.dissent.model.message.Sender;
 
 public interface Player extends Captain, Sender {
 

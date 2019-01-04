@@ -1,6 +1,22 @@
 import * as druid from "pixi-druid";
 
-export const enum MessageSubject {
+export const enum Subject {
+
+    Textures = "TEXTURES",
+    Status = "STATUS",
+    Ships = "SHIPS",
+    Missions = "MISSIONS",
+    BattleData = "BATTLE_DATA",
+    PathsAndReachableCells = "PATHS_AND_REACHABLE_CELLS",
+    GunCells = "GUN_CELLS",
+
+    AddToQueue = "ADD_TO_QUEUE",
+    RemoveFromQueue = "REMOVE_FROM_QUEUE",
+    StartMission = "START_MISSION",
+    MoveCurrentUnit = "MOVE_CURRENT_UNIT",
+    ShootWithCurrentUnit = "SHOOT_WITH_CURRENT_UNIT",
+    EndTurn = "END_TURN",
+
     Move = "MOVE",
     Shot = "SHOT",
     NextTurn = "NEXT_TURN",

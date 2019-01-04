@@ -1,6 +1,6 @@
 import { Unit } from "./Unit";
 import { WebSocketClient } from "../../../WebSocketClient";
-import { MessageSubject, Gun, Side, Target } from "../../../model/util";
+import { Subject, Gun, Side, Target } from "../../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -27,12 +27,12 @@ export class UnitService extends PIXI.utils.EventEmitter {
                         webSocketClient.shootWithCurrentUnit(gunId, target.cell);
                     }
                 });
-                unit.on(MessageSubject.Move, () => {
-                    this.emit(MessageSubject.Move);
+                unit.on(Subject.Move, () => {
+                    this.emit(Subject.Move);
                     this.tryToEndTurn();
                 });
-                unit.on(MessageSubject.Shot, (damage: number, gun: Gun, target: Unit) => {
-                    this.emit(MessageSubject.Shot, damage, gun, unit, target);
+                unit.on(Subject.Shot, (damage: number, gun: Gun, target: Unit) => {
+                    this.emit(Subject.Shot, damage, gun, unit, target);
                     this.tryToEndTurn();
                 });
                 unit.on(Unit.PREPARE_TO_SHOT, () => {
@@ -55,8 +55,8 @@ export class UnitService extends PIXI.utils.EventEmitter {
                 unit.once(Unit.DESTROY, () => {
                     this.unitQueue.splice(this.unitQueue.indexOf(unit), 1);
                     unit.off(druid.Event.CLICK);
-                    unit.off(MessageSubject.Move);
-                    unit.off(MessageSubject.Shot);
+                    unit.off(Subject.Move);
+                    unit.off(Subject.Shot);
                     unit.off(Unit.PREPARE_TO_SHOT);
                     unit.off(Unit.NOT_PREPARE_TO_SHOT);
                 });
@@ -91,7 +91,7 @@ export class UnitService extends PIXI.utils.EventEmitter {
     nextTurn() {
         this.unitQueue.push(this.unitQueue.shift());
         this.activeUnit.activate();
-        this.emit(MessageSubject.NextTurn);
+        this.emit(Subject.NextTurn);
     }
 
     private findTargetForUnit(unit: Unit): Target {

@@ -7,7 +7,7 @@ import { PopUp } from "./ui/PopUp";
 import { Unit } from "./unit/Unit";
 import { UnitService } from "./unit/UnitService";
 import { WebSocketClient } from "../../WebSocketClient";
-import { MessageSubject, LogEntry, Side } from "../../model/util";
+import { Subject, LogEntry, Side } from "../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
@@ -35,7 +35,7 @@ export class BattlefieldRoot extends druid.AbstractBranch {
         this.addChild(this.leftPanel);
         this.controls = new Controls(playerSide, log, unitService, webSocketClient);
         this.addChild(this.controls);
-        unitService.emit(MessageSubject.NextTurn);
+        unitService.emit(Subject.NextTurn);
         this.actionReceiver = new ActionReceiver(this.field, this.controls, unitService, webSocketClient);
 
         unitService.on(UnitService.UNIT_MOUSE_OVER, (mousePos: PIXI.Point, unit: Unit, hittingChance?: number) => {
@@ -58,7 +58,7 @@ export class BattlefieldRoot extends druid.AbstractBranch {
                 this.unitPopUp = null;
             }
         });
-        this.actionReceiver.once(MessageSubject.BattleFinish, () => this.emit(druid.Event.DONE));
+        this.actionReceiver.once(Subject.BattleFinish, () => this.emit(druid.Event.DONE));
     }
 
     destroy(options?: PIXI.DestroyOptions | boolean) {
