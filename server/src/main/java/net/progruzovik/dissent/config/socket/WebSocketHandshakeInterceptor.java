@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.socket;
+package net.progruzovik.dissent.config.socket;
 
 import net.progruzovik.dissent.captain.Player;
 import org.springframework.beans.factory.ObjectFactory;
@@ -13,11 +13,11 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import java.util.Map;
 
 @Component
-public final class DissentHandshakeInterceptor implements HandshakeInterceptor {
+public final class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
 
     private final ObjectFactory<Player> playerFactory;
 
-    public DissentHandshakeInterceptor(ObjectFactory<Player> playerFactory) {
+    public WebSocketHandshakeInterceptor(ObjectFactory<Player> playerFactory) {
         this.playerFactory = playerFactory;
     }
 
