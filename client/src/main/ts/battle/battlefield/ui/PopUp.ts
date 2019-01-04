@@ -3,7 +3,7 @@ import { Side } from "../../../model/util";
 import * as druid from "pixi-druid";
 import { l } from "../../../localizer";
 
-export class PopUp extends druid.AbstractBranch {
+export class PopUp extends druid.Branch {
 
     static readonly WIDTH = 200;
     static readonly HEIGHT = 100;
@@ -14,7 +14,7 @@ export class PopUp extends druid.AbstractBranch {
     private readonly barStrength = this.unit.ship.createStrengthBar(this.bgPopUp.width);
     private readonly txtHittingChance: PIXI.Text;
 
-    constructor(rootWidth: number, rootHeight: number, readonly unit: Unit, hittingChance?: number) {
+    constructor(readonly unit: Unit, hittingChance?: number) {
         super();
         const unitBounds: PIXI.Rectangle = unit.getBounds();
         this.lineToWindow.position.set(unitBounds.x + unitBounds.width / 2, unitBounds.y);
@@ -33,30 +33,24 @@ export class PopUp extends druid.AbstractBranch {
             this.txtHittingChance = new PIXI.Text(text, { fill: "white", fontSize: 14 });
             this.addChild(this.txtHittingChance);
         }
-        this.resize(rootWidth, rootHeight);
 
-        unit.on(Unit.UPDATE_STATS, () => this.updateStats());
+        unit.on(Unit.UPDATE_STATS, () => this.barStrength.value = this.unit.strength);
+        this.on(druid.Event.RESIZE, (width: number) => {
+            if (this.unit.side == Side.Left) {
+                this.bgPopUp.x = druid.INDENT / 2;
+            } else if (this.unit.side == Side.Right) {
+                this.bgPopUp.x = width - this.bgPopUp.width - druid.INDENT / 2;
+            }
+            this.bgPopUp.y = druid.INDENT / 2;
+            if (this.txtHittingChance) {
+                this.txtHittingChance.position.set(this.bgPopUp.x, this.bgPopUp.y + this.bgPopUp.height);
+            }
+            this.lineToWindow.directTo(this.bgPopUp.x + this.bgPopUp.width / 2, this.bgPopUp.y + this.bgPopUp.height);
+        });
     }
 
     destroy(options?: PIXI.DestroyOptions | boolean ) {
         this.unit.off(Unit.UPDATE_STATS);
         super.destroy(options);
-    }
-
-    protected onResize() {
-        if (this.unit.side == Side.Left) {
-            this.bgPopUp.x = druid.INDENT / 2;
-        } else if (this.unit.side == Side.Right) {
-            this.bgPopUp.x = this.width - this.bgPopUp.width - druid.INDENT / 2;
-        }
-        this.bgPopUp.y = druid.INDENT / 2;
-        if (this.txtHittingChance) {
-            this.txtHittingChance.position.set(this.bgPopUp.x, this.bgPopUp.y + this.bgPopUp.height);
-        }
-        this.lineToWindow.directTo(this.bgPopUp.x + this.bgPopUp.width / 2, this.bgPopUp.y + this.bgPopUp.height);
-    }
-
-    private updateStats() {
-        this.barStrength.value = this.unit.strength;
     }
 }

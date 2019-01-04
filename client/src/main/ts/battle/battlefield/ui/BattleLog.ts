@@ -4,7 +4,7 @@ import * as css  from "../../../../css/battle.css";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export class BattleLog extends druid.AbstractBranch {
+export class BattleLog extends druid.Branch {
 
     private _isExpanded = false;
 
@@ -38,6 +38,16 @@ export class BattleLog extends druid.AbstractBranch {
             this.updateChildren();
         });
         this.on(druid.Event.ADDED, () => document.body.insertBefore(this.divLogContainer, document.body.firstChild));
+        this.on(druid.Event.RESIZE, (width: number, height: number) => {
+            this.btnTurnLog.y = height - druid.INDENT;
+            const freeHeight: number = this.btnTurnLog.y - this.btnTurnLog.height;
+            this.divLogContainer.style.width = `${width}px`;
+            this.divLogContainer.style.height = `${freeHeight}px`;
+            this.divLogContainer.style.left = `${this.x}px`;
+            this.txtLastEntry.style.wordWrapWidth = width;
+            this.txtLastEntry.y = freeHeight;
+            this.updateBg();
+        });
         this.on(druid.Event.REMOVED, () => document.body.removeChild(this.divLogContainer));
     }
 
@@ -68,17 +78,6 @@ export class BattleLog extends druid.AbstractBranch {
         this.txtLastEntry.style.fill = color;
         this.txtLastEntry.text = text;
         this.txtLastEntry.anchor.y = 1;
-        this.updateBg();
-    }
-
-    protected onResize() {
-        this.btnTurnLog.y = this.height - druid.INDENT;
-        const freeHeight: number = this.btnTurnLog.y - this.btnTurnLog.height;
-        this.divLogContainer.style.width = `${this.width}px`;
-        this.divLogContainer.style.height = `${freeHeight}px`;
-        this.divLogContainer.style.left = `${this.x}px`;
-        this.txtLastEntry.style.wordWrapWidth = this.width;
-        this.txtLastEntry.y = freeHeight;
         this.updateBg();
     }
 

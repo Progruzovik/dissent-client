@@ -12,7 +12,7 @@ export class BattleApp extends druid.App {
 
     constructor(resolution: number, width: number, height: number, canvas: HTMLCanvasElement,
                 private readonly webSocketClient: WebSocketClient) {
-        super(resolution, width, height, canvas);
+        super(resolution, width, height, 0x000000, canvas);
         Promise.all([
             this.webSocketClient.requestTextures(),
             this.webSocketClient.requestBattleData()

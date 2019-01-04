@@ -8,7 +8,7 @@ import { Subject, Gun, LogEntry, Side } from "../../../model/util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 
-export class Controls extends druid.AbstractBranch {
+export class Controls extends druid.Branch {
 
     readonly log: BattleLog;
 
@@ -58,6 +58,7 @@ export class Controls extends druid.AbstractBranch {
         this.btnFirstGun.on(druid.ToggleButton.TOGGLE, () => this.btnSecondGun.isToggled = false);
         this.btnSecondGun.on(druid.ToggleButton.TOGGLE, () => this.btnFirstGun.isToggled = false);
         this.btnEndTurn.on(druid.Button.TRIGGERED, () => webSocketClient.endTurn());
+        this.on(druid.Event.RESIZE, () => this.onResize());
     }
 
     get buttonsHeight(): number {
@@ -70,7 +71,7 @@ export class Controls extends druid.AbstractBranch {
         this.btnEndTurn.isEnabled = false;
     }
 
-    protected onResize() {
+    private onResize() {
         this.layoutButtons.resize(this.width, this.height);
 
         const shipRatio = this.bgHull.height / Field.CELL_SIZE.y;

@@ -6,7 +6,7 @@ import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export class LeftPanel extends druid.AbstractBranch {
+export class LeftPanel extends druid.Branch {
 
     private freeHeight = 0;
 
@@ -50,12 +50,11 @@ export class LeftPanel extends druid.AbstractBranch {
             this.layoutQueue.removeElement(this.activeUnit);
             this.updateActionPointsValue();
         });
-    }
-
-    protected onResize() {
-        this.freeHeight = this.height;
-        this.txtActionPoints.x = this.width / 2;
-        this.updateLayoutQueuePosition();
+        this.on(druid.Event.RESIZE, (width: number, height: number) => {
+            this.freeHeight = height;
+            this.txtActionPoints.x = width / 2;
+            this.updateLayoutQueuePosition();
+        });
     }
 
     private updateActionPointsValue() {

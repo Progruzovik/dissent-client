@@ -11,7 +11,7 @@ import { Subject, LogEntry, Side } from "../../model/util";
 import * as druid from "pixi-druid";
 import * as PIXI from "pixi.js";
 
-export class BattlefieldRoot extends druid.AbstractBranch {
+export class BattlefieldRoot extends druid.Branch {
 
     private contentWidth = 0;
     private contentHeight = 0;
@@ -42,7 +42,8 @@ export class BattlefieldRoot extends druid.AbstractBranch {
             if (this.unitPopUp) {
                 this.unitPopUp.destroy({ children: true });
             }
-            this.unitPopUp = new PopUp(this.freeWidth, this.contentHeight, unit, hittingChance);
+            this.unitPopUp = new PopUp(unit, hittingChance);
+            this.unitPopUp.resize(this.freeWidth, this.contentHeight);
             this.addChild(this.unitPopUp);
         });
         unitService.on(UnitService.UNIT_MOUSE_OUT, (unit: Unit) => {
@@ -59,6 +60,7 @@ export class BattlefieldRoot extends druid.AbstractBranch {
             }
         });
         this.actionReceiver.once(Subject.BattleFinish, () => this.emit(druid.Event.DONE));
+        this.on(druid.Event.RESIZE, () => this.onResize());
     }
 
     destroy(options?: PIXI.DestroyOptions | boolean) {
@@ -66,7 +68,11 @@ export class BattlefieldRoot extends druid.AbstractBranch {
         super.destroy(options);
     }
 
-    protected onResize() {
+    private get freeWidth(): number {
+        return this.controls.log.isExpanded ? this.contentWidth - this.controls.log.width : this.contentWidth;
+    }
+
+    private onResize() {
         this.controls.resize(this.width, this.height);
         this.contentWidth = this.width;
         this.contentHeight = this.height - this.controls.buttonsHeight;
@@ -77,9 +83,5 @@ export class BattlefieldRoot extends druid.AbstractBranch {
         if (this.unitPopUp) {
             this.unitPopUp.resize(this.freeWidth, this.contentHeight);
         }
-    }
-
-    private get freeWidth(): number {
-        return this.controls.log.isExpanded ? this.contentWidth - this.controls.log.width : this.contentWidth;
     }
 }
