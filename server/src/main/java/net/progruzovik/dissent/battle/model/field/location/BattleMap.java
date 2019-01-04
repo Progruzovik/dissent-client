@@ -33,7 +33,7 @@ public final class BattleMap {
     }
 
     public int findMovementCost(@NonNull Cell cell, int unitWidth, int unitHeight) {
-        int minMovementCost = 0;
+        int minMovementCost = Integer.MAX_VALUE;
         for (int i = 0; i < unitWidth; i++) {
             for (int j = 0; j < unitHeight; j++) {
                 final Cell nextCell = new Cell(cell.getX() + i, cell.getY() + j);
