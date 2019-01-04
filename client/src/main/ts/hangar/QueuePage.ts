@@ -1,8 +1,8 @@
 import { StatusService } from "../service/StatusService";
-import { WebSocketClient } from "../../WebSocketClient";
+import { WebSocketClient } from "../WebSocketClient";
 import { HyperNode } from "../util";
-import { Status } from "../../model/util";
-import { l } from "../../localizer";
+import { Status } from "../model/util";
+import { l } from "../localizer";
 import * as m from "mithril";
 
 export class QueuePage implements m.ClassComponent {

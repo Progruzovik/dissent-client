@@ -1,7 +1,7 @@
 import { HangarService } from "./service/HangarService";
-import { l } from "../../localizer";
+import { l } from "../localizer";
 import { HyperNode } from "../util";
-import * as css from "../../../css/hangar.css";
+import * as css from "../../css/hangar.css";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
 

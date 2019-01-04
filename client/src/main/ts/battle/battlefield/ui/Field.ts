@@ -3,7 +3,7 @@ import { ProjectileService } from "../projectile/ProjectileService";
 import { Unit } from "../unit/Unit";
 import { UnitService } from "../unit/UnitService";
 import { WebSocketClient } from "../../../WebSocketClient";
-import { Subject, PathNode, Target } from "../../../model/util";
+import { Subject, PathNode } from "../../../model/util";
 import { l } from "../../../localizer";
 import * as druid from "pixi-druid";
 

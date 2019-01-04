@@ -1,9 +1,9 @@
 import { HangarService } from "./service/HangarService";
 import { StatusService } from "../service/StatusService";
 import { HyperNode } from "../util";
-import { l } from "../../localizer";
-import { Status } from "../../model/util";
-import * as css from "../../../css/hangar.css";
+import { l } from "../localizer";
+import { Status } from "../model/util";
+import * as css from "../../css/hangar.css";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
 

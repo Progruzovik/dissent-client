@@ -1,8 +1,8 @@
 import { HangarService } from "./service/HangarService";
-import { Ship } from "../../model/Ship";
+import { Ship } from "../model/Ship";
 import { HyperNode } from "../util";
-import { l } from "../../localizer";
-import * as css from "../../../css/hangar.css";
+import { l } from "../localizer";
+import * as css from "../../css/hangar.css";
 import * as druid from "pixi-druid";
 import * as m from "mithril";
 
