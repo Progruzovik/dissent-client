@@ -12,9 +12,9 @@ module.exports = {
     },
     output: {
         filename: "js/app.js",
-        path: path.resolve(__dirname, "target", "classes", "static")
+        path: path.resolve(__dirname, "dist")
     },
     resolve: {
-        extensions: [".js", ".jsx", ".ts", ".tsx"]
+        extensions: [".js", ".ts"]
     }
 };

@@ -3,8 +3,6 @@ package net.progruzovik.dissent.captain;
 import net.progruzovik.dissent.assembler.MessageAssembler;
 import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
-import net.progruzovik.dissent.dao.GunDao;
-import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
@@ -13,6 +11,8 @@ import net.progruzovik.dissent.model.event.EventSubject;
 import net.progruzovik.dissent.model.message.Sender;
 import net.progruzovik.dissent.model.message.ServerMessage;
 import net.progruzovik.dissent.model.message.ServerSubject;
+import net.progruzovik.dissent.repository.GunRepository;
+import net.progruzovik.dissent.repository.HullRepository;
 import net.progruzovik.dissent.service.MissionDigest;
 import net.progruzovik.dissent.service.PlayerQueue;
 import net.progruzovik.dissent.socket.WebSocketSender;
@@ -37,11 +37,11 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     private final MessageAssembler messageAssembler;
 
     public SessionPlayer(PlayerQueue queue, MissionDigest missionDigest, WebSocketSender sender,
-                         MessageAssembler messageAssembler, HullDao hullDao, GunDao gunDao) {
-        final Hull pointerHull = hullDao.getHull(3);
-        final Gun laser = gunDao.getGun(3);
+                         MessageAssembler messageAssembler, HullRepository hullRepository, GunRepository gunRepository) {
+        final Hull pointerHull = hullRepository.findById(3).get();
+        final Gun laser = gunRepository.findById(3).get();
         getShips().add(new Ship(pointerHull, laser, null));
-        getShips().add(new Ship(hullDao.getHull(7), laser, gunDao.getGun(1)));
+        getShips().add(new Ship(hullRepository.findById(7).get(), laser, gunRepository.findById(1).get()));
         getShips().add(new Ship(pointerHull, laser, null));
 
         this.queue = queue;

@@ -29,11 +29,11 @@ public class Gun {
     private float accuracy;
 
     @ManyToOne
-    @JoinColumn(name = "gunTypeId", nullable = false)
+    @JoinColumn(name = "gun_type_id", nullable = false)
     private GunType type;
 
     @ManyToOne
-    @JoinColumn(name = "textureId", nullable = false)
+    @JoinColumn(name = "texture_id", nullable = false)
     private Texture texture;
 
     public Gun(int id, @NonNull String name, int shotCost, int damage, int radius,

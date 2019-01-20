@@ -27,7 +27,7 @@ public class Hull {
     private int height;
 
     @ManyToOne
-    @JoinColumn(name = "textureId", nullable = false)
+    @JoinColumn(name = "texture_id", nullable = false)
     private Texture texture;
 
     public Hull(int id, @NonNull String name, int actionPoints, int strength, int width, int height, Texture texture) {

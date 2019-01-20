@@ -1,0 +1,20 @@
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
+    }
+}
+
+apply plugin: 'com.moowork.node'
+
+task build(type: NpmTask, dependsOn: [npmInstall]) {
+    args = ["run", "webpack"]
+}
+
+task prepareData(type: Copy, dependsOn: [build]) {
+    from "dist"
+    into "${project(":server").projectDir}/src/main/resources/static"
+}

@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.battle.model.field.gun.GunCells;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.captain.Player;
-import net.progruzovik.dissent.dao.MissionDao;
-import net.progruzovik.dissent.dao.TextureDao;
 import net.progruzovik.dissent.model.message.ClientMessage;
 import net.progruzovik.dissent.model.message.ClientSubject;
 import net.progruzovik.dissent.model.message.ServerMessage;
 import net.progruzovik.dissent.model.message.ServerSubject;
+import net.progruzovik.dissent.repository.MissionRepository;
+import net.progruzovik.dissent.repository.TextureRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -25,17 +25,17 @@ public final class DissentWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper mapper;
     private final Map<ClientSubject, Reader> readers = new HashMap<>();
 
-    public DissentWebSocketHandler(ObjectMapper mapper, TextureDao textureDao, MissionDao missionDao) {
+    public DissentWebSocketHandler(ObjectMapper mapper, TextureRepository textureRepository, MissionRepository missionRepository) {
         this.mapper = mapper;
         readers.put(ClientSubject.REQUEST_TEXTURES, (p, d) ->
-                p.sendMessage(new ServerMessage<>(ServerSubject.TEXTURES, textureDao.getTextures())));
+                p.sendMessage(new ServerMessage<>(ServerSubject.TEXTURES, textureRepository.findAll())));
 
         readers.put(ClientSubject.REQUEST_STATUS, (p, d) ->
                 p.sendMessage(new ServerMessage<>(ServerSubject.STATUS, p.getStatus())));
         readers.put(ClientSubject.REQUEST_SHIPS, (p, d) ->
                 p.sendMessage(new ServerMessage<>(ServerSubject.SHIPS, p.getShips())));
         readers.put(ClientSubject.REQUEST_MISSIONS, (p, d) ->
-                p.sendMessage(new ServerMessage<>(ServerSubject.MISSIONS, missionDao.getMissions())));
+                p.sendMessage(new ServerMessage<>(ServerSubject.MISSIONS, missionRepository.findAll())));
         readers.put(ClientSubject.ADD_TO_QUEUE, (p, d) -> p.addToQueue());
         readers.put(ClientSubject.REMOVE_FROM_QUEUE, (p, d) -> p.removeFromQueue());
         readers.put(ClientSubject.START_MISSION, (p, d) -> p.startMission(d.get("missionId")));

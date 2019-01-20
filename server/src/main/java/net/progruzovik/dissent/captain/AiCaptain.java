@@ -3,13 +3,13 @@ package net.progruzovik.dissent.captain;
 import net.progruzovik.dissent.battle.model.Unit;
 import net.progruzovik.dissent.battle.model.field.gun.GunCells;
 import net.progruzovik.dissent.battle.model.util.Cell;
-import net.progruzovik.dissent.dao.GunDao;
-import net.progruzovik.dissent.dao.HullDao;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
 import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.event.EventSubject;
+import net.progruzovik.dissent.repository.GunRepository;
+import net.progruzovik.dissent.repository.HullRepository;
 import org.springframework.context.annotation.Scope;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -22,11 +22,11 @@ import java.util.Random;
 @Scope("prototype")
 public final class AiCaptain extends AbstractCaptain {
 
-    public AiCaptain(HullDao hullDao, GunDao gunDao) {
-        final Hull aiHull = hullDao.getHull(6);
-        final Gun artillery = gunDao.getGun(2);
+    public AiCaptain(HullRepository hullRepository, GunRepository gunRepository) {
+        final Hull aiHull = hullRepository.findById(6).get();
+        final Gun artillery = gunRepository.findById(2).get();
         getShips().add(new Ship(aiHull, artillery, null));
-        getShips().add(new Ship(hullDao.getHull(4), gunDao.getGun(3), null));
+        getShips().add(new Ship(hullRepository.findById(4).get(), gunRepository.findById(3).get(), null));
         getShips().add(new Ship(aiHull, artillery, null));
     }
 
