@@ -16,8 +16,8 @@ public class BattleCreationService implements BattleCreator {
     public void createBattle(@NonNull Captain leftCaptain, @NonNull Captain rightCaptain) {
         final int maxShipsOnSide = Math.max(leftCaptain.getShips().size(), rightCaptain.getShips().size());
         final int rowsCount = maxShipsOnSide + (maxShipsOnSide - 1) * Field.UNIT_INDENT + Field.BORDER_INDENT * 2;
-        final Battle battle = new Battle(leftCaptain.getId(), rightCaptain.getId(),
-                new UnitQueue(), new Field(new Cell((int) (rowsCount * 1.5), rowsCount)));
+        final Battle battle = new Battle(new UnitQueue(),
+                new Field(new Cell((int) (rowsCount * 1.5), rowsCount)), leftCaptain, rightCaptain);
         leftCaptain.addToBattle(Side.LEFT, battle);
         rightCaptain.addToBattle(Side.RIGHT, battle);
         battle.startBattle();

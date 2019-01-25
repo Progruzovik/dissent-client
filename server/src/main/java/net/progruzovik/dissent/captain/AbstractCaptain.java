@@ -28,7 +28,6 @@ public abstract class AbstractCaptain implements Captain {
 
     @Override
     public void addToBattle(@NonNull Side side, @NonNull Battle battle) {
-        battle.addObserver(this);
         battle.addShips(side, ships);
         this.battle = battle;
     }

@@ -15,7 +15,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Observable;
 import java.util.Random;
 
 @Component
@@ -37,9 +36,8 @@ public final class AiCaptain extends AbstractCaptain {
     }
 
     @Override
-    public void update(Observable observable, Object data) {
-        final Event<?> message = (Event<?>) data;
-        if (message.getSubject().equals(EventSubject.NEW_TURN_START)
+    public void onEvent(Event<?> event) {
+        if (event.getSubject().equals(EventSubject.NEW_TURN_START)
                 && getBattle() != null && getBattle().isIdBelongsToCurrentCaptain(getId())) {
             final Unit unit = getBattle().getCurrentUnit();
             if (unit.getShip().getFirstGun() != null) {

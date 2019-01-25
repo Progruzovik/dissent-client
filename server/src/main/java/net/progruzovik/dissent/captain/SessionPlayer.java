@@ -22,8 +22,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.Observable;
-
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public final class SessionPlayer extends AbstractCaptain implements Player {
@@ -71,8 +69,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     }
 
     @Override
-    public void update(Observable battle, Object data) {
-        final Event<?> event = (Event<?>) data;
+    public void onEvent(Event<?> event) {
         if (event.getSubject().equals(EventSubject.BATTLE_FINISH)) {
             onBattleFinish();
         }
