@@ -20,7 +20,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.reactive.socket.WebSocketSession;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -69,7 +69,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     }
 
     @Override
-    public void onEvent(Event<?> event) {
+    public void accept(Event<?> event) {
         if (event.getSubject().equals(EventSubject.BATTLE_FINISH)) {
             onBattleFinish();
         }

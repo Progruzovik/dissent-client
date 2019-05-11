@@ -11,16 +11,17 @@ import net.progruzovik.dissent.model.message.ServerSubject;
 import net.progruzovik.dissent.repository.MissionRepository;
 import net.progruzovik.dissent.repository.TextureRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
+import org.springframework.web.reactive.socket.WebSocketHandler;
+import org.springframework.web.reactive.socket.WebSocketMessage;
+import org.springframework.web.reactive.socket.WebSocketSession;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public final class DissentWebSocketHandler extends TextWebSocketHandler {
+public final class DissentWebSocketHandler implements WebSocketHandler {
 
     private final ObjectMapper mapper;
     private final Map<ClientSubject, Reader> readers = new HashMap<>();
@@ -77,15 +78,18 @@ public final class DissentWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
+    public Mono<Void> handle(WebSocketSession session) {
         final Player player = (Player) session.getAttributes().get("player");
         player.setSession(session);
-    }
-
-    @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws IOException {
-        final Player player = (Player) session.getAttributes().get("player");
-        final ClientMessage message = mapper.readValue(textMessage.getPayload(), ClientMessage.class);
-        readers.get(message.getSubject()).read(player, message.getData());
+        return session.receive().map(WebSocketMessage::getPayloadAsText).map(m -> {
+            ClientMessage message = null;
+            try {
+                message = mapper.readValue(m, ClientMessage.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            readers.get(message.getSubject()).read(player, message.getData());
+            return m;
+        }).then();
     }
 }

@@ -14,6 +14,8 @@ import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.event.EventSubject;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import reactor.core.publisher.DirectProcessor;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +34,23 @@ public final class Battle {
     private final @NonNull Captain leftCaptain;
     private final @NonNull Captain rightCaptain;
 
+    private final DirectProcessor<Event<?>> processor;
+
     public Battle(@NonNull UnitQueue unitQueue, @NonNull Field field,
                   @NonNull Captain leftCaptain, @NonNull Captain rightCaptain) {
         this.unitQueue = unitQueue;
         this.field = field;
         this.leftCaptain = leftCaptain;
         this.rightCaptain = rightCaptain;
+        processor = DirectProcessor.create();
     }
 
     public boolean isRunning() {
         return isRunning;
+    }
+
+    public Flux<Event<?>> getEvents() {
+        return processor;
     }
 
     @NonNull
@@ -150,7 +159,6 @@ public final class Battle {
     }
 
     private void declareEvent(Event<?> event) {
-        leftCaptain.onEvent(event);
-        rightCaptain.onEvent(event);
+        processor.onNext(event);
     }
 }

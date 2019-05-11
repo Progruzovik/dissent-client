@@ -8,8 +8,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public interface Captain {
+public interface Captain extends Consumer<Event<?>> {
 
     @NonNull
     String getId();
@@ -19,8 +20,6 @@ public interface Captain {
 
     @Nullable
     Battle getBattle();
-
-    void onEvent(@NonNull Event<?> event);
 
     void addToBattle(@NonNull Side side, @NonNull Battle battle);
 }

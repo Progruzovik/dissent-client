@@ -36,7 +36,7 @@ public final class AiCaptain extends AbstractCaptain {
     }
 
     @Override
-    public void onEvent(Event<?> event) {
+    public void accept(Event<?> event) {
         if (event.getSubject().equals(EventSubject.NEW_TURN_START)
                 && getBattle() != null && getBattle().isIdBelongsToCurrentCaptain(getId())) {
             final Unit unit = getBattle().getCurrentUnit();
