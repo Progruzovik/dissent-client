@@ -1,8 +1,8 @@
 package net.progruzovik.dissent.captain;
 
-import net.progruzovik.dissent.assembler.MessageAssembler;
 import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
+import net.progruzovik.dissent.mapper.MessageMapper;
 import net.progruzovik.dissent.model.entity.Gun;
 import net.progruzovik.dissent.model.entity.Hull;
 import net.progruzovik.dissent.model.entity.Ship;
@@ -32,10 +32,10 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
     private final MissionDigest missionDigest;
     private final Sender sender;
 
-    private final MessageAssembler messageAssembler;
+    private final MessageMapper messageMapper;
 
     public SessionPlayer(PlayerQueue queue, MissionDigest missionDigest, WebSocketSender sender,
-                         MessageAssembler messageAssembler, HullRepository hullRepository, GunRepository gunRepository) {
+                         MessageMapper messageMapper, HullRepository hullRepository, GunRepository gunRepository) {
         final Hull pointerHull = hullRepository.findById(3).get();
         final Gun laser = gunRepository.findById(3).get();
         getShips().add(new Ship(pointerHull, laser, null));
@@ -45,7 +45,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
         this.queue = queue;
         this.missionDigest = missionDigest;
         this.sender = sender;
-        this.messageAssembler = messageAssembler;
+        this.messageMapper = messageMapper;
     }
 
     @Override
@@ -74,7 +74,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
             onBattleFinish();
         }
         if (event.getSubject().isPublic()) {
-            sendMessage(messageAssembler.apply(event));
+            sendMessage(messageMapper.apply(event));
         }
     }
 
