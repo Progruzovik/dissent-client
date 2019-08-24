@@ -29,7 +29,7 @@ public final class WebSocketSender implements Sender {
     }
 
     @Override
-    public void setSession(@NonNull WebSocketSession session) {
+    public void setSession(@Nullable WebSocketSession session) {
         this.session = session;
     }
 

@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.progruzovik.dissent.battle.model.field.gun.GunCells;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.captain.Player;
+import net.progruzovik.dissent.captain.SessionPlayer;
 import net.progruzovik.dissent.model.message.ClientMessage;
 import net.progruzovik.dissent.model.message.ClientSubject;
 import net.progruzovik.dissent.model.message.ServerMessage;
 import net.progruzovik.dissent.model.message.ServerSubject;
 import net.progruzovik.dissent.repository.MissionRepository;
 import net.progruzovik.dissent.repository.TextureRepository;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -24,10 +26,14 @@ import java.util.Map;
 public final class DissentWebSocketHandler implements WebSocketHandler {
 
     private final ObjectMapper mapper;
+    private final ObjectFactory<SessionPlayer> sessionPlayerFactory;
     private final Map<ClientSubject, Reader> readers = new HashMap<>();
 
-    public DissentWebSocketHandler(ObjectMapper mapper, TextureRepository textureRepository, MissionRepository missionRepository) {
+    public DissentWebSocketHandler(ObjectMapper mapper, ObjectFactory<SessionPlayer> sessionPlayerFactory,
+                                   TextureRepository textureRepository, MissionRepository missionRepository) {
         this.mapper = mapper;
+        this.sessionPlayerFactory = sessionPlayerFactory;
+
         readers.put(ClientSubject.REQUEST_TEXTURES, (p, d) ->
                 p.sendMessage(new ServerMessage<>(ServerSubject.TEXTURES, textureRepository.findAll())));
 
@@ -79,13 +85,15 @@ public final class DissentWebSocketHandler implements WebSocketHandler {
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        final Player player = (Player) session.getAttributes().get("player");
+        final Player player = sessionPlayerFactory.getObject();
+        session.getAttributes().put("player", player);
         player.setSession(session);
         return session.receive().map(WebSocketMessage::getPayloadAsText).map(m -> {
             ClientMessage message = null;
             try {
                 message = mapper.readValue(m, ClientMessage.class);
             } catch (IOException e) {
+                //TODO: log and throw runtime exception
                 e.printStackTrace();
             }
             readers.get(message.getSubject()).read(player, message.getData());
