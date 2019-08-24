@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.repository
 
-import net.progruzovik.dissent.model.entity.Mission
+import net.progruzovik.dissent.model.entity.MissionEntity
 import org.springframework.data.repository.CrudRepository
 
-interface MissionRepository : CrudRepository<Mission, Int>
+interface MissionRepository : CrudRepository<MissionEntity, Int>

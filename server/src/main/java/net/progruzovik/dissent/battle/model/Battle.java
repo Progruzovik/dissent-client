@@ -9,7 +9,7 @@ import net.progruzovik.dissent.captain.Captain;
 import net.progruzovik.dissent.model.dto.BattleDataDto;
 import net.progruzovik.dissent.model.dto.LogEntryDto;
 import net.progruzovik.dissent.model.dto.ShotDto;
-import net.progruzovik.dissent.model.entity.Ship;
+import net.progruzovik.dissent.model.domain.Ship;
 import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.event.EventSubject;
 import org.springframework.lang.NonNull;

@@ -3,9 +3,9 @@ package net.progruzovik.dissent.captain;
 import net.progruzovik.dissent.battle.model.Battle;
 import net.progruzovik.dissent.battle.model.Side;
 import net.progruzovik.dissent.mapper.MessageMapper;
-import net.progruzovik.dissent.model.entity.Gun;
-import net.progruzovik.dissent.model.entity.Hull;
-import net.progruzovik.dissent.model.entity.Ship;
+import net.progruzovik.dissent.model.entity.GunEntity;
+import net.progruzovik.dissent.model.entity.HullEntity;
+import net.progruzovik.dissent.model.domain.Ship;
 import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.event.EventSubject;
 import net.progruzovik.dissent.model.message.Sender;
@@ -36,8 +36,8 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
 
     public SessionPlayer(PlayerQueue queue, MissionDigest missionDigest, WebSocketSender sender,
                          MessageMapper messageMapper, HullRepository hullRepository, GunRepository gunRepository) {
-        final Hull pointerHull = hullRepository.findById(3).get();
-        final Gun laser = gunRepository.findById(3).get();
+        HullEntity pointerHull = hullRepository.findById(3).get();
+        GunEntity laser = gunRepository.findById(3).get();
         getShips().add(new Ship(pointerHull, laser, null));
         getShips().add(new Ship(hullRepository.findById(7).get(), laser, gunRepository.findById(1).get()));
         getShips().add(new Ship(pointerHull, laser, null));

@@ -3,6 +3,7 @@ package net.progruzovik.dissent.battle.model;
 import net.progruzovik.dissent.battle.model.field.Field;
 import net.progruzovik.dissent.battle.exception.InvalidMoveException;
 import net.progruzovik.dissent.battle.exception.InvalidUnitException;
+import net.progruzovik.dissent.model.domain.Ship;
 import net.progruzovik.dissent.model.entity.*;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import org.junit.Before;
@@ -17,10 +18,29 @@ public final class FieldTest {
     private Field field;
 
     public FieldTest() {
-        final Texture emptyTexture = new Texture(0, "texture");
-        final Hull hull = new Hull(0, "test", 5, 2, 1, 1, emptyTexture);
-        final GunType gunType = new GunType(0, "gunType");
-        final Gun gun = new Gun(0, "gun", 3, 1, 1, 1, gunType, emptyTexture);
+        TextureEntity texture = new TextureEntity();
+        texture.setName("texture");
+
+        HullEntity hull = new HullEntity();
+        hull.setName("test");
+        hull.setActionPoints(5);
+        hull.setStrength(2);
+        hull.setWidth(1);
+        hull.setHeight(1);
+        hull.setTexture(texture);
+
+        GunTypeEntity gunType = new GunTypeEntity();
+        gunType.setName("gunType");
+
+        GunEntity gun = new GunEntity();
+        gun.setName("gun");
+        gun.setShotCost(3);
+        gun.setDamage(1);
+        gun.setRadius(1);
+        gun.setAccuracy(0.5);
+        gun.setType(gunType);
+        gun.setTexture(texture);
+
         ship = new Ship(hull, gun, null);
     }
 

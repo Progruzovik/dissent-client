@@ -12,7 +12,7 @@ import net.progruzovik.dissent.battle.model.field.location.BattleMap;
 import net.progruzovik.dissent.model.dto.MoveDto;
 import net.progruzovik.dissent.battle.model.util.Cell;
 import net.progruzovik.dissent.battle.model.util.Point;
-import net.progruzovik.dissent.model.entity.Gun;
+import net.progruzovik.dissent.model.entity.GunEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -30,7 +30,7 @@ public final class Field {
     private final @NonNull List<Unit> destroyedUnits = new ArrayList<>();
 
     private @Nullable Unit activeUnit = null;
-    private int preparedGunId = Gun.NO_GUN_ID;
+    private int preparedGunId = GunEntity.NO_GUN_ID;
     private final @NonNull List<List<PathNode>> paths;
     private final @NonNull List<Cell> reachableCells = new ArrayList<>();
     private final @NonNull GunCells gunCells = new GunCells();
@@ -97,7 +97,7 @@ public final class Field {
     }
 
     public void updateActiveUnit() {
-        preparedGunId = Gun.NO_GUN_ID;
+        preparedGunId = GunEntity.NO_GUN_ID;
         updatePaths();
         updateReachableCells();
         gunCells.clear();
@@ -135,7 +135,7 @@ public final class Field {
             gunCells.clear();
             if (activeUnit != null) {
                 final Cell unitCell = activeUnit.getFirstCell();
-                final Gun gun = activeUnit.getShip().findGunById(gunId);
+                final GunEntity gun = activeUnit.getShip().findGunById(gunId);
                 final List<Cell> neighbors = findNeighborsInRadius(activeUnit.getFirstCell(),
                         activeUnit.getWidth(), activeUnit.getHeight(), gun.getRadius());
                 final LocationStatus targetStatus = activeUnit.getLocationStatus() == LocationStatus.UNIT_LEFT
@@ -186,7 +186,7 @@ public final class Field {
         return false;
     }
 
-    private double findHittingChance(@NonNull Cell from, @NonNull Cell target, @NonNull Gun gun) {
+    private double findHittingChance(@NonNull Cell from, @NonNull Cell target, @NonNull GunEntity gun) {
         assert activeUnit != null;
         int cloudsCount = 0;
         for (final Cell cell : findCellsInBetween(from, target)) {
