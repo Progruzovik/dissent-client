@@ -5,8 +5,7 @@ import org.springframework.lang.Nullable;
 
 public final class ServerMessage<T> {
 
-    private final @NonNull
-    ServerSubject subject;
+    private final @NonNull ServerSubject subject;
     private final @Nullable T data;
 
     public ServerMessage(@NonNull ServerSubject subject, @Nullable T data) {

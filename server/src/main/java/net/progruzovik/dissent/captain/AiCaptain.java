@@ -59,7 +59,7 @@ public final class AiCaptain extends AbstractCaptain {
                     }
                 }
             }
-            getBattle().endTurn(getId());
+            endTurn();
         }
     }
 }

@@ -22,4 +22,6 @@ public interface Captain extends Consumer<Event<?>> {
     Battle getBattle();
 
     void addToBattle(@NonNull Side side, @NonNull Battle battle);
+
+    void endTurn();
 }

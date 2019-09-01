@@ -15,7 +15,7 @@ import net.progruzovik.dissent.repository.GunRepository;
 import net.progruzovik.dissent.repository.HullRepository;
 import net.progruzovik.dissent.service.MissionDigest;
 import net.progruzovik.dissent.service.PlayerQueue;
-import net.progruzovik.dissent.socket.WebSocketSender;
+import net.progruzovik.dissent.socket.DissentWebSocketSender;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.lang.NonNull;
@@ -34,7 +34,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
 
     private final MessageMapper messageMapper;
 
-    public SessionPlayer(PlayerQueue queue, MissionDigest missionDigest, WebSocketSender sender,
+    public SessionPlayer(PlayerQueue queue, MissionDigest missionDigest, DissentWebSocketSender sender,
                          MessageMapper messageMapper, HullRepository hullRepository, GunRepository gunRepository) {
         HullEntity pointerHull = hullRepository.findById(3).get();
         GunEntity laser = gunRepository.findById(3).get();

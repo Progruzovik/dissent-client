@@ -32,4 +32,11 @@ public abstract class AbstractCaptain implements Captain {
         this.battle = battle;
         battle.getEvents().subscribe(this);
     }
+
+    @Override
+    public void endTurn() {
+        if (battle != null) {
+            battle.endTurn(getId());
+        }
+    }
 }
