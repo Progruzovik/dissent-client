@@ -13,8 +13,8 @@ import net.progruzovik.dissent.model.socket.ServerMessage
 import net.progruzovik.dissent.model.socket.ServerSubject
 import net.progruzovik.dissent.repository.GunRepository
 import net.progruzovik.dissent.repository.HullRepository
-import net.progruzovik.dissent.service.MissionDigest
-import net.progruzovik.dissent.service.PlayerQueue
+import net.progruzovik.dissent.service.MissionService
+import net.progruzovik.dissent.service.PlayerQueueService
 import net.progruzovik.dissent.socket.DissentWebSocketSender
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.context.annotation.Scope
@@ -24,8 +24,8 @@ import org.springframework.web.reactive.socket.WebSocketSession
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 class SessionPlayer(
-    private val queue: PlayerQueue,
-    private val missionDigest: MissionDigest,
+    private val queueService: PlayerQueueService,
+    private val missionService: MissionService,
     private val sender: DissentWebSocketSender,
     private val messageMapper: MessageMapper,
     hullRepository: HullRepository,
@@ -37,7 +37,7 @@ class SessionPlayer(
     override val status: CaptainStatus
         get() {
             if (battle?.isRunning == true) return CaptainStatus.IN_BATTLE
-            if (queue.isQueued(this)) return CaptainStatus.QUEUED
+            if (queueService.isPlayerQueued(this)) return CaptainStatus.QUEUED
             return CaptainStatus.IDLE
         }
 
@@ -74,19 +74,19 @@ class SessionPlayer(
 
     override fun addToQueue() {
         if (status != CaptainStatus.IDLE) return
-        queue.add(this)
+        queueService.add(this)
         sendCurrentStatus()
     }
 
     override fun removeFromQueue() {
         if (status != CaptainStatus.QUEUED) return
-        queue.remove(this)
+        queueService.remove(this)
         sendCurrentStatus()
     }
 
     override fun startMission(missionId: Int) {
         if (status != CaptainStatus.IDLE) return
-        missionDigest.startMission(this, missionId)
+        missionService.startMission(this, missionId)
     }
 
     override fun <T> sendMessage(message: ServerMessage<T>) = sender.sendMessage(message)
