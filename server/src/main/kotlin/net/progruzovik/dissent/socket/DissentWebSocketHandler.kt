@@ -30,10 +30,9 @@ class DissentWebSocketHandler(
         player.setUpSession(session)
         return session.receive()
             .map { it.payloadAsText }
-            .map {
+            .doOnNext {
                 val message: ClientMessage = mapper.readValue(it, ClientMessage::class.java)
                 readers.getValue(message.subject).read(player, message.data)
-                return@map it
             }
             .then()
     }
