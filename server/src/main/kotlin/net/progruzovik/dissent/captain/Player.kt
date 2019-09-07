@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.captain
 
 import net.progruzovik.dissent.model.domain.CaptainStatus
-import net.progruzovik.dissent.model.socket.Sender
+import net.progruzovik.dissent.socket.Sender
 
 interface Player : Captain, Sender {
 

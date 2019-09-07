@@ -1,6 +1,6 @@
-package net.progruzovik.dissent.model.socket;
+package net.progruzovik.dissent.model.socket
 
-public enum ClientSubject {
+enum class ClientSubject {
 
     REQUEST_TEXTURES,
     REQUEST_STATUS,

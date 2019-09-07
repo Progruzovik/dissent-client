@@ -21,7 +21,7 @@ class DissentWebSocketHandler(
 ) : WebSocketHandler {
 
     private val readers: Map<ClientSubject, Reader> = readersList.stream()
-        .collect(Collectors.toMap<Reader, ClientSubject, Reader>(Function { r -> r.subject }, Function.identity()))
+        .collect(Collectors.toMap<Reader, ClientSubject, Reader>(Function { it.subject }, Function.identity()))
         .toMap()
 
     override fun handle(session: WebSocketSession): Mono<Void> {
@@ -30,10 +30,10 @@ class DissentWebSocketHandler(
         player.setUpSession(session)
         return session.receive()
             .map { it.payloadAsText }
-            .map { m ->
-                val message: ClientMessage = mapper.readValue(m, ClientMessage::class.java)
+            .map {
+                val message: ClientMessage = mapper.readValue(it, ClientMessage::class.java)
                 readers.getValue(message.subject).read(player, message.data)
-                return@map m
+                return@map it
             }
             .then()
     }

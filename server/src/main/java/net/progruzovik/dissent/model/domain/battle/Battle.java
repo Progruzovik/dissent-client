@@ -11,7 +11,7 @@ import net.progruzovik.dissent.model.dto.LogEntryDto;
 import net.progruzovik.dissent.model.dto.ShotDto;
 import net.progruzovik.dissent.model.domain.Ship;
 import net.progruzovik.dissent.model.event.Event;
-import net.progruzovik.dissent.model.event.EventSubject;
+import net.progruzovik.dissent.model.event.EventName;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import reactor.core.publisher.DirectProcessor;
@@ -20,7 +20,7 @@ import reactor.core.publisher.Flux;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.progruzovik.dissent.model.event.EventSubject.*;
+import static net.progruzovik.dissent.model.event.EventName.*;
 
 public final class Battle {
 
@@ -116,14 +116,14 @@ public final class Battle {
         battleLog.add(new LogEntryDto(currentUnit.getSide(), damage,
                 targetUnit.isDestroyed(), currentUnit.getShip().findGunById(gunId),
                 currentUnit.getShip().getHull(), targetUnit.getShip().getHull()));
-        declareEvent(new Event<>(EventSubject.SHOT, new ShotDto(gunId, damage, targetUnit.getFirstCell())));
+        declareEvent(new Event<>(EventName.SHOT, new ShotDto(gunId, damage, targetUnit.getFirstCell())));
         if (targetUnit.getShip().getStrength() == 0) {
             unitQueue.getUnits().remove(targetUnit);
             field.destroyUnit(targetUnit);
             if (!unitQueue.hasUnitsOnBothSides()) {
                 isRunning = false;
                 field.resetActiveUnit();
-                declareEvent(new Event<>(BATTLE_FINISH));
+                declareEvent(new Event<>(BATTLE_FINISH, null));
             }
         }
     }
@@ -131,7 +131,7 @@ public final class Battle {
     public void endTurn(@NonNull String captainId) {
         if (!isIdBelongsToCurrentCaptain(captainId)) return;
         unitQueue.nextTurn();
-        declareEvent(new Event<>(NEXT_TURN));
+        declareEvent(new Event<>(NEXT_TURN, null));
         startNewTurn();
     }
 
@@ -155,7 +155,7 @@ public final class Battle {
     private void startNewTurn() {
         unitQueue.getCurrentUnit().activate();
         field.setActiveUnit(unitQueue.getCurrentUnit());
-        declareEvent(new Event<>(NEW_TURN_START));
+        declareEvent(new Event<>(NEW_TURN_START, null));
     }
 
     private void declareEvent(Event<?> event) {

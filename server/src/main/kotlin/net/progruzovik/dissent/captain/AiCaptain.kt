@@ -5,7 +5,7 @@ import net.progruzovik.dissent.model.domain.battle.Battle
 import net.progruzovik.dissent.model.entity.GunEntity
 import net.progruzovik.dissent.model.entity.HullEntity
 import net.progruzovik.dissent.model.event.Event
-import net.progruzovik.dissent.model.event.EventSubject
+import net.progruzovik.dissent.model.event.EventName
 import net.progruzovik.dissent.repository.GunRepository
 import net.progruzovik.dissent.repository.HullRepository
 import org.springframework.beans.factory.config.BeanDefinition
@@ -28,7 +28,7 @@ class AiCaptain(hullRepository: HullRepository, gunRepository: GunRepository) : 
 
     override fun accept(event: Event<*>) {
         val battle: Battle = this.battle ?: return
-        if (event.subject == EventSubject.NEW_TURN_START && battle.isIdBelongsToCurrentCaptain(id)) {
+        if (event.name == EventName.NEW_TURN_START && battle.isIdBelongsToCurrentCaptain(id)) {
             if (battle.currentUnit.ship.firstGun != null) {
                 var canCurrentUnitMove = true
                 while (battle.currentUnit.actionPoints >= battle.currentUnit.ship.firstGun!!.shotCost && canCurrentUnitMove) {

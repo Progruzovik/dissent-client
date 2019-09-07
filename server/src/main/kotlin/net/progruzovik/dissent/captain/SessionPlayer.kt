@@ -8,7 +8,7 @@ import net.progruzovik.dissent.model.domain.battle.Side
 import net.progruzovik.dissent.model.entity.GunEntity
 import net.progruzovik.dissent.model.entity.HullEntity
 import net.progruzovik.dissent.model.event.Event
-import net.progruzovik.dissent.model.event.EventSubject
+import net.progruzovik.dissent.model.event.EventName
 import net.progruzovik.dissent.model.socket.ServerMessage
 import net.progruzovik.dissent.model.socket.ServerSubject
 import net.progruzovik.dissent.repository.GunRepository
@@ -55,10 +55,10 @@ class SessionPlayer(
     }
 
     override fun accept(event: Event<*>) {
-        if (event.subject == EventSubject.BATTLE_FINISH) {
+        if (event.name == EventName.BATTLE_FINISH) {
             onBattleFinish()
         }
-        if (event.subject.isPublic) {
+        if (event.name.isPublicEvent) {
             sendMessage(messageMapper.apply(event))
         }
     }

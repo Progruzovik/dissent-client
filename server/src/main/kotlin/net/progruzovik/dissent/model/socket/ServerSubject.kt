@@ -1,6 +1,6 @@
-package net.progruzovik.dissent.model.socket;
+package net.progruzovik.dissent.model.socket
 
-public enum ServerSubject {
+enum class ServerSubject {
 
     TEXTURES,
     STATUS,

@@ -2,7 +2,6 @@ package net.progruzovik.dissent.socket
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import net.progruzovik.dissent.getLogger
-import net.progruzovik.dissent.model.socket.Sender
 import net.progruzovik.dissent.model.socket.ServerMessage
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.context.annotation.Scope
@@ -18,7 +17,7 @@ class DissentWebSocketSender(private val mapper: ObjectMapper) : Sender {
 
     private var session: WebSocketSession? = null
 
-    override fun setUpSession(session: WebSocketSession?) {
+    override fun setUpSession(session: WebSocketSession) {
         this.session = session
     }
 
@@ -28,7 +27,7 @@ class DissentWebSocketSender(private val mapper: ObjectMapper) : Sender {
             val webSocketMessage: WebSocketMessage = currentSession.textMessage(mapper.writeValueAsString(message))
             currentSession.send(Mono.just(webSocketMessage)).subscribe()
         } catch (e: IOException) {
-            log.error("Can't send message with subject \"{}\"!", message.subject, e)
+            log.error("Can't send message with subject \"${message.subject}\"!", e)
             session = null
         }
     }

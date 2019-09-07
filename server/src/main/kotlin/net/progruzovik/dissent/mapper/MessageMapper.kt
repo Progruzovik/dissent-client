@@ -9,5 +9,5 @@ import java.util.function.Function
 @Component
 class MessageMapper : Function<Event<*>, ServerMessage<*>> {
 
-    override fun apply(event: Event<*>) = ServerMessage(ServerSubject.valueOf(event.subject.name), event.data)
+    override fun apply(event: Event<*>) = ServerMessage(ServerSubject.valueOf(event.name.name), event.data)
 }
