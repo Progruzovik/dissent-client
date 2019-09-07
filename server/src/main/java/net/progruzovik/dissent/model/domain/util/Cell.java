@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.model.util;
+package net.progruzovik.dissent.model.domain.util;
 
 import org.springframework.lang.NonNull;
 

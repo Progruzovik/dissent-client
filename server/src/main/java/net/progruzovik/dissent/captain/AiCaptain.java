@@ -1,8 +1,8 @@
 package net.progruzovik.dissent.captain;
 
-import net.progruzovik.dissent.battle.model.Unit;
-import net.progruzovik.dissent.battle.model.field.gun.GunCells;
-import net.progruzovik.dissent.battle.model.util.Cell;
+import net.progruzovik.dissent.model.domain.battle.Unit;
+import net.progruzovik.dissent.model.domain.battle.field.gun.GunCells;
+import net.progruzovik.dissent.model.domain.util.Cell;
 import net.progruzovik.dissent.model.entity.GunEntity;
 import net.progruzovik.dissent.model.entity.HullEntity;
 import net.progruzovik.dissent.model.domain.Ship;
@@ -10,6 +10,7 @@ import net.progruzovik.dissent.model.event.Event;
 import net.progruzovik.dissent.model.event.EventSubject;
 import net.progruzovik.dissent.repository.GunRepository;
 import net.progruzovik.dissent.repository.HullRepository;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Random;
 
 @Component
-@Scope("prototype")
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public final class AiCaptain extends AbstractCaptain {
 
     public AiCaptain(HullRepository hullRepository, GunRepository gunRepository) {

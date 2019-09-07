@@ -1,10 +1,10 @@
-package net.progruzovik.dissent.battle;
+package net.progruzovik.dissent.service;
 
-import net.progruzovik.dissent.battle.model.Battle;
-import net.progruzovik.dissent.battle.model.Side;
-import net.progruzovik.dissent.battle.model.UnitQueue;
-import net.progruzovik.dissent.battle.model.field.Field;
-import net.progruzovik.dissent.battle.model.util.Cell;
+import net.progruzovik.dissent.model.domain.battle.Battle;
+import net.progruzovik.dissent.model.domain.battle.Side;
+import net.progruzovik.dissent.model.domain.battle.UnitQueue;
+import net.progruzovik.dissent.model.domain.battle.field.Field;
+import net.progruzovik.dissent.model.domain.util.Cell;
 import net.progruzovik.dissent.captain.Captain;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;

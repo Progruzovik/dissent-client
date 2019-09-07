@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.model.dto;
 
-import net.progruzovik.dissent.battle.model.util.Cell;
+import net.progruzovik.dissent.model.domain.util.Cell;
 import org.springframework.lang.NonNull;
 
 public final class ShotDto {

@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.socket.reader
 
-import net.progruzovik.dissent.battle.model.util.Cell
+import net.progruzovik.dissent.model.domain.util.Cell
 import net.progruzovik.dissent.captain.Player
 import net.progruzovik.dissent.model.message.ClientSubject
 import org.springframework.stereotype.Component

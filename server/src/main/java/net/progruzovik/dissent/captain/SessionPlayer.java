@@ -1,7 +1,8 @@
 package net.progruzovik.dissent.captain;
 
-import net.progruzovik.dissent.battle.model.Battle;
-import net.progruzovik.dissent.battle.model.Side;
+import net.progruzovik.dissent.model.domain.CaptainStatus;
+import net.progruzovik.dissent.model.domain.battle.Battle;
+import net.progruzovik.dissent.model.domain.battle.Side;
 import net.progruzovik.dissent.mapper.MessageMapper;
 import net.progruzovik.dissent.model.entity.GunEntity;
 import net.progruzovik.dissent.model.entity.HullEntity;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public final class SessionPlayer extends AbstractCaptain implements Player {
 
     private @NonNull String id = "";
@@ -62,10 +63,10 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
 
     @NonNull
     @Override
-    public Status getStatus() {
-        if (getBattle() != null && getBattle().isRunning()) return Status.IN_BATTLE;
-        if (queue.isQueued(this)) return Status.QUEUED;
-        return Status.IDLE;
+    public CaptainStatus getStatus() {
+        if (getBattle() != null && getBattle().isRunning()) return CaptainStatus.IN_BATTLE;
+        if (queue.isQueued(this)) return CaptainStatus.QUEUED;
+        return CaptainStatus.IDLE;
     }
 
     @Override
@@ -80,7 +81,7 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
 
     @Override
     public void addToBattle(@NonNull Side side, @NonNull Battle battle) {
-        if (getStatus() == Status.IN_BATTLE) {
+        if (getStatus() == CaptainStatus.IN_BATTLE) {
             onBattleFinish();
             sendMessage(new ServerMessage<>(ServerSubject.BATTLE_FINISH));
         }
@@ -90,21 +91,21 @@ public final class SessionPlayer extends AbstractCaptain implements Player {
 
     @Override
     public void addToQueue() {
-        if (getStatus() != Status.IDLE) return;
+        if (getStatus() != CaptainStatus.IDLE) return;
         queue.add(this);
         sendCurrentStatus();
     }
 
     @Override
     public void removeFromQueue() {
-        if (getStatus() != Status.QUEUED) return;
+        if (getStatus() != CaptainStatus.QUEUED) return;
         queue.remove(this);
         sendCurrentStatus();
     }
 
     @Override
     public void startMission(int missionId) {
-        if (getStatus() != Status.IDLE) return;
+        if (getStatus() != CaptainStatus.IDLE) return;
         missionDigest.startMission(this, missionId);
     }
 

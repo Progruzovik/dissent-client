@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.captain;
 
-import net.progruzovik.dissent.battle.model.Battle;
-import net.progruzovik.dissent.battle.model.Side;
+import net.progruzovik.dissent.model.domain.battle.Battle;
+import net.progruzovik.dissent.model.domain.battle.Side;
 import net.progruzovik.dissent.model.domain.Ship;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;

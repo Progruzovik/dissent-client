@@ -1,10 +1,10 @@
-package net.progruzovik.dissent.battle.model;
+package net.progruzovik.dissent.model.domain.battle;
 
-import net.progruzovik.dissent.battle.exception.InvalidShotException;
-import net.progruzovik.dissent.battle.model.field.Field;
-import net.progruzovik.dissent.battle.model.field.PathNode;
-import net.progruzovik.dissent.battle.model.field.gun.GunCells;
-import net.progruzovik.dissent.battle.model.util.Cell;
+import net.progruzovik.dissent.exception.InvalidShotException;
+import net.progruzovik.dissent.model.domain.battle.field.PathNode;
+import net.progruzovik.dissent.model.domain.battle.field.Field;
+import net.progruzovik.dissent.model.domain.battle.field.gun.GunCells;
+import net.progruzovik.dissent.model.domain.util.Cell;
 import net.progruzovik.dissent.captain.Captain;
 import net.progruzovik.dissent.model.dto.BattleDataDto;
 import net.progruzovik.dissent.model.dto.LogEntryDto;

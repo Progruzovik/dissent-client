@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.model.domain;
 
-import net.progruzovik.dissent.battle.exception.InvalidGunIdException;
+import net.progruzovik.dissent.exception.InvalidGunIdException;
 import net.progruzovik.dissent.model.entity.GunEntity;
 import net.progruzovik.dissent.model.entity.HullEntity;
 import org.springframework.lang.NonNull;

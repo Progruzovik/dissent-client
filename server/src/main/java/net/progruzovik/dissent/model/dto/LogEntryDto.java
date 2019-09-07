@@ -1,7 +1,7 @@
 package net.progruzovik.dissent.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.progruzovik.dissent.battle.model.Side;
+import net.progruzovik.dissent.model.domain.battle.Side;
 import net.progruzovik.dissent.model.entity.GunEntity;
 import net.progruzovik.dissent.model.entity.HullEntity;
 import org.springframework.lang.NonNull;

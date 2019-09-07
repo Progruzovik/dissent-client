@@ -1,17 +1,17 @@
-package net.progruzovik.dissent.battle.model.field;
+package net.progruzovik.dissent.model.domain.battle.field;
 
-import net.progruzovik.dissent.battle.exception.InvalidGunIdException;
-import net.progruzovik.dissent.battle.exception.InvalidMoveException;
-import net.progruzovik.dissent.battle.exception.InvalidUnitException;
-import net.progruzovik.dissent.battle.model.Side;
-import net.progruzovik.dissent.battle.model.Unit;
-import net.progruzovik.dissent.battle.model.field.gun.GunCells;
-import net.progruzovik.dissent.battle.model.field.gun.Target;
-import net.progruzovik.dissent.battle.model.field.location.LocationStatus;
-import net.progruzovik.dissent.battle.model.field.location.BattleMap;
+import net.progruzovik.dissent.exception.InvalidGunIdException;
+import net.progruzovik.dissent.exception.InvalidMoveException;
+import net.progruzovik.dissent.exception.InvalidUnitException;
+import net.progruzovik.dissent.model.domain.battle.Side;
+import net.progruzovik.dissent.model.domain.battle.Unit;
+import net.progruzovik.dissent.model.domain.battle.field.gun.GunCells;
+import net.progruzovik.dissent.model.domain.battle.field.gun.Target;
+import net.progruzovik.dissent.model.domain.battle.field.location.BattleMap;
+import net.progruzovik.dissent.model.domain.battle.field.location.LocationStatus;
 import net.progruzovik.dissent.model.dto.MoveDto;
-import net.progruzovik.dissent.battle.model.util.Cell;
-import net.progruzovik.dissent.battle.model.util.Point;
+import net.progruzovik.dissent.model.domain.util.Cell;
+import net.progruzovik.dissent.model.domain.util.Point;
 import net.progruzovik.dissent.model.entity.GunEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -24,7 +24,8 @@ public final class Field {
     public static final int UNIT_INDENT = 2;
     public static final int BORDER_INDENT = 4;
 
-    private final @NonNull BattleMap map;
+    private final @NonNull
+    BattleMap map;
     private final @NonNull List<Cell> asteroids = new ArrayList<>();
     private final @NonNull List<Cell> clouds = new ArrayList<>();
     private final @NonNull List<Unit> destroyedUnits = new ArrayList<>();
@@ -33,7 +34,8 @@ public final class Field {
     private int preparedGunId = GunEntity.NO_GUN_ID;
     private final @NonNull List<List<PathNode>> paths;
     private final @NonNull List<Cell> reachableCells = new ArrayList<>();
-    private final @NonNull GunCells gunCells = new GunCells();
+    private final @NonNull
+    GunCells gunCells = new GunCells();
 
     public Field(@NonNull Cell size) {
         map = new BattleMap(size);

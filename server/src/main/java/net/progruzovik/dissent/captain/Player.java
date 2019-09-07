@@ -1,12 +1,13 @@
 package net.progruzovik.dissent.captain;
 
+import net.progruzovik.dissent.model.domain.CaptainStatus;
 import net.progruzovik.dissent.model.message.Sender;
 import org.springframework.lang.NonNull;
 
 public interface Player extends Captain, Sender {
 
     @NonNull
-    Status getStatus();
+    CaptainStatus getStatus();
 
     void addToQueue();
 

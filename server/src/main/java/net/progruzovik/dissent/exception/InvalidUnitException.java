@@ -1,6 +1,6 @@
-package net.progruzovik.dissent.battle.exception;
+package net.progruzovik.dissent.exception;
 
-import net.progruzovik.dissent.battle.model.Unit;
+import net.progruzovik.dissent.model.domain.battle.Unit;
 import org.springframework.lang.NonNull;
 
 public final class InvalidUnitException extends RuntimeException {

@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.exception;
+package net.progruzovik.dissent.exception;
 
 import org.springframework.lang.NonNull;
 

@@ -1,7 +1,7 @@
-package net.progruzovik.dissent.battle.model.field.location;
+package net.progruzovik.dissent.model.domain.battle.field.location;
 
-import net.progruzovik.dissent.battle.model.Unit;
-import net.progruzovik.dissent.battle.model.util.Cell;
+import net.progruzovik.dissent.model.domain.battle.Unit;
+import net.progruzovik.dissent.model.domain.util.Cell;
 import org.springframework.lang.NonNull;
 
 import java.util.ArrayList;

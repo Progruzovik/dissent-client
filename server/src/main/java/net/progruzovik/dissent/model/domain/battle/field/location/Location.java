@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.battle.model.field.location;
+package net.progruzovik.dissent.model.domain.battle.field.location;
 
 import org.springframework.lang.NonNull;
 

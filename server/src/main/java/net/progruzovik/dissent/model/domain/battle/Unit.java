@@ -1,9 +1,9 @@
-package net.progruzovik.dissent.battle.model;
+package net.progruzovik.dissent.model.domain.battle;
 
-import net.progruzovik.dissent.battle.exception.InvalidMoveException;
-import net.progruzovik.dissent.battle.exception.InvalidShotException;
-import net.progruzovik.dissent.battle.model.field.location.LocationStatus;
-import net.progruzovik.dissent.battle.model.util.Cell;
+import net.progruzovik.dissent.exception.InvalidMoveException;
+import net.progruzovik.dissent.exception.InvalidShotException;
+import net.progruzovik.dissent.model.domain.battle.field.location.LocationStatus;
+import net.progruzovik.dissent.model.domain.util.Cell;
 import net.progruzovik.dissent.model.entity.GunEntity;
 import net.progruzovik.dissent.model.domain.Ship;
 import org.springframework.lang.NonNull;
