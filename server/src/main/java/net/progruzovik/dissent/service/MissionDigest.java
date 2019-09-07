@@ -5,5 +5,5 @@ import org.springframework.lang.NonNull;
 
 public interface MissionDigest {
 
-    void startMission(@NonNull Captain captain, int missionIndex);
+    void startMission(@NonNull Captain captain, int missionId);
 }

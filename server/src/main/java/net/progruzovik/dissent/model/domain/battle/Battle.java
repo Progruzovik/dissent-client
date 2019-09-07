@@ -34,7 +34,7 @@ public final class Battle {
     private final @NonNull Captain leftCaptain;
     private final @NonNull Captain rightCaptain;
 
-    private final DirectProcessor<Event<?>> processor;
+    private final DirectProcessor<Event<?>> eventStream;
 
     public Battle(@NonNull UnitQueue unitQueue, @NonNull Field field,
                   @NonNull Captain leftCaptain, @NonNull Captain rightCaptain) {
@@ -42,15 +42,15 @@ public final class Battle {
         this.field = field;
         this.leftCaptain = leftCaptain;
         this.rightCaptain = rightCaptain;
-        processor = DirectProcessor.create();
+        eventStream = DirectProcessor.create();
     }
 
     public boolean isRunning() {
         return isRunning;
     }
 
-    public Flux<Event<?>> getEvents() {
-        return processor;
+    public Flux<Event<?>> getEventStream() {
+        return eventStream;
     }
 
     @NonNull
@@ -109,7 +109,7 @@ public final class Battle {
         if (!isIdBelongsToCurrentCaptain(captainId) || hittingChance == 0) return;
         final Unit currentUnit = unitQueue.getCurrentUnit();
         final Unit targetUnit = unitQueue.findUnitOnCell(cell)
-                .orElseThrow(() -> new InvalidShotException(String.format("There is no target on cell %s!", cell)));
+                .orElseThrow(() -> new InvalidShotException(cell));
 
         final int damage = currentUnit.shoot(gunId, hittingChance, targetUnit);
         field.updateActiveUnit();
@@ -159,6 +159,6 @@ public final class Battle {
     }
 
     private void declareEvent(Event<?> event) {
-        processor.onNext(event);
+        eventStream.onNext(event);
     }
 }

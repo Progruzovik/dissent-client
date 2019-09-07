@@ -1,11 +1,11 @@
 package net.progruzovik.dissent.model.domain.battle;
 
 import net.progruzovik.dissent.exception.InvalidMoveException;
-import net.progruzovik.dissent.exception.InvalidShotException;
+import net.progruzovik.dissent.exception.NotEnoughActionPointsException;
+import net.progruzovik.dissent.model.domain.Ship;
 import net.progruzovik.dissent.model.domain.battle.field.location.LocationStatus;
 import net.progruzovik.dissent.model.domain.util.Cell;
 import net.progruzovik.dissent.model.entity.GunEntity;
-import net.progruzovik.dissent.model.domain.Ship;
 import org.springframework.lang.NonNull;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -80,10 +80,7 @@ public final class Unit {
 
     public int shoot(int gunId, double hittingChance, Unit target) {
         final GunEntity gun = ship.findGunById(gunId);
-        if (gun.getShotCost() > actionPoints) {
-            final String message = String.format("Not enough action points (%d/%d)!", actionPoints, gun.getShotCost());
-            throw new InvalidShotException(message);
-        }
+        if (gun.getShotCost() > actionPoints) throw new NotEnoughActionPointsException(actionPoints, gun.getShotCost());
 
         actionPoints -= gun.getShotCost();
         if (ThreadLocalRandom.current().nextDouble(0, 1) > hittingChance) return 0;

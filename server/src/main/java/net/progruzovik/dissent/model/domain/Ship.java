@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.model.domain;
 
-import net.progruzovik.dissent.exception.InvalidGunIdException;
+import net.progruzovik.dissent.exception.GunNotFoundException;
 import net.progruzovik.dissent.model.entity.GunEntity;
 import net.progruzovik.dissent.model.entity.HullEntity;
 import org.springframework.lang.NonNull;
@@ -59,6 +59,6 @@ public class Ship {
     public GunEntity findGunById(int gunId) {
         if (firstGun != null && gunId == firstGun.getId()) return firstGun;
         if (secondGun != null && gunId == secondGun.getId()) return secondGun;
-        throw new InvalidGunIdException(gunId);
+        throw new GunNotFoundException(gunId);
     }
 }

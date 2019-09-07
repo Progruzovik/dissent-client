@@ -1,6 +1,6 @@
 package net.progruzovik.dissent.model.domain.battle.field;
 
-import net.progruzovik.dissent.exception.InvalidGunIdException;
+import net.progruzovik.dissent.exception.GunNotFoundException;
 import net.progruzovik.dissent.exception.InvalidMoveException;
 import net.progruzovik.dissent.exception.InvalidUnitException;
 import net.progruzovik.dissent.model.domain.battle.Side;
@@ -86,7 +86,7 @@ public final class Field {
     }
 
     public double findHittingChance(int gunId, @NonNull Cell cell) {
-        if (preparedGunId != gunId) throw new InvalidGunIdException(gunId);
+        if (preparedGunId != gunId) throw new GunNotFoundException(gunId);
         return gunCells.getTargets().stream()
                 .filter(t -> t.getCell().equals(cell))
                 .findFirst()

@@ -1,8 +1,8 @@
 package net.progruzovik.dissent.mapper
 
 import net.progruzovik.dissent.model.event.Event
-import net.progruzovik.dissent.model.message.ServerMessage
-import net.progruzovik.dissent.model.message.ServerSubject
+import net.progruzovik.dissent.model.socket.ServerMessage
+import net.progruzovik.dissent.model.socket.ServerSubject
 import org.springframework.stereotype.Component
 import java.util.function.Function
 

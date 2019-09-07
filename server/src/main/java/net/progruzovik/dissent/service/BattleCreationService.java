@@ -18,8 +18,8 @@ public class BattleCreationService implements BattleCreator {
         int rowsCount = maxShipsOnSide + (maxShipsOnSide - 1) * Field.UNIT_INDENT + Field.BORDER_INDENT * 2;
         Field field = new Field(new Cell((int) (rowsCount * 1.5), rowsCount));
         Battle battle = new Battle(new UnitQueue(), field, leftCaptain, rightCaptain);
-        leftCaptain.addToBattle(Side.LEFT, battle);
-        rightCaptain.addToBattle(Side.RIGHT, battle);
+        leftCaptain.addToBattle(battle, Side.LEFT);
+        rightCaptain.addToBattle(battle, Side.RIGHT);
         battle.startBattle();
     }
 }

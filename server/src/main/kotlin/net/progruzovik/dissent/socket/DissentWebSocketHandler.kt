@@ -2,8 +2,8 @@ package net.progruzovik.dissent.socket
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import net.progruzovik.dissent.captain.SessionPlayer
-import net.progruzovik.dissent.model.message.ClientMessage
-import net.progruzovik.dissent.model.message.ClientSubject
+import net.progruzovik.dissent.model.socket.ClientMessage
+import net.progruzovik.dissent.model.socket.ClientSubject
 import net.progruzovik.dissent.socket.reader.Reader
 import org.springframework.beans.factory.ObjectFactory
 import org.springframework.stereotype.Component
@@ -27,7 +27,7 @@ class DissentWebSocketHandler(
     override fun handle(session: WebSocketSession): Mono<Void> {
         val player = sessionPlayerFactory.getObject()
         session.attributes["player"] = player
-        player.setSession(session)
+        player.setUpSession(session)
         return session.receive()
             .map { it.payloadAsText }
             .map { m ->

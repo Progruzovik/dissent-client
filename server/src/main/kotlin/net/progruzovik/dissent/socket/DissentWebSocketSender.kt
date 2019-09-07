@@ -2,9 +2,9 @@ package net.progruzovik.dissent.socket
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import net.progruzovik.dissent.getLogger
-import net.progruzovik.dissent.model.message.Sender
-import net.progruzovik.dissent.model.message.ServerMessage
-import org.springframework.beans.factory.config.ConfigurableBeanFactory
+import net.progruzovik.dissent.model.socket.Sender
+import net.progruzovik.dissent.model.socket.ServerMessage
+import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketMessage
@@ -13,12 +13,12 @@ import reactor.core.publisher.Mono
 import java.io.IOException
 
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 class DissentWebSocketSender(private val mapper: ObjectMapper) : Sender {
 
     private var session: WebSocketSession? = null
 
-    override fun setSession(session: WebSocketSession?) {
+    override fun setUpSession(session: WebSocketSession?) {
         this.session = session
     }
 

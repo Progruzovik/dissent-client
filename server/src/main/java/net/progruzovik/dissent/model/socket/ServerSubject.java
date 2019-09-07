@@ -1,4 +1,4 @@
-package net.progruzovik.dissent.model.message;
+package net.progruzovik.dissent.model.socket;
 
 public enum ServerSubject {
 
