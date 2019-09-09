@@ -1,9 +1,8 @@
 package net.progruzovik.dissent.socket.reader
 
-import net.progruzovik.dissent.model.domain.battle.Battle
 import net.progruzovik.dissent.captain.Player
+import net.progruzovik.dissent.model.domain.battle.Battle
 import net.progruzovik.dissent.model.socket.ClientSubject
-import net.progruzovik.dissent.model.socket.ServerMessage
 import net.progruzovik.dissent.model.socket.ServerSubject
 import org.springframework.stereotype.Component
 
@@ -18,6 +17,6 @@ class RequestPathsAndReachableCellsReader : Reader {
             "reachableCells" to battle.reachableCells,
             "paths" to battle.paths
         )
-        player.sendMessage(ServerMessage<Map<String, Any>>(ServerSubject.PATHS_AND_REACHABLE_CELLS, pathsAndReachableCells))
+        player.sendMessage(ServerSubject.PATHS_AND_REACHABLE_CELLS, pathsAndReachableCells)
     }
 }

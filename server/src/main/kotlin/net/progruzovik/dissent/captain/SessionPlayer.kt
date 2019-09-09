@@ -1,15 +1,12 @@
 package net.progruzovik.dissent.captain
 
-import net.progruzovik.dissent.mapper.MessageMapper
 import net.progruzovik.dissent.model.domain.CaptainStatus
 import net.progruzovik.dissent.model.domain.Ship
 import net.progruzovik.dissent.model.domain.battle.Battle
 import net.progruzovik.dissent.model.domain.battle.Side
 import net.progruzovik.dissent.model.entity.GunEntity
 import net.progruzovik.dissent.model.entity.HullEntity
-import net.progruzovik.dissent.model.event.Event
 import net.progruzovik.dissent.model.event.EventName
-import net.progruzovik.dissent.model.socket.ServerMessage
 import net.progruzovik.dissent.model.socket.ServerSubject
 import net.progruzovik.dissent.repository.GunRepository
 import net.progruzovik.dissent.repository.HullRepository
@@ -27,7 +24,6 @@ class SessionPlayer(
     private val queueService: PlayerQueueService,
     private val missionService: MissionService,
     private val sender: DissentWebSocketSender,
-    private val messageMapper: MessageMapper,
     hullRepository: HullRepository,
     gunRepository: GunRepository
 ) : AbstractCaptain(), Player {
@@ -54,22 +50,20 @@ class SessionPlayer(
         sender.setUpSession(session)
     }
 
-    override fun accept(event: Event<*>) {
-        if (event.name == EventName.BATTLE_FINISH) {
-            onBattleFinish()
-        }
-        if (event.name.isPublicEvent) {
-            sendMessage(messageMapper.apply(event))
-        }
-    }
-
     override fun addToBattle(battle: Battle, side: Side) {
         if (status == CaptainStatus.IN_BATTLE) {
             onBattleFinish()
-            sendMessage(ServerMessage<Any>(ServerSubject.BATTLE_FINISH))
+            sendMessage(ServerSubject.BATTLE_FINISH)
         }
         super.addToBattle(battle, side)
         sendCurrentStatus()
+
+        battle.on { event, data ->
+            if (event.isPublicEvent) {
+                sendMessage(ServerSubject.valueOf(event.name), data)
+            }
+        }
+        battle.on<Unit>(EventName.BATTLE_FINISH) { onBattleFinish() }
     }
 
     override fun addToQueue() {
@@ -89,7 +83,7 @@ class SessionPlayer(
         missionService.startMission(this, missionId)
     }
 
-    override fun <T> sendMessage(message: ServerMessage<T>) = sender.sendMessage(message)
+    override fun <T> sendMessage(subject: ServerSubject, data: T?) = sender.sendMessage(subject, data)
 
     private fun onBattleFinish() {
         for (ship in ships) {
@@ -98,6 +92,6 @@ class SessionPlayer(
     }
 
     private fun sendCurrentStatus() {
-        sendMessage(ServerMessage(ServerSubject.STATUS, status))
+        sendMessage(ServerSubject.STATUS, status)
     }
 }

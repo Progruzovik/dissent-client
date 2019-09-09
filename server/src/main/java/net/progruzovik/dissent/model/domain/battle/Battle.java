@@ -1,28 +1,26 @@
 package net.progruzovik.dissent.model.domain.battle;
 
+import net.progruzovik.dissent.captain.Captain;
 import net.progruzovik.dissent.exception.InvalidShotException;
-import net.progruzovik.dissent.model.domain.battle.field.PathNode;
+import net.progruzovik.dissent.model.domain.Ship;
 import net.progruzovik.dissent.model.domain.battle.field.Field;
+import net.progruzovik.dissent.model.domain.battle.field.PathNode;
 import net.progruzovik.dissent.model.domain.battle.field.gun.GunCells;
 import net.progruzovik.dissent.model.domain.util.Cell;
-import net.progruzovik.dissent.captain.Captain;
 import net.progruzovik.dissent.model.dto.BattleDataDto;
 import net.progruzovik.dissent.model.dto.LogEntryDto;
 import net.progruzovik.dissent.model.dto.ShotDto;
-import net.progruzovik.dissent.model.domain.Ship;
-import net.progruzovik.dissent.model.event.Event;
+import net.progruzovik.dissent.model.event.EventEmitter;
 import net.progruzovik.dissent.model.event.EventName;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import reactor.core.publisher.DirectProcessor;
-import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static net.progruzovik.dissent.model.event.EventName.*;
 
-public final class Battle {
+public final class Battle extends EventEmitter {
 
     private boolean isRunning = true;
 
@@ -34,23 +32,16 @@ public final class Battle {
     private final @NonNull Captain leftCaptain;
     private final @NonNull Captain rightCaptain;
 
-    private final DirectProcessor<Event<?>> eventStream;
-
     public Battle(@NonNull UnitQueue unitQueue, @NonNull Field field,
                   @NonNull Captain leftCaptain, @NonNull Captain rightCaptain) {
         this.unitQueue = unitQueue;
         this.field = field;
         this.leftCaptain = leftCaptain;
         this.rightCaptain = rightCaptain;
-        eventStream = DirectProcessor.create();
     }
 
     public boolean isRunning() {
         return isRunning;
-    }
-
-    public Flux<Event<?>> getEventStream() {
-        return eventStream;
     }
 
     @NonNull
@@ -100,7 +91,7 @@ public final class Battle {
 
     public void moveCurrentUnit(@NonNull String captainId, @NonNull Cell cell) {
         if (isIdBelongsToCurrentCaptain(captainId)) {
-            declareEvent(new Event<>(MOVE, field.moveActiveUnit(cell)));
+            emit(MOVE, field.moveActiveUnit(cell));
         }
     }
 
@@ -116,14 +107,12 @@ public final class Battle {
         battleLog.add(new LogEntryDto(currentUnit.getSide(), damage,
                 targetUnit.isDestroyed(), currentUnit.getShip().findGunById(gunId),
                 currentUnit.getShip().getHull(), targetUnit.getShip().getHull()));
-        declareEvent(new Event<>(EventName.SHOT, new ShotDto(gunId, damage, targetUnit.getFirstCell())));
+        emit(EventName.SHOT, new ShotDto(gunId, damage, targetUnit.getFirstCell()));
         if (targetUnit.getShip().getStrength() == 0) {
             unitQueue.getUnits().remove(targetUnit);
             field.destroyUnit(targetUnit);
             if (!unitQueue.hasUnitsOnBothSides()) {
-                isRunning = false;
-                field.resetActiveUnit();
-                declareEvent(new Event<>(BATTLE_FINISH, null));
+                finishBattle();
             }
         }
     }
@@ -131,7 +120,7 @@ public final class Battle {
     public void endTurn(@NonNull String captainId) {
         if (!isIdBelongsToCurrentCaptain(captainId)) return;
         unitQueue.nextTurn();
-        declareEvent(new Event<>(NEXT_TURN, null));
+        emit(NEXT_TURN);
         startNewTurn();
     }
 
@@ -155,10 +144,13 @@ public final class Battle {
     private void startNewTurn() {
         unitQueue.getCurrentUnit().activate();
         field.setActiveUnit(unitQueue.getCurrentUnit());
-        declareEvent(new Event<>(NEW_TURN_START, null));
+        emit(NEW_TURN_START);
     }
 
-    private void declareEvent(Event<?> event) {
-        eventStream.onNext(event);
+    private void finishBattle() {
+        isRunning = false;
+        field.resetActiveUnit();
+        emit(BATTLE_FINISH);
+        complete();
     }
 }

@@ -3,10 +3,8 @@ package net.progruzovik.dissent.captain
 import net.progruzovik.dissent.model.domain.Ship
 import net.progruzovik.dissent.model.domain.battle.Battle
 import net.progruzovik.dissent.model.domain.battle.Side
-import net.progruzovik.dissent.model.event.Event
-import java.util.function.Consumer
 
-interface Captain : Consumer<Event<*>> {
+interface Captain {
 
     val id: String
 

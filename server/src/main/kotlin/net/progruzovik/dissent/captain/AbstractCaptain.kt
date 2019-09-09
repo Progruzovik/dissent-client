@@ -12,7 +12,6 @@ abstract class AbstractCaptain : Captain {
     override fun addToBattle(battle: Battle, side: Side) {
         battle.addShips(side, ships)
         this.battle = battle
-        battle.eventStream.subscribe(this)
     }
 
     override fun endTurn() {

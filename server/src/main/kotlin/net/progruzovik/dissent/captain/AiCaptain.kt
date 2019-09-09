@@ -2,9 +2,9 @@ package net.progruzovik.dissent.captain
 
 import net.progruzovik.dissent.model.domain.Ship
 import net.progruzovik.dissent.model.domain.battle.Battle
+import net.progruzovik.dissent.model.domain.battle.Side
 import net.progruzovik.dissent.model.entity.GunEntity
 import net.progruzovik.dissent.model.entity.HullEntity
-import net.progruzovik.dissent.model.event.Event
 import net.progruzovik.dissent.model.event.EventName
 import net.progruzovik.dissent.repository.GunRepository
 import net.progruzovik.dissent.repository.HullRepository
@@ -26,27 +26,35 @@ class AiCaptain(hullRepository: HullRepository, gunRepository: GunRepository) : 
         ships.add(Ship(baseHull, artillery, null))
     }
 
-    override fun accept(event: Event<*>) {
+    override fun addToBattle(battle: Battle, side: Side) {
+        super.addToBattle(battle, side)
+
+        battle.on<Unit>(EventName.NEW_TURN_START) {
+            if (battle.isIdBelongsToCurrentCaptain(id)) {
+                performTurn()
+            }
+        }
+    }
+
+    private fun performTurn() {
         val battle: Battle = this.battle ?: return
-        if (event.name == EventName.NEW_TURN_START && battle.isIdBelongsToCurrentCaptain(id)) {
-            if (battle.currentUnit.ship.firstGun != null) {
-                var canCurrentUnitMove = true
-                while (battle.currentUnit.actionPoints >= battle.currentUnit.ship.firstGun!!.shotCost && canCurrentUnitMove) {
-                    val firstGunId = battle.currentUnit.ship.firstGun!!.id
-                    val gunCells = battle.getGunCells(firstGunId)
-                    if (gunCells.targets.isEmpty()) {
-                        val reachableCells = battle.reachableCells
-                        if (reachableCells.isEmpty()) {
-                            canCurrentUnitMove = false
-                        } else {
-                            battle.moveCurrentUnit(id, reachableCells[(0 until reachableCells.size).random()])
-                        }
+        if (battle.currentUnit.ship.firstGun != null) {
+            var canCurrentUnitMove = true
+            while (battle.currentUnit.actionPoints >= battle.currentUnit.ship.firstGun!!.shotCost && canCurrentUnitMove) {
+                val firstGunId = battle.currentUnit.ship.firstGun!!.id
+                val gunCells = battle.getGunCells(firstGunId)
+                if (gunCells.targets.isEmpty()) {
+                    val reachableCells = battle.reachableCells
+                    if (reachableCells.isEmpty()) {
+                        canCurrentUnitMove = false
                     } else {
-                        battle.shootWithCurrentUnit(id, firstGunId, gunCells.targets[0].cell)
+                        battle.moveCurrentUnit(id, reachableCells[(0 until reachableCells.size).random()])
                     }
+                } else {
+                    battle.shootWithCurrentUnit(id, firstGunId, gunCells.targets[0].cell)
                 }
             }
-            endTurn()
         }
+        endTurn()
     }
 }

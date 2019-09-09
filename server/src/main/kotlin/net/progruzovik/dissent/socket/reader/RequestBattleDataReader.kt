@@ -1,9 +1,8 @@
 package net.progruzovik.dissent.socket.reader
 
-import net.progruzovik.dissent.model.domain.battle.Battle
 import net.progruzovik.dissent.captain.Player
+import net.progruzovik.dissent.model.domain.battle.Battle
 import net.progruzovik.dissent.model.socket.ClientSubject
-import net.progruzovik.dissent.model.socket.ServerMessage
 import net.progruzovik.dissent.model.socket.ServerSubject
 import org.springframework.stereotype.Component
 
@@ -14,6 +13,6 @@ class RequestBattleDataReader : Reader {
 
     override fun read(player: Player, data: Map<String, Int>) {
         val battle: Battle = player.battle ?: return
-        player.sendMessage(ServerMessage(ServerSubject.BATTLE_DATA, battle.getBattleData(player.id)))
+        player.sendMessage(ServerSubject.BATTLE_DATA, battle.getBattleData(player.id))
     }
 }
