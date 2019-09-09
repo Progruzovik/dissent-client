@@ -58,12 +58,12 @@ class SessionPlayer(
         super.addToBattle(battle, side)
         sendCurrentStatus()
 
-        battle.on { event, data ->
+        battle.on<Unit>(EventName.BATTLE_FINISH) { onBattleFinish() }
+        battle.subscribe { event, data ->
             if (event.isPublicEvent) {
                 sendMessage(ServerSubject.valueOf(event.name), data)
             }
         }
-        battle.on<Unit>(EventName.BATTLE_FINISH) { onBattleFinish() }
     }
 
     override fun addToQueue() {

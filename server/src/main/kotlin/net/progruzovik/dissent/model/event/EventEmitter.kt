@@ -14,7 +14,7 @@ open class EventEmitter {
         }
     }
 
-    inline fun on(crossinline handler: (event: EventName, data: Any?) -> Unit) {
+    inline fun subscribe(crossinline handler: (event: EventName, data: Any?) -> Unit) {
         eventStream.subscribe { handler(it.name, it.data) }
     }
 
