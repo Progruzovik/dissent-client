@@ -2,29 +2,30 @@ package net.progruzovik.dissent.model.entity
 
 import javax.persistence.*
 
-@Entity(name = "hull")
-class HullEntity {
+@Entity
+@Table(name = "hull")
+class HullEntity(
 
     @Id
     @GeneratedValue
-    var id = 0
+    val id: Int,
 
     @Column(nullable = false)
-    var name = ""
+    val name: String,
 
     @Column(nullable = false)
-    var actionPoints = 0
+    val actionPoints: Int,
 
     @Column(nullable = false)
-    var strength = 0
+    val strength: Int,
 
     @Column(nullable = false)
-    var width = 0
+    val width: Int,
 
     @Column(nullable = false)
-    var height = 0
+    val height: Int,
 
     @ManyToOne
     @JoinColumn(name = "texture_id", nullable = false)
-    lateinit var texture: TextureEntity
-}
+    val texture: TextureEntity
+)

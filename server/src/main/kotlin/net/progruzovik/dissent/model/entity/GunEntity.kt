@@ -2,38 +2,41 @@ package net.progruzovik.dissent.model.entity
 
 import javax.persistence.*
 
-@Entity(name = "gun")
-class GunEntity {
+@Entity
+@Table(name = "gun")
+class GunEntity(
 
     @Id
     @GeneratedValue
-    var id = 0
+    val id: Int,
 
     @Column(nullable = false)
-    var name = ""
+    val name: String,
 
     @Column(nullable = false)
-    var shotCost = 0
+    val shotCost: Int,
 
     @Column(nullable = false)
-    var damage = 0
+    val damage: Int,
 
     @Column(nullable = false)
-    var radius = 0
+    val radius: Int,
 
     @Column(nullable = false)
-    var accuracy = 0.0
+    val accuracy: Double,
 
     @ManyToOne
     @JoinColumn(name = "gun_type_id", nullable = false)
-    lateinit var type: GunTypeEntity
+    val type: GunTypeEntity,
 
     @ManyToOne
     @JoinColumn(name = "texture_id", nullable = false)
-    lateinit var texture: TextureEntity
+    val texture: TextureEntity
+) {
 
     //TODO: add domain layer
-    val typeName: String get() = type.name
+    val typeName: String
+        get() = type.name
 
     companion object {
         const val NO_GUN_ID = -1

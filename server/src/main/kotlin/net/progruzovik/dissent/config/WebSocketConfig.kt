@@ -8,9 +8,9 @@ import org.springframework.web.reactive.socket.WebSocketHandler
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter
 
 @Configuration
-open class WebSocketConfig(private val webSocketHandler: WebSocketHandler) {
+class WebSocketConfig(private val webSocketHandler: WebSocketHandler) {
 
-    @Bean open fun webSocketHandlerMapping(): HandlerMapping {
+    @Bean fun webSocketHandlerMapping(): HandlerMapping {
         val handlerMapping = SimpleUrlHandlerMapping()
         handlerMapping.order = 1
         handlerMapping.urlMap = mapOf(
@@ -19,5 +19,5 @@ open class WebSocketConfig(private val webSocketHandler: WebSocketHandler) {
         return handlerMapping
     }
 
-    @Bean open fun handlerAdapter() = WebSocketHandlerAdapter()
+    @Bean fun handlerAdapter() = WebSocketHandlerAdapter()
 }

@@ -1,17 +1,15 @@
 package net.progruzovik.dissent.model.entity
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
-@Entity(name = "texture")
-class TextureEntity {
+@Entity
+@Table(name = "texture")
+class TextureEntity(
 
     @Id
     @GeneratedValue
-    var id = 0
+    val id: Int,
 
     @Column(nullable = false)
-    var name = ""
-}
+    val name: String
+)
