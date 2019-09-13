@@ -4,12 +4,13 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "texture")
-class TextureEntity(
+data class TextureEntity(
 
     @Id
     @GeneratedValue
+    @Column(name = "id", nullable = false)
     val id: Int,
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     val name: String
 )

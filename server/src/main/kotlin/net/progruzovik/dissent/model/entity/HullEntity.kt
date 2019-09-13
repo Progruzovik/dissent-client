@@ -4,25 +4,26 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "hull")
-class HullEntity(
+data class HullEntity(
 
     @Id
     @GeneratedValue
+    @Column(name = "id", nullable = false)
     val id: Int,
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     val name: String,
 
-    @Column(nullable = false)
+    @Column(name = "action_points", nullable = false)
     val actionPoints: Int,
 
-    @Column(nullable = false)
+    @Column(name = "strength", nullable = false)
     val strength: Int,
 
-    @Column(nullable = false)
+    @Column(name = "width", nullable = false)
     val width: Int,
 
-    @Column(nullable = false)
+    @Column(name = "height", nullable = false)
     val height: Int,
 
     @ManyToOne

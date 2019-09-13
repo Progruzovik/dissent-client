@@ -4,12 +4,13 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "gun_type")
-class GunTypeEntity(
+data class GunTypeEntity(
 
     @Id
     @GeneratedValue
+    @Column(name = "id", nullable = false)
     val id: Int,
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     val name: String
 )

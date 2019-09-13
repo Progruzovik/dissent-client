@@ -4,25 +4,26 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "gun")
-class GunEntity(
+data class GunEntity(
 
     @Id
     @GeneratedValue
+    @Column(name = "id", nullable = false)
     val id: Int,
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     val name: String,
 
-    @Column(nullable = false)
+    @Column(name = "shot_cost", nullable = false)
     val shotCost: Int,
 
-    @Column(nullable = false)
+    @Column(name = "damage", nullable = false)
     val damage: Int,
 
-    @Column(nullable = false)
+    @Column(name = "radius", nullable = false)
     val radius: Int,
 
-    @Column(nullable = false)
+    @Column(name = "accuracy", nullable = false)
     val accuracy: Double,
 
     @ManyToOne
