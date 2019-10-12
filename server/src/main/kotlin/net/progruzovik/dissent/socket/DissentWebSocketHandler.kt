@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketHandler
 import org.springframework.web.reactive.socket.WebSocketSession
 import reactor.core.publisher.Mono
-import java.util.function.Function
-import java.util.stream.Collectors
 
 @Component
 class DissentWebSocketHandler(
@@ -20,9 +18,7 @@ class DissentWebSocketHandler(
     private val sessionPlayerFactory: ObjectFactory<SessionPlayer>
 ) : WebSocketHandler {
 
-    private val readers: Map<ClientSubject, Reader> = readersList.stream()
-        .collect(Collectors.toMap<Reader, ClientSubject, Reader>(Function { it.subject }, Function.identity()))
-        .toMap()
+    private val readers: Map<ClientSubject, Reader> = readersList.map { it.subject to it }.toMap()
 
     override fun handle(session: WebSocketSession): Mono<Void> {
         val player = sessionPlayerFactory.getObject()
