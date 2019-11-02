@@ -6,7 +6,7 @@ import net.progruzovik.dissent.model.domain.battle.Side
 
 abstract class AbstractCaptain : Captain {
 
-    override val ships = ArrayList<Ship>()
+    final override val ships = ArrayList<Ship>()
     override var battle: Battle? = null
 
     override fun addToBattle(battle: Battle, side: Side) {

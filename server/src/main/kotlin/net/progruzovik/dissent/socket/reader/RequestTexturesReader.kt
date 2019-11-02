@@ -12,6 +12,6 @@ class RequestTexturesReader(private val textureRepository: TextureRepository) : 
     override val subject = ClientSubject.REQUEST_TEXTURES
 
     override fun read(player: Player, data: Map<String, Int>) {
-        player.sendMessage(ServerSubject.TEXTURES, textureRepository.findAll())
+        player.emit(ServerSubject.TEXTURES, textureRepository.findAll())
     }
 }

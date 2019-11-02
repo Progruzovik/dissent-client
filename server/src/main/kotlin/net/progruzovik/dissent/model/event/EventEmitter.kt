@@ -1,26 +1,12 @@
 package net.progruzovik.dissent.model.event
 
-import reactor.core.publisher.DirectProcessor
+import reactor.core.publisher.Flux
 
-open class EventEmitter {
+interface EventEmitter<T> {
 
-    val eventStream: DirectProcessor<Event<*>> = DirectProcessor.create<Event<*>>()
+    val eventStream: Flux<Event<T, *>>
 
-    inline fun <reified T> on(event: EventName, crossinline handler: (data: T?) -> Unit) {
-        eventStream.subscribe {
-            if (it.name == event) {
-                handler(it.data as T?)
-            }
-        }
-    }
+    fun <U> emit(event: T, data: U? = null)
 
-    inline fun subscribe(crossinline handler: (event: EventName, data: Any?) -> Unit) {
-        eventStream.subscribe { handler(it.name, it.data) }
-    }
-
-    fun <T> emit(event: EventName, data: T?) = eventStream.onNext(Event(event, data))
-
-    fun emit(event: EventName) = emit(event, null)
-
-    fun complete() = eventStream.onComplete()
+    fun complete()
 }

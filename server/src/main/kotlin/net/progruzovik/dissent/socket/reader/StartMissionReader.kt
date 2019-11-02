@@ -9,5 +9,7 @@ class StartMissionReader : Reader {
 
     override val subject = ClientSubject.START_MISSION
 
-    override fun read(player: Player, data: Map<String, Int>) = player.startMission(data.getValue("missionId"))
+    override fun read(player: Player, data: Map<String, Int>) {
+        player.startMission(data.getValue("missionId"))
+    }
 }

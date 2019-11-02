@@ -9,5 +9,7 @@ class RemoveFromQueueReader : Reader {
 
     override val subject = ClientSubject.REMOVE_FROM_QUEUE
 
-    override fun read(player: Player, data: Map<String, Int>) = player.removeFromQueue()
+    override fun read(player: Player, data: Map<String, Int>) {
+        player.removeFromQueue()
+    }
 }

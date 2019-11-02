@@ -10,7 +10,7 @@ import net.progruzovik.dissent.model.domain.util.Cell;
 import net.progruzovik.dissent.model.dto.BattleDataDto;
 import net.progruzovik.dissent.model.dto.LogEntryDto;
 import net.progruzovik.dissent.model.dto.ShotDto;
-import net.progruzovik.dissent.model.event.EventEmitter;
+import net.progruzovik.dissent.model.event.FluxEmitter;
 import net.progruzovik.dissent.model.event.EventName;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -20,7 +20,7 @@ import java.util.List;
 
 import static net.progruzovik.dissent.model.event.EventName.*;
 
-public final class Battle extends EventEmitter {
+public final class Battle extends FluxEmitter<EventName> {
 
     private boolean isRunning = true;
 
@@ -120,7 +120,7 @@ public final class Battle extends EventEmitter {
     public void endTurn(@NonNull String captainId) {
         if (!isIdBelongsToCurrentCaptain(captainId)) return;
         unitQueue.nextTurn();
-        emit(NEXT_TURN);
+        emit(NEXT_TURN, null);
         startNewTurn();
     }
 
@@ -144,13 +144,13 @@ public final class Battle extends EventEmitter {
     private void startNewTurn() {
         unitQueue.getCurrentUnit().activate();
         field.setActiveUnit(unitQueue.getCurrentUnit());
-        emit(NEW_TURN_START);
+        emit(NEW_TURN_START, null);
     }
 
     private void finishBattle() {
         isRunning = false;
         field.resetActiveUnit();
-        emit(BATTLE_FINISH);
+        emit(BATTLE_FINISH, null);
         complete();
     }
 }

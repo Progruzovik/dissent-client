@@ -17,6 +17,6 @@ class RequestPathsAndReachableCellsReader : Reader {
             "reachableCells" to battle.reachableCells,
             "paths" to battle.paths
         )
-        player.sendMessage(ServerSubject.PATHS_AND_REACHABLE_CELLS, pathsAndReachableCells)
+        player.emit(ServerSubject.PATHS_AND_REACHABLE_CELLS, pathsAndReachableCells)
     }
 }

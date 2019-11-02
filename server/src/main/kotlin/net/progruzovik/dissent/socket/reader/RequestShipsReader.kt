@@ -11,6 +11,6 @@ class RequestShipsReader : Reader {
     override val subject = ClientSubject.REQUEST_SHIPS
 
     override fun read(player: Player, data: Map<String, Int>) {
-        player.sendMessage(ServerSubject.SHIPS, player.ships)
+        player.emit(ServerSubject.SHIPS, player.ships)
     }
 }

@@ -11,6 +11,6 @@ class RequestStatusReader : Reader {
     override val subject = ClientSubject.REQUEST_STATUS
 
     override fun read(player: Player, data: Map<String, Int>) {
-        player.sendMessage(ServerSubject.STATUS, player.status)
+        player.emit(ServerSubject.STATUS, player.status)
     }
 }

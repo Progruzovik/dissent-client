@@ -9,5 +9,7 @@ class AddToQueueReader : Reader {
 
     override val subject = ClientSubject.ADD_TO_QUEUE
 
-    override fun read(player: Player, data: Map<String, Int>) = player.addToQueue()
+    override fun read(player: Player, data: Map<String, Int>) {
+        player.addToQueue()
+    }
 }

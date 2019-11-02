@@ -9,5 +9,7 @@ class EndTurnReader : Reader {
 
     override val subject = ClientSubject.END_TURN
 
-    override fun read(player: Player, data: Map<String, Int>) = player.endTurn()
+    override fun read(player: Player, data: Map<String, Int>) {
+        player.endTurn()
+    }
 }

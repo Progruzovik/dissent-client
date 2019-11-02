@@ -13,6 +13,6 @@ class RequestBattleDataReader : Reader {
 
     override fun read(player: Player, data: Map<String, Int>) {
         val battle: Battle = player.battle ?: return
-        player.sendMessage(ServerSubject.BATTLE_DATA, battle.getBattleData(player.id))
+        player.emit(ServerSubject.BATTLE_DATA, battle.getBattleData(player.id))
     }
 }

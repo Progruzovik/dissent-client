@@ -10,7 +10,7 @@ export class WebSocketClient extends PIXI.utils.EventEmitter {
         super();
         this.connection = new WebSocketConnection(url);
         this.connection.on(WebSocketConnection.MESSAGE, (message: Message) =>
-            this.emit(message.subject, message.data));
+            this.emit(message.name, message.data));
     }
 
     requestTextures(): Promise<Texture[]> {
@@ -86,7 +86,7 @@ interface BattleData {
 }
 
 class Message {
-    constructor(readonly subject: string, readonly data?: any) {}
+    constructor(readonly name: string, readonly data?: any) {}
 }
 
 class WebSocketConnection extends PIXI.utils.EventEmitter {

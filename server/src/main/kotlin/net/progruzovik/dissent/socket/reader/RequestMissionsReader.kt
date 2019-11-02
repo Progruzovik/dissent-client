@@ -12,6 +12,6 @@ class RequestMissionsReader(private val missionRepository: MissionRepository) : 
     override val subject = ClientSubject.REQUEST_MISSIONS
 
     override fun read(player: Player, data: Map<String, Int>) {
-        player.sendMessage(ServerSubject.MISSIONS, missionRepository.findAll())
+        player.emit(ServerSubject.MISSIONS, missionRepository.findAll())
     }
 }

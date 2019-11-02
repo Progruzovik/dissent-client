@@ -1,6 +1,7 @@
 package net.progruzovik.dissent.socket
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import net.progruzovik.dissent.captain.SessionPlayer
 import net.progruzovik.dissent.model.socket.ClientMessage
 import net.progruzovik.dissent.model.socket.ClientSubject
@@ -21,15 +22,21 @@ class DissentWebSocketHandler(
     private val readers: Map<ClientSubject, Reader> = readersList.map { it.subject to it }.toMap()
 
     override fun handle(session: WebSocketSession): Mono<Void> {
-        val player = sessionPlayerFactory.getObject()
+        val player = sessionPlayerFactory.getObject().apply {
+            id = session.id
+        }
         session.attributes["player"] = player
-        player.setUpSession(session)
-        return session.receive()
-            .map { it.payloadAsText }
-            .doOnNext {
-                val message: ClientMessage = mapper.readValue(it, ClientMessage::class.java)
-                readers.getValue(message.subject).read(player, message.data)
-            }
+
+        val input: Mono<Void> = session.receive()
+            .map { mapper.readValue<ClientMessage>(it.payloadAsText) }
+            .doOnNext { readers.getValue(it.name).read(player, it.data) }
             .then()
+
+        val output: Mono<Void> = player.eventStream
+            .map { mapper.writeValueAsString(it) }
+            .map { session.textMessage(it) }
+            .let { session.send(it) }
+
+        return Mono.zip(input, output).then()
     }
 }

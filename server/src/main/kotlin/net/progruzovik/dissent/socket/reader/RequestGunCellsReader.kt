@@ -15,6 +15,6 @@ class RequestGunCellsReader : Reader {
     override fun read(player: Player, data: Map<String, Int>) {
         val battle: Battle = player.battle ?: return
         val gunCells: GunCells = battle.getGunCells(data.getValue("gunId"))
-        player.sendMessage(ServerSubject.GUN_CELLS, gunCells)
+        player.emit(ServerSubject.GUN_CELLS, gunCells)
     }
 }
