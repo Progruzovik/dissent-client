@@ -2,7 +2,7 @@
   "name": "dissent-client",
   "version": "0.0.1",
   "dependencies": {
-    "mithril": "^1.1.6",
+    "mithril": "^1.1.7",
     "pixi-druid": "^1.1.14",
     "skeleton-css": "^2.0.4"
   },
